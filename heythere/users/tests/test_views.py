@@ -11,11 +11,7 @@ from django.urls import reverse
 from heythere.users.forms import UserAdminChangeForm
 from heythere.users.models import User
 from heythere.users.tests.factories import UserFactory
-from heythere.users.views import (
-    UserRedirectView,
-    UserUpdateView,
-    user_detail_view,
-)
+from heythere.users.views import UserRedirectView, UserUpdateView, user_detail_view
 
 pytestmark = pytest.mark.django_db
 
