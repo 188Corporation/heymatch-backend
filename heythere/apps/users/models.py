@@ -35,7 +35,7 @@ GENDER_CHOICES = (
 
 class User(AbstractUser):
     phone_number = PhoneNumberField(
-        _("Phone number of User"), null=True, blank=True, unique=True
+        _("Phone number of User"), null=False, blank=False, unique=True
     )
     birth_year = IntegerField(
         _("Birth Year of User"), blank=True, null=True, validators=[validate_birth_year]

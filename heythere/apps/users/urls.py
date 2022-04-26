@@ -1,11 +1,11 @@
 from django.urls import path
 
-from heythere.apps.users.api.views import UserDetailViewSet
+from heythere.apps.users.api.views import UserProfileViewSet
 
 app_name = "users"
 
-user_detail = UserDetailViewSet.as_view()
+user_detail = UserProfileViewSet.as_view()
 
 urlpatterns = [
-    path("detail/", user_detail, name="user-detail"),
+    path("profile/", user_detail, name="user-profile-detail"),
 ]
