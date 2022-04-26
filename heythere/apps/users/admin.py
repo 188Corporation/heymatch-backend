@@ -3,19 +3,18 @@ from django.contrib.auth import admin as auth_admin
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 
-from heythere.apps.users.forms import UserAdminChangeForm, UserAdminCreationForm
+from heythere.apps.users.forms import UserChangeForm, UserCreationForm
 
 User = get_user_model()
 
 
 @admin.register(User)
 class UserAdmin(auth_admin.UserAdmin):
-
-    form = UserAdminChangeForm
-    add_form = UserAdminCreationForm
+    form = UserChangeForm
+    add_form = UserCreationForm
     fieldsets = (
         (None, {"fields": ("username", "password")}),
-        (_("Personal info"), {"fields": ("name", "email")}),
+        (_("Personal info"), {"fields": ("phone_number", "birth_year", "gender", "height_cm", "workplace", "school")}),
         (
             _("Permissions"),
             {
@@ -30,5 +29,6 @@ class UserAdmin(auth_admin.UserAdmin):
         ),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
-    list_display = ["username", "name", "is_superuser"]
-    search_fields = ["name"]
+    list_display = ["username", "phone_number", "birth_year", "gender", "height_cm", "workplace", "school",
+                    "is_superuser"]
+    search_fields = ["username", "phone_number", "birth_year", "gender", "height_cm", "school"]

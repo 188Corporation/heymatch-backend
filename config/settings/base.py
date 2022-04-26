@@ -77,6 +77,7 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "drf_spectacular",
     "phonenumber_field",
+    "phone_verify",
 ]
 
 LOCAL_APPS = [
@@ -184,7 +185,6 @@ TEMPLATES = [
                 "django.template.context_processors.static",
                 "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
-                "heythere.apps.users.context_processors.allauth_settings",
             ],
         },
     }
@@ -243,7 +243,7 @@ LOGGING = {
     "formatters": {
         "verbose": {
             "format": "%(levelname)s %(asctime)s %(module)s "
-            "%(process)d %(thread)d %(message)s"
+                      "%(process)d %(thread)d %(message)s"
         }
     },
     "handlers": {
@@ -321,8 +321,25 @@ SPECTACULAR_SETTINGS = {
     "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
     "SERVERS": [
         {"url": "http://127.0.0.1:8000", "description": "Local Development server"},
-        {"url": "https://188corporation.com", "description": "Production server"},
+        {"url": "https://heythere.188corporation.com", "description": "Production server"},
     ],
 }
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+# Django-Phone-Verify
+PHONE_VERIFICATION = {
+    "BACKEND": "phone_verify.backends.twilio.TwilioBackend",
+    "OPTIONS": {
+        "SID": "fake",
+        "SECRET": "fake",
+        "FROM": "+14755292729",
+        "SANDBOX_TOKEN": "123456",
+    },
+    "TOKEN_LENGTH": 6,
+    "MESSAGE": "Welcome to {app}! Please use security code {security_code} to proceed.",
+    "APP_NAME": "Phone Verify",
+    "SECURITY_CODE_EXPIRATION_TIME": 300,  # In seconds only
+    "VERIFY_SECURITY_CODE_ONLY_ONCE": False,
+    # If False, then a security code can be used multiple times for verification
+}
