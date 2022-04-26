@@ -1,8 +1,6 @@
 from django.urls import path
 
-from heythere.apps.users.api.views import (
-    UserProfileViewSet,
-)
+from heythere.apps.users.api.views import UserProfileViewSet
 
 app_name = "users"
 
