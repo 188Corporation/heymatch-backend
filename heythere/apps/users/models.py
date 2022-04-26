@@ -3,7 +3,6 @@ from datetime import date
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import IntegerField
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -37,7 +36,7 @@ class User(AbstractUser):
     phone_number = PhoneNumberField(
         _("Phone number of User"), null=False, blank=False, unique=True
     )
-    birth_year = IntegerField(
+    birth_year = models.IntegerField(
         _("Birth Year of User"), blank=True, null=True, validators=[validate_birth_year]
     )
     gender = models.IntegerField(

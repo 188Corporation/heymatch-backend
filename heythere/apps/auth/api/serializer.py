@@ -3,10 +3,26 @@ from django.db.models import Q
 from django.db.models.query import QuerySet
 from phone_verify.models import SMSVerification
 from rest_auth.registration.serializers import RegisterSerializer
-from rest_auth.serializers import LoginSerializer
+from rest_auth.serializers import LoginSerializer, UserDetailsSerializer
 from rest_framework import exceptions, serializers
 
 User = get_user_model()
+
+
+class UserDetailByPhoneNumberSerializer(UserDetailsSerializer):
+    class Meta:
+        model = User
+        fields = (
+            "pk",
+            "username",
+            "phone_number",
+            "birth_year",
+            "gender",
+            "height_cm",
+            "workplace",
+            "school",
+        )
+        read_only_fields = ("phone_number",)
 
 
 class UserRegisterByPhoneNumberSerializer(RegisterSerializer):

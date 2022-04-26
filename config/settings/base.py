@@ -358,6 +358,7 @@ REST_USE_JWT = True
 ACCOUNT_LOGOUT_ON_GET = True
 REST_AUTH_SERIALIZERS = {
     "LOGIN_SERIALIZER": "heythere.apps.auth.api.serializer.UserLoginByPhoneNumberSerializer",
+    "USER_DETAILS_SERIALIZER": "heythere.apps.auth.api.serializer.UserDetailByPhoneNumberSerializer",
 }
 REST_AUTH_REGISTER_SERIALIZERS = {
     "REGISTER_SERIALIZER": "heythere.apps.auth.api.serializer.UserRegisterByPhoneNumberSerializer",
