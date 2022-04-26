@@ -3,7 +3,7 @@
 
 version: 2
 updates:
-  # Update GitHub actions in workflows
+  # Update GitHub actions in _workflows
   - package-ecosystem: "github-actions"
     directory: "/"
     # Check for updates to GitHub Actions every weekday

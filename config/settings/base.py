@@ -243,7 +243,7 @@ LOGGING = {
     "formatters": {
         "verbose": {
             "format": "%(levelname)s %(asctime)s %(module)s "
-            "%(process)d %(thread)d %(message)s"
+                      "%(process)d %(thread)d %(message)s"
         }
     },
     "handlers": {
@@ -334,9 +334,9 @@ SPECTACULAR_SETTINGS = {
 PHONE_VERIFICATION = {
     "BACKEND": "phone_verify.backends.twilio.TwilioBackend",
     "OPTIONS": {
-        "SID": "fake",
-        "SECRET": "fake",
-        "FROM": "+14755292729",
+        "SID": env("TWILIO_SID"),
+        "SECRET": env("TWILIO_SECRET"),
+        "FROM": env("TWILIO_PHONE_NUMBER"),
         "SANDBOX_TOKEN": "123456",
     },
     "TOKEN_LENGTH": 6,
