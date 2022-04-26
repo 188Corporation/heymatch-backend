@@ -1,7 +1,7 @@
 import pytest
 
-from heythere.users.models import User
-from heythere.users.tests.factories import UserFactory
+from heythere.apps.users.models import User
+from heythere.apps.users.tests.factories import UserFactory
 
 
 @pytest.fixture(autouse=True)

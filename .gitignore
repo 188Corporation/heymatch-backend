@@ -331,3 +331,4 @@ heythere/media/
 .env
 .envs/*
 !.envs/.local/
+/.idea/vcs.xml

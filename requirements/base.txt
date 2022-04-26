@@ -7,6 +7,7 @@ hiredis==2.0.0  # https://github.com/redis/hiredis-py
 celery==5.2.6  # pyup: < 6.0  # https://github.com/celery/celery
 django-celery-beat==2.2.1  # https://github.com/celery/django-celery-beat
 flower==1.0.0  # https://github.com/mher/flower
+phonenumbers==8.12.47  # https://pypi.org/project/django-phonenumber-field/
 
 # Django
 # ------------------------------------------------------------------------------
@@ -17,6 +18,7 @@ django-allauth==0.50.0  # https://github.com/pennersr/django-allauth
 django-crispy-forms==1.14.0  # https://github.com/django-crispy-forms/django-crispy-forms
 crispy-bootstrap5==0.6  # https://github.com/django-crispy-forms/crispy-bootstrap5
 django-redis==5.2.0  # https://github.com/jazzband/django-redis
+django-phonenumber-field==6.1.0  # https://github.com/stefanfoulis/django-phonenumber-field
 # Django REST Framework
 djangorestframework==3.13.1  # https://github.com/encode/django-rest-framework
 django-cors-headers==3.11.0 # https://github.com/adamchainz/django-cors-headers
