@@ -78,10 +78,12 @@ THIRD_PARTY_APPS = [
     "drf_spectacular",
     "phonenumber_field",
     "phone_verify",
+    "rest_auth",
+    "rest_auth.registration",
 ]
 
 LOCAL_APPS = [
-    "heythere.apps.users",
+    "heythere.apps.users.apps.UsersConfig",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -149,7 +151,7 @@ STATIC_ROOT = str(ROOT_DIR / "staticfiles")
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
-STATICFILES_DIRS = [str(APPS_DIR / "static")]
+# STATICFILES_DIRS = [str(APPS_DIR / "static")]
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
@@ -279,23 +281,24 @@ CELERY_TASK_TIME_LIMIT = 5 * 60
 CELERY_TASK_SOFT_TIME_LIMIT = 60
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#beat-scheduler
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
 # django-allauth
 # ------------------------------------------------------------------------------
-ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_AUTHENTICATION_METHOD = "username"
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_EMAIL_REQUIRED = True
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_ADAPTER = "heythere.users.adapters.AccountAdapter"
-# https://django-allauth.readthedocs.io/en/latest/forms.html
-ACCOUNT_FORMS = {"signup": "heythere.users.forms.UserSignupForm"}
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-SOCIALACCOUNT_ADAPTER = "heythere.users.adapters.SocialAccountAdapter"
-# https://django-allauth.readthedocs.io/en/latest/forms.html
-SOCIALACCOUNT_FORMS = {"signup": "heythere.users.forms.UserSocialSignupForm"}
+# ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
+# # https://django-allauth.readthedocs.io/en/latest/configuration.html
+# ACCOUNT_AUTHENTICATION_METHOD = "username"
+# # https://django-allauth.readthedocs.io/en/latest/configuration.html
+# ACCOUNT_EMAIL_REQUIRED = True
+# # https://django-allauth.readthedocs.io/en/latest/configuration.html
+# ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+# # https://django-allauth.readthedocs.io/en/latest/configuration.html
+# ACCOUNT_ADAPTER = "heythere.users.adapters.AccountAdapter"
+# # https://django-allauth.readthedocs.io/en/latest/forms.html
+# ACCOUNT_FORMS = {"signup": "heythere.users.forms.UserSignupForm"}
+# # https://django-allauth.readthedocs.io/en/latest/configuration.html
+# SOCIALACCOUNT_ADAPTER = "heythere.users.adapters.SocialAccountAdapter"
+# # https://django-allauth.readthedocs.io/en/latest/forms.html
+# SOCIALACCOUNT_FORMS = {"signup": "heythere.users.forms.UserSocialSignupForm"}
 
 # django-rest-framework
 # -------------------------------------------------------------------------------
@@ -330,7 +333,8 @@ SPECTACULAR_SETTINGS = {
 # Your stuff...
 # ------------------------------------------------------------------------------
 
-# Django-Phone-Verify
+# django-phone-verify
+# ------------------------------------------------------------------------------
 PHONE_VERIFICATION = {
     "BACKEND": "phone_verify.backends.twilio.TwilioBackend",
     "OPTIONS": {
@@ -345,4 +349,19 @@ PHONE_VERIFICATION = {
     "SECURITY_CODE_EXPIRATION_TIME": 300,  # In seconds only
     "VERIFY_SECURITY_CODE_ONLY_ONCE": False,
     # If False, then a security code can be used multiple times for verification
+}
+
+# django-rest-auth
+# ------------------------------------------------------------------------------
+REST_USE_JWT = True
+ACCOUNT_LOGOUT_ON_GET = True
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': "heythere.apps.auth.api.serializer.UserRegisterByPhoneSerializer"
+}
+
+# djangorestframework-jwt
+# ------------------------------------------------------------------------------
+# https://jpadilla.github.io/django-rest-framework-jwt/?#security
+JWT_AUTH = {
+    "JWT_AUTH_COOKIE": "jwt_heythere",
 }

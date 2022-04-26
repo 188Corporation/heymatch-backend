@@ -13,6 +13,7 @@ app_name = "api"
 router.register("phone", VerificationViewSet, basename="phone")
 
 urlpatterns = [
+    path("auth/", include("heythere.apps.auth.urls")),
     path("users/", include("heythere.apps.users.urls")),
 ]
 urlpatterns += router.urls

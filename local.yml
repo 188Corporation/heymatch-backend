@@ -5,7 +5,8 @@ volumes:
   heythere_local_postgres_data_backups: {}
 
 services:
-  django: &django
+#  django: &django
+  django:
     build:
       context: .
       dockerfile: ./compose/local/django/Dockerfile
