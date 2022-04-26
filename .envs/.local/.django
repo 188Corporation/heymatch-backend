@@ -2,7 +2,7 @@
 # ------------------------------------------------------------------------------
 USE_DOCKER=yes
 IPYTHONDIR=/app/.ipython
-DJANGO_ALLOWED_HOSTS=
+DJANGO_ALLOWED_HOSTS="15.164.97.44"
 # Redis
 # ------------------------------------------------------------------------------
 REDIS_URL=redis://redis:6379/0
