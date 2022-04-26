@@ -304,14 +304,13 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 # -------------------------------------------------------------------------------
 # django-rest-framework - https://www.django-rest-framework.org/api-guide/settings/
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_jwt.authentication.JSONWebTokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
     ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-    ),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_RENDERER_CLASSES": ("heythere.shared.renderers.JSONResponseRenderer",),
 }
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
@@ -357,8 +356,11 @@ PHONE_VERIFICATION = {
 # ------------------------------------------------------------------------------
 REST_USE_JWT = True
 ACCOUNT_LOGOUT_ON_GET = True
+REST_AUTH_SERIALIZERS = {
+    "LOGIN_SERIALIZER": "heythere.apps.auth.api.serializer.UserLoginByPhoneNumberSerializer",
+}
 REST_AUTH_REGISTER_SERIALIZERS = {
-    'REGISTER_SERIALIZER': "heythere.apps.auth.api.serializer.UserRegisterByPhoneSerializer"
+    "REGISTER_SERIALIZER": "heythere.apps.auth.api.serializer.UserRegisterByPhoneNumberSerializer",
 }
 
 # djangorestframework-jwt
