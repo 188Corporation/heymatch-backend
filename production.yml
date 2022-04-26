@@ -3,6 +3,7 @@ version: '3'
 volumes:
   production_postgres_data: {}
   production_postgres_data_backups: {}
+  django_static_volume: {}
 
 services:
   django: &django
@@ -32,21 +33,37 @@ services:
 
   redis:
     image: redis:6
-#
-#  celeryworker:
-#    <<: *django
-#    image: heythere_production_celeryworker
-#    command: /start-celeryworker
-#
-#  celerybeat:
-#    <<: *django
-#    image: heythere_production_celerybeat
-#    command: /start-celerybeat
-#
-#  flower:
-#    <<: *django
-#    image: heythere_production_flower
-#    command: /start-flower
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./compose/production/nginx/Dockerfile
+    image: heythere_production_nginx
+    container_name: nginx
+    volumes:
+      - ./compose/production/nginx/conf:/etc/nginx/conf
+      - ./compose/production/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - django_static_volume:/app/backend/staticfiles
+    depends_on:
+      - django
+    ports:
+      - "80:80"
+      - "443:443"
+
+  celeryworker:
+    <<: *django
+    image: heythere_production_celeryworker
+    command: /start-celeryworker
+
+  celerybeat:
+    <<: *django
+    image: heythere_production_celerybeat
+    command: /start-celerybeat
+
+  flower:
+    <<: *django
+    image: heythere_production_flower
+    command: /start-flower
 
   awscli:
     build:
