@@ -10,10 +10,12 @@ else:
 
 app_name = "api"
 
+# Register phone SMS verification
 router.register("phone", VerificationViewSet, basename="phone")
 
+# Auth and Custom Urls
 urlpatterns = [
     path("auth/", include("heythere.apps.auth.urls")),
-    path("users/", include("heythere.apps.users.urls")),
+    # path("users/", include("heythere.apps.users.urls")),
 ]
 urlpatterns += router.urls
