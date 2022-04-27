@@ -15,7 +15,7 @@ router.register("phone", VerificationViewSet, basename="phone")
 
 # Auth and Custom Urls
 urlpatterns = [
-    path("auth/", include("heythere.apps.auth.urls")),
+    path("auth/", include("heythere.apps.authen.urls")),
     # path("users/", include("heythere.apps.users.urls")),
 ]
 urlpatterns += router.urls

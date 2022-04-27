@@ -83,8 +83,13 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    "heythere.apps.users.apps.UsersConfig",
     # Your stuff: custom apps go here
+    "heythere.apps.authen.apps.AuthAppConfig",
+    "heythere.apps.user.apps.UserAppConfig",
+    "heythere.apps.search.apps.SearchAppConfig",
+    "heythere.apps.group.apps.GroupAppConfig",
+    "heythere.apps.match.apps.MatchAppConfig",
+    "heythere.apps.message.apps.MessageAppConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -102,7 +107,7 @@ AUTHENTICATION_BACKENDS = [
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
-AUTH_USER_MODEL = "users.User"
+AUTH_USER_MODEL = "user.User"
 # # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
 # LOGIN_REDIRECT_URL = "users:redirect"
 # # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
@@ -126,21 +131,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
-]
-
-# MIDDLEWARE
-# ------------------------------------------------------------------------------
-# https://docs.djangoproject.com/en/dev/ref/settings/#middleware
-MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.locale.LocaleMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.common.BrokenLinkEmailsMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
 # STATIC
@@ -354,11 +344,11 @@ PHONE_VERIFICATION = {
 REST_USE_JWT = True
 ACCOUNT_LOGOUT_ON_GET = True
 REST_AUTH_SERIALIZERS = {
-    "LOGIN_SERIALIZER": "heythere.apps.auth.api.serializer.UserLoginByPhoneNumberSerializer",
-    "USER_DETAILS_SERIALIZER": "heythere.apps.auth.api.serializer.UserDetailByPhoneNumberSerializer",
+    "LOGIN_SERIALIZER": "heythere.apps.authen.api.serializer.UserLoginByPhoneNumberSerializer",
+    "USER_DETAILS_SERIALIZER": "heythere.apps.authen.api.serializer.UserDetailByPhoneNumberSerializer",
 }
 REST_AUTH_REGISTER_SERIALIZERS = {
-    "REGISTER_SERIALIZER": "heythere.apps.auth.api.serializer.UserRegisterByPhoneNumberSerializer",
+    "REGISTER_SERIALIZER": "heythere.apps.authen.api.serializer.UserRegisterByPhoneNumberSerializer",
 }
 
 # djangorestframework-jwt
