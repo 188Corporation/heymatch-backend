@@ -9,10 +9,7 @@ class HotPlace(models.Model):
     name = models.CharField(
         _("Name of Hotplace"), blank=False, null=False, unique=True, max_length=32
     )
-    zone_color = ColorField(default='#c7c7c7')  # #c7c7c7: grey
+    zone_color = ColorField(default="#c7c7c7")  # #c7c7c7: grey
     zone_boundary_info = ArrayField(
-        map_fields.GeoLocationField(),
-        blank=True,
-        null=True
+        map_fields.GeoLocationField(), blank=False, null=False
     )
-    geo_test = map_fields.GeoLocationField()

@@ -1,11 +1,11 @@
 from django.core import management
 from django.core.management.base import BaseCommand
-
-from heythere.apps.user.models import User
-from heythere.apps.search.models import HotPlace
+from django.db.utils import IntegrityError
 from django_google_maps.fields import GeoPt
 from phone_verify.models import SMSVerification
-from django.db.utils import IntegrityError
+
+from heythere.apps.search.models import HotPlace
+from heythere.apps.user.models import User
 
 """
 Note that Custom Commands are only available in LOCAL environment.
@@ -39,20 +39,20 @@ class Command(BaseCommand):
         # it is user's responsibility
         management.call_command("migrate", "--noinput")
 
-        ## Superuser setup ##
+        # Superuser setup #
         # --------------------------------------- #
         try:
             User.objects.create_superuser(  # superuser
-                username="admin",
-                phone_number="+8212341234",
-                password="1234"
+                username="admin", phone_number="+8212341234", password="1234"
             )
         except IntegrityError:
             pass
         # --------------------------------------- #
-        self.stdout.write(self.style.SUCCESS("Successfully set up data for [Superuser]"))
+        self.stdout.write(
+            self.style.SUCCESS("Successfully set up data for [Superuser]")
+        )
 
-        ## User setup ##
+        # User setup #
         # --------------------------------------- #
         try:
             User.objects.create_user(  # user 1
@@ -68,12 +68,12 @@ class Command(BaseCommand):
                 "security_code": "123456",
                 "session_token": "sessiontoken1",
                 "is_verified": True,
-            }
+            },
         )
         # --------------------------------------- #
         self.stdout.write(self.style.SUCCESS("Successfully set up data for [User]"))
 
-        ## Hotplace setup ##
+        # Hotplace setup #
         # --------------------------------------- #
         HotPlace.objects.get_or_create(  # hotplace 1
             name="압구정 로데오",
@@ -84,6 +84,6 @@ class Command(BaseCommand):
                     GeoPt(37.5286403, 127.0360262),
                     GeoPt(37.5232287, 127.036627),
                 ],
-            }
+            },
         )
         self.stdout.write(self.style.SUCCESS("Successfully set up data for [Hotplace]"))

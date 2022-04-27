@@ -5,5 +5,5 @@ from heythere.apps.search.models import HotPlace
 
 @admin.register(HotPlace)
 class HotPlaceAdmin(admin.ModelAdmin):
-    list_display = ["id", "name", "zone_color", "zone_boundary_info", "geo_test"]
+    list_display = ["id", "name", "zone_color", "zone_boundary_info"]
     search_fields = ["id", "name"]
