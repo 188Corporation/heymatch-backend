@@ -28,6 +28,15 @@ class UserAdmin(auth_admin.UserAdmin):
             },
         ),
         (
+            _("Group info"),
+            {
+                "fields": (
+                    "joined_group",
+                    "is_group_leader",
+                )
+            },
+        ),
+        (
             _("Permissions"),
             {
                 "fields": (
@@ -49,6 +58,8 @@ class UserAdmin(auth_admin.UserAdmin):
         "height_cm",
         "workplace",
         "school",
+        "joined_group",
+        "is_group_leader",
         "is_superuser",
     ]
     search_fields = [
@@ -58,4 +69,6 @@ class UserAdmin(auth_admin.UserAdmin):
         "gender",
         "height_cm",
         "school",
+        "joined_group",
+        "is_group_leader",
     ]

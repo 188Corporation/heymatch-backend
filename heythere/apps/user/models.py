@@ -6,6 +6,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
 
+from heythere.apps.group.models import Group
+
 from .managers import UserManager
 
 
@@ -33,22 +35,23 @@ GENDER_CHOICES = (
 
 
 class User(AbstractUser):
-    phone_number = PhoneNumberField(
-        _("Phone number of User"), null=False, blank=False, unique=True
-    )
+    # Basic Info
+    phone_number = PhoneNumberField(null=False, blank=False, unique=True)
     birth_year = models.IntegerField(
-        _("Birth Year of User"), blank=True, null=True, validators=[validate_birth_year]
+        blank=True, null=True, validators=[validate_birth_year]
     )
-    gender = models.IntegerField(
-        _("Gender of User"), blank=True, null=True, choices=GENDER_CHOICES
-    )
+    gender = models.IntegerField(blank=True, null=True, choices=GENDER_CHOICES)
     height_cm = models.IntegerField(
-        _("Height(cm) of User"), blank=True, null=True, validators=[validate_height_cm]
+        blank=True, null=True, validators=[validate_height_cm]
     )
-    workplace = models.CharField(
-        _("Workplace of User"), blank=True, null=True, max_length=32
+    workplace = models.CharField(blank=True, null=True, max_length=32)
+    school = models.CharField(blank=True, null=True, max_length=32)
+
+    # Group related
+    joined_group = models.ForeignKey(
+        Group, blank=True, null=True, on_delete=models.SET_NULL
     )
-    school = models.CharField(_("School of User"), blank=True, null=True, max_length=32)
+    is_group_leader = models.BooleanField(blank=False, null=False, default=False)
 
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["phone_number"]

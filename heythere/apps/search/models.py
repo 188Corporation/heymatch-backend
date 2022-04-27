@@ -13,3 +13,8 @@ class HotPlace(models.Model):
     zone_boundary_info = ArrayField(
         map_fields.GeoLocationField(), blank=False, null=False
     )
+
+
+# class GroupsInHotPlace(models.Model):
+#     group = models.ForeignKey(Group, on_delete=models.CASCADE)
+#     pass

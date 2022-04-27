@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from heythere.apps.search.models import HotPlace
+from .models import HotPlace
 
 
 @admin.register(HotPlace)
