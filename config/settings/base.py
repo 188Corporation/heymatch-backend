@@ -80,10 +80,12 @@ THIRD_PARTY_APPS = [
     "phone_verify",
     "rest_auth",
     "rest_auth.registration",
+    "colorfield",
 ]
 
 LOCAL_APPS = [
     # Your stuff: custom apps go here
+    "heythere.infra",
     "heythere.apps.authen.apps.AuthAppConfig",
     "heythere.apps.user.apps.UserAppConfig",
     "heythere.apps.search.apps.SearchAppConfig",
@@ -232,7 +234,7 @@ LOGGING = {
     "formatters": {
         "verbose": {
             "format": "%(levelname)s %(asctime)s %(module)s "
-            "%(process)d %(thread)d %(message)s"
+                      "%(process)d %(thread)d %(message)s"
         }
     },
     "handlers": {
@@ -358,8 +360,7 @@ JWT_AUTH = {
     "JWT_AUTH_COOKIE": "jwt_heythere",
 }
 
-# swagger
+# swagger and debug toolbar
+# ------------------------------------------------------------------------------
 ENABLE_DOCS = env.bool("ENABLE_DOCS", default=False)
-
-# debug toolbar
 ENABLE_DEBUG_TOOLBAR = env.bool("ENABLE_DEBUG_TOOLBAR", default=False)
