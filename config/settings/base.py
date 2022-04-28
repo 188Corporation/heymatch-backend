@@ -364,3 +364,6 @@ JWT_AUTH = {
 # ------------------------------------------------------------------------------
 ENABLE_DOCS = env.bool("ENABLE_DOCS", default=False)
 ENABLE_DEBUG_TOOLBAR = env.bool("ENABLE_DEBUG_TOOLBAR", default=False)
+
+# phonenumber
+PHONENUMBER_DEFAULT_REGION = "KR"

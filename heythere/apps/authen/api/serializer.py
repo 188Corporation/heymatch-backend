@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.db.models.query import QuerySet
 from phone_verify.models import SMSVerification
+from phonenumber_field.phonenumber import to_python
 from rest_auth.registration.serializers import RegisterSerializer
 from rest_auth.serializers import LoginSerializer, UserDetailsSerializer
 from rest_framework import exceptions, serializers
@@ -47,6 +48,12 @@ class UserRegisterByPhoneNumberSerializer(RegisterSerializer):
         phone_number = request.data["phone_number"]
         phone_security_code = request.data["phone_security_code"]
         username = request.data["username"]
+
+        phone_number_python = to_python(phone_number)
+        if not phone_number_python.is_valid():
+            raise serializers.ValidationError(
+                "Provided phone number is invalid. Please check country code or number"
+            )
 
         if not self.check_if_phone_verified(phone_number, phone_security_code):
             raise serializers.ValidationError("Invalid SMS verification info")
