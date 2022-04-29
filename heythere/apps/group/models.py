@@ -11,6 +11,8 @@ from django_google_maps.fields import GeoLocationField
 
 from heythere.apps.search.models import HotPlace
 
+from .managers import ActiveGroupManager
+
 
 class Group(models.Model):
     # Group GPS
@@ -37,26 +39,12 @@ class Group(models.Model):
     )
 
     # Group Lifecycle
-    expires_at = models.DateTimeField(blank=True, null=True)
+    is_active = models.BooleanField(blank=False, null=False, default=True)
+    active_until = models.DateTimeField(blank=True, null=True)
 
-    def is_active(self):
-        pass
-
-
-class GroupPhoto(models.Model):
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    pass
+    objects = models.Manager()
+    active_objects = ActiveGroupManager()
 
 
-"""
-- + hotplace_id
-- + leader_user_id
-- + member_user_ids
-- introduction
-- desired_other_group_member_number
-- desired_other_group_member_age_average_range
-- + group_photos
-- gps_checked
-- gps_last_check_time
-- expires_at
-"""
+# class GroupPhoto(models.Model):
+#     group = models.ForeignKey(Group, on_delete=models.CASCADE)

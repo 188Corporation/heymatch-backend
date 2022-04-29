@@ -15,5 +15,5 @@ class UserProfileViewSet(RetrieveAPIView):
 
     def get_object(self):
         queryset = self.get_queryset()
-        obj = get_object_or_404(queryset, id=self.request.user.id)
+        obj = get_object_or_404(queryset, pk=self.request.user.pk)
         return obj

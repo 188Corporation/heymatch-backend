@@ -79,7 +79,8 @@ class Command(BaseCommand):
             name="압구정 로데오",
             defaults={
                 "zone_color": "#1A41C7",
-                "zone_boundary_info": [
+                "zone_center_geoinfo": GeoPt(37.52628, 127.03952),
+                "zone_boundary_geoinfos": [
                     GeoPt(37.530342, 127.0384723),
                     GeoPt(37.5286403, 127.0360262),
                     GeoPt(37.5232287, 127.036627),

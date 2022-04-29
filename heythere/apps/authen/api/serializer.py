@@ -14,7 +14,7 @@ class UserDetailByPhoneNumberSerializer(UserDetailsSerializer):
     class Meta:
         model = User
         fields = (
-            "pk",
+            "id",
             "username",
             "phone_number",
             "birth_year",

@@ -1,6 +1,7 @@
 """
 Base settings to build other settings files upon.
 """
+import datetime
 from pathlib import Path
 
 import environ
@@ -357,7 +358,7 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 # ------------------------------------------------------------------------------
 # https://jpadilla.github.io/django-rest-framework-jwt/?#security
 JWT_AUTH = {
-    "JWT_AUTH_COOKIE": "jwt_heythere",
+    "JWT_EXPIRATION_DELTA": datetime.timedelta(days=30 * 6),  # 6 months
 }
 
 # swagger and debug toolbar

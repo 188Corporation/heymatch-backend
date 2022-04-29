@@ -51,6 +51,7 @@ class UserAdmin(auth_admin.UserAdmin):
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
     list_display = [
+        "id",
         "username",
         "phone_number",
         "birth_year",
@@ -63,6 +64,7 @@ class UserAdmin(auth_admin.UserAdmin):
         "is_superuser",
     ]
     search_fields = [
+        "id",
         "username",
         "phone_number",
         "birth_year",
