@@ -1,7 +1,15 @@
+from typing import Sequence
+
 import pytest
 
+from heythere.apps.group.models import Group
+from heythere.apps.group.tests.factories import ActiveGroupFactory
+from heythere.apps.search.models import HotPlace
+from heythere.apps.search.tests.factories import RANDOM_HOTPLACE_NAMES, HotPlaceFactory
 from heythere.apps.user.models import User
-from heythere.apps.user.tests.factories import UserFactory
+from heythere.apps.user.tests.factories import AdminUserFactory, UserFactory
+
+BATCH_SIZE = 10
 
 
 @pytest.fixture(autouse=True)
@@ -10,5 +18,63 @@ def media_storage(settings, tmpdir):
 
 
 @pytest.fixture
-def user() -> User:
-    return UserFactory()
+def admin_user() -> User:
+    return AdminUserFactory()
+
+
+@pytest.fixture
+def active_user() -> User:
+    return UserFactory(is_active=True)
+
+
+@pytest.fixture
+def active_users() -> Sequence[User]:
+    return UserFactory.create_batch(size=BATCH_SIZE, is_active=True)
+
+
+@pytest.fixture
+def active_group() -> Group:
+    users = UserFactory.build_batch(size=BATCH_SIZE, is_active=True)
+    return ActiveGroupFactory(members=users, is_active=True)
+
+
+@pytest.fixture
+def active_groups() -> Sequence[Group]:
+    return generate_active_groups()
+
+
+@pytest.fixture
+def hotplace() -> HotPlace:
+    users = UserFactory.build_batch(size=BATCH_SIZE, is_active=True)
+    groups = ActiveGroupFactory(members=users, is_active=True)
+    return HotPlaceFactory(groups=groups)
+
+
+@pytest.fixture
+def hotplaces() -> Sequence[HotPlace]:
+    return generate_hotplaces()
+
+
+def generate_active_groups() -> Sequence[Group]:
+    """
+    Calling Fixture function directly is deprecated. So decided to make
+    ordinary function to achieve brevity of codes.
+    :return: Sequence[Group]
+    """
+    result = []
+    for _ in range(BATCH_SIZE):
+        users = UserFactory.build_batch(size=BATCH_SIZE, is_active=True)
+        result.append(ActiveGroupFactory(members=users, is_active=True))
+    return result
+
+
+def generate_hotplaces() -> Sequence[HotPlace]:
+    """
+    Calling Fixture function directly is deprecated.
+    :return: Sequence[HotPlace]
+    """
+    result = []
+    for name in RANDOM_HOTPLACE_NAMES:
+        groups = generate_active_groups()
+        result.append(HotPlaceFactory(groups=groups, name=name))
+    return result

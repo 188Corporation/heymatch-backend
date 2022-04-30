@@ -1,31 +1,14 @@
-from datetime import date
-
+from birthday import BirthdayField
 from django.contrib.auth.models import AbstractUser
-from django.core.exceptions import ValidationError
+from django.contrib.postgres.fields import IntegerRangeField
+from django.contrib.postgres.validators import (
+    RangeMaxValueValidator,
+    RangeMinValueValidator,
+)
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
 
-from heythere.apps.group.models import Group
-
-from .managers import UserManager
-
-
-def validate_birth_year(value: int):
-    if value not in range(1900, date.today().year):
-        raise ValidationError(
-            _("%(value)s is not a valid birth year"),
-            params={"value": value},
-        )
-
-
-def validate_height_cm(value: int):
-    if value not in range(100, 300):
-        raise ValidationError(
-            _("%(value)s is not a valid height in centi-meter"),
-            params={"value": value},
-        )
-
+from .managers import ActiveUserManager
 
 GENDER_CHOICES = (
     (0, "male"),
@@ -33,27 +16,35 @@ GENDER_CHOICES = (
     (2, "not specified"),
 )
 
+MAX_HEIGHT_CM = 250
+MIN_HEIGHT_CM = 100
+
 
 class User(AbstractUser):
     # Basic Info
     phone_number = PhoneNumberField(null=False, blank=False, unique=True)
-    birth_year = models.IntegerField(
-        blank=True, null=True, validators=[validate_birth_year]
-    )
+    age = models.IntegerField(blank=True, null=True)  # post create
+    birthdate = BirthdayField(blank=True, null=True)
     gender = models.IntegerField(blank=True, null=True, choices=GENDER_CHOICES)
-    height_cm = models.IntegerField(
-        blank=True, null=True, validators=[validate_height_cm]
+    height_cm = IntegerRangeField(
+        blank=True,
+        null=True,
+        validators=[
+            RangeMinValueValidator(MIN_HEIGHT_CM),
+            RangeMaxValueValidator(MAX_HEIGHT_CM),
+        ],
     )
+
     workplace = models.CharField(blank=True, null=True, max_length=32)
     school = models.CharField(blank=True, null=True, max_length=32)
 
     # Group related
     joined_group = models.ForeignKey(
-        Group, blank=True, null=True, on_delete=models.SET_NULL
+        "group.Group", blank=True, null=True, on_delete=models.SET_NULL
     )
     is_group_leader = models.BooleanField(blank=False, null=False, default=False)
 
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["phone_number"]
 
-    objects = UserManager()
+    active_objects = ActiveUserManager()

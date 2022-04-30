@@ -7,7 +7,7 @@ from django.test import TestCase
 class CustomCommandsTest(TestCase):
     def test_datasetup_command_output(self):
         out = StringIO()
-        call_command("datasetup", "--reset_db", "--noinput", stdout=out)
+        call_command("datasetup", stdout=out)
         output = out.getvalue()
         self.assertIn("Successfully set up data for [Superuser]", output)
         self.assertIn("Successfully set up data for [User]", output)
