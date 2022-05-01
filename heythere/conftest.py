@@ -9,9 +9,8 @@ from heythere.apps.search.tests.factories import RANDOM_HOTPLACE_NAMES, HotPlace
 from heythere.apps.user.models import User
 from heythere.apps.user.tests.factories import AdminUserFactory, UserFactory
 
-BATCH_SIZE = 10
 
-
+# ----- Fixtures ----- #
 @pytest.fixture(autouse=True)
 def media_storage(settings, tmpdir):
     settings.MEDIA_ROOT = tmpdir.strpath
@@ -29,12 +28,12 @@ def active_user() -> User:
 
 @pytest.fixture
 def active_users() -> Sequence[User]:
-    return UserFactory.create_batch(size=BATCH_SIZE, is_active=True)
+    return UserFactory.create_batch(size=5, is_active=True)
 
 
 @pytest.fixture
 def active_group() -> Group:
-    users = UserFactory.build_batch(size=BATCH_SIZE, is_active=True)
+    users = UserFactory.create_batch(size=5, is_active=True)
     return ActiveGroupFactory(members=users, is_active=True)
 
 
@@ -45,7 +44,7 @@ def active_groups() -> Sequence[Group]:
 
 @pytest.fixture
 def hotplace() -> HotPlace:
-    users = UserFactory.build_batch(size=BATCH_SIZE, is_active=True)
+    users = UserFactory.create_batch(size=3, is_active=True)
     groups = ActiveGroupFactory(members=users, is_active=True)
     return HotPlaceFactory(groups=groups)
 
@@ -55,6 +54,32 @@ def hotplaces() -> Sequence[HotPlace]:
     return generate_hotplaces()
 
 
+# ------ Normal Function ------ #
+def generate_superuser(**kwargs) -> User:
+    return AdminUserFactory(**kwargs)
+
+
+def generate_inactive_users() -> Sequence[User]:
+    return UserFactory.create_batch(size=5, is_active=False)
+
+
+def generate_active_users() -> Sequence[User]:
+    return UserFactory.create_batch(size=5, is_active=True)
+
+
+def generate_inactive_groups() -> Sequence[Group]:
+    """
+    Calling Fixture function directly is deprecated. So decided to make
+    ordinary function to achieve brevity of codes.
+    :return: Sequence[Group]
+    """
+    result = []
+    for _ in range(5):
+        users = UserFactory.create_batch(size=3, is_active=True)
+        result.append(ActiveGroupFactory(members=users, is_active=False))
+    return result
+
+
 def generate_active_groups() -> Sequence[Group]:
     """
     Calling Fixture function directly is deprecated. So decided to make
@@ -62,8 +87,8 @@ def generate_active_groups() -> Sequence[Group]:
     :return: Sequence[Group]
     """
     result = []
-    for _ in range(BATCH_SIZE):
-        users = UserFactory.build_batch(size=BATCH_SIZE, is_active=True)
+    for _ in range(5):
+        users = UserFactory.create_batch(size=3, is_active=True)
         result.append(ActiveGroupFactory(members=users, is_active=True))
     return result
 

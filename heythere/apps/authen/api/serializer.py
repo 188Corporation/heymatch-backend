@@ -17,7 +17,7 @@ class UserDetailByPhoneNumberSerializer(UserDetailsSerializer):
             "id",
             "username",
             "phone_number",
-            "birth_year",
+            "birthdate",
             "gender",
             "height_cm",
             "workplace",

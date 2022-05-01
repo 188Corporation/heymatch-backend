@@ -1,10 +1,6 @@
 from birthday import BirthdayField
 from django.contrib.auth.models import AbstractUser
-from django.contrib.postgres.fields import IntegerRangeField
-from django.contrib.postgres.validators import (
-    RangeMaxValueValidator,
-    RangeMinValueValidator,
-)
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -26,12 +22,12 @@ class User(AbstractUser):
     age = models.IntegerField(blank=True, null=True)  # post create
     birthdate = BirthdayField(blank=True, null=True)
     gender = models.IntegerField(blank=True, null=True, choices=GENDER_CHOICES)
-    height_cm = IntegerRangeField(
+    height_cm = models.IntegerField(
         blank=True,
         null=True,
         validators=[
-            RangeMinValueValidator(MIN_HEIGHT_CM),
-            RangeMaxValueValidator(MAX_HEIGHT_CM),
+            MinValueValidator(MIN_HEIGHT_CM),
+            MaxValueValidator(MAX_HEIGHT_CM),
         ],
     )
 

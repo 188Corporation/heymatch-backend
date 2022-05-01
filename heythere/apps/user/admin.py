@@ -19,7 +19,7 @@ class UserAdmin(auth_admin.UserAdmin):
             {
                 "fields": (
                     "phone_number",
-                    "birth_year",
+                    "birthdate",
                     "gender",
                     "height_cm",
                     "workplace",
@@ -54,6 +54,7 @@ class UserAdmin(auth_admin.UserAdmin):
         "id",
         "username",
         "phone_number",
+        "age",
         "birthdate",
         "gender",
         "height_cm",
@@ -67,6 +68,7 @@ class UserAdmin(auth_admin.UserAdmin):
         "id",
         "username",
         "phone_number",
+        "age",
         "birthdate",
         "gender",
         "height_cm",

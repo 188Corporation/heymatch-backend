@@ -2,9 +2,12 @@ import datetime
 from random import randint
 from typing import Any, Sequence
 
+import pytz
+from django.conf import settings
 from factory import post_generation
 from factory.django import DjangoModelFactory
 from factory.faker import Faker
+from factory.fuzzy import FuzzyDateTime
 
 from heythere.apps.group.models import Group
 from heythere.utils.util import generate_rand_geopt, generate_rand_int4range
@@ -14,7 +17,9 @@ class ActiveGroupFactory(DjangoModelFactory):
     # Group GPS
     gps_geo_location = generate_rand_geopt()
     gps_checked = True
-    gps_last_check_time = Faker("date")
+    gps_last_check_time = FuzzyDateTime(
+        start_dt=datetime.datetime(2022, 3, 1, tzinfo=pytz.timezone(settings.TIME_ZONE))
+    )
 
     # Group Profile
     title = Faker("sentence")
@@ -26,7 +31,11 @@ class ActiveGroupFactory(DjangoModelFactory):
 
     # Group Lifecycle
     is_active = True
-    active_until = datetime.datetime.today() + datetime.timedelta(days=1)
+    active_until = FuzzyDateTime(
+        start_dt=datetime.datetime.now(tz=pytz.timezone(settings.TIME_ZONE)),
+        end_dt=datetime.datetime.now(tz=pytz.timezone(settings.TIME_ZONE))
+        + datetime.timedelta(days=1),
+    )
 
     class Meta:
         model = Group

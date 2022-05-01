@@ -15,6 +15,12 @@ def test_user_calculate_age(active_user: User):
     assert active_user.age == calculate_age_from_birthdate(active_user.birthdate)
 
 
+def test_user_has_age(active_users: Sequence[User]):
+    for user in active_users:
+        assert user.age is not None
+        assert type(user.age) == int
+
+
 # ActiveUserManager Test Cases
 def test_active_user_manager_methods(active_users: Sequence[User]):
     group = ActiveGroupFactory(members=active_users, is_active=True)

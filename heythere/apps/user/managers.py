@@ -29,7 +29,7 @@ class UserManager(BaseUserManager):
         return self._create_user(username, phone_number, password, **extra_fields)
 
 
-class ActiveUserManager(BaseUserManager):
+class ActiveUserManager(UserManager):
     def get_queryset(self) -> QuerySet:
         return super().get_queryset().filter(is_active=True)
 
