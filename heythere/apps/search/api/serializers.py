@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from heythere.apps.group.models import Group
 from heythere.apps.search.models import HotPlace
 
 
@@ -12,8 +13,20 @@ class HotPlaceDetailSerializer(serializers.ModelSerializer):
 class HotPlaceListSerializer(HotPlaceDetailSerializer):
     class Meta:
         model = HotPlace
-        fields = ["id", "name", "zone_color"]
+        fields = [
+            "id",
+            "name",
+            "zone_color",
+        ]
 
 
-class GroupsInHotPlaceSerializer(serializers.ModelSerializer):
-    pass
+class HotPlaceGroupSummarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = [
+            "id",
+            "gps_geo_location",
+            "member_number",
+            "member_avg_age",
+            "title",
+        ]

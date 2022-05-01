@@ -1,3 +1,4 @@
+from random import randint
 from typing import Sequence
 
 import pytest
@@ -33,7 +34,7 @@ def active_users() -> Sequence[User]:
 
 @pytest.fixture
 def active_group() -> Group:
-    users = UserFactory.create_batch(size=5, is_active=True)
+    users = UserFactory.create_batch(size=randint(2, 5), is_active=True)
     return ActiveGroupFactory(members=users, is_active=True)
 
 
@@ -44,7 +45,7 @@ def active_groups() -> Sequence[Group]:
 
 @pytest.fixture
 def hotplace() -> HotPlace:
-    users = UserFactory.create_batch(size=3, is_active=True)
+    users = UserFactory.create_batch(size=randint(2, 5), is_active=True)
     groups = ActiveGroupFactory(members=users, is_active=True)
     return HotPlaceFactory(groups=groups)
 
@@ -75,7 +76,7 @@ def generate_inactive_groups() -> Sequence[Group]:
     """
     result = []
     for _ in range(5):
-        users = UserFactory.create_batch(size=3, is_active=True)
+        users = UserFactory.create_batch(size=randint(2, 5), is_active=True)
         result.append(ActiveGroupFactory(members=users, is_active=False))
     return result
 
@@ -88,7 +89,7 @@ def generate_active_groups() -> Sequence[Group]:
     """
     result = []
     for _ in range(5):
-        users = UserFactory.create_batch(size=3, is_active=True)
+        users = UserFactory.create_batch(size=randint(2, 5), is_active=True)
         result.append(ActiveGroupFactory(members=users, is_active=True))
     return result
 
