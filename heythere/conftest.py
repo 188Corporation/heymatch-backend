@@ -2,6 +2,7 @@ from random import randint
 from typing import Sequence
 
 import pytest
+from rest_framework.test import APIRequestFactory
 
 from heythere.apps.group.models import Group
 from heythere.apps.group.tests.factories import ActiveGroupFactory
@@ -29,12 +30,12 @@ def active_user() -> User:
 
 @pytest.fixture
 def active_users() -> Sequence[User]:
-    return UserFactory.create_batch(size=5, is_active=True)
+    return generate_active_users()
 
 
 @pytest.fixture
 def active_group() -> Group:
-    users = UserFactory.create_batch(size=randint(2, 5), is_active=True)
+    users = generate_active_users()
     return ActiveGroupFactory(members=users, is_active=True)
 
 
@@ -45,9 +46,7 @@ def active_groups() -> Sequence[Group]:
 
 @pytest.fixture
 def hotplace() -> HotPlace:
-    users = UserFactory.create_batch(size=randint(2, 5), is_active=True)
-    groups = ActiveGroupFactory(members=users, is_active=True)
-    return HotPlaceFactory(groups=groups)
+    return generate_hotplace()
 
 
 @pytest.fixture
@@ -55,17 +54,22 @@ def hotplaces() -> Sequence[HotPlace]:
     return generate_hotplaces()
 
 
-# ------ Normal Function ------ #
+@pytest.fixture
+def rf() -> APIRequestFactory:
+    return APIRequestFactory()
+
+
+# ------ Generation Function ------ #
 def generate_superuser(**kwargs) -> User:
     return AdminUserFactory(**kwargs)
 
 
 def generate_inactive_users() -> Sequence[User]:
-    return UserFactory.create_batch(size=5, is_active=False)
+    return UserFactory.create_batch(size=randint(2, 5), is_active=False)
 
 
 def generate_active_users() -> Sequence[User]:
-    return UserFactory.create_batch(size=5, is_active=True)
+    return UserFactory.create_batch(size=randint(2, 5), is_active=True)
 
 
 def generate_inactive_groups() -> Sequence[Group]:
@@ -76,7 +80,7 @@ def generate_inactive_groups() -> Sequence[Group]:
     """
     result = []
     for _ in range(5):
-        users = UserFactory.create_batch(size=randint(2, 5), is_active=True)
+        users = generate_active_users()
         result.append(ActiveGroupFactory(members=users, is_active=False))
     return result
 
@@ -89,9 +93,14 @@ def generate_active_groups() -> Sequence[Group]:
     """
     result = []
     for _ in range(5):
-        users = UserFactory.create_batch(size=randint(2, 5), is_active=True)
+        users = generate_active_users()
         result.append(ActiveGroupFactory(members=users, is_active=True))
     return result
+
+
+def generate_hotplace(**kwargs) -> HotPlace:
+    groups = generate_active_groups()
+    return HotPlaceFactory(groups=groups, **kwargs)
 
 
 def generate_hotplaces() -> Sequence[HotPlace]:
@@ -101,6 +110,5 @@ def generate_hotplaces() -> Sequence[HotPlace]:
     """
     result = []
     for name in RANDOM_HOTPLACE_NAMES:
-        groups = generate_active_groups()
-        result.append(HotPlaceFactory(groups=groups, name=name))
+        result.append(generate_hotplace(name=name))
     return result

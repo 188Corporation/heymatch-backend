@@ -27,7 +27,7 @@ def test_active_user_manager_methods(active_users: Sequence[User]):
     manager = User.active_objects
 
     assert active_users[0].joined_group == group
-    assert list(manager.get_group_members(group=group)) == active_users
+    assert set(manager.get_group_members(group=group)) == set(active_users)
     assert manager.count_group_members(group=group) == len(active_users)
     assert manager.count_group_members_avg_age(group=group) == int(
         mean([user.age for user in active_users])
