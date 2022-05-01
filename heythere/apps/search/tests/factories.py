@@ -5,7 +5,7 @@ from factory.django import DjangoModelFactory
 from factory.faker import Faker
 
 from heythere.apps.search.models import HotPlace
-from heythere.utils.util import generate_rand_geopt
+from heythere.utils.util import FuzzyGeoPt, FuzzyGeoPtArray
 
 RANDOM_HOTPLACE_NAMES = [
     "압구정 로데오",
@@ -18,8 +18,8 @@ class HotPlaceFactory(DjangoModelFactory):
     # Group GPS
     name = Faker("random_element", elements=RANDOM_HOTPLACE_NAMES)
     zone_color = Faker("color")
-    zone_center_geoinfo = generate_rand_geopt()
-    zone_boundary_geoinfos = [generate_rand_geopt() for _ in range(10)]
+    zone_center_geoinfo = FuzzyGeoPt(precision=5)
+    zone_boundary_geoinfos = FuzzyGeoPtArray(precision=5, array_length=5)
 
     class Meta:
         model = HotPlace
