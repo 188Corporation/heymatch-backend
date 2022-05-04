@@ -6,9 +6,9 @@ from phone_verify.models import SMSVerification
 
 from heythere.conftest import (
     generate_active_users,
-    generate_hotplaces,
     generate_inactive_groups,
     generate_inactive_users,
+    generate_real_hotplaces,
 )
 
 User = get_user_model()
@@ -101,7 +101,7 @@ class Command(BaseCommand):
 
         # -------------- Hotplace setup -------------- #
         try:
-            generate_hotplaces()  # This will create active groups and users
+            generate_real_hotplaces()  # This will create active groups and users
         except IntegrityError:
             self.stdout.write(
                 self.style.NOTICE("Integrity Error @ {}".format("generate_hotplaces"))

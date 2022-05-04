@@ -6,7 +6,11 @@ import pytest
 from heythere.apps.group.models import Group
 from heythere.apps.group.tests.factories import ActiveGroupFactory
 from heythere.apps.search.models import HotPlace
-from heythere.apps.search.tests.factories import RANDOM_HOTPLACE_NAMES, HotPlaceFactory
+from heythere.apps.search.tests.factories import (
+    RANDOM_HOTPLACE_INFO,
+    RANDOM_HOTPLACE_NAMES,
+    HotPlaceFactory,
+)
 from heythere.apps.user.models import User
 from heythere.apps.user.tests.factories import AdminUserFactory, UserFactory
 
@@ -103,4 +107,26 @@ def generate_hotplaces() -> Sequence[HotPlace]:
     for name in RANDOM_HOTPLACE_NAMES:
         groups = generate_active_groups()
         result.append(HotPlaceFactory(groups=groups, name=name))
+    return result
+
+
+def generate_real_hotplaces() -> Sequence[HotPlace]:
+    """
+    Real-world Geo-location Hotplaces
+    Calling Fixture function directly is deprecated.
+    :return: Sequence[HotPlace]
+    """
+    result = []
+    for name in RANDOM_HOTPLACE_NAMES:
+        groups = generate_active_groups()
+        result.append(
+            HotPlaceFactory(
+                groups=groups,
+                name=name,
+                zone_center_geoinfo=RANDOM_HOTPLACE_INFO[name]["zone_center_geoinfo"],
+                zone_boundary_geoinfos=RANDOM_HOTPLACE_INFO[name][
+                    "zone_boundary_geoinfos"
+                ],
+            )
+        )
     return result
