@@ -82,3 +82,14 @@ INSTALLED_APPS += [
 CELERY_TASK_EAGER_PROPAGATES = True
 # Your stuff...
 # ------------------------------------------------------------------------------
+REST_FRAMEWORK = {
+    **REST_FRAMEWORK,  # noqa: F405
+    **{
+        # Use application/json instead of multipart/form-data requests in tests.
+        # Refer: https://www.django-rest-framework.org/api-guide/testing/#configuration
+        "TEST_REQUEST_DEFAULT_FORMAT": "json",
+        "TEST_REQUEST_RENDERER_CLASSES": [
+            "rest_framework.renderers.JSONRenderer",
+        ],
+    },
+}

@@ -1,12 +1,13 @@
 import decimal
 from datetime import datetime
-from random import randint
+from random import randint, uniform
 from typing import Sequence
 
 from django_google_maps.fields import GeoPt
 from factory import random
 from factory.fuzzy import BaseFuzzyAttribute
 from psycopg2._range import Range
+from shapely.geometry import Point, Polygon
 
 
 class FuzzyGeoPt(BaseFuzzyAttribute):
@@ -70,3 +71,19 @@ def generate_rand_int4range(lower_range: randint, upper_range: randint) -> str:
 
 def calculate_age_from_birthdate(birthdate: datetime) -> int:
     return int((datetime.now().date() - birthdate).days / 365.25)
+
+
+def generate_rand_geoopt_within_boundary(boundary_geopts: Sequence[GeoPt]) -> GeoPt:
+    """
+    Get a certain GeoPt within Boundary (Sequence[GeoPt])
+    """
+    # convert list of geopts to list of (lat, lon)
+    polygon = Polygon([(geopt.lat, geopt.lon) for geopt in boundary_geopts])
+    minx, miny, maxx, maxy = polygon.bounds
+    pnt = Point(-1000, -2000)  # impossible to be contained
+    while polygon.contains(pnt):
+        pnt = Point(
+            float(format(uniform(minx, maxx), ".6f")),
+            float(format(uniform(miny, maxy), ".6f")),
+        )
+        return GeoPt(lat=pnt.x, lon=pnt.y)

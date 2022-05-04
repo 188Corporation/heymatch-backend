@@ -6,7 +6,6 @@ from phone_verify.models import SMSVerification
 
 from heythere.conftest import (
     generate_active_users,
-    generate_inactive_groups,
     generate_inactive_users,
     generate_real_hotplaces,
 )
@@ -84,19 +83,6 @@ class Command(BaseCommand):
             )
             pass
         self.stdout.write(self.style.SUCCESS("Successfully set up data for [User]"))
-        # --------------------------------------- #
-
-        # -------------- Group -------------- #
-        try:
-            generate_inactive_groups()  # Note that active group should be linked to Hotplace
-        except IntegrityError:
-            self.stdout.write(
-                self.style.NOTICE(
-                    "Integrity Error @ {}".format("generate_inactive_groups")
-                )
-            )
-            pass
-        self.stdout.write(self.style.SUCCESS("Successfully set up data for [Group]"))
         # --------------------------------------- #
 
         # -------------- Hotplace setup -------------- #
