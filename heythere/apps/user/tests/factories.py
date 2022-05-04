@@ -9,7 +9,19 @@ from factory.django import DjangoModelFactory
 
 from heythere.apps.user.models import GENDER_CHOICES, MAX_HEIGHT_CM, MIN_HEIGHT_CM, User
 
-RANDOM_SCHOOLS = ["서울대학교", "고려대학교", "연세대학교"]
+RANDOM_SCHOOLS = [
+    "서울대학교",
+    "고려대학교",
+    "연세대학교",
+    "카이스트",
+    "서강대학교",
+    "한양대학교",
+    "성균관대학교",
+    "Harvard University",
+    "Stanford University",
+    "Yale University",
+    "Cornell University",
+]
 
 
 class UserFactory(DjangoModelFactory):
@@ -58,3 +70,4 @@ class UserFactory(DjangoModelFactory):
 class AdminUserFactory(UserFactory):
     is_staff = True
     is_superuser = True
+    is_active = True

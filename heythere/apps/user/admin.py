@@ -63,6 +63,7 @@ class UserAdmin(auth_admin.UserAdmin):
         "joined_group",
         "is_group_leader",
         "is_superuser",
+        "is_active",
     ]
     search_fields = [
         "id",
@@ -75,4 +76,5 @@ class UserAdmin(auth_admin.UserAdmin):
         "school",
         "joined_group",
         "is_group_leader",
+        "is_active",
     ]

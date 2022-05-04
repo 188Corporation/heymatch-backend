@@ -12,8 +12,8 @@ GENDER_CHOICES = (
     (2, "not specified"),
 )
 
-MAX_HEIGHT_CM = 250
-MIN_HEIGHT_CM = 100
+MAX_HEIGHT_CM = 195
+MIN_HEIGHT_CM = 155
 
 
 class User(AbstractUser):
