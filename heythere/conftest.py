@@ -80,11 +80,11 @@ def generate_superuser(**kwargs) -> User:
 
 
 def generate_inactive_users() -> Sequence[User]:
-    return UserFactory.create_batch(size=randint(2, 5), is_active=False)
+    return UserFactory.create_batch(size=randint(2, 4), is_active=False)
 
 
 def generate_active_users() -> Sequence[User]:
-    return UserFactory.create_batch(size=randint(2, 5), is_active=True)
+    return UserFactory.create_batch(size=randint(2, 4), is_active=True)
 
 
 def generate_real_group(hotplace_name: str, is_active: bool) -> Group:
@@ -107,7 +107,7 @@ def generate_real_groups(hotplace_name: str, is_active: bool) -> Sequence[Group]
     :return: Sequence[Group]
     """
     result = []
-    for _ in range(5):
+    for _ in range(randint(5, 10)):
         group = generate_real_group(hotplace_name=hotplace_name, is_active=is_active)
         result.append(group)
     return result

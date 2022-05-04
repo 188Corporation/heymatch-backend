@@ -80,10 +80,12 @@ def generate_rand_geoopt_within_boundary(boundary_geopts: Sequence[GeoPt]) -> Ge
     # convert list of geopts to list of (lat, lon)
     polygon = Polygon([(geopt.lat, geopt.lon) for geopt in boundary_geopts])
     minx, miny, maxx, maxy = polygon.bounds
-    pnt = Point(-1000, -2000)  # impossible to be contained
-    while polygon.contains(pnt):
+    result = None
+    while not result:
         pnt = Point(
             float(format(uniform(minx, maxx), ".6f")),
             float(format(uniform(miny, maxy), ".6f")),
         )
-        return GeoPt(lat=pnt.x, lon=pnt.y)
+        if polygon.contains(pnt):
+            result = GeoPt(lat=pnt.x, lon=pnt.y)
+    return result

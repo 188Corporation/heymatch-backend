@@ -45,7 +45,7 @@ class UserFactory(DjangoModelFactory):
 
     class Meta:
         model = get_user_model()
-        django_get_or_create = ["phone_number"]
+        django_get_or_create = ("username",)
 
     @classmethod
     def _create(cls, model_class, *args, **kwargs):

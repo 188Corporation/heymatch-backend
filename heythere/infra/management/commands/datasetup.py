@@ -64,35 +64,14 @@ class Command(BaseCommand):
         self.generate_developer_users()
 
         # Create Normal Users (No group)
-        try:
-            generate_active_users()
-        except IntegrityError:
-            self.stdout.write(
-                self.style.NOTICE(
-                    "Integrity Error @ {}".format("generate_active_users")
-                )
-            )
-            pass
-        try:
-            generate_inactive_users()
-        except IntegrityError:
-            self.stdout.write(
-                self.style.NOTICE(
-                    "Integrity Error @ {}".format("generate_inactive_users")
-                )
-            )
-            pass
+        generate_active_users()
+        generate_inactive_users()
+
         self.stdout.write(self.style.SUCCESS("Successfully set up data for [User]"))
         # --------------------------------------- #
 
         # -------------- Hotplace setup -------------- #
-        try:
-            generate_real_hotplaces()  # This will create active groups and users
-        except IntegrityError:
-            self.stdout.write(
-                self.style.NOTICE("Integrity Error @ {}".format("generate_hotplaces"))
-            )
-            pass
+        generate_real_hotplaces()  # This will create active groups and users
         self.stdout.write(self.style.SUCCESS("Successfully set up data for [Hotplace]"))
         # --------------------------------------- #
 
