@@ -40,18 +40,18 @@ def test_search_hotplace_group_list(hotplace: HotPlace):
     )
 
 
-def test_search_hotplace_group_detail(hotplace: HotPlace):
-    group1 = Group.active_objects.filter(
-        hotplace=hotplace
-    ).first()  # Groups already created by fixture
+def test_search_hotplace_group_detail(active_group: Group):
+    hotplace = active_group.hotplace
     assert (
         reverse(
             "api:search:search-hotplace-group-detail",
-            kwargs={"hotplace_id": hotplace.id, "group_id": group1.id},
+            kwargs={"hotplace_id": hotplace.id, "group_id": active_group.id},
         )
-        == f"/api/search/hotplace/{hotplace.id}/group/{group1.id}/"
+        == f"/api/search/hotplace/{hotplace.id}/group/{active_group.id}/"
     )
     assert (
-        resolve(f"/api/search/hotplace/{hotplace.id}/group/{group1.id}/").view_name
+        resolve(
+            f"/api/search/hotplace/{hotplace.id}/group/{active_group.id}/"
+        ).view_name
         == "api:search:search-hotplace-group-detail"
     )

@@ -6,6 +6,7 @@ from django.core.management.base import BaseCommand
 from django.db.utils import IntegrityError
 from phone_verify.models import SMSVerification
 
+from heythere.apps.group.models import Group
 from heythere.apps.group.tests.factories import ActiveGroupFactory
 from heythere.apps.search.tests.factories import (
     RANDOM_HOTPLACE_INFO,
@@ -85,9 +86,7 @@ class Command(BaseCommand):
                     size=random.randint(2, 5),
                     joined_group=group,
                 )
-                user = users[0]
-                user.is_group_leader = True
-                user.save()
+                Group.active_objects.register_users(group, users)
 
         self.stdout.write(
             self.style.SUCCESS("Successfully set up data for [Hotplaces/Groups/User]")

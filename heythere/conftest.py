@@ -73,6 +73,12 @@ def active_groups_in_apgujeong() -> Sequence[Group]:
 
 
 @pytest.fixture
+def active_group() -> Group:
+    hotplace = HotPlaceFactory()
+    return ActiveGroupFactory(hotplace=hotplace)
+
+
+@pytest.fixture
 def active_groups_in_euljiro() -> Sequence[Group]:
     hotplace_name = RANDOM_HOTPLACE_NAMES[1]
     hotplace = HotPlaceFactory(
@@ -146,6 +152,11 @@ def hotplace_hongdae() -> HotPlace:
             "zone_boundary_geoinfos"
         ],
     )
+
+
+@pytest.fixture
+def hotplace() -> HotPlace:
+    return HotPlaceFactory()
 
 
 @pytest.fixture

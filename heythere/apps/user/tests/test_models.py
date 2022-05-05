@@ -3,6 +3,7 @@ from typing import Sequence
 
 import pytest
 
+from heythere.apps.group.models import Group
 from heythere.apps.group.tests.factories import ActiveGroupFactory
 from heythere.apps.user.models import User
 from heythere.utils.util import calculate_age_from_birthdate
@@ -23,8 +24,9 @@ def test_user_has_age(active_users: Sequence[User]):
 
 # ActiveUserManager Test Cases
 def test_active_user_manager_methods(active_users: Sequence[User]):
-    group = ActiveGroupFactory(members=active_users, is_active=True)
+    group = ActiveGroupFactory()
     manager = User.active_objects
+    Group.active_objects.register_users(group, active_users)
 
     assert active_users[0].joined_group == group
     assert set(manager.get_group_members(group=group)) == set(active_users)
