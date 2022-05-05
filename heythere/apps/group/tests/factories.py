@@ -1,9 +1,7 @@
 import datetime
-from typing import Any, Sequence
 
 import pytz
 from django.conf import settings
-from factory import post_generation
 from factory.django import DjangoModelFactory
 from factory.faker import Faker
 from factory.fuzzy import FuzzyDateTime
@@ -13,6 +11,9 @@ from heythere.utils.util import FuzzyGeoPt, FuzzyInt4Range
 
 
 class ActiveGroupFactory(DjangoModelFactory):
+    class Meta:
+        model = Group
+
     # Group GPS
     gps_geo_location = FuzzyGeoPt(precision=5)
     gps_checked = True
@@ -35,24 +36,13 @@ class ActiveGroupFactory(DjangoModelFactory):
         + datetime.timedelta(days=1),
     )
 
-    class Meta:
-        model = Group
-
-    @post_generation
-    def members(self, create: bool, extracted: Sequence[Any], **kwargs):
-        if not create:
-            return
-
-        if extracted:
-            for i, member in enumerate(extracted):
-                if i == 0:
-                    member.is_group_leader = True
-                member.joined_group = self
-                member.save()
-
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
         """Override the default ``_create`` with our custom call."""
         manager = Group.active_objects
         # The default would use ``manager.create(*args, **kwargs)``
         return manager.create(**kwargs)
+
+
+class InactiveGroupFactory(ActiveGroupFactory):
+    is_active = False

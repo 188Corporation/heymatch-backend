@@ -9,6 +9,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_google_maps.fields import GeoLocationField
 
+from heythere.apps.user.models import User
+
 from .managers import ActiveGroupManager
 
 
@@ -20,10 +22,6 @@ class Group(models.Model):
     gps_geo_location = GeoLocationField(blank=True, null=True)
     gps_checked = models.BooleanField(blank=False, null=False, default=False)
     gps_last_check_time = models.DateTimeField(blank=True, null=True)
-
-    # Group Info
-    member_number = models.IntegerField(blank=True, null=True)
-    member_avg_age = models.IntegerField(blank=True, null=True)
 
     # Group Profile
     title = models.CharField(
@@ -48,6 +46,12 @@ class Group(models.Model):
 
     active_objects = ActiveGroupManager()
 
+    @property
+    def member_number(self):
+        user_manager = User.active_objects
+        return user_manager.count_group_members(self)
 
-# class GroupPhoto(models.Model):
-#     group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    @property
+    def member_avg_age(self):
+        user_manager = User.active_objects
+        return user_manager.count_group_members_avg_age(self)

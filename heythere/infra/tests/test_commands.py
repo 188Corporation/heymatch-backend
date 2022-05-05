@@ -9,6 +9,4 @@ class CustomCommandsTest(TestCase):
         out = StringIO()
         call_command("datasetup", stdout=out)
         output = out.getvalue()
-        self.assertIn("Successfully set up data for [Superuser]", output)
-        self.assertIn("Successfully set up data for [User]", output)
-        self.assertIn("Successfully set up data for [Hotplace]", output)
+        self.assertIn("Successfully set up all mocking data!", output)

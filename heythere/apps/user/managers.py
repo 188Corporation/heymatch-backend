@@ -39,8 +39,11 @@ class ActiveUserManager(UserManager):
     def count_group_members(self, group):
         return self.get_group_members(group).count()
 
-    def count_group_members_avg_age(self, group) -> int:
-        return int(self.get_group_members(group).aggregate(Avg("age"))["age__avg"])
+    def count_group_members_avg_age(self, group) -> int or None:
+        qs = self.get_group_members(group)
+        if qs.count() == 0:
+            return None
+        return int(qs.aggregate(Avg("age"))["age__avg"])
 
     def create(self, **kwargs):
         user = self.model(**kwargs)

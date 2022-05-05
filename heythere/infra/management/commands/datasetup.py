@@ -1,14 +1,19 @@
+import random
+
 from django.contrib.auth import get_user_model
 from django.core import management
 from django.core.management.base import BaseCommand
 from django.db.utils import IntegrityError
 from phone_verify.models import SMSVerification
 
-from heythere.conftest import (
-    generate_active_users,
-    generate_inactive_users,
-    generate_real_hotplaces,
+from heythere.apps.group.tests.factories import ActiveGroupFactory
+from heythere.apps.search.tests.factories import (
+    RANDOM_HOTPLACE_INFO,
+    RANDOM_HOTPLACE_NAMES,
+    HotPlaceFactory,
 )
+from heythere.apps.user.tests.factories import ActiveUserFactory, InactiveUserFactory
+from heythere.utils.util import generate_rand_geoopt_within_boundary
 
 User = get_user_model()
 
@@ -45,6 +50,53 @@ class Command(BaseCommand):
         management.call_command("migrate", "--noinput")
 
         # -------------- Superuser setup -------------- #
+        self.generate_superuser()
+        self.generate_developer_users()
+
+        # -------------- Normal Users setup -------------- #
+        ActiveUserFactory.create_batch(size=10, joined_group=None)
+        InactiveUserFactory.create_batch(size=10)  # "joined_group=None" by default
+        self.stdout.write(
+            self.style.SUCCESS("Successfully set up data for [Users(Active, Inactive)]")
+        )
+
+        # -------------- Hotplace, Group, Users setup -------------- #
+        for name in RANDOM_HOTPLACE_NAMES:
+            # create hotplace
+            hotplace = HotPlaceFactory(
+                name=name,
+                zone_center_geoinfo=RANDOM_HOTPLACE_INFO[name]["zone_center_geoinfo"],
+                zone_boundary_geoinfos=RANDOM_HOTPLACE_INFO[name][
+                    "zone_boundary_geoinfos"
+                ],
+            )
+            # create groups for each hotplaces
+            geopt = generate_rand_geoopt_within_boundary(
+                RANDOM_HOTPLACE_INFO[name]["zone_boundary_geoinfos"]
+            )
+            groups = ActiveGroupFactory.create_batch(
+                size=random.randint(8, 15),
+                hotplace=hotplace,
+                gps_geo_location=geopt,
+            )
+            # create users for each groups
+            for group in groups:
+                users = ActiveUserFactory.create_batch(
+                    size=random.randint(2, 5),
+                    joined_group=group,
+                )
+                user = users[0]
+                user.is_group_leader = True
+                user.save()
+
+        self.stdout.write(
+            self.style.SUCCESS("Successfully set up data for [Hotplaces/Groups/User]")
+        )
+
+        # -------------- Done! -------------- #
+        self.stdout.write(self.style.SUCCESS("Successfully set up all mocking data!"))
+
+    def generate_superuser(self) -> None:
         try:
             User.objects.create_superuser(  # superuser
                 username="admin", phone_number="+821012341234", password="1234"
@@ -57,23 +109,6 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS("Successfully set up data for [Superuser]")
         )
-        # --------------------------------------- #
-
-        # -------------- User setup -------------- #
-        # Create Developer Users
-        self.generate_developer_users()
-
-        # Create Normal Users (No group)
-        generate_active_users()
-        generate_inactive_users()
-
-        self.stdout.write(self.style.SUCCESS("Successfully set up data for [User]"))
-        # --------------------------------------- #
-
-        # -------------- Hotplace setup -------------- #
-        generate_real_hotplaces()  # This will create active groups and users
-        self.stdout.write(self.style.SUCCESS("Successfully set up data for [Hotplace]"))
-        # --------------------------------------- #
 
     def generate_developer_users(self) -> None:
         try:
@@ -96,4 +131,7 @@ class Command(BaseCommand):
                 "session_token": "sessiontoken1",
                 "is_verified": True,
             },
+        )
+        self.stdout.write(
+            self.style.SUCCESS("Successfully set up data for [Users(Developer)]")
         )

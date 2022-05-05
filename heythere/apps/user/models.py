@@ -4,7 +4,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
-from .managers import ActiveUserManager
+from .managers import ActiveUserManager, UserManager
 
 GENDER_CHOICES = (
     (0, "male"),
@@ -43,4 +43,5 @@ class User(AbstractUser):
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["phone_number"]
 
+    objects = UserManager()
     active_objects = ActiveUserManager()

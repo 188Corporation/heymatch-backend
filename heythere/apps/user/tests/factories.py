@@ -1,12 +1,9 @@
-import random
 from typing import Any, Sequence
 
-from django.contrib.auth import get_user_model
-from factory import Faker
-from factory import Sequence as FactorySequence
-from factory import post_generation
+from factory import Faker, SubFactory, post_generation
 from factory.django import DjangoModelFactory
 
+from heythere.apps.group.tests.factories import ActiveGroupFactory
 from heythere.apps.user.models import GENDER_CHOICES, MAX_HEIGHT_CM, MIN_HEIGHT_CM, User
 
 RANDOM_SCHOOLS = [
@@ -24,8 +21,12 @@ RANDOM_SCHOOLS = [
 ]
 
 
-class UserFactory(DjangoModelFactory):
-    username = FactorySequence(lambda n: "username{}".format(n))  # Unique values
+class ActiveUserFactory(DjangoModelFactory):
+    class Meta:
+        model = User
+        django_get_or_create = ("username",)
+
+    username = Faker("pystr", max_chars=6)
     phone_number = Faker("phone_number", locale="ko_KR")
     birthdate = Faker("date_of_birth")
     gender = Faker("random_element", elements=[x[0] for x in GENDER_CHOICES])
@@ -34,10 +35,11 @@ class UserFactory(DjangoModelFactory):
     school = Faker("random_element", elements=RANDOM_SCHOOLS)
 
     # Group related
-    is_group_leader = random.choice([True, False])
+    joined_group = SubFactory(ActiveGroupFactory)
+    is_group_leader = False
 
     # Other
-    is_active = random.choice([True, False])
+    is_active = True
 
     @post_generation
     def password(self, create: bool, extracted: Sequence[Any], **kwargs):
@@ -55,10 +57,6 @@ class UserFactory(DjangoModelFactory):
         )
         self.set_password(password)
 
-    class Meta:
-        model = get_user_model()
-        django_get_or_create = ("username",)
-
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
         """Override the default ``_create`` with our custom call."""
@@ -67,7 +65,11 @@ class UserFactory(DjangoModelFactory):
         return manager.create(**kwargs)
 
 
-class AdminUserFactory(UserFactory):
+class InactiveUserFactory(ActiveUserFactory):
+    is_active = False
+    joined_group = None
+
+
+class AdminUserFactory(ActiveUserFactory):
     is_staff = True
     is_superuser = True
-    is_active = True
