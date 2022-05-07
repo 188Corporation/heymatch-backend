@@ -1,55 +1,40 @@
 from typing import Any
 
 from django.db.models.query import QuerySet
-from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 
 from heythere.apps.group.models import Group
-from heythere.apps.search.models import HotPlace
 
-from .serializers import (
-    HotPlaceDetailSerializer,
-    HotPlaceGroupSummarySerializer,
-    HotPlaceListSerializer,
-)
+from .serializers import GpsAuthenticationForGroupSerializer
 
 
-class HotPlaceViewSet(viewsets.ViewSet):
+class GpsAuthenticationForGroupViewSet(viewsets.ModelViewSet):
     """
-    A simple ViewSet for listing or retrieving HotPlaces.
-    """
+    GPS Authentication For Group ViewSet.
 
-    def list(self, request) -> Response:
-        queryset = HotPlace.objects.all()
-        serializer = HotPlaceListSerializer(queryset, many=True)
-        return Response(serializer.data)
+    This ViewSet and related API url will be reversed called by several APIs
+    including Group Registration Step flow, Message to Other Group Check Step flow etc.
 
-    def retrieve(self, request, hotplace_id: int) -> Response:
-        queryset = HotPlace.objects.all()
-        hotplace = get_object_or_404(queryset, id=hotplace_id)
-        serializer = HotPlaceDetailSerializer(hotplace)
-        return Response(serializer.data)
-
-
-class HotPlaceActiveGroupViewSet(viewsets.ModelViewSet):
-    """
-    A simple ViewSet for viewing and editing accounts.
+    We have made this GPS authentication service as a separate view in order to prevent each flow
+    implement their own service.
     """
 
-    queryset = Group.active_objects.all()  # active by default
-    serializer_class = HotPlaceGroupSummarySerializer
-    # TODO: Only GPS authenticated Group users can see
+    queryset = Group.objects.all()
+    serializer_class = GpsAuthenticationForGroupSerializer
+    # TODO: Check group registration step status and accept/deny if any
     permission_classes = [AllowAny]
 
     def get_queryset(self) -> QuerySet:
+        # TODO
         qs = self.queryset
         qs = qs.filter(hotplace_id=self.kwargs["hotplace_id"])
         return qs
 
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        # TODO
         qs = self.get_queryset()
         qs = qs.filter(id=self.kwargs["group_id"])
         if qs.exists() and qs.count() == 1:
@@ -61,6 +46,11 @@ class HotPlaceActiveGroupViewSet(viewsets.ModelViewSet):
         )
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        # TODO
         qs = self.get_queryset()
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        # TODO
+        return

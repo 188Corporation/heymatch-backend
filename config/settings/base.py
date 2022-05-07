@@ -347,11 +347,11 @@ PHONE_VERIFICATION = {
 REST_USE_JWT = True
 ACCOUNT_LOGOUT_ON_GET = True
 REST_AUTH_SERIALIZERS = {
-    "LOGIN_SERIALIZER": "heythere.apps.authen.api.serializer.UserLoginByPhoneNumberSerializer",
-    "USER_DETAILS_SERIALIZER": "heythere.apps.authen.api.serializer.UserDetailByPhoneNumberSerializer",
+    "LOGIN_SERIALIZER": "heythere.apps.authen.api.serializers.UserLoginByPhoneNumberSerializer",
+    "USER_DETAILS_SERIALIZER": "heythere.apps.authen.api.serializers.UserDetailByPhoneNumberSerializer",
 }
 REST_AUTH_REGISTER_SERIALIZERS = {
-    "REGISTER_SERIALIZER": "heythere.apps.authen.api.serializer.UserRegisterByPhoneNumberSerializer",
+    "REGISTER_SERIALIZER": "heythere.apps.authen.api.serializers.UserRegisterByPhoneNumberSerializer",
 }
 
 # djangorestframework-jwt
