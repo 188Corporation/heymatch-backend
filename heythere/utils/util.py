@@ -89,3 +89,12 @@ def generate_rand_geoopt_within_boundary(boundary_geopts: Sequence[GeoPt]) -> Ge
         if polygon.contains(pnt):
             result = GeoPt(lat=pnt.x, lon=pnt.y)
     return result
+
+
+def is_geopt_within_boundary(geopt: GeoPt, boundary_geopts: Sequence[GeoPt]) -> bool:
+    """
+    Determine whether provided GeoPt resides within GeoPts in certain boundary.
+    """
+    polygon = Polygon([(geopt.lat, geopt.lon) for geopt in boundary_geopts])
+    pnt = Point(geopt.lat, geopt.lon)
+    return polygon.contains(pnt)

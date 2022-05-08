@@ -52,15 +52,15 @@ class UserRegisterByPhoneNumberSerializer(RegisterSerializer):
         phone_number_python = to_python(phone_number)
         if not phone_number_python.is_valid():
             raise serializers.ValidationError(
-                "Provided phone number is invalid. Please check country code or number"
+                detail="Provided phone number is invalid. Please check country code or number"
             )
 
         if not self.check_if_phone_verified(phone_number, phone_security_code):
-            raise serializers.ValidationError("Invalid SMS verification info")
+            raise serializers.ValidationError(detail="Invalid SMS verification info")
 
         if self.check_if_user_exists(username, phone_number):
             raise serializers.ValidationError(
-                "User with same username or phone_number exists"
+                detail="User with same username or phone_number exists"
             )
 
         user = User.objects.create_user(

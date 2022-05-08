@@ -17,6 +17,11 @@ class GroupAdmin(admin.ModelAdmin):
         "introduction",
         "desired_other_group_member_number",
         "desired_other_group_member_avg_age_range",
+        "register_step_1_completed",
+        "register_step_2_completed",
+        "register_step_3_completed",
+        "register_step_4_completed",
+        "register_step_5_completed",
         "is_active",
         "active_until",
     ]

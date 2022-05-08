@@ -1,7 +1,7 @@
 from typing import Any
 
 from django.db.models.query import QuerySet
-from rest_framework import viewsets
+from rest_framework import status, viewsets
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -13,6 +13,7 @@ from .serializers import (
     GroupRegisterStep2Serializer,
     GroupRegisterStep3Serializer,
     GroupRegisterStep4Serializer,
+    GroupRegisterStep5Serializer,
 )
 
 
@@ -28,18 +29,13 @@ class _GroupRegisterStepBaseViewSet(viewsets.ModelViewSet):
         qs = self.queryset
         return qs
 
-    def check_step(self, request: Request, *args: Any, **kwargs: Any):
-        """
-        Check if step
-        """
-
     def handle_step(self, request: Request, *args: Any, **kwargs: Any):
         pass
 
 
 class GroupRegisterStep1ViewSet(_GroupRegisterStepBaseViewSet):
     """
-    1 of 4 Steps in Group Registration.
+    1 of 5 Steps in Group Registration.
 
     * Step1: GPS authentication.
         - This will reverse call to api/auth/gps/authenticate/group/{group_id}
@@ -48,20 +44,25 @@ class GroupRegisterStep1ViewSet(_GroupRegisterStepBaseViewSet):
     serializer_class = GroupRegisterStep1Serializer
 
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        # step_num = self.kwargs["step_num"]
         self.get_serializer()
 
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        # step_num = self.kwargs["step_num"]
-        pass
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def perform_create(self, serializer):
+        group: Group = serializer.save()
+        group.active_objects.register_normal_users(self.request.user)
 
 
 class GroupRegisterStep2ViewSet(_GroupRegisterStepBaseViewSet):
     """
-    2 of 4 Steps in Group Registration.
+    2 of 5 Steps in Group Registration.
 
-    * Step2: Photo Registration.
-        - Need to resize(thumbnail, original, resized) and store photo object to AWS S3.
+    * Step2: Member Invitation.
+        - Need to enter invitation code. Code should be generated from member's Heythere app.
     """
 
     serializer_class = GroupRegisterStep2Serializer
@@ -69,10 +70,10 @@ class GroupRegisterStep2ViewSet(_GroupRegisterStepBaseViewSet):
 
 class GroupRegisterStep3ViewSet(_GroupRegisterStepBaseViewSet):
     """
-    3 of 4 Steps in Group Registration.
+    3 of 5 Steps in Group Registration.
 
-    * Step3: Basic Information Registration.
-        - This will populate Group model fields.
+    * Step3: Photo Registration.
+        - Need to resize(thumbnail, original, resized) and store photo object to AWS S3.
     """
 
     serializer_class = GroupRegisterStep3Serializer
@@ -80,10 +81,21 @@ class GroupRegisterStep3ViewSet(_GroupRegisterStepBaseViewSet):
 
 class GroupRegisterStep4ViewSet(_GroupRegisterStepBaseViewSet):
     """
-    4 of 4 Steps in Group Registration.
+    4 of 5 Steps in Group Registration.
 
-    * Step4: Confirmation of Registration
-        - This will confirm and validate all the required info before actually handling DB.
+    * Step4: Basic Information Registration.
+        - This will populate Group model fields.
     """
 
     serializer_class = GroupRegisterStep4Serializer
+
+
+class GroupRegisterStep5ViewSet(_GroupRegisterStepBaseViewSet):
+    """
+    5 of 5 Steps in Group Registration.
+
+    * Step5: Confirmation of Registration
+        - This will confirm and validate all the required info before actually handling DB.
+    """
+
+    serializer_class = GroupRegisterStep5Serializer

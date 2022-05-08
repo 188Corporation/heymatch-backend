@@ -40,6 +40,23 @@ class Group(models.Model):
         validators=[RangeMinValueValidator(20), RangeMaxValueValidator(50)],
     )
 
+    # Registration Steps Status
+    register_step_1_completed = models.BooleanField(
+        blank=False, null=False, default=False
+    )
+    register_step_2_completed = models.BooleanField(
+        blank=False, null=False, default=False
+    )
+    register_step_3_completed = models.BooleanField(
+        blank=False, null=False, default=False
+    )
+    register_step_4_completed = models.BooleanField(
+        blank=False, null=False, default=False
+    )
+    register_step_5_completed = models.BooleanField(
+        blank=False, null=False, default=False
+    )
+
     # Group Lifecycle
     is_active = models.BooleanField(blank=False, null=False, default=True)
     active_until = models.DateTimeField(blank=True, null=True)

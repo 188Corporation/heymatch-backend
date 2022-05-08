@@ -5,6 +5,7 @@ from heythere.apps.group.api.views import (
     GroupRegisterStep2ViewSet,
     GroupRegisterStep3ViewSet,
     GroupRegisterStep4ViewSet,
+    GroupRegisterStep5ViewSet,
 )
 
 app_name = "group"
@@ -19,6 +20,10 @@ group_register_step_3_view = GroupRegisterStep3ViewSet.as_view(
     {"get": "retrieve", "post": "create", "put": "update"}
 )
 group_register_step_4_view = GroupRegisterStep4ViewSet.as_view(
+    {"get": "retrieve", "post": "create"}
+)
+
+group_register_step_5_view = GroupRegisterStep5ViewSet.as_view(
     {"get": "retrieve", "post": "create"}
 )
 
@@ -43,5 +48,10 @@ urlpatterns = [
         "registration/step/4/",
         group_register_step_4_view,
         name="group-registration-step-4",
+    ),
+    path(
+        "registration/step/5/",
+        group_register_step_5_view,
+        name="group-registration-step-5",
     ),
 ]

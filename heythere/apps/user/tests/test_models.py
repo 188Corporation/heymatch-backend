@@ -26,7 +26,7 @@ def test_user_has_age(active_users: Sequence[User]):
 def test_active_user_manager_methods(active_users: Sequence[User]):
     group = ActiveGroupFactory()
     manager = User.active_objects
-    Group.active_objects.register_users(group, active_users)
+    Group.active_objects.register_normal_users(group, active_users)
 
     assert active_users[0].joined_group == group
     assert set(manager.get_group_members(group=group)) == set(active_users)
