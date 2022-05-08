@@ -1,7 +1,7 @@
 from typing import Any
 
 from django.db.models.query import QuerySet
-from rest_framework import status, viewsets
+from rest_framework import viewsets
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -21,17 +21,12 @@ class _GroupRegisterStepBaseViewSet(viewsets.ModelViewSet):
     Base Group Registration. Step[1-4]ViewSet must inherit this class.
     """
 
-    ALLOWED_STEPS = (1, 2, 3, 4)
-
     queryset = Group.objects.all()
     permission_classes = [AllowAny]  # TODO
 
     def get_queryset(self) -> QuerySet:
         qs = self.queryset
         return qs
-
-    def _check_step_num(self, step_num: int) -> bool:
-        return step_num in self.ALLOWED_STEPS
 
     def check_step(self, request: Request, *args: Any, **kwargs: Any):
         """
@@ -53,27 +48,12 @@ class GroupRegisterStep1ViewSet(_GroupRegisterStepBaseViewSet):
     serializer_class = GroupRegisterStep1Serializer
 
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        step_num = self.kwargs["step_num"]
-        # check step validity
-        if not self._check_step_num(step_num):
-            return Response(
-                data={"detail": f"Invalid step(={step_num}) parameter in the url."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        pass
+        # step_num = self.kwargs["step_num"]
+        self.get_serializer()
 
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        step_num = self.kwargs["step_num"]
-        # check step validity
-        if not self._check_step_num(step_num):
-            return Response(
-                data={"detail": f"Invalid step(={step_num}) parameter in the url."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        method = getattr(self, f"handle_step_{step_num}")
-        method(
-            request,
-        )
+        # step_num = self.kwargs["step_num"]
+        pass
 
 
 class GroupRegisterStep2ViewSet(_GroupRegisterStepBaseViewSet):

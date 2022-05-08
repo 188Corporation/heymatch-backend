@@ -15,7 +15,7 @@ class ActiveGroupFactory(DjangoModelFactory):
         model = Group
 
     # Group GPS
-    gps_geo_location = FuzzyGeoPt(precision=5)
+    gps_geoinfo = FuzzyGeoPt(precision=5)
     gps_checked = True
     gps_last_check_time = FuzzyDateTime(
         start_dt=datetime.datetime.now(tz=pytz.timezone(settings.TIME_ZONE))

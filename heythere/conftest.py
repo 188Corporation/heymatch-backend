@@ -68,7 +68,7 @@ def active_groups_in_apgujeong() -> Sequence[Group]:
     return ActiveGroupFactory.create_batch(
         size=randint(5, 10),
         hotplace=hotplace,
-        gps_geo_location=geopt,
+        gps_geoinfo=geopt,
     )
 
 
@@ -94,7 +94,7 @@ def active_groups_in_euljiro() -> Sequence[Group]:
     return ActiveGroupFactory.create_batch(
         size=randint(5, 10),
         hotplace=hotplace,
-        gps_geo_location=geopt,
+        gps_geoinfo=geopt,
     )
 
 
@@ -114,7 +114,7 @@ def active_groups_in_hongdae() -> Sequence[Group]:
     return ActiveGroupFactory.create_batch(
         size=randint(5, 10),
         hotplace=hotplace,
-        gps_geo_location=geopt,
+        gps_geoinfo=geopt,
     )
 
 

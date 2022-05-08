@@ -78,7 +78,7 @@ class Command(BaseCommand):
             groups = ActiveGroupFactory.create_batch(
                 size=random.randint(8, 15),
                 hotplace=hotplace,
-                gps_geo_location=geopt,
+                gps_geoinfo=geopt,
             )
             # create users for each groups
             for group in groups:

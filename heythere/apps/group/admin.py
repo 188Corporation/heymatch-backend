@@ -10,7 +10,7 @@ class GroupAdmin(admin.ModelAdmin):
         "hotplace",
         "member_number",
         "member_avg_age",
-        "gps_geo_location",
+        "gps_geoinfo",
         "gps_checked",
         "gps_last_check_time",
         "title",
@@ -27,7 +27,7 @@ class GroupAdmin(admin.ModelAdmin):
     search_fields = [
         "id",
         "hotplace",
-        "gps_geo_location",
+        "gps_geoinfo",
         "gps_checked",
         "title",
         "introduction",

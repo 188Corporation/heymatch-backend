@@ -19,7 +19,7 @@ class Group(models.Model):
     hotplace = models.ForeignKey(
         "search.HotPlace", blank=True, null=True, on_delete=models.PROTECT
     )
-    gps_geo_location = GeoLocationField(blank=True, null=True)
+    gps_geoinfo = GeoLocationField(blank=True, null=True)
     gps_checked = models.BooleanField(blank=False, null=False, default=False)
     gps_last_check_time = models.DateTimeField(blank=True, null=True)
 
@@ -44,6 +44,7 @@ class Group(models.Model):
     is_active = models.BooleanField(blank=False, null=False, default=True)
     active_until = models.DateTimeField(blank=True, null=True)
 
+    objects = models.Manager()
     active_objects = ActiveGroupManager()
 
     @property

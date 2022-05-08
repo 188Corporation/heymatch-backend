@@ -25,7 +25,7 @@ class HotPlaceGroupSummarySerializer(serializers.ModelSerializer):
         model = Group
         fields = [
             "id",
-            "gps_geo_location",
+            "gps_geoinfo",
             "member_number",
             "member_avg_age",
             "title",
