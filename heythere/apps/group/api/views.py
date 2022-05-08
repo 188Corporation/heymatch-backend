@@ -53,8 +53,7 @@ class GroupRegisterStep1ViewSet(_GroupRegisterStepBaseViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def perform_create(self, serializer):
-        group: Group = serializer.save()
-        group.active_objects.register_normal_users(self.request.user)
+        serializer.save(user=self.request.user)
 
 
 class GroupRegisterStep2ViewSet(_GroupRegisterStepBaseViewSet):
