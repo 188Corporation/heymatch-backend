@@ -1,3 +1,4 @@
+from random import randint
 from typing import List, Sequence
 
 from django.contrib.auth import get_user_model
@@ -58,3 +59,25 @@ class ActiveGroupManager(models.Manager):
         for user in result:
             user.save()
         return result
+
+    @staticmethod
+    def unregister_all_users(group) -> None:
+        qs: QuerySet = User.active_objects.filter(joined_group=group)
+        for user in qs:
+            user.joined_group = None
+            user.is_group_leader = False
+            user.save()
+
+        group.is_active = False
+        group.save()
+
+
+class ActiveGroupInvitationCodeManager(models.Manager):
+    def get_queryset(self) -> QuerySet:
+        return super().get_queryset().filter(is_active=True)
+
+    @staticmethod
+    def generate_random_code(length: int) -> int:
+        range_start = 10 ** (length - 1)
+        range_end = (10**length) - 1
+        return randint(range_start, range_end)

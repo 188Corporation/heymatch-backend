@@ -368,3 +368,6 @@ ENABLE_DEBUG_TOOLBAR = env.bool("ENABLE_DEBUG_TOOLBAR", default=False)
 
 # phonenumber
 PHONENUMBER_DEFAULT_REGION = "KR"
+
+# Group invitation
+GROUP_INVITATION_ACTIVE_MIN = "5"

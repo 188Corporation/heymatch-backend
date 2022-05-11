@@ -115,7 +115,7 @@ class Command(BaseCommand):
             User.objects.create_user(  # user 1
                 username="developer1",
                 phone_number="+821032433994",
-                password="Wjdwls93@",
+                password="1234",
             )
         except IntegrityError:
             self.stdout.write(

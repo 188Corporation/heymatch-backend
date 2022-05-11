@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Group
+from .models import Group, GroupInvitationCode
 
 
 @admin.register(Group)
@@ -21,7 +21,7 @@ class GroupAdmin(admin.ModelAdmin):
         "register_step_2_completed",
         "register_step_3_completed",
         "register_step_4_completed",
-        "register_step_5_completed",
+        "register_step_all_confirmed",
         "is_active",
         "active_until",
     ]
@@ -36,6 +36,24 @@ class GroupAdmin(admin.ModelAdmin):
         "gps_checked",
         "title",
         "introduction",
+        "is_active",
+        "active_until",
+    ]
+
+
+@admin.register(GroupInvitationCode)
+class GroupInvitationCodeAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "code",
+        "user",
+        "is_active",
+        "active_until",
+    ]
+    search_fields = [
+        "id",
+        "code",
+        "user",
         "is_active",
         "active_until",
     ]

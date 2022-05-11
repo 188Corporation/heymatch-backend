@@ -36,7 +36,11 @@ class User(AbstractUser):
 
     # Group related
     joined_group = models.ForeignKey(
-        "group.Group", blank=True, null=True, on_delete=models.SET_NULL
+        "group.Group",
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="users",
     )
     is_group_leader = models.BooleanField(blank=False, null=False, default=False)
 

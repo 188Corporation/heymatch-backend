@@ -1,51 +1,56 @@
 from typing import Any
 
-from django.db.models.query import QuerySet
+from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
-from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from heythere.apps.group.models import Group
+from heythere.apps.group.models import Group, GroupInvitationCode
 
+from .permissions import (
+    GroupRegistrationPermission,
+    IsUserActivePermission,
+    IsUserGroupLeader,
+    IsUserNotGroupLeader,
+)
 from .serializers import (
+    GroupInvitationCodeCreateBodySerializer,
+    GroupInvitationCodeSerializer,
+    GroupRegisterConfirmationSerializer,
+    GroupRegisterStep1BodySerializer,
     GroupRegisterStep1Serializer,
+    GroupRegisterStep2BodySerializer,
     GroupRegisterStep2Serializer,
     GroupRegisterStep3Serializer,
     GroupRegisterStep4Serializer,
-    GroupRegisterStep5Serializer,
+    UserJoinedGroupStatusSerializer,
 )
 
+User = get_user_model()
 
-class _GroupRegisterStepBaseViewSet(viewsets.ModelViewSet):
+
+class GroupRegisterStatusViewSet(viewsets.ViewSet):
+    permission_classes = [IsUserActivePermission]  # TODO: User should be linked
+
+    def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        user = get_object_or_404(User, id=self.request.user.id)
+        serializer = UserJoinedGroupStatusSerializer(instance=user)
+        return Response(serializer.data, status.HTTP_200_OK)
+
+
+class GroupRegisterStep1ViewSet(viewsets.ModelViewSet):
     """
-    Base Group Registration. Step[1-4]ViewSet must inherit this class.
-    """
-
-    queryset = Group.objects.all()
-    permission_classes = [AllowAny]  # TODO
-
-    def get_queryset(self) -> QuerySet:
-        qs = self.queryset
-        return qs
-
-    def handle_step(self, request: Request, *args: Any, **kwargs: Any):
-        pass
-
-
-class GroupRegisterStep1ViewSet(_GroupRegisterStepBaseViewSet):
-    """
-    1 of 5 Steps in Group Registration.
+    1 of 4 Steps in Group Registration.
 
     * Step1: GPS authentication.
-        - This will reverse call to api/auth/gps/authenticate/group/{group_id}
     """
 
     serializer_class = GroupRegisterStep1Serializer
+    permission_classes = [IsUserActivePermission, GroupRegistrationPermission]
 
-    def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        self.get_serializer()
-
+    @swagger_auto_schema(request_body=GroupRegisterStep1BodySerializer)
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -56,45 +61,121 @@ class GroupRegisterStep1ViewSet(_GroupRegisterStepBaseViewSet):
         serializer.save(user=self.request.user)
 
 
-class GroupRegisterStep2ViewSet(_GroupRegisterStepBaseViewSet):
+class GroupRegisterStep2ViewSet(viewsets.ViewSet):
     """
-    2 of 5 Steps in Group Registration.
+    2 of 4 Steps in Group Registration.
 
     * Step2: Member Invitation.
         - Need to enter invitation code. Code should be generated from member's Heythere app.
     """
 
-    serializer_class = GroupRegisterStep2Serializer
+    permission_classes = [
+        IsUserActivePermission,
+        IsUserGroupLeader,
+        GroupRegistrationPermission,
+    ]
+
+    @swagger_auto_schema(request_body=GroupRegisterStep2BodySerializer)
+    def invite(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        serializer = GroupRegisterStep2Serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.perform_invite(serializer.validated_data, group_leader=request.user)
+        return Response("All users invited successfully.", status=status.HTTP_200_OK)
 
 
-class GroupRegisterStep3ViewSet(_GroupRegisterStepBaseViewSet):
+class GroupRegisterStep3ViewSet(viewsets.ModelViewSet):
     """
-    3 of 5 Steps in Group Registration.
+    3 of 4 Steps in Group Registration.
 
     * Step3: Photo Registration.
         - Need to resize(thumbnail, original, resized) and store photo object to AWS S3.
     """
 
     serializer_class = GroupRegisterStep3Serializer
+    permission_classes = [
+        IsUserActivePermission,
+        IsUserGroupLeader,
+        GroupRegistrationPermission,
+    ]
+
+    def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        pass
 
 
-class GroupRegisterStep4ViewSet(_GroupRegisterStepBaseViewSet):
+class GroupRegisterStep4ViewSet(viewsets.ModelViewSet):
     """
-    4 of 5 Steps in Group Registration.
+    4 of 4 Steps in Group Registration.
 
     * Step4: Basic Information Registration.
         - This will populate Group model fields.
     """
 
     serializer_class = GroupRegisterStep4Serializer
+    permission_classes = [
+        IsUserActivePermission,
+        IsUserGroupLeader,
+        GroupRegistrationPermission,
+    ]
+
+    def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        pass
 
 
-class GroupRegisterStep5ViewSet(_GroupRegisterStepBaseViewSet):
+class GroupRegisterConfirmationViewSet(viewsets.ModelViewSet):
     """
-    5 of 5 Steps in Group Registration.
+    Confirmation step (=last step) in Group Registration.
 
-    * Step5: Confirmation of Registration
+    * Confirmation of Registration
         - This will confirm and validate all the required info before actually handling DB.
     """
 
-    serializer_class = GroupRegisterStep5Serializer
+    serializer_class = GroupRegisterConfirmationSerializer
+    permission_classes = [
+        IsUserActivePermission,
+        IsUserGroupLeader,
+        GroupRegistrationPermission,
+    ]
+
+    def confirm(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        """
+        Should confirm "gps_last_check_time", "steps_status"
+        Should set "active_until"
+        """
+        return Response()
+
+
+class GroupUnregisterViewSet(viewsets.ViewSet):
+    """
+    Un-registration of Group ViewSet.
+    """
+
+    permission_classes = [IsUserActivePermission, IsUserGroupLeader]
+
+    def unregister(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        # fetch joined group
+        user: User = get_object_or_404(User, id=self.request.user.id)
+        group: Group = user.joined_group
+        Group.active_objects.unregister_all_users(group=group)
+        return Response(status=status.HTTP_200_OK)
+
+
+class GroupInvitationCodeViewSet(viewsets.ModelViewSet):
+    """
+    Generate Group Invitation Code.
+    Should be called by none group_leader User.
+    """
+
+    queryset = GroupInvitationCode.active_objects.all()
+    serializer_class = GroupInvitationCodeSerializer
+    permission_classes = [IsUserActivePermission, IsUserNotGroupLeader]
+
+    @swagger_auto_schema(request_body=GroupInvitationCodeCreateBodySerializer)
+    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        # set previous codes as "used"
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

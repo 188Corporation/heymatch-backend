@@ -6,12 +6,13 @@ from django.contrib.postgres.validators import (
     RangeMinValueValidator,
 )
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django_google_maps.fields import GeoLocationField
 
 from heythere.apps.user.models import User
 
-from .managers import ActiveGroupManager
+from .managers import ActiveGroupInvitationCodeManager, ActiveGroupManager
 
 
 class Group(models.Model):
@@ -53,7 +54,7 @@ class Group(models.Model):
     register_step_4_completed = models.BooleanField(
         blank=False, null=False, default=False
     )
-    register_step_5_completed = models.BooleanField(
+    register_step_all_confirmed = models.BooleanField(
         blank=False, null=False, default=False
     )
 
@@ -73,3 +74,22 @@ class Group(models.Model):
     def member_avg_age(self):
         user_manager = User.active_objects
         return user_manager.count_group_members_avg_age(self)
+
+
+def unique_random_code():
+    while True:
+        code = GroupInvitationCode.active_objects.generate_random_code(length=4)
+        if not GroupInvitationCode.active_objects.filter(code=code).exists():
+            return code
+
+
+class GroupInvitationCode(models.Model):
+    user = models.ForeignKey(User, blank=False, null=False, on_delete=models.CASCADE)
+    code = models.IntegerField(blank=False, null=False, default=unique_random_code)
+    is_active = models.BooleanField(blank=False, null=False, default=True)
+    active_until = models.DateTimeField(
+        blank=True, null=True, default=timezone.now() + timezone.timedelta(minutes=5)
+    )
+
+    objects = models.Manager()
+    active_objects = ActiveGroupInvitationCodeManager()
