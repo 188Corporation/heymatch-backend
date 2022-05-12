@@ -34,7 +34,7 @@ class IsUserNotGroupLeader(permissions.BasePermission):
 
 
 class GroupRegistrationPermission(permissions.BasePermission):
-    new_group_msg = "If you want to create new group, delete the existing group."
+    new_group_msg = "If you want to create new group, unregister the existing group."
 
     def has_permission(self, request: Request, view: APIView):
         if request.method == "POST":

@@ -60,7 +60,9 @@ class Group(models.Model):
 
     # Group Lifecycle
     is_active = models.BooleanField(blank=False, null=False, default=True)
-    active_until = models.DateTimeField(blank=True, null=True)
+    active_until = models.DateTimeField(
+        blank=True, null=True, default=timezone.now() + timezone.timedelta(hours=24)
+    )
 
     objects = models.Manager()
     active_objects = ActiveGroupManager()
