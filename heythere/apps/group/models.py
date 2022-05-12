@@ -15,6 +15,10 @@ from heythere.apps.user.models import User
 from .managers import ActiveGroupInvitationCodeManager, ActiveGroupManager
 
 
+def group_default_time():
+    return timezone.now() + timezone.timedelta(hours=24)
+
+
 class Group(models.Model):
     # Group GPS
     hotplace = models.ForeignKey(
@@ -61,7 +65,7 @@ class Group(models.Model):
     # Group Lifecycle
     is_active = models.BooleanField(blank=False, null=False, default=True)
     active_until = models.DateTimeField(
-        blank=True, null=True, default=timezone.now() + timezone.timedelta(hours=24)
+        blank=True, null=True, default=group_default_time
     )
 
     objects = models.Manager()
@@ -85,12 +89,16 @@ def unique_random_code():
             return code
 
 
+def invitation_code_default_time():
+    return timezone.now() + timezone.timedelta(minutes=5)
+
+
 class GroupInvitationCode(models.Model):
     user = models.ForeignKey(User, blank=False, null=False, on_delete=models.CASCADE)
     code = models.IntegerField(blank=False, null=False, default=unique_random_code)
     is_active = models.BooleanField(blank=False, null=False, default=True)
     active_until = models.DateTimeField(
-        blank=True, null=True, default=timezone.now() + timezone.timedelta(minutes=5)
+        blank=True, null=True, default=invitation_code_default_time
     )
 
     objects = models.Manager()
