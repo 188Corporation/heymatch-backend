@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 User = get_user_model()
 
 
-class IsUserActivePermission(permissions.BasePermission):
+class IsUserActive(permissions.BasePermission):
     message = "Permission denied. User is not active."
 
     def has_permission(self, request: Request, view: APIView) -> bool:
@@ -33,7 +33,7 @@ class IsUserNotGroupLeader(permissions.BasePermission):
         return True
 
 
-class GroupRegistrationPermission(permissions.BasePermission):
+class IsGroupRegisterAllowed(permissions.BasePermission):
     new_group_msg = "If you want to create new group, unregister the existing group."
 
     def has_permission(self, request: Request, view: APIView):
@@ -48,14 +48,14 @@ class GroupRegistrationPermission(permissions.BasePermission):
             # Note that only group_leader can perform registration.
             if not user.is_group_leader:
                 raise exceptions.PermissionDenied(
-                    detail=f"Permission denied. User already created/joined a Group(id={user.joined_group.id} "
+                    detail=f"Permission denied. User already created/joined a Group(id={user.joined_group.id}) "
                     f"but is not a group_leader.))"
                 )
 
             # Only Step1 should be blocked because it create new object.
             url_name = request.resolver_match.url_name
-            if joined_group.register_step_1_completed:
-                if url_name == "group-registration-step-1":
+            if url_name == "group-registration-step-1":
+                if joined_group or joined_group.register_step_1_completed:
                     raise exceptions.PermissionDenied(
                         detail=f"Permission denied. User is under registration process of Group(id={joined_group.id})."
                         f" {self.new_group_msg}"

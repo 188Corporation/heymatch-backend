@@ -128,7 +128,3 @@ class UserLoginByPhoneNumberSerializer(LoginSerializer):
 
         attrs["user"] = user
         return attrs
-
-
-class GpsAuthenticationForGroupSerializer(serializers.ModelSerializer):
-    pass

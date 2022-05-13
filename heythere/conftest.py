@@ -2,10 +2,14 @@ from random import randint
 from typing import Sequence
 
 import pytest
-from rest_framework.test import APIClient, APIRequestFactory, RequestsClient
+from rest_framework.test import APIClient
 
-from heythere.apps.group.models import Group
-from heythere.apps.group.tests.factories import ActiveGroupFactory
+from heythere.apps.group.models import Group, GroupInvitationCode
+from heythere.apps.group.tests.factories import (
+    ActiveGroupFactory,
+    ActiveGroupInvitationCodeFactory,
+    InactiveGroupFactory,
+)
 from heythere.apps.search.models import HotPlace
 from heythere.apps.search.tests.factories import (
     RANDOM_HOTPLACE_INFO,
@@ -76,6 +80,17 @@ def active_groups_in_apgujeong() -> Sequence[Group]:
 def active_group() -> Group:
     hotplace = HotPlaceFactory()
     return ActiveGroupFactory(hotplace=hotplace)
+
+
+@pytest.fixture
+def inactive_group() -> Group:
+    hotplace = HotPlaceFactory()
+    return InactiveGroupFactory(hotplace=hotplace)
+
+
+@pytest.fixture
+def active_group_invitation_code() -> GroupInvitationCode:
+    return ActiveGroupInvitationCodeFactory()
 
 
 @pytest.fixture
@@ -173,15 +188,5 @@ def hotplaces() -> Sequence[HotPlace]:
 
 
 @pytest.fixture
-def rf() -> APIRequestFactory:
-    return APIRequestFactory()
-
-
-@pytest.fixture
-def ac() -> APIClient:
+def api_client() -> APIClient:
     return APIClient()
-
-
-@pytest.fixture
-def rc() -> RequestsClient:
-    return RequestsClient()

@@ -9,7 +9,9 @@ from heythere.apps.user.models import User
 pytestmark = pytest.mark.django_db
 
 
-# Test Cases for Group model methods
+# --------------------------
+#  [Group] Model Test Codes
+# --------------------------
 def test_active_group_has_member_number(
     active_group: Group, active_users: Sequence[User]
 ):

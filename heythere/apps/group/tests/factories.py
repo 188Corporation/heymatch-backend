@@ -2,11 +2,12 @@ import datetime
 
 import pytz
 from django.conf import settings
+from factory import SubFactory
 from factory.django import DjangoModelFactory
 from factory.faker import Faker
-from factory.fuzzy import FuzzyDateTime
+from factory.fuzzy import FuzzyDateTime, FuzzyInteger
 
-from heythere.apps.group.models import Group
+from heythere.apps.group.models import Group, GroupInvitationCode
 from heythere.utils.util import FuzzyGeoPt, FuzzyInt4Range
 
 
@@ -46,3 +47,17 @@ class ActiveGroupFactory(DjangoModelFactory):
 
 class InactiveGroupFactory(ActiveGroupFactory):
     is_active = False
+
+
+class ActiveGroupInvitationCodeFactory(DjangoModelFactory):
+    class Meta:
+        model = GroupInvitationCode
+
+    user = SubFactory("heythere.apps.user.tests.factories.ActiveUserFactory")
+    code = FuzzyInteger(1000, 9999)
+    is_active = True
+    active_until = FuzzyDateTime(
+        start_dt=datetime.datetime.now(tz=pytz.timezone(settings.TIME_ZONE)),
+        end_dt=datetime.datetime.now(tz=pytz.timezone(settings.TIME_ZONE))
+        + datetime.timedelta(minutes=5),
+    )

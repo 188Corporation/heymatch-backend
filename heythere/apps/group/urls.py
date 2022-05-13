@@ -60,7 +60,7 @@ urlpatterns = [
         group_register_step_confirm_view,
         name="group-registration-step-confirm",
     ),
-    # Group De-registration
+    # Group Un-register
     path(
         "registration/unregister/",
         group_register_unregister_view,

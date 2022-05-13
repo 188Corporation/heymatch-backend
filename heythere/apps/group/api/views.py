@@ -4,14 +4,15 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
 from heythere.apps.group.models import Group, GroupInvitationCode
 
 from .permissions import (
-    GroupRegistrationPermission,
-    IsUserActivePermission,
+    IsGroupRegisterAllowed,
+    IsUserActive,
     IsUserGroupLeader,
     IsUserNotGroupLeader,
 )
@@ -32,7 +33,10 @@ User = get_user_model()
 
 
 class GroupRegisterStatusViewSet(viewsets.ViewSet):
-    permission_classes = [IsUserActivePermission]  # TODO: User should be linked
+    permission_classes = [
+        IsAuthenticated,
+        IsUserActive,
+    ]  # TODO: User should be linked
 
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         user = get_object_or_404(User, id=self.request.user.id)
@@ -48,7 +52,11 @@ class GroupRegisterStep1ViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = GroupRegisterStep1Serializer
-    permission_classes = [IsUserActivePermission, GroupRegistrationPermission]
+    permission_classes = [
+        IsAuthenticated,
+        IsUserActive,
+        IsGroupRegisterAllowed,
+    ]
 
     @swagger_auto_schema(request_body=GroupRegisterStep1BodySerializer)
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
@@ -70,9 +78,10 @@ class GroupRegisterStep2ViewSet(viewsets.ViewSet):
     """
 
     permission_classes = [
-        IsUserActivePermission,
+        IsAuthenticated,
+        IsUserActive,
         IsUserGroupLeader,
-        GroupRegistrationPermission,
+        IsGroupRegisterAllowed,
     ]
 
     @swagger_auto_schema(request_body=GroupRegisterStep2BodySerializer)
@@ -93,9 +102,10 @@ class GroupRegisterStep3ViewSet(viewsets.ModelViewSet):
 
     serializer_class = GroupRegisterStep3Serializer
     permission_classes = [
-        IsUserActivePermission,
+        IsAuthenticated,
+        IsUserActive,
         IsUserGroupLeader,
-        GroupRegistrationPermission,
+        IsGroupRegisterAllowed,
     ]
 
     def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
@@ -112,9 +122,10 @@ class GroupRegisterStep4ViewSet(viewsets.ModelViewSet):
 
     serializer_class = GroupRegisterStep4Serializer
     permission_classes = [
-        IsUserActivePermission,
+        IsAuthenticated,
+        IsUserActive,
         IsUserGroupLeader,
-        GroupRegistrationPermission,
+        IsGroupRegisterAllowed,
     ]
 
     def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
@@ -131,9 +142,10 @@ class GroupRegisterConfirmationViewSet(viewsets.ModelViewSet):
 
     serializer_class = GroupRegisterConfirmationSerializer
     permission_classes = [
-        IsUserActivePermission,
+        IsAuthenticated,
+        IsUserActive,
         IsUserGroupLeader,
-        GroupRegistrationPermission,
+        IsGroupRegisterAllowed,
     ]
 
     def confirm(self, request: Request, *args: Any, **kwargs: Any) -> Response:
@@ -149,7 +161,11 @@ class GroupUnregisterViewSet(viewsets.ViewSet):
     Un-registration of Group ViewSet.
     """
 
-    permission_classes = [IsUserActivePermission, IsUserGroupLeader]
+    permission_classes = [
+        IsAuthenticated,
+        IsUserActive,
+        IsUserGroupLeader,
+    ]
 
     def unregister(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         # fetch joined group
@@ -167,7 +183,11 @@ class GroupInvitationCodeViewSet(viewsets.ModelViewSet):
 
     queryset = GroupInvitationCode.active_objects.all()
     serializer_class = GroupInvitationCodeSerializer
-    permission_classes = [IsUserActivePermission, IsUserNotGroupLeader]
+    permission_classes = [
+        IsAuthenticated,
+        IsUserActive,
+        IsUserNotGroupLeader,
+    ]
 
     @swagger_auto_schema(request_body=GroupInvitationCodeCreateBodySerializer)
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
