@@ -123,6 +123,11 @@ class GroupRegisterStep2Serializer(serializers.Serializer):
         invitation_codes = validated_data["invitation_codes"]
         group = group_leader.joined_group
 
+        if not group:
+            raise serializers.ValidationError(
+                "Group leader should create a group first."
+            )
+
         passed = []
         for ic in invitation_codes:
             qs = GroupInvitationCode.active_objects.filter(code=ic)
