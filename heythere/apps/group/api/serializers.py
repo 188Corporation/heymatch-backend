@@ -78,10 +78,10 @@ class GroupRegisterStep1Serializer(serializers.ModelSerializer):
         validated_data["gps_checked"] = True
         validated_data["gps_last_check_time"] = datetime.now()
         validated_data["register_step_1_completed"] = True
-        group = Group.active_objects.create(**validated_data)
+        group = Group.objects.create(**validated_data)
 
         # Finally, register User as group leader of the Group
-        Group.active_objects.register_group_leader_user(group, user)
+        Group.objects.register_group_leader_user(group, user)
         return group
 
     @staticmethod

@@ -12,7 +12,7 @@ from django_google_maps.fields import GeoLocationField
 
 from heythere.apps.user.models import User
 
-from .managers import ActiveGroupInvitationCodeManager, ActiveGroupManager
+from .managers import ActiveGroupInvitationCodeManager, ActiveGroupManager, GroupManager
 
 
 def group_default_time():
@@ -63,12 +63,12 @@ class Group(models.Model):
     )
 
     # Group Lifecycle
-    is_active = models.BooleanField(blank=False, null=False, default=True)
+    is_active = models.BooleanField(blank=False, null=False, default=False)
     active_until = models.DateTimeField(
         blank=True, null=True, default=group_default_time
     )
 
-    objects = models.Manager()
+    objects = GroupManager()
     active_objects = ActiveGroupManager()
 
     @property

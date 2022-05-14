@@ -8,14 +8,12 @@ from django.db.models.query import QuerySet
 User = get_user_model()
 
 
-class ActiveGroupManager(models.Manager):
-    def get_queryset(self) -> QuerySet:
-        return super().get_queryset().filter(is_active=True)
-
+class GroupManager(models.Manager):
     def create(self, **kwargs):
         # first create empty Group
         group = self.model(**kwargs)
-        group.is_active = True
+        # Group should pass all registration step in order to mark this as True
+        group.is_active = False
         group.save(using=self._db)
         return group
 
@@ -70,6 +68,11 @@ class ActiveGroupManager(models.Manager):
 
         group.is_active = False
         group.save()
+
+
+class ActiveGroupManager(models.Manager):
+    def get_queryset(self) -> QuerySet:
+        return super().get_queryset().filter(is_active=True)
 
 
 class ActiveGroupInvitationCodeManager(models.Manager):

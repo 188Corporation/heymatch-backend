@@ -29,6 +29,13 @@ class ActiveGroupFactory(DjangoModelFactory):
     desired_other_group_member_number = Faker("pyint", min_value=1, max_value=5)
     desired_other_group_member_avg_age_range = FuzzyInt4Range(low=20, high=60)
 
+    # Group Registration
+    register_step_1_completed = True
+    register_step_2_completed = True
+    register_step_3_completed = True
+    register_step_4_completed = True
+    register_step_all_confirmed = True
+
     # Group Lifecycle
     is_active = True
     active_until = FuzzyDateTime(
@@ -40,12 +47,22 @@ class ActiveGroupFactory(DjangoModelFactory):
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
         """Override the default ``_create`` with our custom call."""
-        manager = Group.active_objects
+        manager = Group.objects
         # The default would use ``manager.create(*args, **kwargs)``
         return manager.create(**kwargs)
 
 
-class InactiveGroupFactory(ActiveGroupFactory):
+class InactiveGroupFactory(DjangoModelFactory):
+    class Meta:
+        model = Group
+
+    # Group Registration
+    register_step_1_completed = False
+    register_step_2_completed = False
+    register_step_3_completed = False
+    register_step_4_completed = False
+    register_step_all_confirmed = False
+
     is_active = False
 
 

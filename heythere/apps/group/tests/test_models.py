@@ -15,7 +15,7 @@ pytestmark = pytest.mark.django_db
 def test_active_group_has_member_number(
     active_group: Group, active_users: Sequence[User]
 ):
-    group_manager = Group.active_objects
+    group_manager = Group.objects
     user_manager = User.active_objects
     group_manager.register_normal_users(active_group, active_users)
 
@@ -30,7 +30,7 @@ def test_active_group_has_member_number(
 def test_active_group_has_member_avg_age(
     active_group: Group, active_users: Sequence[User]
 ):
-    group_manager = Group.active_objects
+    group_manager = Group.objects
     user_manager = User.active_objects
     group_manager.register_normal_users(active_group, active_users)
 
@@ -54,11 +54,11 @@ def test_active_group_manager_register_user_when_all_good(
 ):
     """
     Test Methods:
-     >>> from heythere.apps.group.managers import ActiveGroupManager
-     >>> ActiveGroupManager.register_user()
+     >>> from heythere.apps.group.managers import GroupManager
+     >>> GroupManager.register_user()
     """
     # -- All active
-    group_manager = Group.active_objects
+    group_manager = Group.objects
     user = group_manager.register_user(active_group, active_user, is_group_leader=False)
     assert user.joined_group == active_group
     assert user.is_group_leader is False
@@ -69,10 +69,10 @@ def test_active_group_manager_register_user_when_inactive(
 ):
     """
     Test Methods:
-     >>> from heythere.apps.group.managers import ActiveGroupManager
-     >>> ActiveGroupManager.register_user()
+     >>> from heythere.apps.group.managers import GroupManager
+     >>> GroupManager.register_user()
     """
-    group_manager = Group.active_objects
+    group_manager = Group.objects
     # -- Make on inactive
     active_user.is_active = False
     active_user.save()
@@ -88,10 +88,10 @@ def test_active_group_manager_register_user_when_group_leader(
 ):
     """
     Test Methods:
-     >>> from heythere.apps.group.managers import ActiveGroupManager
-     >>> ActiveGroupManager.register_user()
+     >>> from heythere.apps.group.managers import GroupManager
+     >>> GroupManager.register_user()
     """
-    group_manager = Group.active_objects
+    group_manager = Group.objects
     # -- Make is_group_leader=True
     active_user.is_group_leader = True
     active_user.save()
@@ -104,11 +104,11 @@ def test_active_group_manager_register_group_leader_user_when_all_good(
 ):
     """
     Test Methods:
-     >>> from heythere.apps.group.managers import ActiveGroupManager
-     >>> ActiveGroupManager.register_group_leader_user()
+     >>> from heythere.apps.group.managers import GroupManager
+     >>> GroupManager.register_group_leader_user()
     """
     # -- All active
-    group_manager = Group.active_objects
+    group_manager = Group.objects
     user = group_manager.register_group_leader_user(active_group, active_user)
     assert user.joined_group == active_group
     assert user.is_group_leader is True
@@ -119,10 +119,10 @@ def test_active_group_manager_register_group_leader_user_when_inactive(
 ):
     """
     Test Methods:
-     >>> from heythere.apps.group.managers import ActiveGroupManager
-     >>> ActiveGroupManager.register_group_leader_user()
+     >>> from heythere.apps.group.managers import GroupManager
+     >>> GroupManager.register_group_leader_user()
     """
-    group_manager = Group.active_objects
+    group_manager = Group.objects
     # -- Make on inactive
     active_user.is_active = False
     active_user.save()
@@ -138,11 +138,11 @@ def test_active_group_manager_register_normal_users_when_all_good(
 ):
     """
     Test Methods:
-     >>> from heythere.apps.group.managers import ActiveGroupManager
-     >>> ActiveGroupManager.register_normal_users()
+     >>> from heythere.apps.group.managers import GroupManager
+     >>> GroupManager.register_normal_users()
     """
     # -- All active
-    group_manager = Group.active_objects
+    group_manager = Group.objects
     users = group_manager.register_normal_users(active_group, active_users)
     for user in users:
         assert user.joined_group == active_group
@@ -154,10 +154,10 @@ def test_active_group_manager_register_normal_users_when_one_is_inactive(
 ):
     """
     Test Methods:
-     >>> from heythere.apps.group.managers import ActiveGroupManager
-     >>> ActiveGroupManager.register_normal_users()
+     >>> from heythere.apps.group.managers import GroupManager
+     >>> GroupManager.register_normal_users()
     """
-    group_manager = Group.active_objects
+    group_manager = Group.objects
     # Include active and inactive users
     all_users = active_users + [inactive_user]
     with pytest.raises(RuntimeError):

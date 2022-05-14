@@ -171,7 +171,7 @@ class GroupUnregisterViewSet(viewsets.ViewSet):
         # fetch joined group
         user: User = get_object_or_404(User, id=self.request.user.id)
         group: Group = user.joined_group
-        Group.active_objects.unregister_all_users(group=group)
+        Group.objects.unregister_all_users(group=group)
         return Response(status=status.HTTP_200_OK)
 
 

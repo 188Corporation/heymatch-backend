@@ -86,8 +86,8 @@ class Command(BaseCommand):
                     size=random.randint(2, 5),
                     joined_group=group,
                 )
-                Group.active_objects.register_group_leader_user(group, users[0])
-                Group.active_objects.register_normal_users(group, users[1:])
+                Group.objects.register_group_leader_user(group, users[0])
+                Group.objects.register_normal_users(group, users[1:])
 
         self.stdout.write(
             self.style.SUCCESS("Successfully set up data for [Hotplaces/Groups/User]")

@@ -43,6 +43,10 @@ class TestGroupRegistrationStep1Endpoints:
         assert res.data["gps_checked"] is True
         assert res.data["register_step_1_completed"] is True
 
+        # Check if group is still inactive
+        assert active_user.joined_group is not None
+        assert active_user.joined_group.is_active is False
+
     def test_registration_step_1_if_unauthenticated(self, hotplaces, api_client):
         geoinfo = generate_rand_geoopt_within_boundary(
             RANDOM_HOTPLACE_INFO[RANDOM_HOTPLACE_NAMES[0]]["zone_boundary_geoinfos"]
@@ -64,6 +68,8 @@ class TestGroupRegistrationStep1Endpoints:
             data={"gps_geoinfo": geoinfo},
         )
         assert res.status_code == 201
+        assert active_user.joined_group is not None
+        assert active_user.joined_group.is_active is False
 
         # call again and fail
         res = api_client.post(
@@ -125,6 +131,8 @@ class TestGroupRegistrationStep1Endpoints:
             data={"gps_geoinfo": geoinfo},
         )
         assert res.status_code == 201
+        assert active_user.joined_group is not None
+        assert active_user.joined_group.is_active is False
 
         # Friends get Group Invitation code for each
         friends = ActiveUserFactory.create_batch(size=3, joined_group=None)
@@ -143,6 +151,8 @@ class TestGroupRegistrationStep1Endpoints:
             data={"invitation_codes": friends_codes},
         )
         assert res.status_code == 200
+        assert active_user.joined_group is not None
+        assert active_user.joined_group.is_active is False
 
         # Check if all friends joined group
         for friend in friends:
@@ -150,6 +160,7 @@ class TestGroupRegistrationStep1Endpoints:
             f_obj = User.active_objects.get(id=friend.id)
             assert code.is_active is False
             assert f_obj.joined_group.id == active_user.joined_group.id
+            assert f_obj.joined_group.is_active is False
 
     def test_registration_step_2_if_unauthenticated(self, api_client):
         res = api_client.post(
