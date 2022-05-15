@@ -1,3 +1,6 @@
+import uuid
+
+from django.conf import settings
 from django.contrib.postgres.fields import IntegerRangeField
 from django.contrib.postgres.validators import (
     MaxValueValidator,
@@ -105,6 +108,13 @@ class GroupInvitationCode(models.Model):
     active_objects = ActiveGroupInvitationCodeManager()
 
 
+def upload_to(instance, filename):
+    _, extension = filename.split(".")
+    return f"{settings.AWS_S3_GROUP_PHOTO_FOLDER}/%s.%s" % (uuid.uuid4(), extension)
+
+
 class GroupProfileImage(models.Model):
-    group = models.ForeignKey(Group, blank=True, null=True, on_delete=models.SET_NULL)
-    image = models.ImageField()
+    group = models.OneToOneField(
+        Group, blank=True, null=True, on_delete=models.SET_NULL
+    )
+    image = models.ImageField(upload_to=upload_to)

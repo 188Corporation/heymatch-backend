@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.core.exceptions import ValidationError
+from django.db.utils import IntegrityError
 from django.utils import timezone
 from django_google_maps.fields import GeoPt
 from rest_framework import serializers
@@ -166,10 +167,17 @@ class GroupRegisterStep2BodySerializer(serializers.Serializer):
 class GroupRegisterStep3Serializer(serializers.ModelSerializer):
     class Meta:
         model = GroupProfileImage
-        fields = ["id", "group", "image"]
+        fields = [
+            "id",
+            "group",
+            "image",
+        ]
 
     def create(self, validated_data):
-        image = GroupProfileImage.objects.create(**validated_data)
+        try:
+            image = GroupProfileImage.objects.create(**validated_data)
+        except IntegrityError:
+            raise serializers.ValidationError("Only one photo is allowed per group.")
         return image
 
 

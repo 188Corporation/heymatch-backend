@@ -18,8 +18,8 @@ group_register_step_1_view = GroupRegisterStep1ViewSet.as_view({"post": "create"
 group_register_step_2_view = GroupRegisterStep2ViewSet.as_view({"post": "invite"})
 group_register_step_3_view = GroupRegisterStep3ViewSet.as_view(
     {
-        "post": "upload",
-        "put": "update",
+        "post": "create",
+        "patch": "update",
     }
 )
 group_register_step_4_view = GroupRegisterStep4ViewSet.as_view({"put": "update"})

@@ -113,7 +113,7 @@ class GroupRegisterStep3ViewSet(viewsets.ModelViewSet):
     parser_classes = (MultiPartParser,)
 
     @swagger_auto_schema(request_body=GroupRegisterStep3BodySerializer)
-    def upload(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -121,11 +121,21 @@ class GroupRegisterStep3ViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(
-            group=self.request.user.joined_group, image=self.request.FILES.get("image")
+            group=self.request.user.joined_group,
+            image=self.request.FILES.get("image"),
         )
 
+    @swagger_auto_schema(request_body=GroupRegisterStep3BodySerializer)
     def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        pass
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, group=request.user.joined_group)
+        # link image
+        obj.image = self.request.FILES.get("image")  # update
+        # serialize and update
+        serializer = self.get_serializer(obj, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class GroupRegisterStep4ViewSet(viewsets.ModelViewSet):
