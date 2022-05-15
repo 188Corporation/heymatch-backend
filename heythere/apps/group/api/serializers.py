@@ -5,7 +5,7 @@ from django.utils import timezone
 from django_google_maps.fields import GeoPt
 from rest_framework import serializers
 
-from heythere.apps.group.models import Group, GroupInvitationCode
+from heythere.apps.group.models import Group, GroupInvitationCode, GroupProfileImage
 from heythere.apps.search.models import HotPlace
 from heythere.apps.user.models import User
 from heythere.utils.util import is_geopt_within_boundary
@@ -165,8 +165,20 @@ class GroupRegisterStep2BodySerializer(serializers.Serializer):
 
 class GroupRegisterStep3Serializer(serializers.ModelSerializer):
     class Meta:
-        model = Group
-        fields = ["id"]
+        model = GroupProfileImage
+        fields = ["id", "group", "image"]
+
+    def create(self, validated_data):
+        image = GroupProfileImage.objects.create(**validated_data)
+        return image
+
+
+class GroupRegisterStep3BodySerializer(serializers.Serializer):
+    """
+    Body Request Serializer. Not that this will be used in Swagger auto-schema decorator.
+    """
+
+    image = serializers.ImageField(allow_empty_file=False, use_url=True)
 
 
 class GroupRegisterStep4Serializer(serializers.ModelSerializer):

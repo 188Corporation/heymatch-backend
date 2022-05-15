@@ -103,3 +103,8 @@ class GroupInvitationCode(models.Model):
 
     objects = models.Manager()
     active_objects = ActiveGroupInvitationCodeManager()
+
+
+class GroupProfileImage(models.Model):
+    group = models.ForeignKey(Group, blank=True, null=True, on_delete=models.SET_NULL)
+    image = models.ImageField()

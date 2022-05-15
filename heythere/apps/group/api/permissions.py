@@ -53,9 +53,14 @@ class IsGroupRegisterAllowed(permissions.BasePermission):
 
         # Permission check when step 2
         if url_name == "group-registration-step-2":
-            if not joined_group or not joined_group.register_step_1_completed:
+            if not joined_group:
                 raise exceptions.PermissionDenied(
-                    detail="Permission denied. User should complete step 1 first."
+                    detail="Permission denied. User should complete previous step first."
+                )
+            step_1_comp = joined_group.register_step_1_completed
+            if not step_1_comp:
+                raise exceptions.PermissionDenied(
+                    detail="Permission denied. User should complete previous step first."
                 )
             # Check if group_leader.
             if not user.is_group_leader:
@@ -63,39 +68,26 @@ class IsGroupRegisterAllowed(permissions.BasePermission):
                     detail="Permission denied. User is not a group_leader.)"
                 )
             return True
-        # check step status
-        # joined_group = user.joined_group
-        # url_name = request.resolver_match.url_name
-        # if not joined_group.register_step_2_completed:
-        #     if url_name == "group-registration-step-2":
-        #         return True
-        #     else:
-        #         raise exceptions.PermissionDenied(
-        #             detail=f"Permission denied. User already created Group(id={joined_group.id}) and should "
-        #                    f"complete step 2 of registration. {self.new_group_msg}"
-        #         )
-        # if not joined_group.register_step_3_completed:
-        #     if url_name == "group-registration-step-3":
-        #         return True
-        #     else:
-        #         raise exceptions.PermissionDenied(
-        #             detail=f"Permission denied. User already created Group(id={joined_group.id}) and should "
-        #                    f"complete step 3 of registration. {self.new_group_msg}"
-        #         )
-        # if not joined_group.register_step_4_completed:
-        #     if url_name == "group-registration-step-4":
-        #         return True
-        #     else:
-        #         raise exceptions.PermissionDenied(
-        #             detail=f"Permission denied. User already created Group(id={joined_group.id}) and should "
-        #                    f"complete step 4 of registration. {self.new_group_msg}"
-        #         )
-        # if not joined_group.register_step_all_confirmed:
-        #     if url_name == "group-registration-step-confirm":
-        #         return True
-        # raise exceptions.PermissionDenied(
-        #     detail=f"Permission denied. User already created Group(id={joined_group.id} and completed "
-        #            f"all registration steps. {self.new_group_msg})"
-        # )
 
-        return True
+        # Permission check when step 3
+        if url_name == "group-registration-step-3":
+            if not joined_group:
+                raise exceptions.PermissionDenied(
+                    detail="Permission denied. User should complete previous step first."
+                )
+            step_1_comp = joined_group.register_step_1_completed
+            step_2_comp = joined_group.register_step_2_completed
+            if not (step_1_comp and step_2_comp):
+                raise exceptions.PermissionDenied(
+                    detail="Permission denied. User should complete previous step first."
+                )
+            # Check if group_leader.
+            if not user.is_group_leader:
+                raise exceptions.PermissionDenied(
+                    detail="Permission denied. User is not a group_leader.)"
+                )
+            return True
+
+        raise exceptions.PermissionDenied(
+            detail="Permission denied. Invalid url request.)"
+        )

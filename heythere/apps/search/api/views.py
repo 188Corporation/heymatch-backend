@@ -36,7 +36,7 @@ class HotPlaceViewSet(viewsets.ViewSet):
 
 class HotPlaceActiveGroupViewSet(viewsets.ModelViewSet):
     """
-    A simple ViewSet for viewing and editing accounts.
+    A simple ViewSet for viewing Active Groups in Hotplace
     """
 
     queryset = Group.active_objects.all()  # active by default

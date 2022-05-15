@@ -4,11 +4,12 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from heythere.apps.group.models import Group, GroupInvitationCode
+from heythere.apps.group.models import Group, GroupInvitationCode, GroupProfileImage
 
 from .permissions import (
     IsGroupRegisterAllowed,
@@ -24,6 +25,7 @@ from .serializers import (
     GroupRegisterStep1Serializer,
     GroupRegisterStep2BodySerializer,
     GroupRegisterStep2Serializer,
+    GroupRegisterStep3BodySerializer,
     GroupRegisterStep3Serializer,
     GroupRegisterStep4Serializer,
     UserJoinedGroupStatusSerializer,
@@ -100,6 +102,7 @@ class GroupRegisterStep3ViewSet(viewsets.ModelViewSet):
         - Need to resize(thumbnail, original, resized) and store photo object to AWS S3.
     """
 
+    queryset = GroupProfileImage.objects.all()
     serializer_class = GroupRegisterStep3Serializer
     permission_classes = [
         IsAuthenticated,
@@ -107,6 +110,19 @@ class GroupRegisterStep3ViewSet(viewsets.ModelViewSet):
         IsUserGroupLeader,
         IsGroupRegisterAllowed,
     ]
+    parser_classes = (MultiPartParser,)
+
+    @swagger_auto_schema(request_body=GroupRegisterStep3BodySerializer)
+    def upload(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def perform_create(self, serializer):
+        serializer.save(
+            group=self.request.user.joined_group, image=self.request.FILES.get("image")
+        )
 
     def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         pass

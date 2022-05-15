@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Group, GroupInvitationCode
+from .models import Group, GroupInvitationCode, GroupProfileImage
 
 
 @admin.register(Group)
@@ -56,4 +56,18 @@ class GroupInvitationCodeAdmin(admin.ModelAdmin):
         "user",
         "is_active",
         "active_until",
+    ]
+
+
+@admin.register(GroupProfileImage)
+class GroupProfilePhotoAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "group",
+        "image",
+    ]
+    search_fields = [
+        "id",
+        "group",
+        "image",
     ]
