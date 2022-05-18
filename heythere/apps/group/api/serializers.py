@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.utils import timezone
 from django_google_maps.fields import GeoPt
+from psycopg2._range import Range
 from rest_framework import serializers
 
 from heythere.apps.group.models import Group, GroupInvitationCode, GroupProfileImage
@@ -189,10 +190,26 @@ class GroupRegisterStep3BodySerializer(serializers.Serializer):
     image = serializers.ImageField(allow_empty_file=False, use_url=True)
 
 
+class IntegerRangeField(serializers.Field):
+    def to_internal_value(self, data):
+        return str(Range(lower=data[0], upper=data[1], bounds="[]"))
+
+    def to_representation(self, value):
+        return value
+
+
 class GroupRegisterStep4Serializer(serializers.ModelSerializer):
+    desired_other_group_member_avg_age_range = IntegerRangeField()
+
     class Meta:
         model = Group
-        fields = ["id"]
+        fields = [
+            "id",
+            "title",
+            "introduction",
+            "desired_other_group_member_number",
+            "desired_other_group_member_avg_age_range",
+        ]
 
 
 class GroupRegisterConfirmationSerializer(serializers.ModelSerializer):

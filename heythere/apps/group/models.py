@@ -44,7 +44,6 @@ class Group(models.Model):
     desired_other_group_member_avg_age_range = IntegerRangeField(
         blank=True,
         null=True,
-        default=(20, 30),
         validators=[RangeMinValueValidator(20), RangeMaxValueValidator(50)],
     )
 

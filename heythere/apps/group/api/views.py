@@ -11,12 +11,7 @@ from rest_framework.response import Response
 
 from heythere.apps.group.models import Group, GroupInvitationCode, GroupProfileImage
 
-from .permissions import (
-    IsGroupRegisterAllowed,
-    IsUserActive,
-    IsUserGroupLeader,
-    IsUserNotGroupLeader,
-)
+from .permissions import IsGroupRegisterAllowed, IsUserActive, IsUserNotGroupLeader
 from .serializers import (
     GroupInvitationCodeCreateBodySerializer,
     GroupInvitationCodeSerializer,
@@ -61,7 +56,7 @@ class GroupRegisterStep1ViewSet(viewsets.ModelViewSet):
     ]
 
     @swagger_auto_schema(request_body=GroupRegisterStep1BodySerializer)
-    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def validate_gps(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -82,12 +77,11 @@ class GroupRegisterStep2ViewSet(viewsets.ViewSet):
     permission_classes = [
         IsAuthenticated,
         IsUserActive,
-        IsUserGroupLeader,
         IsGroupRegisterAllowed,
     ]
 
     @swagger_auto_schema(request_body=GroupRegisterStep2BodySerializer)
-    def invite(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def invite_member(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = GroupRegisterStep2Serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.perform_invite(serializer.validated_data, group_leader=request.user)
@@ -107,26 +101,28 @@ class GroupRegisterStep3ViewSet(viewsets.ModelViewSet):
     permission_classes = [
         IsAuthenticated,
         IsUserActive,
-        IsUserGroupLeader,
         IsGroupRegisterAllowed,
     ]
     parser_classes = (MultiPartParser,)
 
     @swagger_auto_schema(request_body=GroupRegisterStep3BodySerializer)
-    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def upload_photo(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def perform_create(self, serializer):
+        group = self.request.user.joined_group
         serializer.save(
-            group=self.request.user.joined_group,
+            group=group,
             image=self.request.FILES.get("image"),
         )
+        group.register_step_3_completed = True
+        group.save(update_fields=["register_step_3_completed"])
 
     @swagger_auto_schema(request_body=GroupRegisterStep3BodySerializer)
-    def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def update_photo(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         queryset = self.get_queryset()
         obj = get_object_or_404(queryset, group=request.user.joined_group)
         # link image
@@ -146,16 +142,22 @@ class GroupRegisterStep4ViewSet(viewsets.ModelViewSet):
         - This will populate Group model fields.
     """
 
+    queryset = Group.objects.all()
     serializer_class = GroupRegisterStep4Serializer
     permission_classes = [
         IsAuthenticated,
         IsUserActive,
-        IsUserGroupLeader,
         IsGroupRegisterAllowed,
     ]
 
-    def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        pass
+    def write_profile(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        group = request.user.joined_group
+        serializer = self.get_serializer(group, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        group.register_step_4_completed = True
+        group.save(update_fields=["register_step_4_completed"])
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class GroupRegisterConfirmationViewSet(viewsets.ModelViewSet):
@@ -170,7 +172,6 @@ class GroupRegisterConfirmationViewSet(viewsets.ModelViewSet):
     permission_classes = [
         IsAuthenticated,
         IsUserActive,
-        IsUserGroupLeader,
         IsGroupRegisterAllowed,
     ]
 
@@ -179,7 +180,13 @@ class GroupRegisterConfirmationViewSet(viewsets.ModelViewSet):
         Should confirm "gps_last_check_time", "steps_status"
         Should set "active_until"
         """
-        return Response()
+        # Being able to call below code means it passed Permission.
+        # Set Group as active
+        group = request.user.joined_group
+        group.register_step_all_confirmed = True
+        group.is_active = True
+        group.save(update_fields=["register_step_all_confirmed", "is_active"])
+        return Response("Group registered.", status=status.HTTP_200_OK)
 
 
 class GroupUnregisterViewSet(viewsets.ViewSet):
@@ -190,7 +197,7 @@ class GroupUnregisterViewSet(viewsets.ViewSet):
     permission_classes = [
         IsAuthenticated,
         IsUserActive,
-        IsUserGroupLeader,
+        IsGroupRegisterAllowed,
     ]
 
     def unregister(self, request: Request, *args: Any, **kwargs: Any) -> Response:

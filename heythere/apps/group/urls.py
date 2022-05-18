@@ -14,17 +14,21 @@ from heythere.apps.group.api.views import (
 app_name = "group"
 
 group_register_status = GroupRegisterStatusViewSet.as_view({"get": "retrieve"})
-group_register_step_1_view = GroupRegisterStep1ViewSet.as_view({"post": "create"})
-group_register_step_2_view = GroupRegisterStep2ViewSet.as_view({"post": "invite"})
+group_register_step_1_view = GroupRegisterStep1ViewSet.as_view({"post": "validate_gps"})
+group_register_step_2_view = GroupRegisterStep2ViewSet.as_view(
+    {"post": "invite_member"}
+)
 group_register_step_3_view = GroupRegisterStep3ViewSet.as_view(
     {
-        "post": "create",
-        "patch": "update",
+        "post": "upload_photo",
+        "patch": "update_photo",
     }
 )
-group_register_step_4_view = GroupRegisterStep4ViewSet.as_view({"put": "update"})
+group_register_step_4_view = GroupRegisterStep4ViewSet.as_view(
+    {"patch": "write_profile"}
+)
 group_register_step_confirm_view = GroupRegisterConfirmationViewSet.as_view(
-    {"put": "update"}
+    {"post": "confirm"}
 )
 group_register_unregister_view = GroupUnregisterViewSet.as_view({"post": "unregister"})
 group_invite_code_generate_view = GroupInvitationCodeViewSet.as_view(
