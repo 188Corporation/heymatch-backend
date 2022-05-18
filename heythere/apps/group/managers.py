@@ -13,7 +13,6 @@ class GroupManager(models.Manager):
         # first create empty Group
         group = self.model(**kwargs)
         # Group should pass all registration step in order to mark this as True
-        group.is_active = False
         group.save(using=self._db)
         return group
 
