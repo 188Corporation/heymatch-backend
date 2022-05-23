@@ -15,6 +15,36 @@ class IsUserActive(permissions.BasePermission):
         return True
 
 
+class IsUserGroupLeader(permissions.BasePermission):
+    message = "Permission denied. User is not a group leader."
+
+    def has_permission(self, request: Request, view: APIView) -> bool:
+        if not request.user.is_group_leader:
+            raise exceptions.PermissionDenied(detail=self.message)
+        return True
+
+
+class IsUserJoinedGroup(permissions.BasePermission):
+    message = "Permission denied. User is not joined to any group"
+
+    def has_permission(self, request: Request, view: APIView) -> bool:
+        if not request.user.joined_group:
+            raise exceptions.PermissionDenied(detail=self.message)
+        return True
+
+
+class IsUserJoinedGroupActive(permissions.BasePermission):
+    message1 = "Permission denied. User is not joined to any group"
+    message2 = "Permission denied. User joined group is not active"
+
+    def has_permission(self, request: Request, view: APIView) -> bool:
+        if not request.user.joined_group:
+            raise exceptions.PermissionDenied(detail=self.message1)
+        if not request.user.joined_group.is_active:
+            raise exceptions.PermissionDenied(detail=self.message2)
+        return True
+
+
 class IsUserNotGroupLeader(permissions.BasePermission):
     message = "Permission denied. User is a group leader."
 

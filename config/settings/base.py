@@ -381,3 +381,8 @@ AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
 AWS_S3_REGION_NAME = "ap-northeast-2"
 AWS_S3_SIGNATURE_VERSION = "s3v4"
 AWS_S3_GROUP_PHOTO_FOLDER = "group_photos"
+
+# django-messages-drf
+DJANGO_MESSAGES_DRF_SENDER_RECEIVER_SERIALIZER = (
+    "heythere.apps.chat.api.serializers.SenderReceiverSerializer"
+)
