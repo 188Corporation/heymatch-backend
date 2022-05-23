@@ -1,6 +1,7 @@
 from django.urls import path
 
 from heythere.apps.match.api.views import (
+    MatchedGroupLeaderDetailViewSet,
     MatchRequestControlViewSet,
     MatchRequestReceivedViewSet,
     MatchRequestSentViewSet,
@@ -17,6 +18,9 @@ match_request_received_detail_view = MatchRequestReceivedViewSet.as_view(
 match_request_send_to_group_view = MatchRequestControlViewSet.as_view({"post": "send"})
 match_request_accept_from_group_view = MatchRequestControlViewSet.as_view(
     {"post": "accept"}
+)
+match_matched_group_leader_detail_view = MatchedGroupLeaderDetailViewSet.as_view(
+    {"get": "retrieve"}
 )
 
 urlpatterns = [
@@ -48,5 +52,10 @@ urlpatterns = [
         "request/group/<int:group_id>/accept/",
         match_request_accept_from_group_view,
         name="match-request-group-accept",
+    ),
+    path(
+        "matched/group/<int:group_id>/group_leader/",
+        match_matched_group_leader_detail_view,
+        name="match-matched-group-leader-detail",
     ),
 ]

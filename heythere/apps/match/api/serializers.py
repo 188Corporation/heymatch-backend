@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from heythere.apps.group.models import Group
 from heythere.apps.match.models import MatchRequest
+from heythere.apps.user.models import User
 
 
 class SimpleGroupSerializer(serializers.ModelSerializer):
@@ -94,3 +95,9 @@ class MatchRequestSendBodySerializer(serializers.ModelSerializer):
             "title",
             "content",
         ]
+
+
+class MatchedGroupLeaderDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "is_group_leader"]

@@ -10,6 +10,7 @@ from rest_framework.response import Response
 
 from heythere.apps.group.models import Group
 from heythere.apps.match.models import MatchRequest
+from heythere.apps.user.models import User
 from heythere.shared.permissions import (
     IsUserActive,
     IsUserGroupLeader,
@@ -17,6 +18,7 @@ from heythere.shared.permissions import (
 )
 
 from .serializers import (
+    MatchedGroupLeaderDetailSerializer,
     MatchRequestControlSerializer,
     MatchRequestReceivedDetailSerializer,
     MatchRequestReceivedListSerializer,
@@ -114,4 +116,34 @@ class MatchRequestControlViewSet(viewsets.ModelViewSet):
         mr.accepted = True
         mr.save(update_fields=["unread", "accepted"])
         serializer = MatchRequestControlSerializer(instance=mr)
+        return Response(serializer.data, status.HTTP_200_OK)
+
+
+class MatchedGroupLeaderDetailViewSet(viewsets.ModelViewSet):
+    permission_classes = [
+        IsAuthenticated,
+        IsUserActive,
+        IsUserGroupLeader,
+        IsUserJoinedGroupActive,
+    ]
+
+    def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        other_group = get_object_or_404(Group, id=self.kwargs["group_id"])
+        joined_group = request.user.joined_group
+
+        qs1 = MatchRequest.objects.filter(sender=joined_group, receiver=other_group)
+        qs2 = MatchRequest.objects.filter(sender=other_group, receiver=joined_group)
+
+        if not (qs1.exists() or qs2.exists()):
+            return Response(
+                "You are not matched with the group.",
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        qs: QuerySet = User.active_objects.filter(
+            joined_group=other_group, is_group_leader=True
+        )
+        if not qs.exists():
+            return Response("Group leader not exists", status=status.HTTP_404_NOT_FOUND)
+        serializer = MatchedGroupLeaderDetailSerializer(instance=qs.first())
         return Response(serializer.data, status.HTTP_200_OK)
