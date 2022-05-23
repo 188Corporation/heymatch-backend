@@ -68,3 +68,29 @@ class MatchRequestReceivedDetailSerializer(serializers.ModelSerializer):
             "unread",
             "accepted",
         ]
+
+
+class MatchRequestControlSerializer(serializers.ModelSerializer):
+    receiver = SimpleGroupSerializer(read_only=True)
+    sender = SimpleGroupSerializer(read_only=True)
+
+    class Meta:
+        model = MatchRequest
+        fields = [
+            "uuid",
+            "receiver",
+            "sender",
+            "title",
+            "content",
+            "unread",
+            "accepted",
+        ]
+
+
+class MatchRequestSendBodySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MatchRequest
+        fields = [
+            "title",
+            "content",
+        ]
