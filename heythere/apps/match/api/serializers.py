@@ -1,9 +1,34 @@
 from rest_framework import serializers
 
+from heythere.apps.group.models import Group
 from heythere.apps.match.models import MatchRequest
 
 
-class MatchRequestSentSerializer(serializers.ModelSerializer):
+class SimpleGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = [
+            "id",
+        ]
+
+
+class MatchRequestSentListSerializer(serializers.ModelSerializer):
+    receiver = SimpleGroupSerializer(read_only=True)
+
+    class Meta:
+        model = MatchRequest
+        fields = [
+            "uuid",
+            "receiver",
+            "title",
+            "unread",
+            "accepted",
+        ]
+
+
+class MatchRequestSentDetailSerializer(serializers.ModelSerializer):
+    receiver = SimpleGroupSerializer(read_only=True)
+
     class Meta:
         model = MatchRequest
         fields = [
@@ -16,7 +41,23 @@ class MatchRequestSentSerializer(serializers.ModelSerializer):
         ]
 
 
-class MatchRequestReceivedSerializer(serializers.ModelSerializer):
+class MatchRequestReceivedListSerializer(serializers.ModelSerializer):
+    sender = SimpleGroupSerializer(read_only=True)
+
+    class Meta:
+        model = MatchRequest
+        fields = [
+            "uuid",
+            "sender",
+            "title",
+            "unread",
+            "accepted",
+        ]
+
+
+class MatchRequestReceivedDetailSerializer(serializers.ModelSerializer):
+    sender = SimpleGroupSerializer(read_only=True)
+
     class Meta:
         model = MatchRequest
         fields = [

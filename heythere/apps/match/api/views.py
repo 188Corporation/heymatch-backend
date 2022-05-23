@@ -14,11 +14,15 @@ from heythere.shared.permissions import (
     IsUserJoinedGroupActive,
 )
 
-from .serializers import MatchRequestReceivedSerializer, MatchRequestSentSerializer
+from .serializers import (
+    MatchRequestReceivedDetailSerializer,
+    MatchRequestReceivedListSerializer,
+    MatchRequestSentDetailSerializer,
+    MatchRequestSentListSerializer,
+)
 
 
 class MatchRequestSentViewSet(viewsets.ModelViewSet):
-    serializer_class = MatchRequestSentSerializer
     permission_classes = [
         IsAuthenticated,
         IsUserActive,
@@ -27,21 +31,20 @@ class MatchRequestSentViewSet(viewsets.ModelViewSet):
     ]
 
     def get_queryset(self) -> QuerySet:
-        return MatchRequest.objects.filter(sender_group=self.request.user.joined_group)
+        return MatchRequest.objects.filter(sender=self.request.user.joined_group)
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         qs = self.get_queryset()
-        serializer = self.get_serializer(qs)
+        serializer = MatchRequestSentListSerializer(qs, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         mr = get_object_or_404(MatchRequest, uuid=self.kwargs["request_uuid"])
-        serializer = self.get_serializer(instance=mr)
+        serializer = MatchRequestSentDetailSerializer(instance=mr)
         return Response(serializer.data, status.HTTP_200_OK)
 
 
 class MatchRequestReceivedViewSet(viewsets.ModelViewSet):
-    serializer_class = MatchRequestReceivedSerializer
     permission_classes = [
         IsAuthenticated,
         IsUserActive,
@@ -50,15 +53,14 @@ class MatchRequestReceivedViewSet(viewsets.ModelViewSet):
     ]
 
     def get_queryset(self) -> QuerySet:
-        return MatchRequest.objects.filter(
-            receiver_group=self.request.user.joined_group
-        )
+        return MatchRequest.objects.filter(receiver=self.request.user.joined_group)
 
-    #
-    # def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-    #     pass
-    #
-    # def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-    #     user = get_object_or_404(User, id=self.request.user.id)
-    #     serializer = UserJoinedGroupStatusSerializer(instance=user)
-    #     return Response(serializer.data, status.HTTP_200_OK)
+    def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        qs = self.get_queryset()
+        serializer = MatchRequestReceivedListSerializer(qs, many=True)
+        return Response(serializer.data, status.HTTP_200_OK)
+
+    def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        mr = get_object_or_404(MatchRequest, uuid=self.kwargs["request_uuid"])
+        serializer = MatchRequestReceivedDetailSerializer(instance=mr)
+        return Response(serializer.data, status.HTTP_200_OK)
