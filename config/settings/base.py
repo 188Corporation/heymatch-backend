@@ -82,6 +82,7 @@ THIRD_PARTY_APPS = [
     "rest_auth",
     "rest_auth.registration",
     "colorfield",
+    "django_messages_drf",
 ]
 
 LOCAL_APPS = [
@@ -92,7 +93,7 @@ LOCAL_APPS = [
     "heythere.apps.search.apps.SearchAppConfig",
     "heythere.apps.group.apps.GroupAppConfig",
     "heythere.apps.match.apps.MatchAppConfig",
-    "heythere.apps.message.apps.MessageAppConfig",
+    "heythere.apps.chat.apps.ChatAppConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
