@@ -42,6 +42,16 @@ RANDOM_HOTPLACE_INFO = {
             GeoPt(37.5626307, 126.92175),
         ],
     },
+    "역삼 먹자골목": {
+        "zone_center_geoinfo": GeoPt(37.4999072, 127.0373932),
+        "zone_boundary_geoinfos": [
+            GeoPt(37.5037138, 127.0225116),
+            GeoPt(37.4907755, 127.0298072),
+            GeoPt(37.4988792, 127.0483467),
+            GeoPt(37.5058246, 127.0428535),
+            GeoPt(37.5037138, 127.0225116),
+        ],
+    },
 }
 
 RANDOM_HOTPLACE_NAMES: list = list(RANDOM_HOTPLACE_INFO.keys())
