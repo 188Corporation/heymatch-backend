@@ -52,6 +52,24 @@ RANDOM_HOTPLACE_INFO = {
             GeoPt(37.5037138, 127.0225116),
         ],
     },
+    "목동 테스트": {
+        "zone_center_geoinfo": GeoPt(37.522858, 126.8731853),
+        "zone_boundary_geoinfos": [
+            GeoPt(37.5393979, 126.8765327),
+            GeoPt(37.5138718, 126.8458911),
+            GeoPt(37.510808, 126.8950721),
+            GeoPt(37.5393979, 126.8765327),
+        ],
+    },
+    "과천 테스트": {
+        "zone_center_geoinfo": GeoPt(37.4124693, 126.9870088),
+        "zone_boundary_geoinfos": [
+            GeoPt(37.4630372, 126.9847772),
+            GeoPt(37.3798751, 126.914911),
+            GeoPt(37.3783746, 127.067518),
+            GeoPt(37.4630372, 126.9847772),
+        ],
+    },
 }
 
 RANDOM_HOTPLACE_NAMES: list = list(RANDOM_HOTPLACE_INFO.keys())
