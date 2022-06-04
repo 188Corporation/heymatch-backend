@@ -91,10 +91,7 @@ class MatchRequestControlSerializer(serializers.ModelSerializer):
 class MatchRequestSendBodySerializer(serializers.ModelSerializer):
     class Meta:
         model = MatchRequest
-        fields = [
-            "title",
-            "content",
-        ]
+        fields = ()
 
 
 class MatchedGroupLeaderDetailSerializer(serializers.ModelSerializer):

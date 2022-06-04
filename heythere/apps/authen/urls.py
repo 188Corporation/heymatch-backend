@@ -1,12 +1,7 @@
 from django.urls import include, path
 
 urlpatterns = [
-    # rest-auth
-    path("", include("rest_auth.urls")),
-    path("signup/", include("rest_auth.registration.urls")),
-    # GPS Auth
-    # path(
-    #     "gps/authenticate/group/<int:group_id>/",
-    #     "TODO",
-    # ),
+    # dj-rest-auth
+    path("", include("dj_rest_auth.urls")),
+    path("signup/", include("dj_rest_auth.registration.urls")),
 ]

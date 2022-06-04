@@ -1,10 +1,10 @@
+from dj_rest_auth.registration.serializers import RegisterSerializer
+from dj_rest_auth.serializers import LoginSerializer, UserDetailsSerializer
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.db.models.query import QuerySet
 from phone_verify.models import SMSVerification
 from phonenumber_field.phonenumber import to_python
-from rest_auth.registration.serializers import RegisterSerializer
-from rest_auth.serializers import LoginSerializer, UserDetailsSerializer
 from rest_framework import exceptions, serializers
 
 User = get_user_model()

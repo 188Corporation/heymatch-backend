@@ -79,8 +79,8 @@ THIRD_PARTY_APPS = [
     "drf_spectacular",
     "phonenumber_field",
     "phone_verify",
-    "rest_auth",
-    "rest_auth.registration",
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
     "colorfield",
     "django_messages_drf",
 ]
@@ -296,7 +296,7 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 # django-rest-framework - https://www.django-rest-framework.org/api-guide/settings/
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_jwt.authentication.JSONWebTokenAuthentication",
+        "dj_rest_auth.jwt_auth.JWTAuthentication",
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.BasicAuthentication",
     ),
@@ -343,7 +343,7 @@ PHONE_VERIFICATION = {
     # If False, then a security code can be used multiple times for verification
 }
 
-# django-rest-auth
+# dj-rest-auth
 # ------------------------------------------------------------------------------
 REST_USE_JWT = True
 ACCOUNT_LOGOUT_ON_GET = True
@@ -355,11 +355,11 @@ REST_AUTH_REGISTER_SERIALIZERS = {
     "REGISTER_SERIALIZER": "heythere.apps.authen.api.serializers.UserRegisterByPhoneNumberSerializer",
 }
 
-# djangorestframework-jwt
+# djangorestframework-simplejwt
 # ------------------------------------------------------------------------------
 # https://jpadilla.github.io/django-rest-framework-jwt/?#security
-JWT_AUTH = {
-    "JWT_EXPIRATION_DELTA": datetime.timedelta(days=30 * 6),  # 6 months
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(days=30 * 6),  # 6 months
 }
 
 # swagger and debug toolbar
@@ -382,7 +382,6 @@ AWS_S3_REGION_NAME = "ap-northeast-2"
 AWS_S3_SIGNATURE_VERSION = "s3v4"
 AWS_S3_GROUP_PHOTO_FOLDER = "group_photos"
 
-# django-messages-drf
-DJANGO_MESSAGES_DRF_SENDER_RECEIVER_SERIALIZER = (
-    "heythere.apps.chat.api.serializers.SenderReceiverSerializer"
-)
+# stream-django
+STREAM_API_KEY = env("STREAM_API_KEY")
+STREAM_API_SECRET = env("STREAM_API_KEY")
