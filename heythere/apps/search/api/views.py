@@ -46,9 +46,10 @@ class HotPlaceActiveGroupViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self) -> QuerySet:
         qs = self.queryset
-        qs = qs.filter(hotplace_id=self.kwargs["hotplace_id"]).exclude(
-            id=self.request.user.joined_group.id
-        )
+        qs = qs.filter(hotplace_id=self.kwargs["hotplace_id"])
+        joined_group = self.request.user.joined_group
+        if joined_group:
+            qs = qs.exclude(id=joined_group.id)
         return qs
 
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
