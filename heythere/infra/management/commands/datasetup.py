@@ -72,16 +72,15 @@ class Command(BaseCommand):
                 ],
             )
             # create groups for each hotplaces
-            geopt = generate_rand_geoopt_within_boundary(
-                RANDOM_HOTPLACE_INFO[name]["zone_boundary_geoinfos"]
-            )
-            groups = ActiveGroupFactory.create_batch(
-                size=random.randint(8, 15),
-                hotplace=hotplace,
-                gps_geoinfo=geopt,
-            )
-            # create users for each groups
-            for group in groups:
+            for _ in range(random.randint(3, 5)):
+                geopt = generate_rand_geoopt_within_boundary(
+                    RANDOM_HOTPLACE_INFO[name]["zone_boundary_geoinfos"]
+                )
+                group = ActiveGroupFactory.create(
+                    hotplace=hotplace,
+                    gps_geoinfo=geopt,
+                )
+                # create users for each groups
                 users = ActiveUserFactory.create_batch(
                     size=random.randint(2, 5),
                     joined_group=group,
