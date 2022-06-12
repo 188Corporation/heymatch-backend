@@ -81,8 +81,6 @@ class MatchRequestControlSerializer(serializers.ModelSerializer):
             "uuid",
             "receiver",
             "sender",
-            "title",
-            "content",
             "unread",
             "accepted",
         ]

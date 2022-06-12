@@ -10,8 +10,6 @@ class MatchRequestAdmin(admin.ModelAdmin):
         "uuid",
         "sender",
         "receiver",
-        "title",
-        "content",
         "unread",
         "accepted",
     ]
@@ -20,8 +18,6 @@ class MatchRequestAdmin(admin.ModelAdmin):
         "uuid",
         "sender",
         "receiver",
-        "title",
-        "content",
         "unread",
         "accepted",
     ]

@@ -95,8 +95,6 @@ class MatchRequestControlViewSet(viewsets.ModelViewSet):
         mr = MatchRequest.objects.create(
             sender=self.request.user.joined_group,
             receiver=to_group,
-            title=self.request.data["title"],
-            content=self.request.data["content"],
         )
         serializer = MatchRequestControlSerializer(instance=mr)
         return Response(serializer.data, status.HTTP_200_OK)
