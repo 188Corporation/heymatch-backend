@@ -129,7 +129,7 @@ class UserLoginByPhoneNumberSerializer(LoginSerializer):
             raise exceptions.ValidationError(detail=str(msg))
 
         # register to stream
-        stream.upsert_user({"id": user.id, "role": "user"})
+        stream.upsert_user({"id": str(user.id), "role": "user"})
 
         attrs["user"] = user
         return attrs

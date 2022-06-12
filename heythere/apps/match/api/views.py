@@ -11,6 +11,7 @@ from rest_framework.response import Response
 
 from heythere.apps.group.models import Group
 from heythere.apps.match.models import MatchRequest
+from heythere.apps.stream.models import StreamChatChannel, StreamChatChannelMember
 from heythere.apps.user.models import User
 from heythere.shared.permissions import (
     IsUserActive,
@@ -135,7 +136,14 @@ class MatchRequestControlViewSet(viewsets.ModelViewSet):
             data=dict(members=[request.user.id, sender_group_leader.id]),
         )
         # Note: query method creates a channel
-        channel.query()
+        res = channel.query()
+
+        # Save Stream channel related objects
+        channel_obj, created = StreamChatChannel.objects.get_or_create(
+            id=res["channel"]["id"], type=res["channel"]["type"]
+        )
+        StreamChatChannelMember.objects.create(request.user, channel=channel_obj)
+        StreamChatChannelMember.objects.create(sender_group_leader, channel=channel_obj)
 
         # TODO: send push notification
 

@@ -105,6 +105,14 @@ class Command(BaseCommand):
                 self.style.NOTICE("Integrity Error @ {}".format("create_superuser"))
             )
             pass
+        SMSVerification.objects.get_or_create(  # sms for user 1
+            phone_number="+821012341234",
+            defaults={
+                "security_code": "098765",
+                "session_token": "sessiontoken2",
+                "is_verified": True,
+            },
+        )
         self.stdout.write(
             self.style.SUCCESS("Successfully set up data for [Superuser]")
         )

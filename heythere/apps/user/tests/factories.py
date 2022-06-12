@@ -26,6 +26,7 @@ class ActiveUserFactory(DjangoModelFactory):
         model = User
         django_get_or_create = ("username",)
 
+    id = Faker("uuid4")
     username = Faker("pystr", max_chars=6)
     phone_number = Faker("phone_number", locale="ko_KR")
     birthdate = Faker("date_of_birth")

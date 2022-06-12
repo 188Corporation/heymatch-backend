@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from birthday import BirthdayField
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -18,6 +20,9 @@ MIN_HEIGHT_CM = 155
 
 class User(AbstractUser):
     # Basic Info
+    id = models.UUIDField(
+        primary_key=True, blank=False, null=False, editable=False, default=uuid4
+    )
     phone_number = PhoneNumberField(null=False, blank=False, unique=True)
     age = models.IntegerField(blank=True, null=True)  # post create
     birthdate = BirthdayField(blank=True, null=True)
