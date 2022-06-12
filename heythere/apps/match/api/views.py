@@ -21,10 +21,11 @@ from heythere.shared.permissions import (
 
 from .serializers import (
     MatchedGroupLeaderDetailSerializer,
-    MatchRequestControlSerializer,
+    MatchRequestAcceptSerializer,
     MatchRequestReceivedDetailSerializer,
     MatchRequestReceivedListSerializer,
     MatchRequestSendBodySerializer,
+    MatchRequestSendSerializer,
     MatchRequestSentDetailSerializer,
     MatchRequestSentListSerializer,
 )
@@ -84,6 +85,15 @@ class MatchRequestControlViewSet(viewsets.ModelViewSet):
         IsUserJoinedGroupActive,
     ]
 
+    def get_serializer_class(self):
+        if self.action == "send":
+            return MatchRequestSendSerializer
+        if self.action == "accept":
+            return MatchRequestAcceptSerializer
+        if self.action == "deny":
+            return ""
+        return self.serializer_class
+
     @swagger_auto_schema(request_body=MatchRequestSendBodySerializer)
     def send(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         to_group = get_object_or_404(Group, id=self.kwargs["group_id"])
@@ -100,9 +110,10 @@ class MatchRequestControlViewSet(viewsets.ModelViewSet):
             sender=self.request.user.joined_group,
             receiver=to_group,
         )
-        serializer = MatchRequestControlSerializer(instance=mr)
+        serializer = self.get_serializer(mr)
         return Response(serializer.data, status.HTTP_200_OK)
 
+    @swagger_auto_schema(request_body=MatchRequestSendBodySerializer)
     def accept(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         from_group = get_object_or_404(Group, id=self.kwargs["group_id"])
         qs: QuerySet = MatchRequest.objects.filter(
@@ -133,7 +144,10 @@ class MatchRequestControlViewSet(viewsets.ModelViewSet):
         channel = stream.channel(
             settings.STREAM_CHAT_CHANNEL_TYPE,
             None,
-            data=dict(members=[request.user.id, sender_group_leader.id]),
+            data=dict(
+                members=[str(request.user.id), str(sender_group_leader.id)],
+                created_by_id=str(request.user.id),
+            ),
         )
         # Note: query method creates a channel
         res = channel.query()
@@ -142,12 +156,18 @@ class MatchRequestControlViewSet(viewsets.ModelViewSet):
         channel_obj, created = StreamChatChannel.objects.get_or_create(
             id=res["channel"]["id"], type=res["channel"]["type"]
         )
-        StreamChatChannelMember.objects.create(request.user, channel=channel_obj)
-        StreamChatChannelMember.objects.create(sender_group_leader, channel=channel_obj)
+        StreamChatChannelMember.objects.get_or_create(
+            member=request.user, channel=channel_obj
+        )
+        StreamChatChannelMember.objects.get_or_create(
+            member=sender_group_leader, channel=channel_obj
+        )
 
         # TODO: send push notification
 
-        serializer = MatchRequestControlSerializer(instance=mr)
+        serializer = self.get_serializer(
+            mr, context={"stream_chat_channel": channel_obj}
+        )
         return Response(serializer.data, status.HTTP_200_OK)
 
     def deny(self, request: Request, *args: Any, **kwargs: Any) -> Response:
@@ -168,7 +188,7 @@ class MatchRequestControlViewSet(viewsets.ModelViewSet):
         mr.accepted = False
         mr.denied = True
         mr.save(update_fields=["unread", "accepted", "denied"])
-        serializer = MatchRequestControlSerializer(instance=mr)
+        serializer = self.get_serializer(mr)
         return Response(serializer.data, status.HTTP_200_OK)
 
 

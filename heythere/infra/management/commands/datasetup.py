@@ -1,5 +1,6 @@
 import random
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core import management
 from django.core.management.base import BaseCommand
@@ -17,6 +18,7 @@ from heythere.apps.user.tests.factories import ActiveUserFactory, InactiveUserFa
 from heythere.utils.util import generate_rand_geoopt_within_boundary
 
 User = get_user_model()
+stream = settings.STREAM_CLIENT
 
 """
 Note that Custom Commands are only available in LOCAL environment.
@@ -97,10 +99,14 @@ class Command(BaseCommand):
 
     def generate_superuser(self) -> None:
         try:
-            User.objects.create_superuser(  # superuser
+            u = User.objects.create_superuser(  # superuser
                 username="admin", phone_number="+821012341234", password="1234"
             )
+            # Register Stream token
+            stream.upsert_user({"id": str(u.id), "role": "user"})
         except IntegrityError:
+            u = User.objects.get(username="admin")
+            stream.upsert_user({"id": str(u.id), "role": "user"})
             self.stdout.write(
                 self.style.NOTICE("Integrity Error @ {}".format("create_superuser"))
             )
@@ -119,12 +125,17 @@ class Command(BaseCommand):
 
     def generate_developer_users(self) -> None:
         try:
-            User.objects.create_user(  # user 1
+            u = User.objects.create_user(  # user 1
                 username="developer1",
                 phone_number="+821032433994",
                 password="1234",
             )
+            # Register Stream token
+            stream.upsert_user({"id": str(u.id), "role": "user"})
+
         except IntegrityError:
+            u = User.objects.get(username="developer1")
+            stream.upsert_user({"id": str(u.id), "role": "user"})
             self.stdout.write(
                 self.style.NOTICE(
                     "Integrity Error @ {}".format("generate_developer_users")

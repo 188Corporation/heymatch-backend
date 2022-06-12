@@ -70,6 +70,10 @@ class UserRegisterByPhoneNumberSerializer(RegisterSerializer):
             phone_number=phone_number,
             password=request.data["password1"],
         )
+
+        # Register Stream token
+        stream.upsert_user({"id": str(user.id), "role": "user"})
+
         return user
 
     @staticmethod
@@ -127,9 +131,6 @@ class UserLoginByPhoneNumberSerializer(LoginSerializer):
         else:
             msg = "Unable to log in with provided credentials."
             raise exceptions.ValidationError(detail=str(msg))
-
-        # register to stream
-        stream.upsert_user({"id": str(user.id), "role": "user"})
 
         attrs["user"] = user
         return attrs

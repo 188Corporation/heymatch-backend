@@ -69,7 +69,7 @@ class MatchRequestReceivedDetailSerializer(serializers.ModelSerializer):
         ]
 
 
-class MatchRequestControlSerializer(serializers.ModelSerializer):
+class MatchRequestSendSerializer(serializers.ModelSerializer):
     receiver = SimpleGroupSerializer(read_only=True)
     sender = SimpleGroupSerializer(read_only=True)
 
@@ -83,6 +83,30 @@ class MatchRequestControlSerializer(serializers.ModelSerializer):
             "accepted",
             "denied",
         ]
+
+
+class MatchRequestAcceptSerializer(serializers.ModelSerializer):
+    receiver = SimpleGroupSerializer(read_only=True)
+    sender = SimpleGroupSerializer(read_only=True)
+    stream_chat_channel = serializers.SerializerMethodField(
+        method_name="get_stream_chat_channel"
+    )
+
+    class Meta:
+        model = MatchRequest
+        fields = [
+            "uuid",
+            "receiver",
+            "sender",
+            "unread",
+            "accepted",
+            "denied",
+            "stream_chat_channel",
+        ]
+
+    def get_stream_chat_channel(self, mr: MatchRequest):
+        channel = self.context["stream_chat_channel"]
+        return dict(id=channel.id, type=channel.type)
 
 
 class MatchRequestSendBodySerializer(serializers.ModelSerializer):
