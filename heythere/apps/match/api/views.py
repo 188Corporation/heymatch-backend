@@ -1,5 +1,6 @@
 from typing import Any
 
+from django.conf import settings
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
@@ -26,6 +27,8 @@ from .serializers import (
     MatchRequestSentDetailSerializer,
     MatchRequestSentListSerializer,
 )
+
+stream = settings.STREAM_CLIENT
 
 
 class MatchRequestSentViewSet(viewsets.ModelViewSet):
@@ -112,7 +115,51 @@ class MatchRequestControlViewSet(viewsets.ModelViewSet):
         mr: MatchRequest = qs.first()
         mr.unread = False
         mr.accepted = True
-        mr.save(update_fields=["unread", "accepted"])
+        mr.denied = False
+        mr.save(update_fields=["unread", "accepted", "denied"])
+
+        # Create Stream channel for group leaders for both groups
+        qs: QuerySet = User.active_objects.filter(
+            joined_group=from_group, is_group_leader=True
+        )
+        if not qs.exists():
+            return Response(
+                "Group leader not exists on sender group",
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        sender_group_leader = qs.first()
+        channel = stream.channel(
+            settings.STREAM_CHAT_CHANNEL_TYPE,
+            None,
+            data=dict(members=[request.user.id, sender_group_leader.id]),
+        )
+        # Note: query method creates a channel
+        channel.query()
+
+        # TODO: send push notification
+
+        serializer = MatchRequestControlSerializer(instance=mr)
+        return Response(serializer.data, status.HTTP_200_OK)
+
+    def deny(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        from_group = get_object_or_404(Group, id=self.kwargs["group_id"])
+        qs: QuerySet = MatchRequest.objects.filter(
+            sender=from_group,
+            receiver=request.user.joined_group,
+            accepted=False,
+            denied=False,
+        )
+        if not qs.exists():
+            return Response(
+                "You did not receive any request from the Group or you have already denied.",
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+        mr: MatchRequest = qs.first()
+        mr.unread = False
+        mr.accepted = False
+        mr.denied = True
+        mr.save(update_fields=["unread", "accepted", "denied"])
         serializer = MatchRequestControlSerializer(instance=mr)
         return Response(serializer.data, status.HTTP_200_OK)
 

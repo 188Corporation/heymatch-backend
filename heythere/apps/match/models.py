@@ -21,3 +21,4 @@ class MatchRequest(models.Model):
     )
     unread = models.BooleanField(default=True)
     accepted = models.BooleanField(default=False)
+    denied = models.BooleanField(default=False)

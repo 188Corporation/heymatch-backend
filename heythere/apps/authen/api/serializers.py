@@ -1,5 +1,6 @@
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from dj_rest_auth.serializers import LoginSerializer, UserDetailsSerializer
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.db.models.query import QuerySet
@@ -8,6 +9,7 @@ from phonenumber_field.phonenumber import to_python
 from rest_framework import exceptions, serializers
 
 User = get_user_model()
+stream = settings.STREAM_CLIENT
 
 
 class UserDetailByPhoneNumberSerializer(UserDetailsSerializer):
@@ -125,6 +127,9 @@ class UserLoginByPhoneNumberSerializer(LoginSerializer):
         else:
             msg = "Unable to log in with provided credentials."
             raise exceptions.ValidationError(detail=str(msg))
+
+        # register to stream
+        stream.upsert_user({"id": user.id, "role": "user"})
 
         attrs["user"] = user
         return attrs

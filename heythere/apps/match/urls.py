@@ -19,6 +19,9 @@ match_request_send_to_group_view = MatchRequestControlViewSet.as_view({"post": "
 match_request_accept_from_group_view = MatchRequestControlViewSet.as_view(
     {"post": "accept"}
 )
+match_request_deny_from_group_view = MatchRequestControlViewSet.as_view(
+    {"post": "deny"}
+)
 match_matched_group_leader_detail_view = MatchedGroupLeaderDetailViewSet.as_view(
     {"get": "retrieve"}
 )
@@ -52,6 +55,11 @@ urlpatterns = [
         "request/group/<int:group_id>/accept/",
         match_request_accept_from_group_view,
         name="match-request-group-accept",
+    ),
+    path(
+        "request/group/<int:group_id>/deny/",
+        match_request_deny_from_group_view,
+        name="match-request-group-deny",
     ),
     path(
         "matched/group/<int:group_id>/group_leader/",

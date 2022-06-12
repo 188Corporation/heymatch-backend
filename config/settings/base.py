@@ -5,6 +5,7 @@ import datetime
 from pathlib import Path
 
 import environ
+import stream_chat
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # heythere/
@@ -92,6 +93,7 @@ LOCAL_APPS = [
     "heythere.apps.search.apps.SearchAppConfig",
     "heythere.apps.group.apps.GroupAppConfig",
     "heythere.apps.match.apps.MatchAppConfig",
+    "heythere.apps.stream.apps.StreamAppConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -383,3 +385,7 @@ AWS_S3_GROUP_PHOTO_FOLDER = "group_photos"
 # stream-django
 STREAM_API_KEY = env("STREAM_API_KEY")
 STREAM_API_SECRET = env("STREAM_API_KEY")
+STREAM_CHAT_CHANNEL_TYPE = env("STREAM_CHAT_CHANNEL_TYPE")
+STREAM_CLIENT = stream_chat.StreamChat(
+    api_key=STREAM_API_KEY, api_secret=STREAM_API_SECRET
+)

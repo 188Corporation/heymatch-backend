@@ -19,5 +19,6 @@ urlpatterns = [
     path("group/", include("heythere.apps.group.urls")),
     path("search/", include("heythere.apps.search.urls")),
     path("match/", include("heythere.apps.match.urls")),
+    path("stream/", include("heythere.apps.stream.urls")),
 ]
 urlpatterns += router.urls

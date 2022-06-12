@@ -21,9 +21,9 @@ class MatchRequestSentListSerializer(serializers.ModelSerializer):
         fields = [
             "uuid",
             "receiver",
-            "title",
             "unread",
             "accepted",
+            "denied",
         ]
 
 
@@ -35,10 +35,9 @@ class MatchRequestSentDetailSerializer(serializers.ModelSerializer):
         fields = [
             "uuid",
             "receiver",
-            "title",
-            "content",
             "unread",
             "accepted",
+            "denied",
         ]
 
 
@@ -50,9 +49,9 @@ class MatchRequestReceivedListSerializer(serializers.ModelSerializer):
         fields = [
             "uuid",
             "sender",
-            "title",
             "unread",
             "accepted",
+            "denied",
         ]
 
 
@@ -64,10 +63,9 @@ class MatchRequestReceivedDetailSerializer(serializers.ModelSerializer):
         fields = [
             "uuid",
             "sender",
-            "title",
-            "content",
             "unread",
             "accepted",
+            "denied",
         ]
 
 
@@ -83,6 +81,7 @@ class MatchRequestControlSerializer(serializers.ModelSerializer):
             "sender",
             "unread",
             "accepted",
+            "denied",
         ]
 
 

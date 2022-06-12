@@ -1,5 +1,5 @@
 from factory.django import DjangoModelFactory
 
 
-class ChatAppFactory(DjangoModelFactory):
+class StreamAppFactory(DjangoModelFactory):
     pass
