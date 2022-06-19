@@ -11,7 +11,6 @@ from rest_framework.response import Response
 
 from heythere.apps.group.models import Group
 from heythere.apps.match.models import MatchRequest
-from heythere.apps.stream.models import StreamChatChannel, StreamChatChannelMember
 from heythere.apps.user.models import User
 from heythere.shared.permissions import (
     IsUserActive,
@@ -22,9 +21,9 @@ from heythere.shared.permissions import (
 from .serializers import (
     MatchedGroupLeaderDetailSerializer,
     MatchRequestAcceptSerializer,
+    MatchRequestDetailSerializer,
     MatchRequestReceivedSerializer,
     MatchRequestSendBodySerializer,
-    MatchRequestSendSerializer,
     MatchRequestSentSerializer,
 )
 
@@ -38,13 +37,14 @@ class MatchRequestSentViewSet(viewsets.ModelViewSet):
         IsUserGroupLeader,
         IsUserJoinedGroupActive,
     ]
+    serializer_class = MatchRequestSentSerializer
 
     def get_queryset(self) -> QuerySet:
         return MatchRequest.objects.filter(sender=self.request.user.joined_group)
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         qs = self.get_queryset()
-        serializer = MatchRequestSentSerializer(qs, many=True)
+        serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 
 
@@ -55,13 +55,14 @@ class MatchRequestReceivedViewSet(viewsets.ModelViewSet):
         IsUserGroupLeader,
         IsUserJoinedGroupActive,
     ]
+    serializer_class = MatchRequestReceivedSerializer
 
     def get_queryset(self) -> QuerySet:
         return MatchRequest.objects.filter(receiver=self.request.user.joined_group)
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         qs = self.get_queryset()
-        serializer = MatchRequestReceivedSerializer(qs, many=True)
+        serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 
 
@@ -72,14 +73,11 @@ class MatchRequestControlViewSet(viewsets.ModelViewSet):
         IsUserGroupLeader,
         IsUserJoinedGroupActive,
     ]
+    serializer_class = MatchRequestDetailSerializer
 
     def get_serializer_class(self):
-        if self.action == "send":
-            return MatchRequestSendSerializer
         if self.action == "accept":
             return MatchRequestAcceptSerializer
-        if self.action == "deny":
-            return ""
         return self.serializer_class
 
     @swagger_auto_schema(request_body=MatchRequestSendBodySerializer)
@@ -139,23 +137,16 @@ class MatchRequestControlViewSet(viewsets.ModelViewSet):
         )
         # Note: query method creates a channel
         res = channel.query()
-
-        # Save Stream channel related objects
-        channel_obj, created = StreamChatChannel.objects.get_or_create(
-            id=res["channel"]["id"], type=res["channel"]["type"]
-        )
-        StreamChatChannelMember.objects.get_or_create(
-            member=request.user, channel=channel_obj
-        )
-        StreamChatChannelMember.objects.get_or_create(
-            member=sender_group_leader, channel=channel_obj
-        )
-
-        # TODO: send push notification
-
         serializer = self.get_serializer(
-            mr, context={"stream_chat_channel": channel_obj}
+            mr,
+            context={
+                "stream_channel_info": {
+                    "id": res["channel"]["id"],
+                    "type": res["channel"]["type"],
+                }
+            },
         )
+        # TODO: send push notification
         return Response(serializer.data, status.HTTP_200_OK)
 
     def deny(self, request: Request, *args: Any, **kwargs: Any) -> Response:
@@ -187,6 +178,7 @@ class MatchedGroupLeaderDetailViewSet(viewsets.ModelViewSet):
         IsUserGroupLeader,
         IsUserJoinedGroupActive,
     ]
+    serializer_class = MatchedGroupLeaderDetailSerializer
 
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         other_group = get_object_or_404(Group, id=self.kwargs["group_id"])
@@ -206,5 +198,5 @@ class MatchedGroupLeaderDetailViewSet(viewsets.ModelViewSet):
         )
         if not qs.exists():
             return Response("Group leader not exists", status=status.HTTP_404_NOT_FOUND)
-        serializer = MatchedGroupLeaderDetailSerializer(instance=qs.first())
+        serializer = self.get_serializer(instance=qs.first())
         return Response(serializer.data, status.HTTP_200_OK)

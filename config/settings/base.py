@@ -93,7 +93,6 @@ LOCAL_APPS = [
     "heythere.apps.search.apps.SearchAppConfig",
     "heythere.apps.group.apps.GroupAppConfig",
     "heythere.apps.match.apps.MatchAppConfig",
-    "heythere.apps.stream.apps.StreamAppConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
