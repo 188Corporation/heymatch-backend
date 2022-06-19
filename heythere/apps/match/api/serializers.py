@@ -78,7 +78,7 @@ class MatchRequestAcceptSerializer(serializers.ModelSerializer):
 
     def get_stream_channel(self, mr: MatchRequest):
         channel = self.context["stream_channel_info"]
-        return dict(id=channel["id"], type=channel["type"])
+        return dict(id=channel["id"], cid=channel["cid"], type=channel["type"])
 
 
 class MatchRequestSendBodySerializer(serializers.ModelSerializer):

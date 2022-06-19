@@ -10,6 +10,8 @@ from heythere.apps.group.tests.factories import (
     ActiveGroupInvitationCodeFactory,
     InactiveGroupFactory,
 )
+from heythere.apps.match.models import MatchRequest
+from heythere.apps.match.tests.factories import MatchRequestFactory
 from heythere.apps.search.models import HotPlace
 from heythere.apps.search.tests.factories import (
     RANDOM_HOTPLACE_INFO,
@@ -80,6 +82,15 @@ def active_groups_in_apgujeong() -> Sequence[Group]:
 def active_group() -> Group:
     hotplace = HotPlaceFactory()
     return ActiveGroupFactory(hotplace=hotplace)
+
+
+@pytest.fixture
+def active_two_groups() -> Sequence[Group]:
+    hotplace = HotPlaceFactory()
+    return ActiveGroupFactory.create_batch(
+        size=2,
+        hotplace=hotplace,
+    )
 
 
 @pytest.fixture
@@ -185,6 +196,11 @@ def hotplaces() -> Sequence[HotPlace]:
         )
         result.append(hotplace)
     return result
+
+
+@pytest.fixture
+def match_request() -> MatchRequest:
+    return MatchRequestFactory()
 
 
 @pytest.fixture

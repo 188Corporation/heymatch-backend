@@ -40,7 +40,9 @@ class MatchRequestSentViewSet(viewsets.ModelViewSet):
     serializer_class = MatchRequestSentSerializer
 
     def get_queryset(self) -> QuerySet:
-        return MatchRequest.objects.filter(sender=self.request.user.joined_group)
+        return MatchRequest.objects.filter(
+            sender=self.request.user.joined_group, accepted=False, denied=False
+        )
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         qs = self.get_queryset()
@@ -58,7 +60,9 @@ class MatchRequestReceivedViewSet(viewsets.ModelViewSet):
     serializer_class = MatchRequestReceivedSerializer
 
     def get_queryset(self) -> QuerySet:
-        return MatchRequest.objects.filter(receiver=self.request.user.joined_group)
+        return MatchRequest.objects.filter(
+            receiver=self.request.user.joined_group, accepted=False, denied=False
+        )
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         qs = self.get_queryset()
@@ -103,7 +107,10 @@ class MatchRequestControlViewSet(viewsets.ModelViewSet):
     def accept(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         from_group = get_object_or_404(Group, id=self.kwargs["group_id"])
         qs: QuerySet = MatchRequest.objects.filter(
-            sender=from_group, receiver=request.user.joined_group, accepted=False
+            sender=from_group,
+            receiver=request.user.joined_group,
+            accepted=False,
+            denied=False,
         )
         if not qs.exists():
             return Response(
@@ -142,6 +149,7 @@ class MatchRequestControlViewSet(viewsets.ModelViewSet):
             context={
                 "stream_channel_info": {
                     "id": res["channel"]["id"],
+                    "cid": res["channel"]["cid"],
                     "type": res["channel"]["type"],
                 }
             },

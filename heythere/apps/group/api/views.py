@@ -37,7 +37,7 @@ class GroupRegisterStatusViewSet(viewsets.ViewSet):
     permission_classes = [
         IsAuthenticated,
         IsUserActive,
-    ]  # TODO: User should be linked
+    ]
 
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         user = get_object_or_404(User, id=self.request.user.id)

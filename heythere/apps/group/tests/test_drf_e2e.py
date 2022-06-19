@@ -19,8 +19,15 @@ pytestmark = pytest.mark.django_db
 class TestGroupRegistrationStatusEndpoints:
     ENDPOINT = "/api/group/registration/status/"
 
-    def test_registration_status(self, api_client: APIClient):
-        pass
+    def test_registration_status_all_good(self, api_client: APIClient):
+        active_user = ActiveUserFactory(joined_group=None)
+        api_client.force_authenticate(user=active_user)
+        res = api_client.get(self.ENDPOINT)
+        assert res.status_code == 200
+
+    def test_registration_status_if_not_authenticated(self, api_client: APIClient):
+        res = api_client.get(self.ENDPOINT)
+        assert res.status_code == 401
 
 
 class TestGroupRegistrationEndpoints:
@@ -47,8 +54,6 @@ class TestGroupRegistrationEndpoints:
             data={"gps_geoinfo": geoinfo},
         )
         assert res.status_code == 201
-        assert res.data["gps_checked"] is True
-        assert res.data["register_step_1_completed"] is True
 
         # Check if group is still inactive
         assert active_user.joined_group is not None
