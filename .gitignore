@@ -333,3 +333,6 @@ heythere/media/
 .envs/*
 !.envs/.local/
 /.idea/vcs.xml
+
+## My tests
+tests

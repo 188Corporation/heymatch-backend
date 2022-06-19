@@ -22,12 +22,10 @@ from heythere.shared.permissions import (
 from .serializers import (
     MatchedGroupLeaderDetailSerializer,
     MatchRequestAcceptSerializer,
-    MatchRequestReceivedDetailSerializer,
-    MatchRequestReceivedListSerializer,
+    MatchRequestReceivedSerializer,
     MatchRequestSendBodySerializer,
     MatchRequestSendSerializer,
-    MatchRequestSentDetailSerializer,
-    MatchRequestSentListSerializer,
+    MatchRequestSentSerializer,
 )
 
 stream = settings.STREAM_CLIENT
@@ -46,12 +44,7 @@ class MatchRequestSentViewSet(viewsets.ModelViewSet):
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         qs = self.get_queryset()
-        serializer = MatchRequestSentListSerializer(qs, many=True)
-        return Response(serializer.data, status.HTTP_200_OK)
-
-    def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        mr = get_object_or_404(MatchRequest, uuid=self.kwargs["request_uuid"])
-        serializer = MatchRequestSentDetailSerializer(instance=mr)
+        serializer = MatchRequestSentSerializer(qs, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 
 
@@ -68,12 +61,7 @@ class MatchRequestReceivedViewSet(viewsets.ModelViewSet):
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         qs = self.get_queryset()
-        serializer = MatchRequestReceivedListSerializer(qs, many=True)
-        return Response(serializer.data, status.HTTP_200_OK)
-
-    def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        mr = get_object_or_404(MatchRequest, uuid=self.kwargs["request_uuid"])
-        serializer = MatchRequestReceivedDetailSerializer(instance=mr)
+        serializer = MatchRequestReceivedSerializer(qs, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 
 

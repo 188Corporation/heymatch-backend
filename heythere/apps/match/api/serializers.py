@@ -13,7 +13,7 @@ class SimpleGroupSerializer(serializers.ModelSerializer):
         ]
 
 
-class MatchRequestSentListSerializer(serializers.ModelSerializer):
+class MatchRequestSentSerializer(serializers.ModelSerializer):
     receiver = SimpleGroupSerializer(read_only=True)
 
     class Meta:
@@ -27,35 +27,7 @@ class MatchRequestSentListSerializer(serializers.ModelSerializer):
         ]
 
 
-class MatchRequestSentDetailSerializer(serializers.ModelSerializer):
-    receiver = SimpleGroupSerializer(read_only=True)
-
-    class Meta:
-        model = MatchRequest
-        fields = [
-            "uuid",
-            "receiver",
-            "unread",
-            "accepted",
-            "denied",
-        ]
-
-
-class MatchRequestReceivedListSerializer(serializers.ModelSerializer):
-    sender = SimpleGroupSerializer(read_only=True)
-
-    class Meta:
-        model = MatchRequest
-        fields = [
-            "uuid",
-            "sender",
-            "unread",
-            "accepted",
-            "denied",
-        ]
-
-
-class MatchRequestReceivedDetailSerializer(serializers.ModelSerializer):
+class MatchRequestReceivedSerializer(serializers.ModelSerializer):
     sender = SimpleGroupSerializer(read_only=True)
 
     class Meta:
