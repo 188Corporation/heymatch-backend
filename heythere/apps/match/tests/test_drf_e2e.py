@@ -3,8 +3,9 @@ from typing import List
 import pytest
 from django.conf import settings
 from rest_framework.test import APIClient
+from stream_chat.base.exceptions import StreamAPIException
 
-from heythere.apps.group.models import Group
+from heythere.apps.group.models import Group, GroupBlackList
 from heythere.apps.match.models import MatchRequest
 from heythere.apps.user.tests.factories import ActiveUserFactory
 
@@ -200,6 +201,22 @@ class TestMatchRequestControlEndpoints:
         assert res.status_code == 200
         assert len(res.data) == 1
 
+        api_client.force_authenticate(user=sender)
+        res = api_client.get(
+            f"/api/search/hotplace/{match_request.sender.hotplace.id}/group/"
+        )
+        assert res.status_code == 200
+        assert len(res.data) == 1
+        assert res.data[0]["id"] == match_request.receiver.id
+
+        api_client.force_authenticate(user=receiver)
+        res = api_client.get(
+            f"/api/search/hotplace/{match_request.receiver.hotplace.id}/group/"
+        )
+        assert res.status_code == 200
+        assert len(res.data) == 1
+        assert res.data[0]["id"] == match_request.sender.id
+
         # accept MR
         api_client.force_authenticate(user=receiver)
         res = api_client.post(
@@ -228,6 +245,22 @@ class TestMatchRequestControlEndpoints:
         res = api_client.get("/api/match/request/sent/")
         assert res.status_code == 200
         assert len(res.data) == 0
+
+        api_client.force_authenticate(user=sender)
+        res = api_client.get(
+            f"/api/search/hotplace/{match_request.sender.hotplace.id}/group/"
+        )
+        assert res.status_code == 200
+        assert len(res.data) == 1
+        assert res.data[0]["id"] == match_request.receiver.id
+
+        api_client.force_authenticate(user=receiver)
+        res = api_client.get(
+            f"/api/search/hotplace/{match_request.receiver.hotplace.id}/group/"
+        )
+        assert res.status_code == 200
+        assert len(res.data) == 1
+        assert res.data[0]["id"] == match_request.sender.id
 
         # delete users in Stream
         stream.delete_user(
@@ -330,3 +363,264 @@ class TestMatchRequestControlEndpoints:
         )
         # delete channel in Stream
         stream.delete_channels([channel_cid], hard_delete=True)
+
+    # ---------------
+    #  MR Deny flow
+    # ---------------
+    def test_match_request_deny_from_group_if_all_good(
+        self, match_request: MatchRequest, api_client: APIClient
+    ):
+        sender = ActiveUserFactory(
+            joined_group=match_request.sender, is_group_leader=True
+        )
+        receiver = ActiveUserFactory(
+            joined_group=match_request.receiver, is_group_leader=True
+        )
+        api_client.force_authenticate(user=receiver)
+
+        assert match_request.unread is True
+        assert match_request.accepted is False
+        assert match_request.denied is False
+
+        # check list before accepting
+        res = api_client.get("/api/match/request/received/")
+        assert res.status_code == 200
+        assert len(res.data) == 1
+
+        api_client.force_authenticate(user=sender)
+        res = api_client.get("/api/match/request/sent/")
+        assert res.status_code == 200
+        assert len(res.data) == 1
+
+        qs = GroupBlackList.active_objects.filter(
+            group=receiver.joined_group, blocked_group=sender.joined_group
+        )
+        assert len(qs) == 0
+        qs = GroupBlackList.active_objects.filter(
+            group=sender.joined_group, blocked_group=receiver.joined_group
+        )
+        assert len(qs) == 0
+
+        api_client.force_authenticate(user=sender)
+        res = api_client.get(
+            f"/api/search/hotplace/{match_request.sender.hotplace.id}/group/"
+        )
+        assert res.status_code == 200
+        assert len(res.data) == 1
+        assert res.data[0]["id"] == match_request.receiver.id
+
+        api_client.force_authenticate(user=receiver)
+        res = api_client.get(
+            f"/api/search/hotplace/{match_request.receiver.hotplace.id}/group/"
+        )
+        assert res.status_code == 200
+        assert len(res.data) == 1
+        assert res.data[0]["id"] == match_request.sender.id
+
+        # Deny MR
+        api_client.force_authenticate(user=receiver)
+        res = api_client.post(
+            f"/api/match/request/group/{match_request.sender.id}/deny/"
+        )
+        match_request = MatchRequest.objects.get(
+            sender=match_request.sender, receiver=match_request.receiver
+        )
+        assert res.status_code == 200
+        assert match_request.unread is False
+        assert match_request.accepted is False
+        assert match_request.denied is True
+
+        qs = GroupBlackList.active_objects.all()
+        assert len(qs) == 2
+        qs = GroupBlackList.active_objects.filter(
+            group=receiver.joined_group, blocked_group=sender.joined_group
+        )
+        assert len(qs) == 1
+        qs = GroupBlackList.active_objects.filter(
+            group=sender.joined_group, blocked_group=receiver.joined_group
+        )
+        assert len(qs) == 1
+
+        # check list after accepting
+        res = api_client.get("/api/match/request/received/")
+        assert res.status_code == 200
+        assert len(res.data) == 0
+
+        api_client.force_authenticate(user=sender)
+        res = api_client.get("/api/match/request/sent/")
+        assert res.status_code == 200
+        assert len(res.data) == 0
+
+        api_client.force_authenticate(user=sender)
+        res = api_client.get(
+            f"/api/search/hotplace/{match_request.sender.hotplace.id}/group/"
+        )
+        assert res.status_code == 200
+        assert len(res.data) == 0
+
+        api_client.force_authenticate(user=receiver)
+        res = api_client.get(
+            f"/api/search/hotplace/{match_request.receiver.hotplace.id}/group/"
+        )
+        assert res.status_code == 200
+        assert len(res.data) == 0
+
+    def test_match_request_deny_from_group_if_not_authenticated(
+        self, match_request: MatchRequest, api_client: APIClient
+    ):
+        res = api_client.post(
+            f"/api/match/request/group/{match_request.sender.id}/deny/"
+        )
+        assert res.status_code == 401
+
+    def test_match_request_deny_from_group_if_not_received(
+        self, active_group: Group, match_request: MatchRequest, api_client: APIClient
+    ):
+        receiver = ActiveUserFactory(
+            joined_group=match_request.receiver, is_group_leader=True
+        )
+        api_client.force_authenticate(user=receiver)
+
+        res = api_client.post(f"/api/match/request/group/{active_group.id}/deny/")
+        assert res.status_code == 401
+
+    def test_match_request_deny_from_group_if_already_denied(
+        self, match_request: MatchRequest, api_client: APIClient
+    ):
+        receiver = ActiveUserFactory(
+            joined_group=match_request.receiver, is_group_leader=True
+        )
+        api_client.force_authenticate(user=receiver)
+
+        res = api_client.post(
+            f"/api/match/request/group/{match_request.sender.id}/deny/"
+        )
+        assert res.status_code == 200
+
+        # Deny again
+        res = api_client.post(
+            f"/api/match/request/group/{match_request.sender.id}/deny/"
+        )
+        assert res.status_code == 401
+
+    # ----------------------
+    #  Stream Chat Exit flow
+    # ----------------------
+    def test_match_stream_chat_exit_if_all_good(
+        self, match_request: MatchRequest, api_client: APIClient
+    ):
+        stream = settings.STREAM_CLIENT
+        sender = ActiveUserFactory(
+            joined_group=match_request.sender, is_group_leader=True
+        )
+        receiver = ActiveUserFactory(
+            joined_group=match_request.receiver, is_group_leader=True
+        )
+        api_client.force_authenticate(user=receiver)
+
+        assert match_request.unread is True
+        assert match_request.accepted is False
+        assert match_request.denied is False
+
+        # check list before accepting
+        res = api_client.get("/api/match/request/received/")
+        assert res.status_code == 200
+        assert len(res.data) == 1
+
+        api_client.force_authenticate(user=sender)
+        res = api_client.get("/api/match/request/sent/")
+        assert res.status_code == 200
+        assert len(res.data) == 1
+
+        qs = GroupBlackList.active_objects.filter(
+            group=receiver.joined_group, blocked_group=sender.joined_group
+        )
+        assert len(qs) == 0
+        qs = GroupBlackList.active_objects.filter(
+            group=sender.joined_group, blocked_group=receiver.joined_group
+        )
+        assert len(qs) == 0
+
+        api_client.force_authenticate(user=sender)
+        res = api_client.get(
+            f"/api/search/hotplace/{match_request.sender.hotplace.id}/group/"
+        )
+        assert res.status_code == 200
+        assert len(res.data) == 1
+        assert res.data[0]["id"] == match_request.receiver.id
+
+        api_client.force_authenticate(user=receiver)
+        res = api_client.get(
+            f"/api/search/hotplace/{match_request.receiver.hotplace.id}/group/"
+        )
+        assert res.status_code == 200
+        assert len(res.data) == 1
+        assert res.data[0]["id"] == match_request.sender.id
+
+        # first upsert user in Stream
+        stream.upsert_user({"id": str(sender.id), "role": "user"})
+        stream.upsert_user({"id": str(receiver.id), "role": "user"})
+
+        # accept MR
+        api_client.force_authenticate(user=receiver)
+        res = api_client.post(
+            f"/api/match/request/group/{match_request.sender.id}/accept/"
+        )
+        channel_cid = res.data["stream_chat_channel"]["cid"]
+
+        # exit stream chat
+        res = api_client.post(f"/api/match/chat/group/{match_request.sender.id}/exit/")
+        assert res.status_code == 200
+
+        qs = GroupBlackList.active_objects.all()
+        assert len(qs) == 2
+        qs = GroupBlackList.active_objects.filter(
+            group=receiver.joined_group, blocked_group=sender.joined_group
+        )
+        assert len(qs) == 1
+        qs = GroupBlackList.active_objects.filter(
+            group=sender.joined_group, blocked_group=receiver.joined_group
+        )
+        assert len(qs) == 1
+
+        # check list after accepting
+        res = api_client.get("/api/match/request/received/")
+        assert res.status_code == 200
+        assert len(res.data) == 0
+
+        api_client.force_authenticate(user=sender)
+        res = api_client.get("/api/match/request/sent/")
+        assert res.status_code == 200
+        assert len(res.data) == 0
+
+        api_client.force_authenticate(user=sender)
+        res = api_client.get(
+            f"/api/search/hotplace/{match_request.sender.hotplace.id}/group/"
+        )
+        assert res.status_code == 200
+        assert len(res.data) == 0
+
+        api_client.force_authenticate(user=receiver)
+        res = api_client.get(
+            f"/api/search/hotplace/{match_request.receiver.hotplace.id}/group/"
+        )
+        assert res.status_code == 200
+        assert len(res.data) == 0
+
+        # delete users in Stream
+        stream.delete_user(
+            str(sender.id),
+            mark_messages_deleted=True,
+            hard_delete=True,
+            delete_conversation_channels=True,
+        )
+        stream.delete_user(
+            str(receiver.id),
+            mark_messages_deleted=True,
+            hard_delete=True,
+            delete_conversation_channels=True,
+        )
+
+        # deleting channel should not work
+        with pytest.raises(StreamAPIException):
+            stream.delete_channels([channel_cid], hard_delete=True)

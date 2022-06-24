@@ -56,6 +56,17 @@ def test_match_request_deny_from_group():
     )
 
 
+def test_group_stream_chat_exit():
+    assert (
+        reverse("api:match:group-stream-chat-exit", kwargs={"group_id": 123})
+        == "/api/match/chat/group/123/exit/"
+    )
+    assert (
+        resolve("/api/match/chat/group/123/exit/").view_name
+        == "api:match:group-stream-chat-exit"
+    )
+
+
 def test_match_matched_group_leader_detail_view():
     assert (
         reverse("api:match:match-matched-group-leader-detail", kwargs={"group_id": 123})

@@ -8,6 +8,7 @@ from factory.faker import Faker
 from factory.fuzzy import FuzzyDateTime, FuzzyInteger
 
 from heythere.apps.group.models import Group, GroupInvitationCode
+from heythere.apps.search.tests.factories import HotPlaceFactory
 from heythere.utils.util import FuzzyGeoPt, FuzzyInt4Range
 
 
@@ -15,6 +16,7 @@ class ActiveGroupFactory(DjangoModelFactory):
     class Meta:
         model = Group
 
+    hotplace = SubFactory(HotPlaceFactory)
     # Group GPS
     gps_geoinfo = FuzzyGeoPt(precision=5)
     gps_checked = True

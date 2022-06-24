@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.utils import timezone
@@ -78,7 +76,7 @@ class GroupRegisterStep1Serializer(serializers.ModelSerializer):
         # Save Group
         validated_data["hotplace"] = hotplace
         validated_data["gps_checked"] = True
-        validated_data["gps_last_check_time"] = datetime.now()
+        validated_data["gps_last_check_time"] = timezone.now()
         validated_data["register_step_1_completed"] = True
         group = Group.objects.create(**validated_data)
 

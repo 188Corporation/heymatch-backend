@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from heythere.apps.group.models import Group
+from heythere.apps.group.models import Group, GroupBlackList
 from heythere.apps.match.models import MatchRequest
 from heythere.apps.user.models import User
 from heythere.shared.permissions import (
@@ -175,8 +175,71 @@ class MatchRequestControlViewSet(viewsets.ModelViewSet):
         mr.accepted = False
         mr.denied = True
         mr.save(update_fields=["unread", "accepted", "denied"])
+
+        # Add to BlackList
+        GroupBlackList.objects.create(
+            group=request.user.joined_group, blocked_group=from_group
+        )
+
         serializer = self.get_serializer(mr)
         return Response(serializer.data, status.HTTP_200_OK)
+
+
+class GroupStreamChatExitViewSet(viewsets.ModelViewSet):
+    permission_classes = [
+        IsAuthenticated,
+        IsUserActive,
+        IsUserGroupLeader,
+        IsUserJoinedGroupActive,
+    ]
+
+    def exit(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        from_group = get_object_or_404(Group, id=self.kwargs["group_id"])
+        qs: QuerySet = MatchRequest.objects.filter(
+            sender=from_group,
+            receiver=request.user.joined_group,
+            accepted=True,
+            denied=False,
+        )
+        if not qs.exists():
+            return Response(
+                "MatchRequest does not exist. Should be already exited or not accepted MR.",
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        mr: MatchRequest = qs.first()
+        mr.unread = False
+        mr.accepted = False
+        mr.denied = True
+        mr.save(update_fields=["unread", "accepted", "denied"])
+
+        # Add to BlackList
+        GroupBlackList.objects.create(
+            group=request.user.joined_group, blocked_group=from_group
+        )
+
+        # Delete Stream channel
+        qs: QuerySet = User.active_objects.filter(
+            joined_group=from_group, is_group_leader=True
+        )
+        if not qs.exists():
+            return Response(
+                "Group leader not exists on requested group",
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        sender_group_leader = qs.first()
+        channel = stream.channel(
+            settings.STREAM_CHAT_CHANNEL_TYPE,
+            None,
+            data=dict(
+                members=[str(request.user.id), str(sender_group_leader.id)],
+                created_by_id=str(request.user.id),
+            ),
+        )
+        # Note: query method creates a channel
+        res = channel.query()
+        stream.delete_channels([res["channel"]["cid"]], hard_delete=True)
+        return Response(status.HTTP_200_OK)
 
 
 class MatchedGroupLeaderDetailViewSet(viewsets.ModelViewSet):

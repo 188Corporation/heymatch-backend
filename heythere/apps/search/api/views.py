@@ -1,13 +1,14 @@
 from typing import Any
 
+from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from heythere.apps.group.models import Group
+from heythere.apps.group.models import Group, GroupBlackList
 from heythere.apps.search.models import HotPlace
 
 from .serializers import (
@@ -21,6 +22,8 @@ class HotPlaceViewSet(viewsets.ViewSet):
     """
     A simple ViewSet for listing or retrieving HotPlaces.
     """
+
+    permission_classes = [IsAuthenticated]
 
     def list(self, request) -> Response:
         queryset = HotPlace.objects.all()
@@ -42,14 +45,21 @@ class HotPlaceActiveGroupViewSet(viewsets.ModelViewSet):
     queryset = Group.active_objects.all()  # active by default
     serializer_class = HotPlaceGroupSummarySerializer
     # TODO: Only GPS authenticated Group users can see
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self) -> QuerySet:
         qs = self.queryset
         qs = qs.filter(hotplace_id=self.kwargs["hotplace_id"])
         joined_group = self.request.user.joined_group
+        exclude_ids = []
         if joined_group:
-            qs = qs.exclude(id=joined_group.id)
+            # Exclude myself
+            exclude_ids.append(joined_group.id)
+            # Exclude Blacklist
+            blacklist_qs = GroupBlackList.active_objects.filter(group=joined_group)
+            blocked_groups_ids = [bl.blocked_group.id for bl in blacklist_qs]
+            exclude_ids.extend(blocked_groups_ids)
+        qs = qs.filter(~Q(id__in=exclude_ids))
         return qs
 
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:

@@ -200,7 +200,10 @@ def hotplaces() -> Sequence[HotPlace]:
 
 @pytest.fixture
 def match_request() -> MatchRequest:
-    return MatchRequestFactory()
+    hotplace = HotPlaceFactory()
+    sender = ActiveGroupFactory(hotplace=hotplace)
+    receiver = ActiveGroupFactory(hotplace=hotplace)
+    return MatchRequestFactory(sender=sender, receiver=receiver)
 
 
 @pytest.fixture

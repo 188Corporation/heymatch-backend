@@ -15,7 +15,13 @@ from django_google_maps.fields import GeoLocationField
 
 from heythere.apps.user.models import User
 
-from .managers import ActiveGroupInvitationCodeManager, ActiveGroupManager, GroupManager
+from .managers import (
+    ActiveGroupBlackListManager,
+    ActiveGroupInvitationCodeManager,
+    ActiveGroupManager,
+    GroupBlackListManager,
+    GroupManager,
+)
 
 
 def group_default_time():
@@ -117,3 +123,33 @@ class GroupProfileImage(models.Model):
         Group, blank=True, null=True, on_delete=models.SET_NULL
     )
     image = models.ImageField(upload_to=upload_to)
+
+
+def blacklist_default_time():
+    return timezone.now() + timezone.timedelta(hours=24)
+
+
+class GroupBlackList(models.Model):
+    group = models.ForeignKey(
+        Group,
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name="blacklist_group",
+    )
+    blocked_group = models.ForeignKey(
+        Group,
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name="blacklist_blocked_group",
+    )
+
+    # Lifecycle
+    is_active = models.BooleanField(blank=False, null=False, default=True)
+    active_until = models.DateTimeField(
+        blank=True, null=True, default=blacklist_default_time
+    )
+
+    objects = GroupBlackListManager()
+    active_objects = ActiveGroupBlackListManager()

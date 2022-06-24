@@ -1,6 +1,7 @@
 from django.urls import path
 
 from heythere.apps.match.api.views import (
+    GroupStreamChatExitViewSet,
     MatchedGroupLeaderDetailViewSet,
     MatchRequestControlViewSet,
     MatchRequestReceivedViewSet,
@@ -18,6 +19,7 @@ match_request_accept_from_group_view = MatchRequestControlViewSet.as_view(
 match_request_deny_from_group_view = MatchRequestControlViewSet.as_view(
     {"post": "deny"}
 )
+group_stream_chat_exit_view = GroupStreamChatExitViewSet.as_view({"post": "exit"})
 match_matched_group_leader_detail_view = MatchedGroupLeaderDetailViewSet.as_view(
     {"get": "retrieve"}
 )
@@ -46,6 +48,11 @@ urlpatterns = [
         "request/group/<int:group_id>/deny/",
         match_request_deny_from_group_view,
         name="match-request-group-deny",
+    ),
+    path(
+        "chat/group/<int:group_id>/exit/",
+        group_stream_chat_exit_view,
+        name="group-stream-chat-exit",
     ),
     path(
         "matched/group/<int:group_id>/group_leader/",

@@ -83,3 +83,22 @@ class ActiveGroupInvitationCodeManager(models.Manager):
         range_start = 10 ** (length - 1)
         range_end = (10**length) - 1
         return randint(range_start, range_end)
+
+
+class GroupBlackListManager(models.Manager):
+    def create(self, **kwargs):
+        # Create two BlackLists
+        blacklist1 = self.model(
+            group=kwargs["group"], blocked_group=kwargs["blocked_group"]
+        )
+        blacklist2 = self.model(
+            group=kwargs["blocked_group"], blocked_group=kwargs["group"]
+        )
+        blacklist1.save(using=self._db)
+        blacklist2.save(using=self._db)
+        return blacklist1
+
+
+class ActiveGroupBlackListManager(models.Manager):
+    def get_queryset(self) -> QuerySet:
+        return super().get_queryset().filter(is_active=True)

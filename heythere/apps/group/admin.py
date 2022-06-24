@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Group, GroupInvitationCode, GroupProfileImage
+from .models import Group, GroupBlackList, GroupInvitationCode, GroupProfileImage
 
 
 @admin.register(Group)
@@ -70,4 +70,22 @@ class GroupProfilePhotoAdmin(admin.ModelAdmin):
         "id",
         "group",
         "image",
+    ]
+
+
+@admin.register(GroupBlackList)
+class GroupBlackListAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "group",
+        "blocked_group",
+        "is_active",
+        "active_until",
+    ]
+    search_fields = [
+        "id",
+        "group",
+        "blocked_group",
+        "is_active",
+        "active_until",
     ]
