@@ -6,6 +6,7 @@ from pathlib import Path
 
 import environ
 import stream_chat
+from firebase_admin import initialize_app
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # heythere/
@@ -83,6 +84,7 @@ THIRD_PARTY_APPS = [
     "dj_rest_auth",
     "dj_rest_auth.registration",
     "colorfield",
+    "fcm_django",
 ]
 
 LOCAL_APPS = [
@@ -388,3 +390,11 @@ STREAM_CHAT_CHANNEL_TYPE = env("STREAM_CHAT_CHANNEL_TYPE")
 STREAM_CLIENT = stream_chat.StreamChat(
     api_key=STREAM_API_KEY, api_secret=STREAM_API_SECRET
 )
+
+# Firebase Cloud Messaging
+FIREBASE_APP = initialize_app()
+FCM_DJANGO_SETTINGS = {
+    "ONE_DEVICE_PER_USER": True,
+    "DELETE_INACTIVE_DEVICES": False,
+    "UPDATE_ON_DUPLICATE_REG_ID": True,
+}

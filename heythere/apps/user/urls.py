@@ -1,11 +1,10 @@
 from django.urls import path
-
-from heythere.apps.user.api.views import UserProfileViewSet
+from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
 
 app_name = "user"
 
-user_profile_detail = UserProfileViewSet.as_view()
+user_device_register_view = FCMDeviceAuthorizedViewSet.as_view({"post": "create"})
 
 urlpatterns = [
-    path("profile/", user_profile_detail, name="user-profile-detail"),
+    path("device/register/", user_device_register_view, name="user_device_register"),
 ]

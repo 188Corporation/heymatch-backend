@@ -42,3 +42,6 @@ boto3==1.23.0  # https://pypi.org/project/boto3/
 
 # GetStream.Io
 stream-chat==4.3.0  # https://pypi.org/project/stream-chat/
+
+# Firebase
+fcm-django==1.0.12
