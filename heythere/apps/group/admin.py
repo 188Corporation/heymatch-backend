@@ -65,11 +65,17 @@ class GroupProfilePhotoAdmin(admin.ModelAdmin):
         "id",
         "group",
         "image",
+        "image_blurred",
+        "thumbnail",
+        "thumbnail_blurred",
     ]
     search_fields = [
         "id",
         "group",
         "image",
+        "image_blurred",
+        "thumbnail",
+        "thumbnail_blurred",
     ]
 
 

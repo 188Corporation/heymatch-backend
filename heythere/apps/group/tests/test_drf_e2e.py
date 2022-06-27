@@ -323,6 +323,12 @@ class TestGroupRegistrationEndpoints:
             )
             assert res.status_code == 200
 
+        image = GroupProfileImage.objects.get(group=active_user.joined_group)
+        assert image.image is not None
+        assert image.image_blurred is not None
+        assert image.thumbnail is not None
+        assert image.thumbnail_blurred is not None
+
         assert active_user.joined_group is not None
         assert active_user.joined_group.is_active is False
         assert active_user.joined_group.desired_other_group_member_number is None
@@ -547,6 +553,9 @@ class TestGroupRegistrationEndpoints:
 
         # check if updated
         assert orig_image.image is not updated_image.image
+        assert orig_image.image_blurred is not updated_image.image_blurred
+        assert orig_image.thumbnail is not updated_image.thumbnail
+        assert orig_image.thumbnail_blurred is not updated_image.thumbnail_blurred
 
     # -------------
     #  Step 4 Flow

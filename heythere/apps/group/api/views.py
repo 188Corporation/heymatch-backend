@@ -117,10 +117,13 @@ class GroupRegisterStep3ViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def perform_create(self, serializer):
+        from django.core.files.uploadedfile import InMemoryUploadedFile
+
         group = self.request.user.joined_group
+        image: InMemoryUploadedFile = self.request.FILES.get("image")
         serializer.save(
             group=group,
-            image=self.request.FILES.get("image"),
+            image=image,
         )
         group.register_step_3_completed = True
         group.save(update_fields=["register_step_3_completed"])

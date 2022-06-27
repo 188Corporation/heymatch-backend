@@ -125,7 +125,7 @@ class Command(BaseCommand):
 
     def generate_developer_users(self) -> None:
         try:
-            u = User.objects.create_user(  # user 1
+            u = User.objects.create_superuser(  # user 1
                 username="developer1",
                 phone_number="+821032433994",
                 password="1234",

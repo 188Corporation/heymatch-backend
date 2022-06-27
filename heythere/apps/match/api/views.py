@@ -185,7 +185,7 @@ class MatchRequestControlViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-class GroupStreamChatExitViewSet(viewsets.ModelViewSet):
+class GroupStreamChatExitViewSet(viewsets.ViewSet):
     permission_classes = [
         IsAuthenticated,
         IsUserActive,

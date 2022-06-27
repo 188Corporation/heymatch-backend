@@ -3,7 +3,6 @@ from typing import List
 import pytest
 from django.conf import settings
 from rest_framework.test import APIClient
-from stream_chat.base.exceptions import StreamAPIException
 
 from heythere.apps.group.models import Group, GroupBlackList
 from heythere.apps.match.models import MatchRequest
@@ -566,7 +565,7 @@ class TestMatchRequestControlEndpoints:
         res = api_client.post(
             f"/api/match/request/group/{match_request.sender.id}/accept/"
         )
-        channel_cid = res.data["stream_chat_channel"]["cid"]
+        assert res.status_code == 200
 
         # exit stream chat
         res = api_client.post(f"/api/match/chat/group/{match_request.sender.id}/exit/")
@@ -620,7 +619,3 @@ class TestMatchRequestControlEndpoints:
             hard_delete=True,
             delete_conversation_channels=True,
         )
-
-        # deleting channel should not work
-        with pytest.raises(StreamAPIException):
-            stream.delete_channels([channel_cid], hard_delete=True)
