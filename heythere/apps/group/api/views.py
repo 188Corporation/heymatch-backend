@@ -24,8 +24,10 @@ from .serializers import (
     GroupRegisterStep1Serializer,
     GroupRegisterStep2BodySerializer,
     GroupRegisterStep2Serializer,
-    GroupRegisterStep3BodySerializer,
-    GroupRegisterStep3Serializer,
+    GroupRegisterStep3PhotoUpdateSerializer,
+    GroupRegisterStep3PhotoUploadSerializer,
+    GroupRegisterStep3UpdatePhotoBodySerializer,
+    GroupRegisterStep3UploadPhotoBodySerializer,
     GroupRegisterStep4Serializer,
     UserJoinedGroupStatusSerializer,
 )
@@ -101,7 +103,7 @@ class GroupRegisterStep3ViewSet(viewsets.ModelViewSet):
     """
 
     queryset = GroupProfileImage.objects.all()
-    serializer_class = GroupRegisterStep3Serializer
+    serializer_class = GroupRegisterStep3PhotoUploadSerializer
     permission_classes = [
         IsAuthenticated,
         IsUserActive,
@@ -109,7 +111,12 @@ class GroupRegisterStep3ViewSet(viewsets.ModelViewSet):
     ]
     parser_classes = (MultiPartParser,)
 
-    @swagger_auto_schema(request_body=GroupRegisterStep3BodySerializer)
+    def get_serializer_class(self):
+        if self.action == "update_photo":
+            return GroupRegisterStep3PhotoUpdateSerializer
+        return self.serializer_class
+
+    @swagger_auto_schema(request_body=GroupRegisterStep3UploadPhotoBodySerializer)
     def upload_photo(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -128,12 +135,16 @@ class GroupRegisterStep3ViewSet(viewsets.ModelViewSet):
         group.register_step_3_completed = True
         group.save(update_fields=["register_step_3_completed"])
 
-    @swagger_auto_schema(request_body=GroupRegisterStep3BodySerializer)
+    @swagger_auto_schema(request_body=GroupRegisterStep3UpdatePhotoBodySerializer)
     def update_photo(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         queryset = self.get_queryset()
-        obj = get_object_or_404(queryset, group=request.user.joined_group)
+        obj = get_object_or_404(
+            queryset, id=request.data["photo_id"], group=request.user.joined_group
+        )
         # link image
-        obj.image = self.request.FILES.get("image")  # update
+        if self.request.FILES.get("image"):
+            self.request.data["image"] = self.request.FILES.get("image")
+
         # serialize and update
         serializer = self.get_serializer(obj, data=request.data)
         serializer.is_valid(raise_exception=True)

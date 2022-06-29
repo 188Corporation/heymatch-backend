@@ -85,6 +85,7 @@ THIRD_PARTY_APPS = [
     "dj_rest_auth.registration",
     "colorfield",
     "fcm_django",
+    "ordered_model",
 ]
 
 LOCAL_APPS = [

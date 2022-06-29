@@ -27,5 +27,3 @@ EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 
 # Your stuff...
 # ------------------------------------------------------------------------------
-# django-storages
-DEFAULT_FILE_STORAGE = "inmemorystorage.InMemoryStorage"  # should not use actual S3

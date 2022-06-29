@@ -328,6 +328,7 @@ class TestGroupRegistrationEndpoints:
         assert image.image_blurred is not None
         assert image.thumbnail is not None
         assert image.thumbnail_blurred is not None
+        assert image.order is not None
 
         assert active_user.joined_group is not None
         assert active_user.joined_group.is_active is False
@@ -510,52 +511,117 @@ class TestGroupRegistrationEndpoints:
         assert res.status_code == 200
 
         # Do Step 3
+        # First photo
         image = Image.new("RGBA", size=(50, 50), color=(155, 0, 0))
         file = tempfile.NamedTemporaryFile(suffix=".png")
         image.save(file)
-
         with open(file.name, "rb") as data:
             res = api_client.post(
                 self.STEP_3_ENDPOINT,
                 data={"image": data},
                 format="multipart",
             )
-            assert res.status_code == 200
+        assert res.status_code == 200
+        first_photo_id = res.data["id"]
 
-        orig_image = GroupProfileImage.objects.get(group=active_user.joined_group)
+        # Second photo
+        image = Image.new("RGBA", size=(60, 60), color=(155, 0, 0))
+        file = tempfile.NamedTemporaryFile(suffix=".png")
+        image.save(file)
+        with open(file.name, "rb") as data:
+            res = api_client.post(
+                self.STEP_3_ENDPOINT,
+                data={"image": data},
+                format="multipart",
+            )
+        assert res.status_code == 200
+
+        # Third photo
+        image = Image.new("RGBA", size=(70, 70), color=(155, 0, 0))
+        file = tempfile.NamedTemporaryFile(suffix=".png")
+        image.save(file)
+        with open(file.name, "rb") as data:
+            res = api_client.post(
+                self.STEP_3_ENDPOINT,
+                data={"image": data},
+                format="multipart",
+            )
+        assert res.status_code == 200
+        last_photo_id = res.data["id"]
 
         # Patch step 3
         image = Image.new("RGBA", size=(100, 100), color=(155, 155, 155))
         file = tempfile.NamedTemporaryFile(suffix=".png")
         image.save(file)
 
+        # Scenario 1: Update photo only
+        first_orig_image = GroupProfileImage.objects.get(
+            id=first_photo_id, group=active_user.joined_group
+        )
         with open(file.name, "rb") as data:
             res = api_client.patch(
                 self.STEP_3_ENDPOINT,
-                data={"image": data},
+                data={"photo_id": first_photo_id, "image": data},
                 format="multipart",
             )
-            assert res.status_code == 200
-            assert active_user.joined_group is not None
-            assert active_user.joined_group.is_active is False
-            assert active_user.joined_group.desired_other_group_member_number is None
-            assert (
-                active_user.joined_group.desired_other_group_member_avg_age_range
-                is None
+        assert res.status_code == 200
+        updated_images = GroupProfileImage.objects.filter(
+            group=active_user.joined_group
+        ).order_by("id")
+        assert first_orig_image.image != updated_images[0].image
+        assert first_orig_image.image_blurred != updated_images[0].image_blurred
+        assert first_orig_image.thumbnail != updated_images[0].thumbnail
+        assert first_orig_image.thumbnail_blurred != updated_images[0].thumbnail_blurred
+
+        # Scenario 2: Update order only
+        last_orig_image = GroupProfileImage.objects.get(
+            id=last_photo_id, group=active_user.joined_group
+        )
+        res = api_client.patch(
+            self.STEP_3_ENDPOINT,
+            data={"photo_id": last_photo_id, "order": 0},
+            format="multipart",
+        )
+        assert res.status_code == 200
+        updated_images = GroupProfileImage.objects.filter(
+            group=active_user.joined_group
+        ).order_by("id")
+        assert updated_images[0].order == 1
+        assert updated_images[1].order == 2
+        assert updated_images[2].order == 0
+        assert (
+            updated_images[2].image == last_orig_image.image
+        )  # image should not change
+
+        # Scenario 3: Update photo & order
+        last_orig_image = GroupProfileImage.objects.get(
+            id=last_photo_id, group=active_user.joined_group
+        )
+        with open(file.name, "rb") as data:
+            res = api_client.patch(
+                self.STEP_3_ENDPOINT,
+                data={"photo_id": last_photo_id, "image": data, "order": 1},
+                format="multipart",
             )
-            assert active_user.joined_group.register_step_1_completed is True
-            assert active_user.joined_group.register_step_2_completed is True
-            assert active_user.joined_group.register_step_3_completed is True
-            assert active_user.joined_group.register_step_4_completed is False
-            assert active_user.joined_group.register_step_all_confirmed is False
+        assert res.status_code == 200
+        updated_images = GroupProfileImage.objects.filter(
+            group=active_user.joined_group
+        ).order_by("id")
+        assert updated_images[0].order == 0
+        assert updated_images[1].order == 2
+        assert updated_images[2].order == 1
+        assert updated_images[2].image != last_orig_image.image  # image should change
 
-        updated_image = GroupProfileImage.objects.get(group=active_user.joined_group)
-
-        # check if updated
-        assert orig_image.image is not updated_image.image
-        assert orig_image.image_blurred is not updated_image.image_blurred
-        assert orig_image.thumbnail is not updated_image.thumbnail
-        assert orig_image.thumbnail_blurred is not updated_image.thumbnail_blurred
+        # check group info
+        assert active_user.joined_group is not None
+        assert active_user.joined_group.is_active is False
+        assert active_user.joined_group.desired_other_group_member_number is None
+        assert active_user.joined_group.desired_other_group_member_avg_age_range is None
+        assert active_user.joined_group.register_step_1_completed is True
+        assert active_user.joined_group.register_step_2_completed is True
+        assert active_user.joined_group.register_step_3_completed is True
+        assert active_user.joined_group.register_step_4_completed is False
+        assert active_user.joined_group.register_step_all_confirmed is False
 
     # -------------
     #  Step 4 Flow

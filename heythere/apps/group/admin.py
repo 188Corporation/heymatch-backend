@@ -68,6 +68,7 @@ class GroupProfilePhotoAdmin(admin.ModelAdmin):
         "image_blurred",
         "thumbnail",
         "thumbnail_blurred",
+        "order",
     ]
     search_fields = [
         "id",
@@ -76,6 +77,7 @@ class GroupProfilePhotoAdmin(admin.ModelAdmin):
         "image_blurred",
         "thumbnail",
         "thumbnail_blurred",
+        "order",
     ]
 
 

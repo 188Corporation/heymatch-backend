@@ -15,6 +15,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django_google_maps.fields import GeoLocationField
+from ordered_model.models import OrderedModel
 from PIL import Image, ImageFilter
 
 from heythere.apps.user.models import User
@@ -122,12 +123,14 @@ def upload_to(instance, filename):
     return f"{settings.AWS_S3_GROUP_PHOTO_FOLDER}/%s.%s" % (uuid.uuid4(), extension)
 
 
-class GroupProfileImage(models.Model):
+class GroupProfileImage(OrderedModel):
     group = models.ForeignKey(Group, blank=True, null=True, on_delete=models.SET_NULL)
     image = models.ImageField(upload_to=upload_to)
     image_blurred = models.ImageField(upload_to=upload_to)
     thumbnail = models.ImageField(upload_to=upload_to)
     thumbnail_blurred = models.ImageField(upload_to=upload_to)
+
+    order_with_respect_to = "group"
 
     def save(self, *args, **kwargs):
         ftype = self.check_file_type()
@@ -157,7 +160,7 @@ class GroupProfileImage(models.Model):
         :return:
         """
         image = Image.open(self.image)
-        image = image.filter(ImageFilter.GaussianBlur(5))
+        image = image.filter(ImageFilter.GaussianBlur(10))
         temp_image = BytesIO()
         image.save(temp_image, filetype)
         temp_image.seek(0)
@@ -174,7 +177,7 @@ class GroupProfileImage(models.Model):
         Creates thumbnail and blurred_thumbnail.
         """
         image = Image.open(self.image)
-        image.thumbnail((100, 100), Image.ANTIALIAS)
+        image.thumbnail((150, 150), Image.ANTIALIAS)
         temp_image = BytesIO()
         image.save(temp_image, filetype)
         temp_image.seek(0)
@@ -186,7 +189,7 @@ class GroupProfileImage(models.Model):
 
     def process_thumbnail_blurred(self, filetype: str):
         image = Image.open(self.image_blurred)
-        image.thumbnail((100, 100), Image.ANTIALIAS)
+        image.thumbnail((150, 150), Image.ANTIALIAS)
         # Save thumbnail to in-memory file as StringIO
         temp_image = BytesIO()
         image.save(temp_image, filetype)

@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
-from django.db.utils import IntegrityError
 from django.utils import timezone
 from django_google_maps.fields import GeoPt
+from ordered_model.serializers import OrderedModelSerializer
 from psycopg2._range import Range
 from rest_framework import serializers
 
@@ -163,29 +163,74 @@ class GroupRegisterStep2BodySerializer(serializers.Serializer):
     invitation_codes = serializers.ListField(child=serializers.CharField())
 
 
-class GroupRegisterStep3Serializer(serializers.ModelSerializer):
+class GroupRegisterStep3PhotoUploadSerializer(serializers.ModelSerializer):
+    image_blurred = serializers.ImageField(required=False)
+    thumbnail = serializers.ImageField(required=False)
+    thumbnail_blurred = serializers.ImageField(required=False)
+    order = serializers.IntegerField(required=False)
+
     class Meta:
         model = GroupProfileImage
         fields = [
             "id",
             "group",
             "image",
+            "image_blurred",
+            "thumbnail",
+            "thumbnail_blurred",
+            "order",
         ]
 
     def create(self, validated_data):
-        try:
-            image = GroupProfileImage.objects.create(**validated_data)
-        except IntegrityError:
-            raise serializers.ValidationError("Only one photo is allowed per group.")
-        return image
+        return GroupProfileImage.objects.create(**validated_data)
 
 
-class GroupRegisterStep3BodySerializer(serializers.Serializer):
+class GroupRegisterStep3PhotoUpdateSerializer(OrderedModelSerializer):
+    image = serializers.ImageField(required=False)
+    image_blurred = serializers.ImageField(required=False)
+    thumbnail = serializers.ImageField(required=False)
+    thumbnail_blurred = serializers.ImageField(required=False)
+    order = serializers.IntegerField(required=False)
+
+    class Meta:
+        model = GroupProfileImage
+        fields = [
+            "id",
+            "group",
+            "image",
+            "image_blurred",
+            "thumbnail",
+            "thumbnail_blurred",
+            "order",
+        ]
+
+    def update(self, instance, validated_data):
+        order = validated_data.get("order", None)
+        if order is not None:
+            instance.to(order)
+        image = validated_data.get("image", None)
+        if image is not None:
+            instance.image = image
+            instance.save()
+        return instance
+
+
+class GroupRegisterStep3UploadPhotoBodySerializer(serializers.Serializer):
     """
     Body Request Serializer. Not that this will be used in Swagger auto-schema decorator.
     """
 
     image = serializers.ImageField(allow_empty_file=False, use_url=True)
+
+
+class GroupRegisterStep3UpdatePhotoBodySerializer(serializers.Serializer):
+    """
+    Body Request Serializer. Not that this will be used in Swagger auto-schema decorator.
+    """
+
+    photo_id = serializers.IntegerField(required=True)
+    image = serializers.ImageField(allow_empty_file=False, use_url=True, required=False)
+    order = serializers.IntegerField(required=False)
 
 
 class IntegerRangeField(serializers.Field):
