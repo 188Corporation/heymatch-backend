@@ -2,6 +2,7 @@
 Base settings to build other settings files upon.
 """
 import datetime
+from datetime import timedelta
 from pathlib import Path
 
 import environ
@@ -274,6 +275,13 @@ CELERY_TASK_TIME_LIMIT = 5 * 60
 CELERY_TASK_SOFT_TIME_LIMIT = 60
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#beat-scheduler
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+CELERY_BEAT_SCHEDULE = {
+    "handle-expired-groups-every-1m": {
+        "task": "heythere.apps.group.tasks.handle_expired_groups",
+        "schedule": timedelta(minutes=1),
+        "args": (),
+    },
+}
 
 # django-allauth
 # ------------------------------------------------------------------------------

@@ -1,6 +1,9 @@
 from uuid import uuid4
 
 from django.db import models
+from django.utils import timezone
+
+from .managers import ActiveStreamChannelManager
 
 
 class MatchRequest(models.Model):
@@ -22,3 +25,18 @@ class MatchRequest(models.Model):
     unread = models.BooleanField(default=True)
     accepted = models.BooleanField(default=False)
     denied = models.BooleanField(default=False)
+
+
+def stream_channel_default_time():
+    return timezone.now() + timezone.timedelta(hours=24)
+
+
+class StreamChannel(models.Model):
+    cid = models.CharField(max_length=255, blank=False, null=False)
+    is_active = models.BooleanField(blank=False, null=False, default=True)
+    active_until = models.DateTimeField(
+        blank=False, null=False
+    )  # should be set manually
+
+    objects = models.Manager()
+    active_objects = ActiveStreamChannelManager()

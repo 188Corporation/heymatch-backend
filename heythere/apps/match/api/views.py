@@ -10,7 +10,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from heythere.apps.group.models import Group, GroupBlackList
-from heythere.apps.match.models import MatchRequest
+from heythere.apps.match.models import MatchRequest, StreamChannel
 from heythere.apps.user.models import User
 from heythere.shared.permissions import (
     IsUserActive,
@@ -154,6 +154,16 @@ class MatchRequestControlViewSet(viewsets.ModelViewSet):
                 }
             },
         )
+        # Save StreamChannel
+        sc_active_until = (
+            from_group.active_until
+            if from_group.active_until < request.user.joined_group.active_until
+            else request.user.joined_group.active_until
+        )
+        StreamChannel.objects.create(
+            cid=res["channel"]["cid"], active_until=sc_active_until
+        )
+
         # TODO: send push notification
         return Response(serializer.data, status.HTTP_200_OK)
 
@@ -238,7 +248,12 @@ class GroupStreamChatExitViewSet(viewsets.ViewSet):
         )
         # Note: query method creates a channel
         res = channel.query()
-        stream.delete_channels([res["channel"]["cid"]], hard_delete=True)
+        stream.delete_channels([res["channel"]["cid"]])
+
+        # Mark StreamChannel inactive
+        sc = StreamChannel.objects.get(cid=res["channel"]["cid"])
+        sc.is_active = False
+        sc.save(update_fields=["is_active"])
         return Response(status.HTTP_200_OK)
 
 
