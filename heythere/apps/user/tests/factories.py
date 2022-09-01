@@ -27,7 +27,6 @@ class ActiveUserFactory(DjangoModelFactory):
         django_get_or_create = ("username",)
 
     id = Faker("uuid4")
-    username = Faker("pystr", max_chars=6)
     phone_number = Faker("phone_number", locale="ko_KR")
     birthdate = Faker("date_of_birth")
     gender = Faker("random_element", elements=[x[0] for x in GENDER_CHOICES])

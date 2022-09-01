@@ -1,3 +1,5 @@
+import random
+import string
 from uuid import uuid4
 
 from birthday import BirthdayField
@@ -17,11 +19,27 @@ GENDER_CHOICES = (
 MAX_HEIGHT_CM = 195
 MIN_HEIGHT_CM = 155
 
+MAX_USERNAME_LENGTH = 10
+
+
+def generate_random_username():
+    return "".join(
+        random.choice(string.ascii_letters) for _ in range(MAX_USERNAME_LENGTH)
+    )
+
 
 class User(AbstractUser):
     # Basic Info
     id = models.UUIDField(
         primary_key=True, blank=False, null=False, editable=False, default=uuid4
+    )
+    username = models.CharField(
+        unique=True,
+        blank=False,
+        null=False,
+        editable=True,
+        max_length=MAX_USERNAME_LENGTH,
+        default=generate_random_username,
     )
     phone_number = PhoneNumberField(null=False, blank=False, unique=True)
     age = models.IntegerField(blank=True, null=True)  # post create

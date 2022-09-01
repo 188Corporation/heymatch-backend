@@ -356,6 +356,7 @@ PHONE_VERIFICATION = {
 # dj-rest-auth
 # ------------------------------------------------------------------------------
 REST_USE_JWT = True
+ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_LOGOUT_ON_GET = True
 REST_AUTH_SERIALIZERS = {
     "LOGIN_SERIALIZER": "heythere.apps.authen.api.serializers.UserLoginByPhoneNumberSerializer",

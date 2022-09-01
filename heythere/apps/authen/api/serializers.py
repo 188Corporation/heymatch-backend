@@ -2,7 +2,6 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from dj_rest_auth.serializers import LoginSerializer, UserDetailsSerializer
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.db.models import Q
 from django.db.models.query import QuerySet
 from phone_verify.models import SMSVerification
 from phonenumber_field.phonenumber import to_python
@@ -30,7 +29,6 @@ class UserDetailByPhoneNumberSerializer(UserDetailsSerializer):
 
 class UserRegisterByPhoneNumberSerializer(RegisterSerializer):
     email = None
-    username = serializers.CharField(required=True)
     phone_number = serializers.CharField(required=True)
     phone_security_code = serializers.CharField(required=True)
     password1 = serializers.CharField(required=True, write_only=True)
@@ -39,7 +37,6 @@ class UserRegisterByPhoneNumberSerializer(RegisterSerializer):
     def get_cleaned_data(self):
         super(UserRegisterByPhoneNumberSerializer, self).get_cleaned_data()
         return {
-            "username": self.validated_data.get("username", ""),
             "phone_number": self.validated_data.get("phone_number", ""),
             "phone_security_code": self.validated_data.get("phone_security_code", ""),
             "password1": self.validated_data.get("password1", ""),
@@ -49,7 +46,6 @@ class UserRegisterByPhoneNumberSerializer(RegisterSerializer):
     def save(self, request):
         phone_number = request.data["phone_number"]
         phone_security_code = request.data["phone_security_code"]
-        username = request.data["username"]
 
         phone_number_python = to_python(phone_number)
         if not phone_number_python.is_valid():
@@ -60,13 +56,12 @@ class UserRegisterByPhoneNumberSerializer(RegisterSerializer):
         if not self.check_if_phone_verified(phone_number, phone_security_code):
             raise serializers.ValidationError(detail="Invalid SMS verification info")
 
-        if self.check_if_user_exists(username, phone_number):
+        if self.check_if_user_exists(phone_number):
             raise serializers.ValidationError(
                 detail="User with same username or phone_number exists"
             )
 
         user = User.objects.create_user(
-            username=username,
             phone_number=phone_number,
             password=request.data["password1"],
         )
@@ -84,10 +79,8 @@ class UserRegisterByPhoneNumberSerializer(RegisterSerializer):
         return qs.exists() and qs[0].is_verified
 
     @staticmethod
-    def check_if_user_exists(username: str, phone_number: str):
-        qs: QuerySet = User.objects.filter(
-            Q(username=username) | Q(phone_number=phone_number)
-        )
+    def check_if_user_exists(phone_number: str):
+        qs: QuerySet = User.objects.filter(phone_number=phone_number)
         return qs.exists()
 
 

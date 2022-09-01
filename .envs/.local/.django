@@ -24,9 +24,9 @@ AWS_S3_SECRET_ACCESS_KEY=ritQ0vRhIJKrKq67e4f82WPU+IozCaVOuYa0DKXq
 AWS_STORAGE_BUCKET_NAME=heythere-s3-test
 
 # GetStream.Io
-STREAM_API_KEY=t3zrhpnqru9p
-STREAM_API_SECRET=jbf54qyurd8kjfxdu9exa9vmxcwzhjpb3enwj84nkvxb46e63ze26tuvanaha38h
-STREAM_CHAT_CHANNEL_TYPE=test-chat
+STREAM_API_KEY=qudygteppm7z
+STREAM_API_SECRET=u7hkpfdcemj6wqj7f6vhwtwmd6aqru96tnfjs2jfygyeu22jqh9s64pxmgjypjbw
+STREAM_CHAT_CHANNEL_TYPE=188-Corp
 
 # Google Firebase
 GOOGLE_APPLICATION_CREDENTIALS=/app/.envs/.local/firebase_sa.json

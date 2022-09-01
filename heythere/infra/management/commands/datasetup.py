@@ -54,7 +54,7 @@ class Command(BaseCommand):
 
         # -------------- Superuser setup -------------- #
         self.generate_superuser()
-        self.generate_developer_users()
+        # self.generate_developer_users()
 
         # -------------- Normal Users setup -------------- #
         ActiveUserFactory.create_batch(size=10, joined_group=None)
@@ -100,7 +100,7 @@ class Command(BaseCommand):
     def generate_superuser(self) -> None:
         try:
             u = User.objects.create_superuser(  # superuser
-                username="admin", phone_number="+821012341234", password="1234"
+                username="admin", phone_number="+821000000000", password="1234"
             )
             # Register Stream token
             stream.upsert_user({"id": str(u.id), "role": "user"})
@@ -112,7 +112,7 @@ class Command(BaseCommand):
             )
             pass
         SMSVerification.objects.get_or_create(  # sms for user 1
-            phone_number="+821012341234",
+            phone_number="+821000000000",
             defaults={
                 "security_code": "098765",
                 "session_token": "sessiontoken2",
