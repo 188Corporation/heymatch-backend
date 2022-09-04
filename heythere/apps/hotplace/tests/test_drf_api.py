@@ -51,8 +51,8 @@ User = get_user_model()
 class AccountTests(APITestCase):
     """
     Test Cases for
-    >>> from heythere.apps.search.api.views import HotPlaceViewSet
-    >>> from heythere.apps.search.api.views import HotPlaceActiveGroupViewSet
+    >>> from heythere.apps.hotplace.api.views import HotPlaceViewSet
+    >>> from heythere.apps.hotplace.api.views import HotPlaceActiveGroupViewSet
     """
 
     def setUp(self) -> None:

@@ -9,7 +9,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from heythere.apps.group.models import Group, GroupBlackList
-from heythere.apps.search.models import HotPlace
+from heythere.apps.hotplace.models import HotPlace
 
 from .serializers import (
     HotPlaceDetailSerializer,

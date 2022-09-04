@@ -94,7 +94,7 @@ LOCAL_APPS = [
     "heythere.infra",
     "heythere.apps.authen.apps.AuthAppConfig",
     "heythere.apps.user.apps.UserAppConfig",
-    "heythere.apps.search.apps.SearchAppConfig",
+    "heythere.apps.hotplace.apps.HotplaceAppConfig",
     "heythere.apps.group.apps.GroupAppConfig",
     "heythere.apps.match.apps.MatchAppConfig",
 ]

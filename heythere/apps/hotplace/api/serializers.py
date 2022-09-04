@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from heythere.apps.group.models import Group
-from heythere.apps.search.models import HotPlace
+from heythere.apps.hotplace.models import HotPlace
 
 
 class HotPlaceDetailSerializer(serializers.ModelSerializer):

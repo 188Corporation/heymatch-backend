@@ -202,7 +202,7 @@ class TestMatchRequestControlEndpoints:
 
         api_client.force_authenticate(user=sender)
         res = api_client.get(
-            f"/api/search/hotplace/{match_request.sender.hotplace.id}/group/"
+            f"/api/hotplaces/{match_request.sender.hotplace.id}/group/"
         )
         assert res.status_code == 200
         assert len(res.data) == 1
@@ -210,7 +210,7 @@ class TestMatchRequestControlEndpoints:
 
         api_client.force_authenticate(user=receiver)
         res = api_client.get(
-            f"/api/search/hotplace/{match_request.receiver.hotplace.id}/group/"
+            f"/api/hotplaces/{match_request.receiver.hotplace.id}/group/"
         )
         assert res.status_code == 200
         assert len(res.data) == 1
@@ -247,7 +247,7 @@ class TestMatchRequestControlEndpoints:
 
         api_client.force_authenticate(user=sender)
         res = api_client.get(
-            f"/api/search/hotplace/{match_request.sender.hotplace.id}/group/"
+            f"/api/hotplaces/{match_request.sender.hotplace.id}/group/"
         )
         assert res.status_code == 200
         assert len(res.data) == 1
@@ -255,7 +255,7 @@ class TestMatchRequestControlEndpoints:
 
         api_client.force_authenticate(user=receiver)
         res = api_client.get(
-            f"/api/search/hotplace/{match_request.receiver.hotplace.id}/group/"
+            f"/api/hotplaces/{match_request.receiver.hotplace.id}/group/"
         )
         assert res.status_code == 200
         assert len(res.data) == 1
@@ -402,7 +402,7 @@ class TestMatchRequestControlEndpoints:
 
         api_client.force_authenticate(user=sender)
         res = api_client.get(
-            f"/api/search/hotplace/{match_request.sender.hotplace.id}/group/"
+            f"/api/hotplaces/{match_request.sender.hotplace.id}/group/"
         )
         assert res.status_code == 200
         assert len(res.data) == 1
@@ -410,7 +410,7 @@ class TestMatchRequestControlEndpoints:
 
         api_client.force_authenticate(user=receiver)
         res = api_client.get(
-            f"/api/search/hotplace/{match_request.receiver.hotplace.id}/group/"
+            f"/api/hotplaces/{match_request.receiver.hotplace.id}/group/"
         )
         assert res.status_code == 200
         assert len(res.data) == 1
@@ -452,14 +452,14 @@ class TestMatchRequestControlEndpoints:
 
         api_client.force_authenticate(user=sender)
         res = api_client.get(
-            f"/api/search/hotplace/{match_request.sender.hotplace.id}/group/"
+            f"/api/hotplaces/{match_request.sender.hotplace.id}/group/"
         )
         assert res.status_code == 200
         assert len(res.data) == 0
 
         api_client.force_authenticate(user=receiver)
         res = api_client.get(
-            f"/api/search/hotplace/{match_request.receiver.hotplace.id}/group/"
+            f"/api/hotplaces/{match_request.receiver.hotplace.id}/group/"
         )
         assert res.status_code == 200
         assert len(res.data) == 0
@@ -542,7 +542,7 @@ class TestMatchRequestControlEndpoints:
 
         api_client.force_authenticate(user=sender)
         res = api_client.get(
-            f"/api/search/hotplace/{match_request.sender.hotplace.id}/group/"
+            f"/api/hotplaces/{match_request.sender.hotplace.id}/group/"
         )
         assert res.status_code == 200
         assert len(res.data) == 1
@@ -550,7 +550,7 @@ class TestMatchRequestControlEndpoints:
 
         api_client.force_authenticate(user=receiver)
         res = api_client.get(
-            f"/api/search/hotplace/{match_request.receiver.hotplace.id}/group/"
+            f"/api/hotplaces/{match_request.receiver.hotplace.id}/group/"
         )
         assert res.status_code == 200
         assert len(res.data) == 1
@@ -594,14 +594,14 @@ class TestMatchRequestControlEndpoints:
 
         api_client.force_authenticate(user=sender)
         res = api_client.get(
-            f"/api/search/hotplace/{match_request.sender.hotplace.id}/group/"
+            f"/api/hotplaces/{match_request.sender.hotplace.id}/group/"
         )
         assert res.status_code == 200
         assert len(res.data) == 0
 
         api_client.force_authenticate(user=receiver)
         res = api_client.get(
-            f"/api/search/hotplace/{match_request.receiver.hotplace.id}/group/"
+            f"/api/hotplaces/{match_request.receiver.hotplace.id}/group/"
         )
         assert res.status_code == 200
         assert len(res.data) == 0

@@ -9,7 +9,7 @@ from phone_verify.models import SMSVerification
 
 from heythere.apps.group.models import Group
 from heythere.apps.group.tests.factories import ActiveGroupFactory
-from heythere.apps.search.tests.factories import (
+from heythere.apps.hotplace.tests.factories import (
     RANDOM_HOTPLACE_INFO,
     RANDOM_HOTPLACE_NAMES,
     HotPlaceFactory,

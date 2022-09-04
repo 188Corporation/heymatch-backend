@@ -36,7 +36,7 @@ def group_default_time():
 class Group(models.Model):
     # Group GPS
     hotplace = models.ForeignKey(
-        "search.HotPlace", blank=True, null=True, on_delete=models.PROTECT
+        "hotplace.HotPlace", blank=True, null=True, on_delete=models.PROTECT
     )
     gps_geoinfo = GeoLocationField(blank=True, null=True)
     gps_checked = models.BooleanField(blank=False, null=False, default=False)

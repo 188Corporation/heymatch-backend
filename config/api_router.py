@@ -18,7 +18,7 @@ urlpatterns = [
     path("auth/", include("heythere.apps.authen.urls")),
     path("user/", include("heythere.apps.user.urls")),
     path("group/", include("heythere.apps.group.urls")),
-    path("search/", include("heythere.apps.search.urls")),
+    path("hotplaces/", include("heythere.apps.hotplace.urls")),
     path("match/", include("heythere.apps.match.urls")),
 ]
 urlpatterns += router.urls

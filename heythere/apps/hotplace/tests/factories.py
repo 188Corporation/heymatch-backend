@@ -2,7 +2,7 @@ from django_google_maps.fields import GeoPt
 from factory.django import DjangoModelFactory
 from factory.faker import Faker
 
-from heythere.apps.search.models import HotPlace
+from heythere.apps.hotplace.models import HotPlace
 from heythere.utils.util import FuzzyGeoPt, FuzzyGeoPtArray
 
 RANDOM_HOTPLACE_INFO = {

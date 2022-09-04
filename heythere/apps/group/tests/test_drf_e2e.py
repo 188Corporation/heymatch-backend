@@ -5,7 +5,7 @@ from PIL import Image
 from rest_framework.test import APIClient
 
 from heythere.apps.group.models import Group, GroupInvitationCode, GroupProfileImage
-from heythere.apps.search.tests.factories import (
+from heythere.apps.hotplace.tests.factories import (
     RANDOM_HOTPLACE_INFO,
     RANDOM_HOTPLACE_NAMES,
 )

@@ -10,14 +10,14 @@ from heythere.apps.group.tests.factories import (
     ActiveGroupInvitationCodeFactory,
     InactiveGroupFactory,
 )
-from heythere.apps.match.models import MatchRequest
-from heythere.apps.match.tests.factories import MatchRequestFactory
-from heythere.apps.search.models import HotPlace
-from heythere.apps.search.tests.factories import (
+from heythere.apps.hotplace.models import HotPlace
+from heythere.apps.hotplace.tests.factories import (
     RANDOM_HOTPLACE_INFO,
     RANDOM_HOTPLACE_NAMES,
     HotPlaceFactory,
 )
+from heythere.apps.match.models import MatchRequest
+from heythere.apps.match.tests.factories import MatchRequestFactory
 from heythere.apps.user.models import User
 from heythere.apps.user.tests.factories import (
     ActiveUserFactory,

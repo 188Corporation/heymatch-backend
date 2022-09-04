@@ -6,7 +6,7 @@ from psycopg2._range import Range
 from rest_framework import serializers
 
 from heythere.apps.group.models import Group, GroupInvitationCode, GroupProfileImage
-from heythere.apps.search.models import HotPlace
+from heythere.apps.hotplace.models import HotPlace
 from heythere.apps.user.models import User
 from heythere.utils.util import is_geopt_within_boundary
 

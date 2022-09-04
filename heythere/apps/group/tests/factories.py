@@ -8,7 +8,7 @@ from factory.faker import Faker
 from factory.fuzzy import FuzzyDateTime, FuzzyInteger
 
 from heythere.apps.group.models import Group, GroupInvitationCode
-from heythere.apps.search.tests.factories import HotPlaceFactory
+from heythere.apps.hotplace.tests.factories import HotPlaceFactory
 from heythere.utils.util import FuzzyGeoPt, FuzzyInt4Range
 
 
