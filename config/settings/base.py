@@ -111,7 +111,7 @@ MIGRATION_MODULES = {"sites": "heythere.contrib.sites.migrations"}
 # https://docs.djangoproject.com/en/dev/ref/settings/#authentication-backends
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
+    # "allauth.account.auth_backends.AuthenticationBackend",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
 AUTH_USER_MODEL = "user.User"
@@ -349,9 +349,10 @@ PHONE_VERIFICATION = {
     "MESSAGE": "Welcome to {app}! Please use security code {security_code} to proceed.",
     "APP_NAME": "Phone Verify",
     "SECURITY_CODE_EXPIRATION_TIME": 300,  # In seconds only
-    "VERIFY_SECURITY_CODE_ONLY_ONCE": False,
+    "VERIFY_SECURITY_CODE_ONLY_ONCE": True,
     # If False, then a security code can be used multiple times for verification
 }
+PHONE_VERIFICATION_DEFAULT_PASSWORD = "heythere@!188corp"
 
 # dj-rest-auth
 # ------------------------------------------------------------------------------

@@ -1,15 +1,25 @@
-from django.urls import include, path
+from dj_rest_auth.views import LoginView
+from django.urls import path
 
-from .api.views import StreamTokenViewSet
+from .api.views import PhoneRegistrationViewSet, StreamTokenViewSet
 
 app_name = "auth"
 
+phone_code_generate_view = PhoneRegistrationViewSet.as_view({"post": "register"})
 stream_token_generate_view = StreamTokenViewSet.as_view({"get": "retrieve"})
 
 urlpatterns = [
     # dj-rest-auth
-    path("", include("dj_rest_auth.urls")),
-    path("signup/", include("dj_rest_auth.registration.urls")),
+    path(
+        "phone/get-code/",
+        phone_code_generate_view,
+        name="phone-verification-code-generate",
+    ),
+    path(
+        "phone/authorize/",
+        LoginView.as_view(),
+        name="phone-verification-code-authorize",
+    ),
     path(
         "stream/token/", stream_token_generate_view, name="stream-user-token-generate"
     ),

@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models.query import QuerySet
 from phone_verify.models import SMSVerification
+from phone_verify.serializers import SMSVerificationSerializer
 from phonenumber_field.phonenumber import to_python
 from rest_framework import exceptions, serializers
 
@@ -27,6 +28,7 @@ class UserDetailByPhoneNumberSerializer(UserDetailsSerializer):
         read_only_fields = ("phone_number",)
 
 
+# NOT USED ANYMORE
 class UserRegisterByPhoneNumberSerializer(RegisterSerializer):
     email = None
     phone_number = serializers.CharField(required=True)
@@ -87,11 +89,13 @@ class UserRegisterByPhoneNumberSerializer(RegisterSerializer):
 class UserLoginByPhoneNumberSerializer(LoginSerializer):
     username = None
     email = None
+    password = None
     phone_number = serializers.CharField(required=True)
-    password = serializers.CharField(style={"input_type": "password"})
+    session_token = serializers.CharField(required=True)
+    security_code = serializers.CharField(required=True)
 
-    def _validate_phone_number(self, phone_number: str, password):
-        if phone_number and password:
+    def _validate_user(self, phone_number: str):
+        if phone_number:
             # validate phone_number is verified
             qs: QuerySet = SMSVerification.objects.filter(phone_number=phone_number)
             if not qs.exists() or not qs[0].is_verified:
@@ -99,22 +103,20 @@ class UserLoginByPhoneNumberSerializer(LoginSerializer):
                 raise exceptions.ValidationError(detail=msg)
 
             # get user with phone_number
-            qs: QuerySet = User.objects.filter(phone_number=phone_number)
-            if not qs.exists():
-                msg = "Provided phone_number never signed-up."
-                raise exceptions.ValidationError(detail=str(msg))
-
-            user = self._validate_username(qs[0].username, password)
+            user, _ = User.objects.get_or_create(phone_number=phone_number)
         else:
-            msg = 'Must include either "phone_number" and "password".'
+            msg = 'Must include "phone_number".'
             raise exceptions.ValidationError(detail=msg)
         return user
 
     def validate(self, attrs):
-        phone_number = attrs.get("phone_number")
-        password = attrs.get("password")
+        # first verify SMS
+        serializer = SMSVerificationSerializer(data=attrs)
+        serializer.is_valid(raise_exception=True)
 
-        user = self._validate_phone_number(phone_number, password)
+        # process login or registration
+        phone_number = attrs.get("phone_number")
+        user = self._validate_user(phone_number)
 
         # Did we get back an active user?
         if user:
