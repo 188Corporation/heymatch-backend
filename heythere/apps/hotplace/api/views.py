@@ -11,11 +11,7 @@ from rest_framework.response import Response
 from heythere.apps.group.models import Group, GroupBlackList
 from heythere.apps.hotplace.models import HotPlace
 
-from .serializers import (
-    HotPlaceDetailSerializer,
-    HotPlaceGroupSummarySerializer,
-    HotPlaceListSerializer,
-)
+from .serializers import HotPlaceDetailSerializer, HotPlaceGroupSummarySerializer
 
 
 class HotPlaceViewSet(viewsets.ViewSet):
@@ -27,7 +23,7 @@ class HotPlaceViewSet(viewsets.ViewSet):
 
     def list(self, request) -> Response:
         queryset = HotPlace.objects.all()
-        serializer = HotPlaceListSerializer(queryset, many=True)
+        serializer = HotPlaceDetailSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, hotplace_id: int) -> Response:

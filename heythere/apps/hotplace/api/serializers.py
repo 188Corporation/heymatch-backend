@@ -10,16 +10,6 @@ class HotPlaceDetailSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class HotPlaceListSerializer(HotPlaceDetailSerializer):
-    class Meta:
-        model = HotPlace
-        fields = [
-            "id",
-            "name",
-            "zone_color",
-        ]
-
-
 class HotPlaceGroupSummarySerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
