@@ -29,22 +29,9 @@ from .serializers import (
     GroupRegisterStep3UpdatePhotoBodySerializer,
     GroupRegisterStep3UploadPhotoBodySerializer,
     GroupRegisterStep4Serializer,
-    UserJoinedGroupStatusSerializer,
 )
 
 User = get_user_model()
-
-
-class GroupRegisterStatusViewSet(viewsets.ViewSet):
-    permission_classes = [
-        IsAuthenticated,
-        IsUserActive,
-    ]
-
-    def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        user = get_object_or_404(User, id=self.request.user.id)
-        serializer = UserJoinedGroupStatusSerializer(instance=user)
-        return Response(serializer.data, status.HTTP_200_OK)
 
 
 class GroupRegisterStep1ViewSet(viewsets.ModelViewSet):

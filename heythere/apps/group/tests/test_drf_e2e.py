@@ -2,7 +2,6 @@ import tempfile
 
 import pytest
 from PIL import Image
-from rest_framework.test import APIClient
 
 from heythere.apps.group.models import Group, GroupInvitationCode, GroupProfileImage
 from heythere.apps.hotplace.tests.factories import (
@@ -16,29 +15,15 @@ from heythere.utils.util import generate_rand_geoopt_within_boundary
 pytestmark = pytest.mark.django_db
 
 
-class TestGroupRegistrationStatusEndpoints:
-    ENDPOINT = "/api/group/registration/status/"
-
-    def test_registration_status_all_good(self, api_client: APIClient):
-        active_user = ActiveUserFactory(joined_group=None)
-        api_client.force_authenticate(user=active_user)
-        res = api_client.get(self.ENDPOINT)
-        assert res.status_code == 200
-
-    def test_registration_status_if_not_authenticated(self, api_client: APIClient):
-        res = api_client.get(self.ENDPOINT)
-        assert res.status_code == 401
-
-
 class TestGroupRegistrationEndpoints:
-    STATUS_ENDPOINT = "/api/group/registration/status/"
-    STEP_1_ENDPOINT = "/api/group/registration/step/1/"
-    STEP_2_ENDPOINT = "/api/group/registration/step/2/"
-    STEP_3_ENDPOINT = "/api/group/registration/step/3/"
-    STEP_4_ENDPOINT = "/api/group/registration/step/4/"
-    STEP_CONFIRM_ENDPOINT = "/api/group/registration/step/confirm/"
-    UNREGISTER_ENDPOINT = "/api/group/registration/unregister/"
-    INVITATION_ENDPOINT = "/api/group/invitation-code/generate/"
+    STATUS_ENDPOINT = "/api/groups/registration/status/"
+    STEP_1_ENDPOINT = "/api/groups/registration/step/1/"
+    STEP_2_ENDPOINT = "/api/groups/registration/step/2/"
+    STEP_3_ENDPOINT = "/api/groups/registration/step/3/"
+    STEP_4_ENDPOINT = "/api/groups/registration/step/4/"
+    STEP_CONFIRM_ENDPOINT = "/api/groups/registration/step/confirm/"
+    UNREGISTER_ENDPOINT = "/api/groups/registration/unregister/"
+    INVITATION_ENDPOINT = "/api/groups/invitation-code/generate/"
 
     # -------------
     #  Step 1 Flow
@@ -1163,7 +1148,7 @@ class TestGroupRegistrationEndpoints:
 
 
 class TestGroupInvitationCodeEndpoints:
-    INVITATION_ENDPOINT = "/api/group/invitation-code/generate/"
+    INVITATION_ENDPOINT = "/api/groups/invitation-code/generate/"
 
     # ----------------------
     #  Invitation Code Flow

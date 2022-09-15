@@ -7,48 +7,13 @@ from rest_framework import serializers
 
 from heythere.apps.group.models import Group, GroupInvitationCode, GroupProfileImage
 from heythere.apps.hotplace.models import HotPlace
-from heythere.apps.user.models import User
 from heythere.utils.util import is_geopt_within_boundary
 
 
-class JoinedGroupStatusSerializer(serializers.ModelSerializer):
+class JoinedGroupFullInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
-        fields = [
-            "id",
-            "gps_geoinfo",
-            "gps_checked",
-            "gps_last_check_time",
-            "register_step_1_completed",
-            "register_step_2_completed",
-            "register_step_3_completed",
-            "register_step_4_completed",
-            "register_step_all_confirmed",
-            "is_active",
-            "active_until",
-        ]
-
-
-class UserJoinedGroupStatusSerializer(serializers.ModelSerializer):
-    joined_group = JoinedGroupStatusSerializer(read_only=True)
-
-    class Meta:
-        model = User
-        fields = [
-            "id",
-            "phone_number",
-            "is_group_leader",
-            "joined_group",
-        ]
-
-    def to_representation(self, instance: User):
-        representation = super().to_representation(instance)
-        joined_group = representation["joined_group"]
-        del representation["joined_group"]
-        return {
-            "user_info": representation,
-            "joined_group_status": joined_group,
-        }
+        fields = "__all__"
 
 
 class GroupRegisterStep1Serializer(serializers.ModelSerializer):

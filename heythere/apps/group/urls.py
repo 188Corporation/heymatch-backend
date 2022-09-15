@@ -3,7 +3,6 @@ from django.urls import path
 from heythere.apps.group.api.views import (
     GroupInvitationCodeViewSet,
     GroupRegisterConfirmationViewSet,
-    GroupRegisterStatusViewSet,
     GroupRegisterStep1ViewSet,
     GroupRegisterStep2ViewSet,
     GroupRegisterStep3ViewSet,
@@ -13,7 +12,7 @@ from heythere.apps.group.api.views import (
 
 app_name = "group"
 
-group_register_status = GroupRegisterStatusViewSet.as_view({"get": "retrieve"})
+group_registration_view = GroupUnregisterViewSet.as_view({"post": "register"})
 group_register_step_1_view = GroupRegisterStep1ViewSet.as_view({"post": "validate_gps"})
 group_register_step_2_view = GroupRegisterStep2ViewSet.as_view(
     {"post": "invite_member"}
@@ -39,11 +38,6 @@ group_invite_code_generate_view = GroupInvitationCodeViewSet.as_view(
 
 urlpatterns = [
     # Group Registration
-    path(
-        "registration/status/",
-        group_register_status,
-        name="group-registration-status",
-    ),
     path(
         "registration/step/1/",
         group_register_step_1_view,
