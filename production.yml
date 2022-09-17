@@ -1,15 +1,15 @@
 version: '3'
 
 volumes:
-  production_postgres_data: {}
-  production_postgres_data_backups: {}
+  production_postgres_data: { }
+  production_postgres_data_backups: { }
 
 services:
   django: &django
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
-    image: heythere_production_django
+    image: heymatch_production_django
     container_name: django
     platform: linux/x86_64
     depends_on:
@@ -28,7 +28,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/postgres/Dockerfile
-    image: heythere_production_postgres
+    image: heymatch_production_postgres
     container_name: postgres
     volumes:
       - production_postgres_data:/var/lib/postgresql/data:Z
@@ -42,27 +42,27 @@ services:
 
   celeryworker:
     <<: *django
-    image: heythere_production_celeryworker
+    image: heymatch_production_celeryworker
     container_name: celeryworker
     depends_on:
       - redis
       - postgres
-    ports: []
+    ports: [ ]
     command: /start-celeryworker
 
   celerybeat:
     <<: *django
-    image: heythere_production_celerybeat
+    image: heymatch_production_celerybeat
     container_name: celerybeat
     depends_on:
       - redis
       - postgres
-    ports: []
+    ports: [ ]
     command: /start-celerybeat
 
   flower:
     <<: *django
-    image: heythere_production_flower
+    image: heymatch_production_flower
     container_name: flower
     ports:
       - "5555:5555"

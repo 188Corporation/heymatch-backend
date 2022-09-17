@@ -2,6 +2,6 @@
 # ------------------------------------------------------------------------------
 POSTGRES_HOST=postgres
 POSTGRES_PORT=5432
-POSTGRES_DB=heythere
+POSTGRES_DB=heymatch
 POSTGRES_USER=DINazGvLKXilmPsyYWHdptxblJfXEjNf
 POSTGRES_PASSWORD=Ce86vTF5ZqVAXHrkW9QAxsHuaMSWNhGQwjuvFXUPkISXxTgOlTvWULNA0uPHsJob

@@ -11,10 +11,10 @@ app_name = "api"
 
 # Auth and Custom Urls
 urlpatterns = [
-    path("auth/", include("heythere.apps.authen.urls")),
-    path("users/", include("heythere.apps.user.urls")),
-    path("groups/", include("heythere.apps.group.urls")),
-    path("hotplaces/", include("heythere.apps.hotplace.urls")),
-    path("match/", include("heythere.apps.match.urls")),
+    path("auth/", include("heymatch.apps.authen.urls")),
+    path("users/", include("heymatch.apps.user.urls")),
+    path("groups/", include("heymatch.apps.group.urls")),
+    path("hotplaces/", include("heymatch.apps.hotplace.urls")),
+    path("match/", include("heymatch.apps.match.urls")),
 ]
 urlpatterns += router.urls

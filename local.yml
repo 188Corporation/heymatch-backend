@@ -1,16 +1,16 @@
 version: '3'
 
 volumes:
-  heythere_local_postgres_data: { }
-  heythere_local_postgres_data_backups: { }
+  heymatch_local_postgres_data: { }
+  heymatch_local_postgres_data_backups: { }
 
 services:
   django: &django
     build:
       context: .
       dockerfile: ./compose/local/django/Dockerfile
-    image: heythere_local_django
-    container_name: heythere_local_django
+    image: heymatch_local_django
+    container_name: heymatch_local_django
     platform: linux/x86_64
     depends_on:
       - postgres
@@ -28,22 +28,22 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/postgres/Dockerfile
-    image: heythere_production_postgres
-    container_name: heythere_local_postgres
+    image: heymatch_production_postgres
+    container_name: heymatch_local_postgres
     volumes:
-      - heythere_local_postgres_data:/var/lib/postgresql/data:Z
-      - heythere_local_postgres_data_backups:/backups:z
+      - heymatch_local_postgres_data:/var/lib/postgresql/data:Z
+      - heymatch_local_postgres_data_backups:/backups:z
     env_file:
       - ./.envs/.local/.postgres
 
   redis:
     image: redis:6
-    container_name: heythere_local_redis
+    container_name: heymatch_local_redis
 
 #  celeryworker:
 #    <<: *django
-#    image: heythere_local_celeryworker
-#    container_name: heythere_local_celeryworker
+#    image: heymatch_local_celeryworker
+#    container_name: heymatch_local_celeryworker
 #    depends_on:
 #      - redis
 #      - postgres
@@ -52,8 +52,8 @@ services:
 #
 #  celerybeat:
 #    <<: *django
-#    image: heythere_local_celerybeat
-#    container_name: heythere_local_celerybeat
+#    image: heymatch_local_celerybeat
+#    container_name: heymatch_local_celerybeat
 #    depends_on:
 #      - redis
 #      - postgres
@@ -62,8 +62,8 @@ services:
 #
 #  flower:
 #    <<: *django
-#    image: heythere_local_flower
-#    container_name: heythere_local_flower
+#    image: heymatch_local_flower
+#    container_name: heymatch_local_flower
 #    ports:
 #      - "5555:5555"
 #    command: /start-flower

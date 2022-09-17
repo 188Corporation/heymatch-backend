@@ -10,8 +10,8 @@ import stream_chat
 from firebase_admin import initialize_app
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
-# heythere/
-APPS_DIR = ROOT_DIR / "heythere"
+# heymatch/
+APPS_DIR = ROOT_DIR / "heymatch"
 env = environ.Env()
 
 READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=False)
@@ -91,12 +91,12 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     # Your stuff: custom apps go here
-    "heythere.infra",
-    "heythere.apps.authen.apps.AuthAppConfig",
-    "heythere.apps.user.apps.UserAppConfig",
-    "heythere.apps.hotplace.apps.HotplaceAppConfig",
-    "heythere.apps.group.apps.GroupAppConfig",
-    "heythere.apps.match.apps.MatchAppConfig",
+    "heymatch.infra",
+    "heymatch.apps.authen.apps.AuthAppConfig",
+    "heymatch.apps.user.apps.UserAppConfig",
+    "heymatch.apps.hotplace.apps.HotplaceAppConfig",
+    "heymatch.apps.group.apps.GroupAppConfig",
+    "heymatch.apps.match.apps.MatchAppConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -104,7 +104,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 # MIGRATIONS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#migration-modules
-MIGRATION_MODULES = {"sites": "heythere.contrib.sites.migrations"}
+MIGRATION_MODULES = {"sites": "heymatch.contrib.sites.migrations"}
 
 # AUTHENTICATION
 # ------------------------------------------------------------------------------
@@ -277,7 +277,7 @@ CELERY_TASK_SOFT_TIME_LIMIT = 60
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 CELERY_BEAT_SCHEDULE = {
     "handle-expired-groups-every-1m": {
-        "task": "heythere.apps.group.tasks.handle_expired_groups",
+        "task": "heymatch.apps.group.tasks.handle_expired_groups",
         "schedule": timedelta(minutes=1),
         "args": (),
     },
@@ -293,13 +293,13 @@ CELERY_BEAT_SCHEDULE = {
 # # https://django-allauth.readthedocs.io/en/latest/configuration.html
 # ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 # # https://django-allauth.readthedocs.io/en/latest/configuration.html
-# ACCOUNT_ADAPTER = "heythere.users.adapters.AccountAdapter"
+# ACCOUNT_ADAPTER = "heymatch.users.adapters.AccountAdapter"
 # # https://django-allauth.readthedocs.io/en/latest/forms.html
-# ACCOUNT_FORMS = {"signup": "heythere.users.forms.UserSignupForm"}
+# ACCOUNT_FORMS = {"signup": "heymatch.users.forms.UserSignupForm"}
 # # https://django-allauth.readthedocs.io/en/latest/configuration.html
-# SOCIALACCOUNT_ADAPTER = "heythere.users.adapters.SocialAccountAdapter"
+# SOCIALACCOUNT_ADAPTER = "heymatch.users.adapters.SocialAccountAdapter"
 # # https://django-allauth.readthedocs.io/en/latest/forms.html
-# SOCIALACCOUNT_FORMS = {"signup": "heythere.users.forms.UserSocialSignupForm"}
+# SOCIALACCOUNT_FORMS = {"signup": "heymatch.users.forms.UserSocialSignupForm"}
 
 # django-rest-framework
 # -------------------------------------------------------------------------------
@@ -311,7 +311,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.BasicAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
-    "DEFAULT_RENDERER_CLASSES": ("heythere.shared.renderers.JSONResponseRenderer",),
+    "DEFAULT_RENDERER_CLASSES": ("heymatch.shared.renderers.JSONResponseRenderer",),
 }
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
@@ -327,7 +327,7 @@ SPECTACULAR_SETTINGS = {
     "SERVERS": [
         {"url": "http://127.0.0.1:8000", "description": "Local Development server"},
         {
-            "url": "https://heythere.188corporation.com",
+            "url": "https://heymatch.188corporation.com",
             "description": "Production server",
         },
     ],
@@ -352,7 +352,7 @@ PHONE_VERIFICATION = {
     "VERIFY_SECURITY_CODE_ONLY_ONCE": True,
     # If False, then a security code can be used multiple times for verification
 }
-PHONE_VERIFICATION_DEFAULT_PASSWORD = "heythere@!188corp"
+PHONE_VERIFICATION_DEFAULT_PASSWORD = "heymatch@!188corp"
 
 # dj-rest-auth
 # ------------------------------------------------------------------------------
@@ -360,11 +360,11 @@ REST_USE_JWT = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_LOGOUT_ON_GET = True
 REST_AUTH_SERIALIZERS = {
-    "LOGIN_SERIALIZER": "heythere.apps.authen.api.serializers.UserLoginByPhoneNumberSerializer",
-    "USER_DETAILS_SERIALIZER": "heythere.apps.authen.api.serializers.UserDetailByPhoneNumberSerializer",
+    "LOGIN_SERIALIZER": "heymatch.apps.authen.api.serializers.UserLoginByPhoneNumberSerializer",
+    "USER_DETAILS_SERIALIZER": "heymatch.apps.authen.api.serializers.UserDetailByPhoneNumberSerializer",
 }
 REST_AUTH_REGISTER_SERIALIZERS = {
-    "REGISTER_SERIALIZER": "heythere.apps.authen.api.serializers.UserRegisterByPhoneNumberSerializer",
+    "REGISTER_SERIALIZER": "heymatch.apps.authen.api.serializers.UserRegisterByPhoneNumberSerializer",
 }
 
 # djangorestframework-simplejwt
