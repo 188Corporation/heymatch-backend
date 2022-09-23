@@ -1,3 +1,4 @@
+import pathlib
 import random
 
 from django.conf import settings
@@ -5,10 +6,15 @@ from django.contrib.auth import get_user_model
 from django.core import management
 from django.core.management.base import BaseCommand
 from django.db.utils import IntegrityError
+from factory.django import ImageField
 from phone_verify.models import SMSVerification
 
 from heymatch.apps.group.models import Group
-from heymatch.apps.group.tests.factories import ActiveGroupFactory
+from heymatch.apps.group.tests.factories import (
+    ActiveGroupFactory,
+    GroupProfileImageFactory,
+    profile_image_filepath,
+)
 from heymatch.apps.hotplace.tests.factories import (
     RANDOM_HOTPLACE_INFO,
     RANDOM_HOTPLACE_NAMES,
@@ -82,7 +88,14 @@ class Command(BaseCommand):
                     hotplace=hotplace,
                     gps_geoinfo=geopt,
                 )
-                # create users for each groups
+                # Create group profile image
+                GroupProfileImageFactory.create(
+                    group=group,
+                    image=ImageField(
+                        from_path=f"{pathlib.Path().resolve()}/heymatch/data/{random.choice(profile_image_filepath)}"
+                    ),
+                )
+                # Create users for each groups
                 users = ActiveUserFactory.create_batch(
                     size=random.randint(2, 5),
                     joined_group=group,

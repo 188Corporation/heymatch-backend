@@ -3,11 +3,11 @@ import datetime
 import pytz
 from django.conf import settings
 from factory import SubFactory
-from factory.django import DjangoModelFactory
+from factory.django import DjangoModelFactory, ImageField
 from factory.faker import Faker
 from factory.fuzzy import FuzzyDateTime, FuzzyInteger
 
-from heymatch.apps.group.models import Group, GroupInvitationCode
+from heymatch.apps.group.models import Group, GroupInvitationCode, GroupProfileImage
 from heymatch.apps.hotplace.tests.factories import HotPlaceFactory
 from heymatch.utils.util import FuzzyGeoPt, FuzzyInt4Range
 
@@ -69,6 +69,25 @@ class InactiveGroupFactory(DjangoModelFactory):
     register_step_all_confirmed = False
 
     is_active = False
+
+
+profile_image_filepath = [
+    "male_profile_1.jpeg",
+    "male_profile_2.jpeg",
+    "male_profile_3.jpeg",
+    "female_profile_1.jpeg",
+    "female_profile_2.jpeg",
+    "female_profile_3.jpeg",
+    "female_profile_4.jpeg",
+]
+
+
+class GroupProfileImageFactory(DjangoModelFactory):
+    class Meta:
+        model = GroupProfileImage
+
+    group = SubFactory(ActiveGroupFactory)
+    image = ImageField()
 
 
 class ActiveGroupInvitationCodeFactory(DjangoModelFactory):

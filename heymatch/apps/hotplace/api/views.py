@@ -1,8 +1,10 @@
 from typing import Any
 
+import geopy.distance
 from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -11,7 +13,11 @@ from rest_framework.response import Response
 from heymatch.apps.group.models import Group, GroupBlackList
 from heymatch.apps.hotplace.models import HotPlace
 
-from .serializers import HotPlaceDetailSerializer, HotPlaceGroupSummarySerializer
+from .serializers import (
+    HotPlaceDetailSerializer,
+    HotPlaceGroupSummarySerializer,
+    HotPlaceNearestBodySerializer,
+)
 
 
 class HotPlaceViewSet(viewsets.ViewSet):
@@ -31,6 +37,41 @@ class HotPlaceViewSet(viewsets.ViewSet):
         hotplace = get_object_or_404(queryset, id=hotplace_id)
         serializer = HotPlaceDetailSerializer(hotplace)
         return Response(serializer.data)
+
+
+class HotPlaceNearestViewSet(viewsets.ViewSet):
+    """
+    A simple ViewSet for retrieving HotPlaces that is nearest to the user.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(request_body=HotPlaceNearestBodySerializer)
+    def nearest(self, request) -> Response:
+        queryset = HotPlace.objects.all()
+        hotplace = self.get_nearest_hotplace(
+            request.data["lat"], request.data["long"], hotplace_qs=queryset
+        )
+        serializer = HotPlaceDetailSerializer(hotplace)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+    @staticmethod
+    def get_nearest_hotplace(lat: str, long: str, hotplace_qs) -> HotPlace or None:
+        nearest_hotplace = None
+        nearest_meter = None
+        for hp in hotplace_qs:
+            hp_lat_lon = hp.zone_center_geoinfo
+            dist_meter = geopy.distance.geodesic(
+                (hp_lat_lon.lat, hp_lat_lon.lon), (lat, long)
+            ).m
+            if not nearest_hotplace:
+                nearest_hotplace = hp
+                nearest_meter = dist_meter
+                continue
+            if dist_meter < nearest_meter:
+                nearest_hotplace = hp
+                nearest_meter = dist_meter
+        return nearest_hotplace
 
 
 class HotPlaceActiveGroupViewSet(viewsets.ModelViewSet):

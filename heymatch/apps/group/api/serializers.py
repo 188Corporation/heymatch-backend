@@ -21,27 +21,107 @@ class GroupListBodySerializer(serializers.Serializer):
     long = serializers.DecimalField(max_digits=10, decimal_places=7)
 
 
-class LimitedProfileGroupListSerializer(serializers.ModelSerializer):
+class OriginalProfileImageSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField(
+        "decide_whether_original_or_blurred_image"
+    )
+    thumbnail = serializers.SerializerMethodField(
+        "decide_whether_original_or_blurred_thumbnail"
+    )
+
+    class Meta:
+        model = GroupProfileImage
+        fields = [
+            "image",
+            "thumbnail",
+        ]
+
+    def decide_whether_original_or_blurred_image(self, obj):
+        hotplace_id = self.context.get("hotplace_id")
+        if hotplace_id:
+            if obj.group.hotplace.id == hotplace_id:
+                return obj.image.url
+        return obj.image_blurred.url
+
+    def decide_whether_original_or_blurred_thumbnail(self, obj):
+        hotplace_id = self.context.get("hotplace_id")
+        if hotplace_id:
+            if obj.group.hotplace.id == hotplace_id:
+                return obj.thumbnail.url
+        return obj.thumbnail_blurred.url
+
+
+class BlurredProfileImageSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField("change_image_blurred_name")
+    thumbnail = serializers.SerializerMethodField("change_thumbnail_blurred_name")
+
+    class Meta:
+        model = GroupProfileImage
+        fields = [
+            "image",
+            "thumbnail",
+        ]
+
+    def change_image_blurred_name(self, obj):
+        return obj.image_blurred.url
+
+    def change_thumbnail_blurred_name(self, obj):
+        return obj.thumbnail_blurred.url
+
+
+class GroupWithBlurredProfileSerializer(serializers.ModelSerializer):
+    group_profile_images = BlurredProfileImageSerializer(
+        "group_profile_images", many=True, read_only=True
+    )
+
     class Meta:
         model = Group
         fields = [
             "id",
-            "hotplace",
             "gps_geoinfo",
             "gps_checked",
             "gps_last_check_time",
+            "group_profile_images",
         ]
 
 
-class FullProfileGroupListSerializer(serializers.ModelSerializer):
+class GroupWithOriginalProfileSerializer(serializers.ModelSerializer):
+    group_profile_images = OriginalProfileImageSerializer(
+        "group_profile_images", many=True, read_only=True
+    )
+
     class Meta:
         model = Group
         fields = [
             "id",
-            "hotplace",
             "gps_geoinfo",
             "gps_checked",
             "gps_last_check_time",
+            "group_profile_images",
+        ]
+
+
+class GroupWithBlurredProfileSortedByHotplaceSerializer(serializers.ModelSerializer):
+    groups = GroupWithBlurredProfileSerializer("groups", many=True, read_only=True)
+
+    class Meta:
+        model = HotPlace
+        fields = [
+            "id",
+            "name",
+            "groups",
+        ]
+
+
+class GroupWithOriginalProfileSortedByHotplaceSerializer(serializers.ModelSerializer):
+    groups = GroupWithOriginalProfileSerializer("groups", many=True, read_only=True)
+
+    class Meta:
+        model = HotPlace
+        fields = [
+            "id",
+            "name",
+            "groups",
         ]
 
 

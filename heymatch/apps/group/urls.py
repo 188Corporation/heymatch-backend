@@ -13,7 +13,7 @@ from heymatch.apps.group.api.views import (
 
 app_name = "group"
 
-group_list_view = GroupListViewSet.as_view({"post": "list"})
+group_list_view = GroupListViewSet.as_view({"get": "list"})
 group_registration_view = GroupUnregisterViewSet.as_view({"post": "register"})
 group_register_step_1_view = GroupRegisterStep1ViewSet.as_view({"post": "validate_gps"})
 group_register_step_2_view = GroupRegisterStep2ViewSet.as_view(

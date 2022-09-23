@@ -35,7 +35,11 @@ def group_default_time():
 class Group(models.Model):
     # Group GPS
     hotplace = models.ForeignKey(
-        "hotplace.HotPlace", blank=True, null=True, on_delete=models.PROTECT
+        "hotplace.HotPlace",
+        blank=True,
+        null=True,
+        on_delete=models.PROTECT,
+        related_name="groups",
     )
     gps_geoinfo = GeoLocationField(blank=True, null=True)
     gps_checked = models.BooleanField(blank=False, null=False, default=False)
@@ -133,7 +137,13 @@ def upload_to(instance, filename):
 
 
 class GroupProfileImage(OrderedModel):
-    group = models.ForeignKey(Group, blank=True, null=True, on_delete=models.SET_NULL)
+    group = models.ForeignKey(
+        "group.Group",
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="group_profile_images",
+    )
     image = models.ImageField(upload_to=upload_to)
     image_blurred = models.ImageField(upload_to=upload_to)
     thumbnail = models.ImageField(upload_to=upload_to)

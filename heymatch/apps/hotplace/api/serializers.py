@@ -4,6 +4,11 @@ from heymatch.apps.group.models import Group
 from heymatch.apps.hotplace.models import HotPlace
 
 
+class HotPlaceNearestBodySerializer(serializers.Serializer):
+    lat = serializers.DecimalField(max_digits=10, decimal_places=7)
+    long = serializers.DecimalField(max_digits=10, decimal_places=7)
+
+
 class HotPlaceDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = HotPlace
