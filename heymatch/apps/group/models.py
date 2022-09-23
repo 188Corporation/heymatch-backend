@@ -13,7 +13,6 @@ from django.contrib.postgres.validators import (
 from django.core.files.base import ContentFile
 from django.db import models
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
 from django_google_maps.fields import GeoLocationField
 from ordered_model.models import OrderedModel
 from PIL import Image, ImageFilter
@@ -43,10 +42,20 @@ class Group(models.Model):
     gps_last_check_time = models.DateTimeField(blank=True, null=True)
 
     # Group Profile
-    title = models.CharField(
-        _("Title of Group"), blank=False, null=False, max_length=100
-    )
+    title = models.CharField("Title of Group", blank=False, null=False, max_length=100)
     introduction = models.TextField(blank=True, null=True, max_length=500)
+    male_member_number = models.IntegerField(
+        blank=True,
+        null=True,
+    )
+    female_member_number = models.IntegerField(
+        blank=True,
+        null=True,
+    )
+    member_average_age = models.IntegerField(
+        blank=True,
+        null=True,
+    )
     desired_other_group_member_number = models.IntegerField(
         blank=True,
         null=True,

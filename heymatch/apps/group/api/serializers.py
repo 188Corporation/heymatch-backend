@@ -16,6 +16,35 @@ class JoinedGroupFullInfoSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class GroupListBodySerializer(serializers.Serializer):
+    lat = serializers.DecimalField(max_digits=10, decimal_places=7)
+    long = serializers.DecimalField(max_digits=10, decimal_places=7)
+
+
+class LimitedProfileGroupListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = [
+            "id",
+            "hotplace",
+            "gps_geoinfo",
+            "gps_checked",
+            "gps_last_check_time",
+        ]
+
+
+class FullProfileGroupListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = [
+            "id",
+            "hotplace",
+            "gps_geoinfo",
+            "gps_checked",
+            "gps_last_check_time",
+        ]
+
+
 class GroupRegisterStep1Serializer(serializers.ModelSerializer):
     class Meta:
         model = Group

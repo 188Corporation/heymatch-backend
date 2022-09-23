@@ -28,6 +28,9 @@ class ActiveGroupFactory(DjangoModelFactory):
     # Group Profile
     title = Faker("sentence")
     introduction = Faker("paragraph", nb_sentences=3)
+    male_member_number = Faker("pyint", min_value=2, max_value=3)
+    female_member_number = Faker("pyint", min_value=0, max_value=2)
+    member_average_age = Faker("pyint", min_value=20, max_value=35)
     desired_other_group_member_number = Faker("pyint", min_value=1, max_value=5)
     desired_other_group_member_avg_age_range = FuzzyInt4Range(low=20, high=60)
 

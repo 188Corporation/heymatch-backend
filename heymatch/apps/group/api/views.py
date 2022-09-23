@@ -1,5 +1,6 @@
 from typing import Any
 
+import geopy.distance
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
@@ -10,6 +11,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from heymatch.apps.group.models import Group, GroupInvitationCode, GroupProfileImage
+from heymatch.apps.hotplace.models import HotPlace
 from heymatch.shared.permissions import (
     IsGroupRegisterAllowed,
     IsUserActive,
@@ -17,8 +19,10 @@ from heymatch.shared.permissions import (
 )
 
 from .serializers import (
+    FullProfileGroupListSerializer,
     GroupInvitationCodeCreateBodySerializer,
     GroupInvitationCodeSerializer,
+    GroupListBodySerializer,
     GroupRegisterConfirmationSerializer,
     GroupRegisterStep1BodySerializer,
     GroupRegisterStep1Serializer,
@@ -29,9 +33,63 @@ from .serializers import (
     GroupRegisterStep3UpdatePhotoBodySerializer,
     GroupRegisterStep3UploadPhotoBodySerializer,
     GroupRegisterStep4Serializer,
+    LimitedProfileGroupListSerializer,
 )
 
 User = get_user_model()
+
+
+class GroupListViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for searching, listing Groups
+    """
+
+    serializer_class = LimitedProfileGroupListSerializer
+    full_serializer_class = FullProfileGroupListSerializer
+    permission_classes = [
+        IsAuthenticated,
+        IsUserActive,
+    ]
+
+    @swagger_auto_schema(request_body=GroupListBodySerializer)
+    def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        # get nearest hotplace
+        hotplace = self.get_nearest_hotplace(request.data["lat"], request.data["long"])
+        print(hotplace)
+        # Get the hotplace, or the nearest hotplace according to lang, lat info
+        # serializer = self.get_serializer(data=request.data)
+
+        # if no group, all profile limited
+        # self.get_serializer(data=)
+
+        # if group, group in same hotplace full access. Rest limited
+        return Response(status=status.HTTP_200_OK)
+
+    def get_serializer_class(self):
+        group = self.request.user.joined_group
+        # if has group, unlimited profile serializer
+        if group:
+            return self.full_serializer_class
+        # if no group, limited profile serializer
+        return self.serializer_class
+
+    @staticmethod
+    def get_nearest_hotplace(lat: str, long: str) -> HotPlace or None:
+        nearest_hotplace = None
+        nearest_meter = None
+        for hp in HotPlace.objects.all():
+            hp_lat_lon = hp.zone_center_geoinfo
+            dist_meter = geopy.distance.geodesic(
+                (hp_lat_lon.lat, hp_lat_lon.lon), (lat, long)
+            ).m
+            if not nearest_hotplace:
+                nearest_hotplace = hp
+                nearest_meter = dist_meter
+                continue
+            if dist_meter < nearest_meter:
+                nearest_hotplace = hp
+                nearest_meter = dist_meter
+        return nearest_hotplace
 
 
 class GroupRegisterStep1ViewSet(viewsets.ModelViewSet):

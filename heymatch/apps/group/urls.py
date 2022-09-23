@@ -2,6 +2,7 @@ from django.urls import path
 
 from heymatch.apps.group.api.views import (
     GroupInvitationCodeViewSet,
+    GroupListViewSet,
     GroupRegisterConfirmationViewSet,
     GroupRegisterStep1ViewSet,
     GroupRegisterStep2ViewSet,
@@ -12,6 +13,7 @@ from heymatch.apps.group.api.views import (
 
 app_name = "group"
 
+group_list_view = GroupListViewSet.as_view({"post": "list"})
 group_registration_view = GroupUnregisterViewSet.as_view({"post": "register"})
 group_register_step_1_view = GroupRegisterStep1ViewSet.as_view({"post": "validate_gps"})
 group_register_step_2_view = GroupRegisterStep2ViewSet.as_view(
@@ -37,7 +39,7 @@ group_invite_code_generate_view = GroupInvitationCodeViewSet.as_view(
 )
 
 urlpatterns = [
-    # Group Registration
+    path("", group_list_view, name="group-list"),
     path(
         "registration/step/1/",
         group_register_step_1_view,
@@ -70,9 +72,9 @@ urlpatterns = [
         name="group-registration-unregister",
     ),
     # Group Invitation
-    path(
-        "invitation-code/generate/",
-        group_invite_code_generate_view,
-        name="group-invitation-code-generate",
-    ),
+    # path(
+    #     "invitation-code/generate/",
+    #     group_invite_code_generate_view,
+    #     name="group-invitation-code-generate",
+    # ),
 ]
