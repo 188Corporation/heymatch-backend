@@ -12,12 +12,15 @@ from rest_framework.response import Response
 from heymatch.apps.group.models import Group, GroupInvitationCode, GroupProfileImage
 from heymatch.apps.hotplace.models import HotPlace
 from heymatch.shared.permissions import (
+    IsGroupCreationAllowed,
     IsGroupRegisterAllowed,
     IsUserActive,
+    IsUserJoinedGroup,
     IsUserNotGroupLeader,
 )
 
 from .serializers import (
+    GroupFullInfoSerializer,
     GroupInvitationCodeCreateBodySerializer,
     GroupInvitationCodeSerializer,
     GroupRegisterConfirmationSerializer,
@@ -66,6 +69,38 @@ class GroupListViewSet(viewsets.ModelViewSet):
         if self.request.user.joined_group:
             context.update({"hotplace_id": self.request.user.joined_group.hotplace.id})
         return context
+
+
+class GroupDetailViewSet(viewsets.ViewSet):
+    """
+    ViewSet for detail view of Groups
+
+    If user does not belong to any group, deny.
+    """
+
+    permission_classes = [
+        IsAuthenticated,
+        IsUserActive,
+        IsUserJoinedGroup,
+    ]
+
+    def retrieve(self, request, group_id: int) -> Response:
+        queryset = Group.active_objects.all()
+        group = get_object_or_404(queryset, id=group_id)
+        serializer = GroupFullInfoSerializer(group)
+        return Response(serializer.data)
+
+
+class GroupCreateViewSet(viewsets.ModelViewSet):
+    serializer_class = ""
+    permission_classes = [
+        IsAuthenticated,
+        IsUserActive,
+        IsGroupCreationAllowed,
+    ]
+
+    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        return
 
 
 class GroupRegisterStep1ViewSet(viewsets.ModelViewSet):

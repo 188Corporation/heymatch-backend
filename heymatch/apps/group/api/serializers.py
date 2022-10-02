@@ -10,10 +10,23 @@ from heymatch.apps.hotplace.models import HotPlace
 from heymatch.utils.util import is_geopt_within_boundary
 
 
-class JoinedGroupFullInfoSerializer(serializers.ModelSerializer):
+class GroupFullInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
-        fields = "__all__"
+        fields = [
+            "id",
+            "gps_geoinfo",
+            "gps_checked",
+            "gps_last_check_time",
+            "title",
+            "introduction",
+            "male_member_number",
+            "female_member_number",
+            "member_average_age",
+            "is_active",
+            "active_until",
+            "hotplace",
+        ]
 
 
 class GroupListBodySerializer(serializers.Serializer):

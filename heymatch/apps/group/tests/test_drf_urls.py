@@ -70,12 +70,13 @@ def test_group_registration_unregister():
     )
 
 
-def test_group_invitation_code_generate():
-    assert (
-        reverse("api:group:group-invitation-code-generate")
-        == "/api/groups/invitation-code/generate/"
-    )
-    assert (
-        resolve("/api/groups/invitation-code/generate/").view_name
-        == "api:group:group-invitation-code-generate"
-    )
+#
+# def test_group_invitation_code_generate():
+#     assert (
+#         reverse("api:group:group-invitation-code-generate")
+#         == "/api/groups/invitation-code/generate/"
+#     )
+#     assert (
+#         resolve("/api/groups/invitation-code/generate/").view_name
+#         == "api:group:group-invitation-code-generate"
+#     )

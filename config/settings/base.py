@@ -307,8 +307,10 @@ CELERY_BEAT_SCHEDULE = {
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "dj_rest_auth.jwt_auth.JWTAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.BasicAuthentication",
+        # REST API for mobile app does not need session
+        # https://security.stackexchange.com/questions/231710/is-csrf-prevention-logic-required-for-api-that-is-consumed-only-by-mobile-app/231713#231713
+        # "rest_framework.authentication.SessionAuthentication",
+        # "rest_framework.authentication.BasicAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_RENDERER_CLASSES": ("heymatch.shared.renderers.JSONResponseRenderer",),

@@ -3,6 +3,13 @@ from rest_framework import exceptions, permissions
 from rest_framework.request import Request
 from rest_framework.views import APIView
 
+from .exceptions import (
+    UserGroupLeaderException,
+    UserJoinedGroupNotActiveException,
+    UserNotActiveException,
+    UserNotJoinedGroupException,
+)
+
 User = get_user_model()
 
 
@@ -11,16 +18,7 @@ class IsUserActive(permissions.BasePermission):
 
     def has_permission(self, request: Request, view: APIView) -> bool:
         if not request.user.is_active:
-            raise exceptions.PermissionDenied(detail=self.message)
-        return True
-
-
-class IsUserGroupLeader(permissions.BasePermission):
-    message = "Permission denied. User is not a group leader."
-
-    def has_permission(self, request: Request, view: APIView) -> bool:
-        if not request.user.is_group_leader:
-            raise exceptions.PermissionDenied(detail=self.message)
+            raise UserNotActiveException(detail=self.message)
         return True
 
 
@@ -29,7 +27,7 @@ class IsUserJoinedGroup(permissions.BasePermission):
 
     def has_permission(self, request: Request, view: APIView) -> bool:
         if not request.user.joined_group:
-            raise exceptions.PermissionDenied(detail=self.message)
+            raise UserNotJoinedGroupException(detail=self.message)
         return True
 
 
@@ -39,9 +37,9 @@ class IsUserJoinedGroupActive(permissions.BasePermission):
 
     def has_permission(self, request: Request, view: APIView) -> bool:
         if not request.user.joined_group:
-            raise exceptions.PermissionDenied(detail=self.message1)
+            raise UserNotJoinedGroupException(detail=self.message1)
         if not request.user.joined_group.is_active:
-            raise exceptions.PermissionDenied(detail=self.message2)
+            raise UserJoinedGroupNotActiveException(detail=self.message2)
         return True
 
 
@@ -50,6 +48,27 @@ class IsUserNotGroupLeader(permissions.BasePermission):
 
     def has_permission(self, request: Request, view: APIView) -> bool:
         if request.user.is_group_leader:
+            raise UserGroupLeaderException(detail=self.message)
+        return True
+
+
+# -------------------------------
+# TODO: DEPRECATE BELOW CODES
+# -------------------------------
+class IsGroupCreationAllowed(permissions.BasePermission):
+    def has_permission(self, request: Request, view: APIView) -> bool:
+        if hasattr(request.user, "joined_group"):
+            raise exceptions.PermissionDenied(
+                detail=f"Permission denied. User alreaday belongs to group(id={request.user.joined_group.id})."
+            )
+        return True
+
+
+class IsUserGroupLeader(permissions.BasePermission):
+    message = "Permission denied. User is not a group leader."
+
+    def has_permission(self, request: Request, view: APIView) -> bool:
+        if not request.user.is_group_leader:
             raise exceptions.PermissionDenied(detail=self.message)
         return True
 
