@@ -19,7 +19,6 @@ class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
             "height_cm",
             "workplace",
             "school",
-            "is_group_leader",
             "joined_group",
         ]
 

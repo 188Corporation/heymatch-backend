@@ -11,6 +11,7 @@ from rest_framework.response import Response
 
 from heymatch.apps.group.models import Group, GroupInvitationCode, GroupProfileImage
 from heymatch.apps.hotplace.models import HotPlace
+from heymatch.shared.exceptions import UserGPSNotWithinHotplaceException
 from heymatch.shared.permissions import (
     IsGroupCreationAllowed,
     IsGroupRegisterAllowed,
@@ -87,6 +88,10 @@ class GroupDetailViewSet(viewsets.ViewSet):
     def retrieve(self, request, group_id: int) -> Response:
         queryset = Group.active_objects.all()
         group = get_object_or_404(queryset, id=group_id)
+        if request.user.joined_group.hotplace.id != group.hotplace.id:
+            raise UserGPSNotWithinHotplaceException(
+                detail="User's joined group should be in the same hotplace of the requested group."
+            )
         serializer = GroupFullInfoSerializer(group)
         return Response(serializer.data)
 

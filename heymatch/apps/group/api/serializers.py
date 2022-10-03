@@ -10,30 +10,6 @@ from heymatch.apps.hotplace.models import HotPlace
 from heymatch.utils.util import is_geopt_within_boundary
 
 
-class GroupFullInfoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Group
-        fields = [
-            "id",
-            "gps_geoinfo",
-            "gps_checked",
-            "gps_last_check_time",
-            "title",
-            "introduction",
-            "male_member_number",
-            "female_member_number",
-            "member_average_age",
-            "is_active",
-            "active_until",
-            "hotplace",
-        ]
-
-
-class GroupListBodySerializer(serializers.Serializer):
-    lat = serializers.DecimalField(max_digits=10, decimal_places=7)
-    long = serializers.DecimalField(max_digits=10, decimal_places=7)
-
-
 class OriginalProfileImageSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField(
         "decide_whether_original_or_blurred_image"
@@ -92,8 +68,13 @@ class GroupWithBlurredProfileSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "gps_geoinfo",
-            "gps_checked",
-            "gps_last_check_time",
+            "title",
+            "male_member_number",
+            "female_member_number",
+            "member_average_age",
+            "is_active",
+            "active_until",
+            "hotplace",
             "group_profile_images",
         ]
 
@@ -108,8 +89,13 @@ class GroupWithOriginalProfileSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "gps_geoinfo",
-            "gps_checked",
-            "gps_last_check_time",
+            "title",
+            "male_member_number",
+            "female_member_number",
+            "member_average_age",
+            "is_active",
+            "active_until",
+            "hotplace",
             "group_profile_images",
         ]
 
@@ -135,6 +121,28 @@ class GroupWithOriginalProfileSortedByHotplaceSerializer(serializers.ModelSerial
             "id",
             "name",
             "groups",
+        ]
+
+
+class GroupFullInfoSerializer(serializers.ModelSerializer):
+    group_profile_images = OriginalProfileImageSerializer(
+        "group_profile_images", many=True, read_only=True
+    )
+
+    class Meta:
+        model = Group
+        fields = [
+            "id",
+            "gps_geoinfo",
+            "title",
+            "introduction",
+            "male_member_number",
+            "female_member_number",
+            "member_average_age",
+            "is_active",
+            "active_until",
+            "hotplace",
+            "group_profile_images",
         ]
 
 
