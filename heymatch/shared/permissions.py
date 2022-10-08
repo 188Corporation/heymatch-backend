@@ -57,9 +57,9 @@ class IsUserNotGroupLeader(permissions.BasePermission):
 # -------------------------------
 class IsGroupCreationAllowed(permissions.BasePermission):
     def has_permission(self, request: Request, view: APIView) -> bool:
-        if hasattr(request.user, "joined_group"):
+        if request.user.joined_group:
             raise exceptions.PermissionDenied(
-                detail=f"Permission denied. User alreaday belongs to group(id={request.user.joined_group.id})."
+                detail="Permission denied. User already belongs to group."
             )
         return True
 

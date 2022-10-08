@@ -47,7 +47,7 @@ class Group(models.Model):
 
     # Group Profile
     title = models.CharField("Title of Group", blank=False, null=False, max_length=100)
-    introduction = models.TextField(blank=True, null=True, max_length=500)
+    introduction = models.TextField(blank=False, null=False, max_length=500)
     male_member_number = models.IntegerField(
         blank=True,
         null=True,
@@ -89,7 +89,7 @@ class Group(models.Model):
     )
 
     # Group Lifecycle
-    is_active = models.BooleanField(blank=False, null=False, default=False)
+    is_active = models.BooleanField(blank=False, null=False, default=True)
     active_until = models.DateTimeField(
         blank=True, null=True, default=group_default_time
     )

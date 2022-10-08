@@ -42,7 +42,6 @@ class TestGroupRegistrationEndpoints:
 
         # Check if group is still inactive
         assert active_user.joined_group is not None
-        assert active_user.joined_group.is_active is False
         assert active_user.joined_group.desired_other_group_member_number is None
         assert active_user.joined_group.desired_other_group_member_avg_age_range is None
         assert active_user.joined_group.register_step_1_completed is True
@@ -73,7 +72,6 @@ class TestGroupRegistrationEndpoints:
         )
         assert res.status_code == 201
         assert active_user.joined_group is not None
-        assert active_user.joined_group.is_active is False
 
         # call again and fail
         res = api_client.post(
@@ -136,7 +134,6 @@ class TestGroupRegistrationEndpoints:
         )
         assert res.status_code == 201
         assert active_user.joined_group is not None
-        assert active_user.joined_group.is_active is False
 
         # Friends get Group Invitation code for each
         friends = ActiveUserFactory.create_batch(size=3, joined_group=None)
@@ -156,7 +153,6 @@ class TestGroupRegistrationEndpoints:
         )
         assert res.status_code == 200
         assert active_user.joined_group is not None
-        assert active_user.joined_group.is_active is False
         assert active_user.joined_group.desired_other_group_member_number is None
         assert active_user.joined_group.desired_other_group_member_avg_age_range is None
         assert active_user.joined_group.register_step_1_completed is True
@@ -171,7 +167,6 @@ class TestGroupRegistrationEndpoints:
             f_obj = User.active_objects.get(id=friend.id)
             assert code.is_active is False
             assert f_obj.joined_group.id == active_user.joined_group.id
-            assert f_obj.joined_group.is_active is False
 
     def test_registration_step_2_if_unauthenticated(self, api_client):
         res = api_client.post(
@@ -245,7 +240,6 @@ class TestGroupRegistrationEndpoints:
         )
         assert res.status_code == 400
         assert active_user.joined_group is not None
-        assert active_user.joined_group.is_active is False
         assert active_user.joined_group.desired_other_group_member_number is None
         assert active_user.joined_group.desired_other_group_member_avg_age_range is None
         assert active_user.joined_group.register_step_1_completed is True
@@ -316,7 +310,6 @@ class TestGroupRegistrationEndpoints:
         assert image.order is not None
 
         assert active_user.joined_group is not None
-        assert active_user.joined_group.is_active is False
         assert active_user.joined_group.desired_other_group_member_number is None
         assert active_user.joined_group.desired_other_group_member_avg_age_range is None
         assert active_user.joined_group.register_step_1_completed is True
@@ -402,7 +395,6 @@ class TestGroupRegistrationEndpoints:
             )
         assert res.status_code == 403
         assert active_user.joined_group is not None
-        assert active_user.joined_group.is_active is False
         assert active_user.joined_group.desired_other_group_member_number is None
         assert active_user.joined_group.desired_other_group_member_avg_age_range is None
         assert active_user.joined_group.register_step_1_completed is True
@@ -456,7 +448,6 @@ class TestGroupRegistrationEndpoints:
                 )
 
         assert active_user.joined_group is not None
-        assert active_user.joined_group.is_active is False
         assert active_user.joined_group.desired_other_group_member_number is None
         assert active_user.joined_group.desired_other_group_member_avg_age_range is None
         assert active_user.joined_group.register_step_1_completed is True
@@ -599,7 +590,6 @@ class TestGroupRegistrationEndpoints:
 
         # check group info
         assert active_user.joined_group is not None
-        assert active_user.joined_group.is_active is False
         assert active_user.joined_group.desired_other_group_member_number is None
         assert active_user.joined_group.desired_other_group_member_avg_age_range is None
         assert active_user.joined_group.register_step_1_completed is True
@@ -676,7 +666,6 @@ class TestGroupRegistrationEndpoints:
         )
         assert res.status_code == 200
         assert active_user.joined_group is not None
-        assert active_user.joined_group.is_active is False
         assert active_user.joined_group.register_step_1_completed is True
         assert active_user.joined_group.register_step_2_completed is True
         assert active_user.joined_group.register_step_3_completed is True
@@ -771,7 +760,6 @@ class TestGroupRegistrationEndpoints:
         )
         assert res.status_code == 403
         assert active_user.joined_group is not None
-        assert active_user.joined_group.is_active is False
         assert active_user.joined_group.desired_other_group_member_number is None
         assert active_user.joined_group.desired_other_group_member_avg_age_range is None
         assert active_user.joined_group.register_step_1_completed is True
@@ -822,7 +810,6 @@ class TestGroupRegistrationEndpoints:
         )
         assert res.status_code == 403
         assert active_user.joined_group is not None
-        assert active_user.joined_group.is_active is False
         assert active_user.joined_group.desired_other_group_member_number is None
         assert active_user.joined_group.desired_other_group_member_avg_age_range is None
         assert active_user.joined_group.register_step_1_completed is True
@@ -944,7 +931,6 @@ class TestGroupRegistrationEndpoints:
         res = api_client.post(self.STEP_CONFIRM_ENDPOINT)
         assert res.status_code == 403
         assert active_user.joined_group is not None
-        assert active_user.joined_group.is_active is False
         assert active_user.joined_group.desired_other_group_member_number is None
         assert active_user.joined_group.desired_other_group_member_avg_age_range is None
         assert active_user.joined_group.register_step_1_completed is True
@@ -989,7 +975,6 @@ class TestGroupRegistrationEndpoints:
         res = api_client.post(self.STEP_CONFIRM_ENDPOINT)
         assert res.status_code == 403
         assert active_user.joined_group is not None
-        assert active_user.joined_group.is_active is False
         assert active_user.joined_group.desired_other_group_member_number is None
         assert active_user.joined_group.desired_other_group_member_avg_age_range is None
         assert active_user.joined_group.register_step_1_completed is True
@@ -1047,7 +1032,6 @@ class TestGroupRegistrationEndpoints:
         res = api_client.post(self.STEP_CONFIRM_ENDPOINT)
         assert res.status_code == 403
         assert active_user.joined_group is not None
-        assert active_user.joined_group.is_active is False
         assert active_user.joined_group.desired_other_group_member_number is None
         assert active_user.joined_group.desired_other_group_member_avg_age_range is None
         assert active_user.joined_group.register_step_1_completed is True
