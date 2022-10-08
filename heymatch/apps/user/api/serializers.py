@@ -1,11 +1,11 @@
 from rest_framework import serializers
 
-from heymatch.apps.group.api.serializers import GroupFullInfoSerializer
+from heymatch.apps.group.api.serializers import DetailedGroupProfileByHotplaceSerializer
 from heymatch.apps.user.models import User
 
 
 class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
-    joined_group = GroupFullInfoSerializer(read_only=True)
+    joined_group = DetailedGroupProfileByHotplaceSerializer(read_only=True)
 
     class Meta:
         model = User

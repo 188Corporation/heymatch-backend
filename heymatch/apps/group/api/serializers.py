@@ -10,7 +10,17 @@ from heymatch.apps.hotplace.models import HotPlace
 from heymatch.utils.util import is_geopt_within_boundary
 
 
-class OriginalProfileImageSerializer(serializers.ModelSerializer):
+class GroupProfileImagesSerializer(serializers.ModelSerializer):
+    """
+    Context "hotplace_id" should be provided from Viewset level.
+    If there is hotplace_id, that means user is joined to specific group
+    so give out original profile photos conditinally.
+
+    If not, give out blurred profile images.
+
+    This serializer handles both cases automatically.
+    """
+
     image = serializers.SerializerMethodField(
         "decide_whether_original_or_blurred_image"
     )
@@ -26,40 +36,22 @@ class OriginalProfileImageSerializer(serializers.ModelSerializer):
         ]
 
     def decide_whether_original_or_blurred_image(self, obj):
-        hotplace_id = self.context.get("hotplace_id")
+        hotplace_id = self.context.get("hotplace_id", None)
         if hotplace_id:
             if obj.group.hotplace.id == hotplace_id:
                 return obj.image.url
         return obj.image_blurred.url
 
     def decide_whether_original_or_blurred_thumbnail(self, obj):
-        hotplace_id = self.context.get("hotplace_id")
+        hotplace_id = self.context.get("hotplace_id", None)
         if hotplace_id:
             if obj.group.hotplace.id == hotplace_id:
                 return obj.thumbnail.url
         return obj.thumbnail_blurred.url
 
 
-class BlurredProfileImageSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField("change_image_blurred_name")
-    thumbnail = serializers.SerializerMethodField("change_thumbnail_blurred_name")
-
-    class Meta:
-        model = GroupProfileImage
-        fields = [
-            "image",
-            "thumbnail",
-        ]
-
-    def change_image_blurred_name(self, obj):
-        return obj.image_blurred.url
-
-    def change_thumbnail_blurred_name(self, obj):
-        return obj.thumbnail_blurred.url
-
-
-class GroupWithBlurredProfileSerializer(serializers.ModelSerializer):
-    group_profile_images = BlurredProfileImageSerializer(
+class GroupProfileSerializer(serializers.ModelSerializer):
+    group_profile_images = GroupProfileImagesSerializer(
         "group_profile_images", many=True, read_only=True
     )
 
@@ -79,29 +71,8 @@ class GroupWithBlurredProfileSerializer(serializers.ModelSerializer):
         ]
 
 
-class GroupWithOriginalProfileSerializer(serializers.ModelSerializer):
-    group_profile_images = OriginalProfileImageSerializer(
-        "group_profile_images", many=True, read_only=True
-    )
-
-    class Meta:
-        model = Group
-        fields = [
-            "id",
-            "gps_geoinfo",
-            "title",
-            "male_member_number",
-            "female_member_number",
-            "member_average_age",
-            "is_active",
-            "active_until",
-            "hotplace",
-            "group_profile_images",
-        ]
-
-
-class GroupWithBlurredProfileSortedByHotplaceSerializer(serializers.ModelSerializer):
-    groups = GroupWithBlurredProfileSerializer("groups", many=True, read_only=True)
+class SimplifiedGroupProfileByHotplaceSerializer(serializers.ModelSerializer):
+    groups = GroupProfileSerializer("groups", many=True, read_only=True)
 
     class Meta:
         model = HotPlace
@@ -112,20 +83,8 @@ class GroupWithBlurredProfileSortedByHotplaceSerializer(serializers.ModelSeriali
         ]
 
 
-class GroupWithOriginalProfileSortedByHotplaceSerializer(serializers.ModelSerializer):
-    groups = GroupWithOriginalProfileSerializer("groups", many=True, read_only=True)
-
-    class Meta:
-        model = HotPlace
-        fields = [
-            "id",
-            "name",
-            "groups",
-        ]
-
-
-class GroupFullInfoSerializer(serializers.ModelSerializer):
-    group_profile_images = OriginalProfileImageSerializer(
+class DetailedGroupProfileByHotplaceSerializer(serializers.ModelSerializer):
+    group_profile_images = GroupProfileImagesSerializer(
         "group_profile_images", many=True, read_only=True
     )
 

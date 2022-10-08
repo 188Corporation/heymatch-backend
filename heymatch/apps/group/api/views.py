@@ -21,7 +21,7 @@ from heymatch.shared.permissions import (
 )
 
 from .serializers import (
-    GroupFullInfoSerializer,
+    DetailedGroupProfileByHotplaceSerializer,
     GroupInvitationCodeCreateBodySerializer,
     GroupInvitationCodeSerializer,
     GroupRegisterConfirmationSerializer,
@@ -34,8 +34,7 @@ from .serializers import (
     GroupRegisterStep3UpdatePhotoBodySerializer,
     GroupRegisterStep3UploadPhotoBodySerializer,
     GroupRegisterStep4Serializer,
-    GroupWithBlurredProfileSortedByHotplaceSerializer,
-    GroupWithOriginalProfileSortedByHotplaceSerializer,
+    SimplifiedGroupProfileByHotplaceSerializer,
 )
 
 User = get_user_model()
@@ -46,7 +45,7 @@ class GroupListViewSet(viewsets.ModelViewSet):
     ViewSet for searching, listing Groups
     """
 
-    serializer_class = GroupWithBlurredProfileSortedByHotplaceSerializer
+    serializer_class = SimplifiedGroupProfileByHotplaceSerializer
     permission_classes = [
         IsAuthenticated,
         IsUserActive,
@@ -59,11 +58,6 @@ class GroupListViewSet(viewsets.ModelViewSet):
         # if joined group, will give out original profile photo of groups in the hotplace
         serializer = self.get_serializer(queryset, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
-
-    def get_serializer_class(self):
-        if self.request.user.joined_group:
-            return GroupWithOriginalProfileSortedByHotplaceSerializer
-        return self.serializer_class
 
     def get_serializer_context(self):
         context = super(GroupListViewSet, self).get_serializer_context()
@@ -92,7 +86,7 @@ class GroupDetailViewSet(viewsets.ViewSet):
             raise UserGPSNotWithinHotplaceException(
                 detail="User's joined group should be in the same hotplace of the requested group."
             )
-        serializer = GroupFullInfoSerializer(group)
+        serializer = DetailedGroupProfileByHotplaceSerializer(group)
         return Response(serializer.data)
 
 
