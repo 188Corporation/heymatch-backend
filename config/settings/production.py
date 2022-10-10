@@ -18,14 +18,7 @@ ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["188corporation.com"])
 
 # DATABASES
 # ------------------------------------------------------------------------------
-DATABASES["default"] = {  # noqa F405
-    "ENGINE": "django.db.backends.postgresql",
-    "NAME": env.db("POSTGRES_DB"),
-    "USER": env.db("POSTGRES_USER"),
-    "PASSWORD": env.db("POSTGRES_PASSWORD"),
-    "HOST": env.db("POSTGRES_HOST"),
-    "PORT": env.db("POSTGRES_PORT"),
-}
+DATABASES["default"] = env.db("DATABASE_URL")  # noqa F405
 DATABASES["default"]["ATOMIC_REQUESTS"] = True  # noqa F405
 DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=60)  # noqa F405
 
