@@ -1,7 +1,7 @@
 version: '3'
 
 volumes:
-  django_static_volume: { }
+  django_static_volume:
 
 services:
   django:
@@ -13,6 +13,7 @@ services:
     platform: linux/x86_64
     volumes:
       - .:/app:z
+      - django_static_volume:/app/staticfiles
     env_file:
       - ./.envs/.production/.django
       - ./.envs/.production/.postgres
