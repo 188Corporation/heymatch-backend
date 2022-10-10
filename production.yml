@@ -28,7 +28,7 @@ services:
     volumes:
       - ./compose/production/nginx/conf:/etc/nginx/conf
       - ./compose/production/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - django_static_volume:/app/backend/django_static
+      - django_static_volume:/app/staticfiles
     depends_on:
       - django
     ports:
