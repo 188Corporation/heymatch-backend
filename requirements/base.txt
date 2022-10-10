@@ -27,6 +27,7 @@ django-colorfield==0.6.3  # https://pypi.org/project/django-colorfield/
 django-birthday==0.1.4  # https://pypi.org/project/django-birthday/
 django-storages==1.12.3 # https://django-storages.readthedocs.io/en/latest/
 django-ordered-model==3.6 # https://github.com/django-ordered-model/django-ordered-model
+factory-boy==3.2.1  # https://github.com/FactoryBoy/factory_boy
 
 # Django REST Framework
 # ------------------------------------------------------------------------------
