@@ -15,7 +15,7 @@ if settings.DEBUG or settings.ENABLE_DEBUG_TOOLBAR:
 
         urlpatterns += [path("__debug__/", include(debug_toolbar.urls))]
 
-if settings.DEBUG or settings.ENABLE_DOCS:
+if settings.ENABLE_DOCS:
     if "drf_yasg" in settings.INSTALLED_APPS:
         from django.conf.urls import url
         from drf_yasg import openapi
