@@ -31,6 +31,7 @@ factory-boy==3.2.1  # https://github.com/FactoryBoy/factory_boy
 Shapely==1.8.2  # https://pypi.org/project/Shapely/
 numpy==1.22.3   # https://numpy.org/install/
 dj-inmemorystorage==2.1.0   # https://pypi.org/project/dj-inmemorystorage/
+django-extensions==3.1.5  # https://github.com/django-extensions/django-extensions
 
 # Django REST Framework
 # ------------------------------------------------------------------------------
