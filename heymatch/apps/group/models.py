@@ -14,6 +14,7 @@ from django.core.files.base import ContentFile
 from django.db import models
 from django.utils import timezone
 from django_google_maps.fields import GeoLocationField
+from fernet_fields import EncryptedField
 from ordered_model.models import OrderedModel
 from PIL import Image, ImageFilter
 
@@ -32,6 +33,12 @@ def group_default_time():
     return timezone.now() + timezone.timedelta(hours=24)
 
 
+class EncryptedGeoLocationField(EncryptedField, GeoLocationField):
+    """Encrypt user's geo-location in order to comply with Korea compliance (방통위 위치기반사업자)"""
+
+    pass
+
+
 class Group(models.Model):
     # Group GPS
     hotplace = models.ForeignKey(
@@ -41,7 +48,7 @@ class Group(models.Model):
         on_delete=models.PROTECT,
         related_name="groups",
     )
-    gps_geoinfo = GeoLocationField(blank=True, null=True)
+    gps_geoinfo = EncryptedGeoLocationField(blank=False, null=False, max_length=20)
     gps_checked = models.BooleanField(blank=False, null=False, default=False)
     gps_last_check_time = models.DateTimeField(blank=True, null=True)
 
@@ -73,19 +80,19 @@ class Group(models.Model):
 
     # Registration Steps Status
     register_step_1_completed = models.BooleanField(
-        blank=False, null=False, default=False
+        blank=True, null=True, default=False
     )
     register_step_2_completed = models.BooleanField(
-        blank=False, null=False, default=False
+        blank=True, null=True, default=False
     )
     register_step_3_completed = models.BooleanField(
-        blank=False, null=False, default=False
+        blank=True, null=True, default=False
     )
     register_step_4_completed = models.BooleanField(
-        blank=False, null=False, default=False
+        blank=True, null=True, default=False
     )
     register_step_all_confirmed = models.BooleanField(
-        blank=False, null=False, default=False
+        blank=True, null=True, default=False
     )
 
     # Group Lifecycle
