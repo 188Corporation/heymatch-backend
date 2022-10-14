@@ -86,6 +86,7 @@ THIRD_PARTY_APPS = [
     "colorfield",
     "fcm_django",
     "ordered_model",
+    "django_admin_logs",
 ]
 
 LOCAL_APPS = [
