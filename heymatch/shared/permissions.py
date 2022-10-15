@@ -14,32 +14,25 @@ User = get_user_model()
 
 
 class IsUserActive(permissions.BasePermission):
-    message = "Permission denied. User is not active."
-
     def has_permission(self, request: Request, view: APIView) -> bool:
         if not request.user.is_active:
-            raise UserNotActiveException(detail=self.message)
+            raise UserNotActiveException()
         return True
 
 
 class IsUserJoinedGroup(permissions.BasePermission):
-    message = "Permission denied. User is not joined to any group"
-
     def has_permission(self, request: Request, view: APIView) -> bool:
         if not request.user.joined_group:
-            raise UserNotJoinedGroupException(detail=self.message)
+            raise UserNotJoinedGroupException()
         return True
 
 
 class IsUserJoinedGroupActive(permissions.BasePermission):
-    message1 = "Permission denied. User is not joined to any group"
-    message2 = "Permission denied. User joined group is not active"
-
     def has_permission(self, request: Request, view: APIView) -> bool:
         if not request.user.joined_group:
-            raise UserNotJoinedGroupException(detail=self.message1)
+            raise UserNotJoinedGroupException()
         if not request.user.joined_group.is_active:
-            raise UserJoinedGroupNotActiveException(detail=self.message2)
+            raise UserJoinedGroupNotActiveException()
         return True
 
 

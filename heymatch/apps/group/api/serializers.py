@@ -123,7 +123,7 @@ class GroupCreationRequestBodySerializer(serializers.ModelSerializer):
         ]
 
 
-class GroupCreationResponseBodySerializer(serializers.ModelSerializer):
+class GroupCreationSerializer(serializers.ModelSerializer):
     group_profile_images = serializers.ImageField(allow_empty_file=False, use_url=False)
 
     class Meta:
@@ -142,7 +142,7 @@ class GroupCreationResponseBodySerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = validated_data.pop("user")
-        gps_geoinfo = validated_data.pop("gps_geoinfo")
+        gps_geoinfo = validated_data.get("gps_geoinfo")
         image: InMemoryUploadedFile = validated_data.pop("group_profile_images")
         # Check hotplace inclusiveness
         validated_data["hotplace"] = self.get_hotplace(gps_geoinfo)
@@ -167,9 +167,7 @@ class GroupCreationResponseBodySerializer(serializers.ModelSerializer):
                 hotplace = hp
                 break
         if not hotplace:
-            raise serializers.ValidationError(
-                detail="Provided GPS geopt does not belong to any hotplaces registered."
-            )
+            raise serializers.ValidationError(detail="헤이매치 핫플 안에 있으셔야 해요! 😯")
         return hotplace
 
     def to_representation(self, instance: Group):

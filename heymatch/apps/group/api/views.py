@@ -23,7 +23,7 @@ from heymatch.shared.permissions import (
 from .serializers import (
     DetailedGroupProfileByHotplaceSerializer,
     GroupCreationRequestBodySerializer,
-    GroupCreationResponseBodySerializer,
+    GroupCreationSerializer,
     GroupInvitationCodeCreateBodySerializer,
     GroupInvitationCodeSerializer,
     GroupRegisterConfirmationSerializer,
@@ -89,7 +89,7 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.request.method == "POST":
-            return GroupCreationResponseBodySerializer
+            return GroupCreationSerializer
         return self.serializer_class
 
     def get_parsers(self):
@@ -117,7 +117,7 @@ class GroupDetailViewSet(viewsets.ViewSet):
         group = get_object_or_404(queryset, id=group_id)
         if request.user.joined_group.hotplace.id != group.hotplace.id:
             raise UserGPSNotWithinHotplaceException(
-                detail="User's joined group should be in the same hotplace of the requested group."
+                detail="자세한 프로필 보려면 같은 핫플에 있어야 해요! 😥"
             )
         serializer = DetailedGroupProfileByHotplaceSerializer(group)
         return Response(serializer.data)

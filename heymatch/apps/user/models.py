@@ -6,6 +6,7 @@ from birthday import BirthdayField
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.utils import timezone
 from phonenumber_field.modelfields import PhoneNumberField
 
 from .managers import ActiveUserManager, UserManager
@@ -16,9 +17,10 @@ GENDER_CHOICES = (
     (2, "not specified"),
 )
 
+FREE_PASS_CHOICES = ((0, "one-day-pass"),)
+
 MAX_HEIGHT_CM = 195
 MIN_HEIGHT_CM = 155
-
 MAX_USERNAME_LENGTH = 10
 
 
@@ -26,6 +28,10 @@ def generate_random_username():
     return "".join(
         random.choice(string.ascii_letters) for _ in range(MAX_USERNAME_LENGTH)
     )
+
+
+def free_pass_default_time():
+    return timezone.now() + timezone.timedelta(hours=24)
 
 
 class User(AbstractUser):
@@ -66,6 +72,13 @@ class User(AbstractUser):
         related_name="users",
     )
     is_group_leader = models.BooleanField(blank=False, null=False, default=False)
+
+    # Purchase related
+    balance = models.IntegerField(blank=False, null=False, default=0)
+    free_pass = models.IntegerField(blank=True, null=True, choices=FREE_PASS_CHOICES)
+    free_pass_active_until = models.DateTimeField(
+        blank=True, null=True, default=free_pass_default_time
+    )
 
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["phone_number"]
