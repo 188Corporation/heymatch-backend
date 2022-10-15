@@ -19,6 +19,9 @@ class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
             "height_cm",
             "workplace",
             "school",
+            "point_balance",
+            "free_pass",
+            "free_pass_active_until",
             "joined_group",
         ]
 

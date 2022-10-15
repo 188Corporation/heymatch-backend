@@ -2,6 +2,7 @@ from typing import Any
 
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.parsers import JSONParser, MultiPartParser
@@ -11,7 +12,10 @@ from rest_framework.response import Response
 
 from heymatch.apps.group.models import Group, GroupInvitationCode, GroupProfileImage
 from heymatch.apps.hotplace.models import HotPlace
-from heymatch.shared.exceptions import UserGPSNotWithinHotplaceException
+from heymatch.shared.exceptions import (
+    GroupNotWithinSameHotplaceException,
+    UserPointBalanceNotEnough,
+)
 from heymatch.shared.permissions import (
     IsGroupCreationAllowed,
     IsGroupRegisterAllowed,
@@ -116,11 +120,60 @@ class GroupDetailViewSet(viewsets.ViewSet):
         queryset = Group.active_objects.all()
         group = get_object_or_404(queryset, id=group_id)
         if request.user.joined_group.hotplace.id != group.hotplace.id:
-            raise UserGPSNotWithinHotplaceException(
-                detail="자세한 프로필 보려면 같은 핫플에 있어야 해요! 😥"
-            )
+            raise GroupNotWithinSameHotplaceException()
         serializer = DetailedGroupProfileByHotplaceSerializer(group)
         return Response(serializer.data)
+
+
+class GroupMatchViewSet(viewsets.ViewSet):
+    """
+    ViewSet for requesting match to other Group
+
+
+    If passes all 3 steps, open up chatting room for both groups.
+
+    """
+
+    permission_classes = [
+        IsAuthenticated,
+        IsUserActive,
+        IsUserJoinedGroup,
+    ]
+
+    def request_match(self, request, group_id: int) -> Response:
+        """
+        1) Check if user joined any group.
+        2) Check if user does not belong to same hotplace of the other group.
+        3) Check if user has enough balance or free_pass item.
+        """
+        queryset = Group.active_objects.all()
+        group = get_object_or_404(queryset, id=group_id)
+        user = request.user
+        # Permission class checks #1
+        # Check #2
+        if user.joined_group.hotplace.id != group.hotplace.id:
+            raise GroupNotWithinSameHotplaceException()
+
+        # Check #3
+        if user.free_pass and user.free_pass_active_until < timezone.now():
+            return self.open_chat_room()
+        if user.point_balance < group.match_point:
+            raise UserPointBalanceNotEnough()
+
+        # Deduct point
+        user.point_balance = user.point_balance - group.match_point
+        user.save(update_fields=["point_balance"])
+        # TODO: work on it
+        return self.open_chat_room()
+
+    def open_chat_room(self):
+        # TODO: work on it
+        return Response(data="WIP..", status=status.HTTP_200_OK)
+
+
+#########
+# Legacy
+#########
 
 
 class GroupRegisterStep1ViewSet(viewsets.ModelViewSet):

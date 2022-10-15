@@ -10,6 +10,7 @@ from heymatch.apps.user.tests.factories import ActiveUserFactory
 pytestmark = pytest.mark.django_db
 
 
+@pytest.mark.skip
 class TestMatchRequestListEndpoints:
     def test_match_request_sent_list_if_all_good(
         self, active_group: Group, api_client: APIClient
@@ -72,6 +73,7 @@ class TestMatchRequestListEndpoints:
         assert res.status_code == 403
 
 
+@pytest.mark.skip
 class TestMatchRequestControlEndpoints:
     # -------------
     #  MR Send flow

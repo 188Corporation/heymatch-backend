@@ -23,6 +23,7 @@ def test_hotplace_detail(hotplace: HotPlace):
     )
 
 
+@pytest.mark.skip
 def test_hotplace_group_list(hotplace: HotPlace):
     assert (
         reverse("api:hotplace:hotplace-group-list", kwargs={"hotplace_id": hotplace.id})
@@ -34,6 +35,7 @@ def test_hotplace_group_list(hotplace: HotPlace):
     )
 
 
+@pytest.mark.skip
 def test_hotplace_group_detail(active_group: Group):
     hotplace = active_group.hotplace
     assert (

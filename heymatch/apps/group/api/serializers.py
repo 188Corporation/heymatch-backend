@@ -65,6 +65,7 @@ class GroupProfileSerializer(serializers.ModelSerializer):
             "male_member_number",
             "female_member_number",
             "member_average_age",
+            "match_point",
             "is_active",
             "active_until",
             "hotplace",
@@ -99,6 +100,7 @@ class DetailedGroupProfileByHotplaceSerializer(serializers.ModelSerializer):
             "male_member_number",
             "female_member_number",
             "member_average_age",
+            "match_point",
             "is_active",
             "active_until",
             "hotplace",
@@ -175,6 +177,11 @@ class GroupCreationSerializer(serializers.ModelSerializer):
             instance=instance, context={"hotplace_id": instance.hotplace.id}
         )
         return serializer.data
+
+
+##########
+# Legacy #
+##########
 
 
 class GroupRegisterStep1Serializer(serializers.ModelSerializer):

@@ -28,6 +28,16 @@ class UserAdmin(auth_admin.UserAdmin):
             },
         ),
         (
+            _("Purchase info"),
+            {
+                "fields": (
+                    "point_balance",
+                    "free_pass",
+                    "free_pass_active_until",
+                )
+            },
+        ),
+        (
             _("Group info"),
             {
                 "fields": (
@@ -61,7 +71,7 @@ class UserAdmin(auth_admin.UserAdmin):
         "joined_group",
         "is_group_leader",
         "is_superuser",
-        "balance",
+        "point_balance",
         "free_pass",
         "free_pass_active_until",
         "is_active",
@@ -78,7 +88,7 @@ class UserAdmin(auth_admin.UserAdmin):
         "joined_group",
         "is_group_leader",
         "is_superuser",
-        "balance",
+        "point_balance",
         "free_pass",
         "free_pass_active_until",
         "is_active",

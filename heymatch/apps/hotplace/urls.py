@@ -19,14 +19,14 @@ urlpatterns = [
     path("", hotplace_list, name="hotplace-list"),
     path("<int:hotplace_id>/", hotplace_detail, name="hotplace-detail"),
     path("nearest/", hotplace_nearest_view, name="hotplace-get-nearest"),
-    path(
-        "<int:hotplace_id>/group/",
-        hotplace_group_list,
-        name="hotplace-group-list",
-    ),
-    path(
-        "<int:hotplace_id>/group/<int:group_id>/",
-        hotplace_group_detail,
-        name="hotplace-group-detail",
-    ),
+    # path(
+    #     "<int:hotplace_id>/group/",
+    #     hotplace_group_list,
+    #     name="hotplace-group-list",
+    # ),
+    # path(
+    #     "<int:hotplace_id>/group/<int:group_id>/",
+    #     hotplace_group_detail,
+    #     name="hotplace-group-detail",
+    # ),
 ]

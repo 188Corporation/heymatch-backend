@@ -74,7 +74,7 @@ class User(AbstractUser):
     is_group_leader = models.BooleanField(blank=False, null=False, default=False)
 
     # Purchase related
-    balance = models.IntegerField(blank=False, null=False, default=0)
+    point_balance = models.IntegerField(blank=False, null=False, default=0)
     free_pass = models.IntegerField(blank=True, null=True, choices=FREE_PASS_CHOICES)
     free_pass_active_until = models.DateTimeField(
         blank=True, null=True, default=free_pass_default_time

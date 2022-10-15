@@ -15,6 +15,7 @@ from heymatch.utils.util import generate_rand_geoopt_within_boundary
 pytestmark = pytest.mark.django_db
 
 
+@pytest.mark.skip
 class TestGroupRegistrationEndpoints:
     STATUS_ENDPOINT = "/api/groups/registration/status/"
     STEP_1_ENDPOINT = "/api/groups/registration/step/1/"
@@ -1131,6 +1132,7 @@ class TestGroupRegistrationEndpoints:
         assert active_user.joined_group is None
 
 
+@pytest.mark.skip
 class TestGroupInvitationCodeEndpoints:
     INVITATION_ENDPOINT = "/api/groups/invitation-code/generate/"
 

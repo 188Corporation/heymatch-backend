@@ -4,6 +4,7 @@ from django.urls import resolve, reverse
 pytestmark = pytest.mark.django_db
 
 
+@pytest.mark.skip
 def test_group_registration_step_1():
     assert (
         reverse("api:group:group-registration-step-1")
@@ -15,6 +16,7 @@ def test_group_registration_step_1():
     )
 
 
+@pytest.mark.skip
 def test_group_registration_step_2():
     assert (
         reverse("api:group:group-registration-step-2")
@@ -26,6 +28,7 @@ def test_group_registration_step_2():
     )
 
 
+@pytest.mark.skip
 def test_group_registration_step_3():
     assert (
         reverse("api:group:group-registration-step-3")
@@ -37,6 +40,7 @@ def test_group_registration_step_3():
     )
 
 
+@pytest.mark.skip
 def test_group_registration_step_4():
     assert (
         reverse("api:group:group-registration-step-4")
@@ -48,6 +52,7 @@ def test_group_registration_step_4():
     )
 
 
+@pytest.mark.skip
 def test_group_registration_step_confirm():
     assert (
         reverse("api:group:group-registration-step-confirm")
@@ -59,6 +64,7 @@ def test_group_registration_step_confirm():
     )
 
 
+@pytest.mark.skip
 def test_group_registration_unregister():
     assert (
         reverse("api:group:group-registration-unregister")

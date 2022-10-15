@@ -67,6 +67,13 @@ class Group(models.Model):
         blank=True,
         null=True,
     )
+    match_point = models.IntegerField(
+        blank=False, null=False, default=1
+    )  # Point for requesting match to this group
+
+    #########
+    # LEGACY
+    #########
     desired_other_group_member_number = models.IntegerField(
         blank=True,
         null=True,
@@ -77,7 +84,6 @@ class Group(models.Model):
         null=True,
         validators=[RangeMinValueValidator(20), RangeMaxValueValidator(50)],
     )
-
     # Registration Steps Status
     register_step_1_completed = models.BooleanField(
         blank=True, null=True, default=False
