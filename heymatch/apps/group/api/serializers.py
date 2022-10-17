@@ -51,7 +51,7 @@ class GroupProfileImagesByJoinedGroupConditionSerializer(serializers.ModelSerial
         return obj.thumbnail_blurred.url
 
 
-class GroupProfileSerializer(serializers.ModelSerializer):
+class RestrictedGroupProfileSerializer(serializers.ModelSerializer):
     group_profile_images = GroupProfileImagesByJoinedGroupConditionSerializer(
         "group_profile_images", many=True, read_only=True
     )
@@ -73,19 +73,7 @@ class GroupProfileSerializer(serializers.ModelSerializer):
         ]
 
 
-class SimplifiedGroupProfileByHotplaceSerializer(serializers.ModelSerializer):
-    groups = GroupProfileSerializer("groups", many=True, read_only=True)
-
-    class Meta:
-        model = HotPlace
-        fields = [
-            "id",
-            "name",
-            "groups",
-        ]
-
-
-class DetailedGroupProfileByHotplaceSerializer(serializers.ModelSerializer):
+class FullGroupProfileSerializer(serializers.ModelSerializer):
     group_profile_images = GroupProfileImagesByJoinedGroupConditionSerializer(
         "group_profile_images", many=True, read_only=True
     )
@@ -105,6 +93,30 @@ class DetailedGroupProfileByHotplaceSerializer(serializers.ModelSerializer):
             "active_until",
             "hotplace",
             "group_profile_images",
+        ]
+
+
+class RestrictedGroupProfileByHotplaceSerializer(serializers.ModelSerializer):
+    groups = RestrictedGroupProfileSerializer("groups", many=True, read_only=True)
+
+    class Meta:
+        model = HotPlace
+        fields = [
+            "id",
+            "name",
+            "groups",
+        ]
+
+
+class FullGroupProfileByHotplaceSerializer(serializers.ModelSerializer):
+    groups = FullGroupProfileSerializer("groups", many=True, read_only=True)
+
+    class Meta:
+        model = HotPlace
+        fields = [
+            "id",
+            "name",
+            "groups",
         ]
 
 
@@ -173,7 +185,7 @@ class GroupCreationSerializer(serializers.ModelSerializer):
         return hotplace
 
     def to_representation(self, instance: Group):
-        serializer = DetailedGroupProfileByHotplaceSerializer(
+        serializer = FullGroupProfileSerializer(
             instance=instance, context={"hotplace_id": instance.hotplace.id}
         )
         return serializer.data

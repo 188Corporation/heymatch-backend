@@ -25,7 +25,8 @@ from heymatch.shared.permissions import (
 )
 
 from .serializers import (
-    DetailedGroupProfileByHotplaceSerializer,
+    FullGroupProfileByHotplaceSerializer,
+    FullGroupProfileSerializer,
     GroupCreationRequestBodySerializer,
     GroupCreationSerializer,
     GroupInvitationCodeCreateBodySerializer,
@@ -40,7 +41,7 @@ from .serializers import (
     GroupRegisterStep3UpdatePhotoBodySerializer,
     GroupRegisterStep3UploadPhotoBodySerializer,
     GroupRegisterStep4Serializer,
-    SimplifiedGroupProfileByHotplaceSerializer,
+    RestrictedGroupProfileByHotplaceSerializer,
 )
 
 User = get_user_model()
@@ -52,7 +53,7 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
     """
 
     parser_classes = [MultiPartParser]
-    serializer_class = SimplifiedGroupProfileByHotplaceSerializer
+    serializer_class = RestrictedGroupProfileByHotplaceSerializer
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         queryset = HotPlace.objects.prefetch_related("groups")
@@ -94,6 +95,11 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.request.method == "POST":
             return GroupCreationSerializer
+        if (
+            hasattr(self.request.user, "joined_group")
+            and self.request.user.joined_group
+        ):
+            return FullGroupProfileByHotplaceSerializer
         return self.serializer_class
 
     def get_parsers(self):
@@ -121,7 +127,7 @@ class GroupDetailViewSet(viewsets.ViewSet):
         group = get_object_or_404(queryset, id=group_id)
         if request.user.joined_group.hotplace.id != group.hotplace.id:
             raise GroupNotWithinSameHotplaceException()
-        serializer = DetailedGroupProfileByHotplaceSerializer(group)
+        serializer = FullGroupProfileSerializer(group)
         return Response(serializer.data)
 
 
