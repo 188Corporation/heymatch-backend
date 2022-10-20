@@ -170,27 +170,27 @@ class Command(BaseCommand):
 
     def generate_payment_items(self) -> None:
         # Point Items
-        PointItem.objects.create(name="캔디 5개", price_in_krw=4900, default_point=5)
+        PointItem.objects.create(name="캔디 5개", price_in_krw=4400, default_point=5)
         PointItem.objects.create(
-            name="캔디 10개+1개", price_in_krw=9900, default_point=10, bonus_point=1
+            name="캔디 10개+1개", price_in_krw=9900, default_point=10, bonus_point=2
         )
         PointItem.objects.create(
             name="캔디 15개+5개",
-            price_in_krw=14900,
+            price_in_krw=14000,
             default_point=15,
             bonus_point=5,
             best_deal_check=True,
         )
         PointItem.objects.create(
-            name="캔디 30개+15개", price_in_krw=29900, default_point=30, bonus_point=15
+            name="캔디 30개+15개", price_in_krw=22000, default_point=25, bonus_point=15
         )
         PointItem.objects.create(
-            name="캔디 50개+35개", price_in_krw=49900, default_point=50, bonus_point=35
+            name="캔디 50개+35개", price_in_krw=39000, default_point=50, bonus_point=30
         )
         # Freepass Items
         FreePassItem.objects.create(
             name="원데이 프리패스 (24h)",
-            price_in_krw=14900,
+            price_in_krw=12000,
             free_pass_duration_in_hour=24,
             best_deal_check=True,
         )

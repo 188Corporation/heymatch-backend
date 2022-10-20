@@ -335,3 +335,4 @@ heymatch/media/
 
 ## My tests
 /tests/
+/.idea/*
