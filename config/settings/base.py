@@ -97,6 +97,7 @@ LOCAL_APPS = [
     "heymatch.apps.hotplace.apps.HotplaceAppConfig",
     "heymatch.apps.group.apps.GroupAppConfig",
     "heymatch.apps.match.apps.MatchAppConfig",
+    "heymatch.apps.payment.apps.PaymentAppConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

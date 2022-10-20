@@ -19,6 +19,7 @@ from heymatch.apps.hotplace.tests.factories import (
     RANDOM_HOTPLACE_NAMES,
     HotPlaceFactory,
 )
+from heymatch.apps.payment.models import FreePassItem, PointItem
 from heymatch.apps.user.tests.factories import ActiveUserFactory, InactiveUserFactory
 from heymatch.utils.util import generate_rand_geoopt_within_boundary
 
@@ -105,7 +106,9 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS("Successfully set up data for [Hotplaces/Groups/User]")
         )
-
+        # -------------- Hotplace, Group, Users setup -------------- #
+        self.generate_payment_items()
+        self.stdout.write(self.style.SUCCESS("Successfully set up data for [Payments]"))
         # -------------- Done! -------------- #
         self.stdout.write(self.style.SUCCESS("Successfully set up all mocking data!"))
 
@@ -163,4 +166,31 @@ class Command(BaseCommand):
         )
         self.stdout.write(
             self.style.SUCCESS("Successfully set up data for [Users(Developer)]")
+        )
+
+    def generate_payment_items(self) -> None:
+        # Point Items
+        PointItem.objects.create(name="캔디 5개", price_in_krw=4900, default_point=5)
+        PointItem.objects.create(
+            name="캔디 10개+1개", price_in_krw=9900, default_point=10, bonus_point=1
+        )
+        PointItem.objects.create(
+            name="캔디 15개+5개",
+            price_in_krw=14900,
+            default_point=15,
+            bonus_point=5,
+            best_deal_check=True,
+        )
+        PointItem.objects.create(
+            name="캔디 30개+15개", price_in_krw=29900, default_point=30, bonus_point=15
+        )
+        PointItem.objects.create(
+            name="캔디 50개+35개", price_in_krw=49900, default_point=50, bonus_point=35
+        )
+        # Freepass Items
+        FreePassItem.objects.create(
+            name="원데이 프리패스 (24h)",
+            price_in_krw=14900,
+            free_pass_duration_in_hour=24,
+            best_deal_check=True,
         )
