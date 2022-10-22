@@ -3,6 +3,7 @@ from django.db import models
 
 class PointItem(models.Model):
     name = models.CharField(blank=False, null=False, unique=True, max_length=32)
+    product_id = models.CharField(blank=False, null=False, unique=True, max_length=128)
     price_in_krw = models.IntegerField(blank=False, null=False)
     default_point = models.IntegerField(blank=False, null=False)
     bonus_point = models.IntegerField(blank=True, null=True, default=0)
@@ -15,6 +16,7 @@ class PointItem(models.Model):
 
 class FreePassItem(models.Model):
     name = models.CharField(blank=False, null=False, unique=True, max_length=32)
+    product_id = models.CharField(blank=False, null=False, unique=True, max_length=128)
     price_in_krw = models.IntegerField(blank=False, null=False)
     free_pass_duration_in_hour = models.IntegerField(blank=False, null=False)
     best_deal_check = models.BooleanField(blank=True, null=True, default=False)

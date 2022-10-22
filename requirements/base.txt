@@ -54,3 +54,6 @@ stream-chat==4.3.0  # https://pypi.org/project/stream-chat/
 
 # Firebase
 fcm-django==1.0.12
+
+# In-App Purchase
+inapppy==2.5.2  # https://github.com/dotpot/InAppPy
