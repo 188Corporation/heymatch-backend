@@ -7,7 +7,7 @@ services:
   django:
     build:
       context: .
-      dockerfile: ./compose/production/django/Dockerfile
+      dockerfile: ./compose/development/django/Dockerfile
     image: heymatch_development_django
     container_name: django
     platform: linux/x86_64
@@ -23,12 +23,12 @@ services:
   nginx:
     build:
       context: .
-      dockerfile: ./compose/production/nginx/Dockerfile
-    image: heymatch_production_nginx
+      dockerfile: ./compose/development/nginx/Dockerfile
+    image: heymatch_development_nginx
     container_name: nginx
     volumes:
-      - ./compose/production/nginx/conf:/etc/nginx/conf
-      - ./compose/production/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./compose/development/nginx/conf:/etc/nginx/conf
+      - ./compose/development/nginx/nginx.conf:/etc/nginx/nginx.conf
       - django_static_volume:/app/staticfiles
     depends_on:
       - django
