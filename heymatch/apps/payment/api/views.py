@@ -1,6 +1,6 @@
 from typing import Any
 
-from django.contrib.auth import get_user_model
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -8,9 +8,11 @@ from rest_framework.response import Response
 
 from heymatch.apps.payment.models import FreePassItem, PointItem
 
-from .serializers import FreePassItemItemSerializer, PointItemSerializer
-
-User = get_user_model()
+from .serializers import (
+    FreePassItemItemSerializer,
+    PointItemSerializer,
+    ReceiptValidationSerializer,
+)
 
 
 class PaymentItemViewSet(viewsets.ViewSet):
@@ -26,3 +28,13 @@ class PaymentItemViewSet(viewsets.ViewSet):
             "free_pass_items": fpi_serializer.data,
         }
         return Response(data, status.HTTP_200_OK)
+
+
+class ReceiptValidationViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(request_body=ReceiptValidationSerializer)
+    def validate(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        data = request["data"]
+        print(data)
+        return Response(status=status.HTTP_200_OK)

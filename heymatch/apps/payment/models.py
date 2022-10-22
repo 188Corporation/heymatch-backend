@@ -20,3 +20,8 @@ class FreePassItem(models.Model):
     price_in_krw = models.IntegerField(blank=False, null=False)
     free_pass_duration_in_hour = models.IntegerField(blank=False, null=False)
     best_deal_check = models.BooleanField(blank=True, null=True, default=False)
+
+
+#
+# class PurchaseReceipt(models.Model):
+#     user = models.ForeignKey()

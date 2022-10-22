@@ -13,3 +13,7 @@ class FreePassItemItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = FreePassItem
         fields = "__all__"
+
+
+class ReceiptValidationSerializer(serializers.Serializer):
+    receipt = serializers.JSONField(required=True)
