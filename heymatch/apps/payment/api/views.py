@@ -36,5 +36,5 @@ class ReceiptValidationViewSet(viewsets.ViewSet):
     @swagger_auto_schema(request_body=ReceiptValidationSerializer)
     def validate(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         data = request["data"]
-        print(data)
+        print("RECEIPT DATA: ", data)
         return Response(status=status.HTTP_200_OK)

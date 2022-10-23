@@ -16,4 +16,5 @@ class FreePassItemItemSerializer(serializers.ModelSerializer):
 
 
 class ReceiptValidationSerializer(serializers.Serializer):
-    receipt = serializers.JSONField(required=True)
+    platform = serializers.CharField(required=True, max_length=20)
+    receipt = serializers.CharField(required=True)
