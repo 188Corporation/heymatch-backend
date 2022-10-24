@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import FreePassItem, PointItem
+from .models import FreePassItem, PlayStoreValidatedReceipt, PointItem, UserPurchase
 
 
 @admin.register(PointItem)
@@ -53,4 +53,84 @@ class FreePassItemAdmin(admin.ModelAdmin):
         "price_in_krw",
         "free_pass_duration_in_hour",
         "best_deal_check",
+    ]
+
+
+@admin.register(PlayStoreValidatedReceipt)
+class PlayStoreValidatedReceiptAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "orderId",
+        "packageName",
+        "productId",
+        "quantity",
+        "purchaseToken",
+        "purchaseTimeMillis",
+        "purchaseState",
+        "consumptionState",
+        "developerPayload",
+        "purchaseType",
+        "acknowledgementState",
+        "kind",
+        "regionCode",
+    ]
+    readonly_fields = [
+        "id",
+        "orderId",
+        "packageName",
+        "productId",
+        "quantity",
+        "purchaseToken",
+        "purchaseTimeMillis",
+        "purchaseState",
+        "consumptionState",
+        "developerPayload",
+        "purchaseType",
+        "acknowledgementState",
+        "kind",
+        "regionCode",
+    ]
+    search_fields = [
+        "id",
+        "orderId",
+        "packageName",
+        "productId",
+        "quantity",
+        "purchaseToken",
+        "purchaseTimeMillis",
+        "purchaseState",
+        "consumptionState",
+        "developerPayload",
+        "purchaseType",
+        "acknowledgementState",
+        "kind",
+        "regionCode",
+    ]
+
+
+@admin.register(UserPurchase)
+class UserPurchaseAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "user",
+        "platform",
+        "play_store_receipt",
+        "apple_store_receipt",
+        "purchase_processed",
+    ]
+    readonly_fields = [
+        "id",
+        "user",
+        "platform",
+        "play_store_receipt",
+        "apple_store_receipt",
+        "purchase_processed",
+    ]
+    search_fields = [
+        "id",
+        "user",
+        "platform",
+        "play_store_receipt",
+        "apple_store_receipt",
+        "purchase_processed",
     ]

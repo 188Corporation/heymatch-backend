@@ -69,9 +69,7 @@ class UserPurchase(models.Model):
     id = models.UUIDField(
         primary_key=True, blank=False, null=False, editable=False, default=uuid4
     )
-    UserPurchase = models.ForeignKey(
-        User, blank=False, null=False, on_delete=models.CASCADE
-    )
+    user = models.ForeignKey(User, blank=False, null=False, on_delete=models.CASCADE)
     platform = models.CharField(
         null=False, blank=False, choices=PLATFORM_CHOICES, max_length=8
     )
