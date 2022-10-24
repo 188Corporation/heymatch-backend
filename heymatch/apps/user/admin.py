@@ -32,7 +32,7 @@ class UserAdmin(auth_admin.UserAdmin):
             {
                 "fields": (
                     "point_balance",
-                    "free_pass",
+                    # "free_pass",
                     "free_pass_active_until",
                 )
             },
@@ -72,7 +72,7 @@ class UserAdmin(auth_admin.UserAdmin):
         "is_group_leader",
         "is_superuser",
         "point_balance",
-        "free_pass",
+        # "free_pass",
         "free_pass_active_until",
         "is_active",
     ]
@@ -89,7 +89,7 @@ class UserAdmin(auth_admin.UserAdmin):
         "is_group_leader",
         "is_superuser",
         "point_balance",
-        "free_pass",
+        # "free_pass",
         "free_pass_active_until",
         "is_active",
     ]
