@@ -84,7 +84,6 @@ class ReceiptValidationViewSet(viewsets.ViewSet):
             apple_store_receipt=asr,
             purchase_processed=True,
         )
-
         return Response(status=status.HTTP_200_OK)
 
     @staticmethod
@@ -96,13 +95,13 @@ class ReceiptValidationViewSet(viewsets.ViewSet):
                 is_subscription=False,
             ).raw_response
         )
-
         # if not purchased
         if receipt["purchaseState"] != 0:
             raise ReceiptNotPurchasedException()
 
         # if purchase is TEST mode but server is PROD mode.
-        if hasattr(validated_result, "purchaseType") and not settings.IS_INAPP_TESTING:
+        purchase_type = validated_result.get("purchaseType", None)
+        if purchase_type in [0, 1, 2] and not settings.IS_INAPP_TESTING:
             # receipt is fake (internal testing) but server is prod mode. Deny.
             raise ReceiptWrongEnvException()
         return validated_result

@@ -68,23 +68,6 @@ class PlayStoreValidatedReceiptAdmin(admin.ModelAdmin):
         "purchaseTimeMillis",
         "purchaseState",
         "consumptionState",
-        "developerPayload",
-        "purchaseType",
-        "acknowledgementState",
-        "kind",
-        "regionCode",
-    ]
-    readonly_fields = [
-        "id",
-        "orderId",
-        "packageName",
-        "productId",
-        "quantity",
-        "purchaseToken",
-        "purchaseTimeMillis",
-        "purchaseState",
-        "consumptionState",
-        "developerPayload",
         "purchaseType",
         "acknowledgementState",
         "kind",
@@ -100,7 +83,6 @@ class PlayStoreValidatedReceiptAdmin(admin.ModelAdmin):
         "purchaseTimeMillis",
         "purchaseState",
         "consumptionState",
-        "developerPayload",
         "purchaseType",
         "acknowledgementState",
         "kind",
@@ -111,14 +93,6 @@ class PlayStoreValidatedReceiptAdmin(admin.ModelAdmin):
 @admin.register(UserPurchase)
 class UserPurchaseAdmin(admin.ModelAdmin):
     list_display = [
-        "id",
-        "user",
-        "platform",
-        "play_store_receipt",
-        "apple_store_receipt",
-        "purchase_processed",
-    ]
-    readonly_fields = [
         "id",
         "user",
         "platform",

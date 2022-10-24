@@ -38,15 +38,18 @@ class PlayStoreValidatedReceiptManager(models.Manager):
             - purchaseState: 0. Purchased 1. Canceled 2. Pending
             - consumptionState: 0. Yet to be consumed 1. Consumed
             - purchaseType: This field is only set if this purchase was not made using the standard
-                in-app billing flow. Possible values are: 0. Test (i.e. purchased from a license testing account)
+              in-app billing flow. Possible values are:
+                0. Test (i.e. purchased from a license testing account)
                 1. Promo (i.e. purchased using a promo code)
                 2. Rewarded (i.e. from watching a video ad instead of paying)
         """
         del receipt["purchaseTime"]
         del receipt["purchaseState"]
-        del receipt["quantity"]
         del receipt["acknowledged"]
+        del validated_result["developerPayload"]
 
-        validated_receipt = self.model({**receipt, **validated_result})
+        print("ASDF: ", {**receipt, **validated_result})
+
+        validated_receipt = self.model(**{**receipt, **validated_result})
         validated_receipt.save(using=self._db)
         return validated_receipt

@@ -331,6 +331,7 @@ heymatch/media/
 .env
 .envs/*
 !.envs/.local/
+.envs/.local/play_console_sa.json
 /.idea/vcs.xml
 
 ## My tests

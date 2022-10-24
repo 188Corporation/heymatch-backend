@@ -38,12 +38,11 @@ class PlayStoreValidatedReceipt(models.Model):
     purchaseToken = models.TextField(max_length=250)
 
     # Verification result
-    purchaseTimeMillis = models.IntegerField()
+    purchaseTimeMillis = models.CharField(max_length=32)
     purchaseState = models.IntegerField()
     consumptionState = models.IntegerField()
-    developerPayload = models.CharField(max_length=120)
     # if prod, this field does not exist
-    purchaseType = models.IntegerField(null=True, blank=True, default=None)
+    purchaseType = models.IntegerField()
     acknowledgementState = models.IntegerField()
     kind = models.CharField(max_length=48)
     regionCode = models.CharField(max_length=8)

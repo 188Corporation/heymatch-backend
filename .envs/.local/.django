@@ -25,7 +25,7 @@ TWILIO_PHONE_NUMBER=+18145643413
 # AWS S3
 AWS_S3_ACCESS_KEY_ID=AKIATPHROUXDG36KS7DZ
 AWS_S3_SECRET_ACCESS_KEY=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
-AWS_STORAGE_BUCKET_NAME=heymatch-s3-test
+AWS_STORAGE_BUCKET_NAME=heymatch-s3-dev
 
 # GetStream.Io
 STREAM_API_KEY=qudygteppm7z
@@ -34,3 +34,12 @@ STREAM_CHAT_CHANNEL_TYPE=188-Corp
 
 # Google Firebase
 GOOGLE_APPLICATION_CREDENTIALS=/app/.envs/.local/firebase_sa.json
+
+# In-App Purchases
+# ------------------------------------------------------------------------------
+# Google Play Store
+IS_INAPP_TESTING=false
+GOOGLE_PLAY_BUNDLE_ID=com.co188.heythere
+GOOGLE_PLAY_CONSOLE_SA_PATH=/app/.envs/.local/play_console_sa.json
+# Apple App Store
+APP_STORE_BUNDLE_ID=

@@ -3,9 +3,6 @@
 # from sentry_sdk.integrations.django import DjangoIntegration
 # from sentry_sdk.integrations.logging import LoggingIntegration
 # from sentry_sdk.integrations.redis import RedisIntegration
-import json
-
-from inapppy import AppStoreValidator, GooglePlayVerifier
 
 from .base import *  # noqa
 from .base import env
@@ -182,15 +179,3 @@ LOGGING = {
 
 # Your stuff...
 # ------------------------------------------------------------------------------
-
-# Inappy Validators
-with open(env("GOOGLE_PLAY_CONSOLE_SA_PATH")) as f:
-    play_console_credentials = json.load(f)
-GOOGLE_PLAY_VALIDATOR = GooglePlayVerifier(
-    bundle_id=env("GOOGLE_PLAY_BUNDLE_ID"),
-    play_console_credentials=play_console_credentials,
-)
-APP_STORE_VALIDATOR = AppStoreValidator(
-    bundle_id=env("APP_STORE_BUNDLE_ID"),
-    sandbox=env("IS_INAPP_TESTING"),
-)
