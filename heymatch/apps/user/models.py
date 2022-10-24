@@ -75,7 +75,7 @@ class User(AbstractUser):
 
     # Purchase related
     point_balance = models.IntegerField(blank=False, null=False, default=0)
-    free_pass = models.IntegerField(blank=True, null=True, choices=FREE_PASS_CHOICES)
+    free_pass = models.BooleanField(default=False)
     free_pass_active_until = models.DateTimeField(
         blank=True, null=True, default=free_pass_default_time
     )

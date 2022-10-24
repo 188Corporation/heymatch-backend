@@ -417,3 +417,8 @@ FCM_DJANGO_SETTINGS = {
     "DELETE_INACTIVE_DEVICES": False,
     "UPDATE_ON_DUPLICATE_REG_ID": True,
 }
+
+# Inappy Validators
+# cannot test in local mode (TLS should be configured)
+GOOGLE_PLAY_VALIDATOR = None
+APP_STORE_VALIDATOR = None

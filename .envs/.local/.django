@@ -34,12 +34,3 @@ STREAM_CHAT_CHANNEL_TYPE=188-Corp
 
 # Google Firebase
 GOOGLE_APPLICATION_CREDENTIALS=/app/.envs/.local/firebase_sa.json
-
-# In-App Purchases
-# ------------------------------------------------------------------------------
-# Google Play Store
-GOOGLE_PLAY_STORE_BUNDLE_ID=
-GOOGLE_PLAY_STORE_API_KEY=
-GOOGLE_PLAY_STORE_API_CREDENTIAL=/app/.envs/.local/playstore_credential.json
-# Apple App Store
-APPLE_APP_STORE_BUNDLE_ID=

@@ -14,7 +14,7 @@ from heymatch.apps.group.models import Group, GroupInvitationCode, GroupProfileI
 from heymatch.apps.hotplace.models import HotPlace
 from heymatch.shared.exceptions import (
     GroupNotWithinSameHotplaceException,
-    UserPointBalanceNotEnough,
+    UserPointBalanceNotEnoughException,
 )
 from heymatch.shared.permissions import (
     IsGroupCreationAllowed,
@@ -164,7 +164,7 @@ class GroupMatchViewSet(viewsets.ViewSet):
         if user.free_pass and user.free_pass_active_until < timezone.now():
             return self.open_chat_room()
         if user.point_balance < group.match_point:
-            raise UserPointBalanceNotEnough()
+            raise UserPointBalanceNotEnoughException()
 
         # Deduct point
         user.point_balance = user.point_balance - group.match_point

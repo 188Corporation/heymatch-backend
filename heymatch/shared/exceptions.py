@@ -36,9 +36,26 @@ class GroupNotWithinSameHotplaceException(BasePermissionDeniedException):
     detail = "상대 그룹과 같은 핫플에 있어야 해요! 😥"
 
 
-class UserPointBalanceNotEnough(BasePermissionDeniedException):
+class UserPointBalanceNotEnoughException(BasePermissionDeniedException):
     status_code = 465
     detail = "젤리가 부족해요.. 충전해주세요! 🍬"
+
+
+class ReceiptWrongEnvException(BasePermissionDeniedException):
+    status_code = 480
+    detail = (
+        "Receipt received is for testing. " "Please send receipt to development server."
+    )
+
+
+class ReceiptNotPurchasedException(BasePermissionDeniedException):
+    status_code = 481
+    detail = "Receipt received is either PENDING or CANCELED. Please check or send a moment later"
+
+
+class ReceiptItemNotFound(BasePermissionDeniedException):
+    status_code = 484
+    detail = "Product id in receipt not found in Item list."
 
 
 class UserGroupLeaderException(BasePermissionDeniedException):
