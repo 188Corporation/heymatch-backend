@@ -9,4 +9,5 @@ export DATABASE_URL="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES
 python /app/manage.py migrate
 python /app/manage.py collectstatic --noinput
 
-/usr/local/bin/gunicorn config.wsgi --bind 0.0.0.0:8000 --chdir=/app
+#/usr/local/bin/gunicorn config.wsgi --bind 0.0.0.0:8000 --chdir=/app
+/usr/local/bin/gunicorn config.asgi -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --chdir=/app

@@ -34,6 +34,7 @@ dj-inmemorystorage==2.1.0   # https://pypi.org/project/dj-inmemorystorage/
 django-extensions==3.1.5  # https://github.com/django-extensions/django-extensions
 django-fernet-fields==0.6  # https://django-fernet-fields.readthedocs.io/en/latest/
 django-admin-logs==1.0.2  # https://github.com/radwon/django-admin-logs
+channels==4.0.0  # https://channels.readthedocs.io/en/stable/installation.html
 
 # Django REST Framework
 # ------------------------------------------------------------------------------
