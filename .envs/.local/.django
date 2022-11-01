@@ -38,8 +38,8 @@ GOOGLE_APPLICATION_CREDENTIALS=/app/.envs/.local/firebase_sa.json
 # In-App Purchases
 # ------------------------------------------------------------------------------
 # Google Play Store
-IS_INAPP_TESTING=false
+IS_INAPP_TESTING=true
 GOOGLE_PLAY_BUNDLE_ID=com.co188.heythere
 GOOGLE_PLAY_CONSOLE_SA_PATH=/app/.envs/.local/play_console_sa.json
 # Apple App Store
-APP_STORE_BUNDLE_ID=
+APP_STORE_BUNDLE_ID=com.co188.heythere

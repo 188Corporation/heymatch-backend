@@ -427,4 +427,5 @@ GOOGLE_PLAY_VALIDATOR = GooglePlayVerifier(
 APP_STORE_VALIDATOR = AppStoreValidator(
     bundle_id=env("APP_STORE_BUNDLE_ID"),
     sandbox=env("IS_INAPP_TESTING"),
+    auto_retry_wrong_env_request=False,
 )

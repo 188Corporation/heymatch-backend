@@ -1,6 +1,12 @@
 from django.contrib import admin
 
-from .models import FreePassItem, PlayStoreValidatedReceipt, PointItem, UserPurchase
+from .models import (
+    AppleStoreValidatedReceipt,
+    FreePassItem,
+    PlayStoreValidatedReceipt,
+    PointItem,
+    UserPurchase,
+)
 
 
 @admin.register(PointItem)
@@ -87,6 +93,40 @@ class PlayStoreValidatedReceiptAdmin(admin.ModelAdmin):
         "acknowledgementState",
         "kind",
         "regionCode",
+    ]
+
+
+@admin.register(AppleStoreValidatedReceipt)
+class AppleStoreValidatedReceiptAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "product_id",
+        "transaction_id",
+        "original_transaction_id",
+        "quantity",
+        "status",
+        "receipt_creation_date_ms",
+        "request_date_ms",
+        "purchase_date_ms",
+        "original_purchase_date_ms",
+        "is_trial_period",
+        "in_app_ownership_type",
+        "environment",
+    ]
+    search_fields = [
+        "id",
+        "product_id",
+        "transaction_id",
+        "original_transaction_id",
+        "quantity",
+        "status",
+        "receipt_creation_date_ms",
+        "request_date_ms",
+        "purchase_date_ms",
+        "original_purchase_date_ms",
+        "is_trial_period",
+        "in_app_ownership_type",
+        "environment",
     ]
 
 

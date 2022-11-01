@@ -58,5 +58,20 @@ class ReceiptItemNotFound(BasePermissionDeniedException):
     detail = "Product id in receipt not found in Item list."
 
 
+class ReceiptProcessFailedException(BasePermissionDeniedException):
+    status_code = 485
+    detail = "Receipt validation failed."
+
+
+class ReceiptInvalidPlatformRequestException(BasePermissionDeniedException):
+    status_code = 486
+    detail = "Payload `platform` is invalid. Please choose between ['ios', 'android']"
+
+
+class ReceiptAlreadyProcessedException(BasePermissionDeniedException):
+    status_code = 487
+    detail = "Receipt is already processed."
+
+
 class UserGroupLeaderException(BasePermissionDeniedException):
     status_code = 499

@@ -3,7 +3,10 @@ from uuid import uuid4
 from django.contrib.auth import get_user_model
 from django.db import models
 
-from .managers import PlayStoreValidatedReceiptManager
+from .managers import (
+    AppleStoreValidatedReceiptManager,
+    PlayStoreValidatedReceiptManager,
+)
 
 User = get_user_model()
 
@@ -31,7 +34,7 @@ class FreePassItem(models.Model):
 
 class PlayStoreValidatedReceipt(models.Model):
     # Receipt info
-    orderId = models.CharField(max_length=48)
+    orderId = models.CharField(max_length=48, unique=True)
     packageName = models.CharField(max_length=48)
     productId = models.CharField(max_length=48)
     quantity = models.IntegerField()
@@ -51,7 +54,25 @@ class PlayStoreValidatedReceipt(models.Model):
 
 
 class AppleStoreValidatedReceipt(models.Model):
-    pass
+    # receipt info
+    product_id = models.CharField(max_length=48)
+    transaction_id = models.CharField(max_length=48, unique=True)
+    original_transaction_id = models.CharField(max_length=48)
+    quantity = models.IntegerField()
+    status = models.IntegerField()
+
+    # date
+    receipt_creation_date_ms = models.CharField(max_length=32)
+    request_date_ms = models.CharField(max_length=32)
+    purchase_date_ms = models.CharField(max_length=32)
+    original_purchase_date_ms = models.CharField(max_length=32)
+
+    # etc
+    is_trial_period = models.BooleanField()
+    in_app_ownership_type = models.CharField(max_length=32)
+    environment = models.CharField(max_length=32)
+
+    objects = AppleStoreValidatedReceiptManager()
 
 
 PLATFORM_CHOICES = (
@@ -81,6 +102,20 @@ class UserPurchase(models.Model):
     )
     apple_store_receipt = models.OneToOneField(
         AppleStoreValidatedReceipt,
+        null=True,
+        blank=True,
+        default=None,
+        on_delete=models.PROTECT,
+    )
+    point_item = models.OneToOneField(
+        PointItem,
+        null=True,
+        blank=True,
+        default=None,
+        on_delete=models.PROTECT,
+    )
+    free_pass_item = models.OneToOneField(
+        FreePassItem,
         null=True,
         blank=True,
         default=None,
