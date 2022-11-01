@@ -35,6 +35,9 @@ def free_pass_default_time():
 
 
 class User(AbstractUser):
+    # stream.io
+    stream_token = models.TextField()
+
     # Basic Info
     id = models.UUIDField(
         primary_key=True, blank=False, null=False, editable=False, default=uuid4

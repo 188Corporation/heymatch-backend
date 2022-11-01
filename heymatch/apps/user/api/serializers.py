@@ -11,6 +11,7 @@ class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             "id",
+            "stream_token",
             "username",
             "phone_number",
             "age",

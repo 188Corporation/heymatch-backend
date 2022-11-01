@@ -28,9 +28,9 @@ AWS_S3_SECRET_ACCESS_KEY=ritQ0vRhIJKrKq67e4f82WPU+IozCaVOuYa0DKXq
 AWS_STORAGE_BUCKET_NAME=heymatch-s3-dev
 
 # GetStream.Io
-STREAM_API_KEY=qudygteppm7z
-STREAM_API_SECRET=u7hkpfdcemj6wqj7f6vhwtwmd6aqru96tnfjs2jfygyeu22jqh9s64pxmgjypjbw
-STREAM_CHAT_CHANNEL_TYPE=188-Corp
+STREAM_API_KEY=dg4mc768s4tj
+STREAM_API_SECRET=htq6mqwhnacgvxbnjwx5svg8x6ka5fsgem9k3989wuc8ds2q6q3f29mfusapa7am
+STREAM_CHAT_CHANNEL_TYPE=messaging
 
 # Google Firebase
 GOOGLE_APPLICATION_CREDENTIALS=/app/.envs/.local/firebase_sa.json

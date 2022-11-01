@@ -17,6 +17,7 @@ class UserDetailByPhoneNumberSerializer(UserDetailsSerializer):
         model = User
         fields = (
             "id",
+            "stream_token",
             "username",
             "phone_number",
             "birthdate",
@@ -28,7 +29,57 @@ class UserDetailByPhoneNumberSerializer(UserDetailsSerializer):
         read_only_fields = ("phone_number",)
 
 
-# NOT USED ANYMORE
+class UserLoginByPhoneNumberSerializer(LoginSerializer):
+    username = None
+    email = None
+    password = None
+    phone_number = serializers.CharField(required=True)
+    session_token = serializers.CharField(required=True)
+    security_code = serializers.CharField(required=True)
+
+    def _validate_user(self, phone_number: str):
+        if phone_number:
+            # validate phone_number is verified
+            qs: QuerySet = SMSVerification.objects.filter(phone_number=phone_number)
+            if not qs.exists() or not qs[0].is_verified:
+                msg = "Provided phone_number unverified."
+                raise exceptions.ValidationError(detail=msg)
+
+            # get user with phone_number
+            user, created = User.objects.get_or_create(phone_number=phone_number)
+            if created:
+                # Register Stream token
+                user.stream_token = stream.create_token(user_id=str(user.id))
+                user.save()
+                stream.upsert_user({"id": str(user.id), "role": "user"})
+        else:
+            msg = 'Must include "phone_number".'
+            raise exceptions.ValidationError(detail=msg)
+        return user
+
+    def validate(self, attrs):
+        # first verify SMS
+        serializer = SMSVerificationSerializer(data=attrs)
+        serializer.is_valid(raise_exception=True)
+
+        # process login or registration
+        phone_number = attrs.get("phone_number")
+        user = self._validate_user(phone_number)
+
+        # Did we get back an active user?
+        if user:
+            if not user.is_active:
+                msg = "User account is disabled."
+                raise exceptions.ValidationError(detail=msg)
+        else:
+            msg = "Unable to log in with provided credentials."
+            raise exceptions.ValidationError(detail=str(msg))
+
+        attrs["user"] = user
+        return attrs
+
+
+# DEPRECATED
 class UserRegisterByPhoneNumberSerializer(RegisterSerializer):
     email = None
     phone_number = serializers.CharField(required=True)
@@ -84,48 +135,3 @@ class UserRegisterByPhoneNumberSerializer(RegisterSerializer):
     def check_if_user_exists(phone_number: str):
         qs: QuerySet = User.objects.filter(phone_number=phone_number)
         return qs.exists()
-
-
-class UserLoginByPhoneNumberSerializer(LoginSerializer):
-    username = None
-    email = None
-    password = None
-    phone_number = serializers.CharField(required=True)
-    session_token = serializers.CharField(required=True)
-    security_code = serializers.CharField(required=True)
-
-    def _validate_user(self, phone_number: str):
-        if phone_number:
-            # validate phone_number is verified
-            qs: QuerySet = SMSVerification.objects.filter(phone_number=phone_number)
-            if not qs.exists() or not qs[0].is_verified:
-                msg = "Provided phone_number unverified."
-                raise exceptions.ValidationError(detail=msg)
-
-            # get user with phone_number
-            user, _ = User.objects.get_or_create(phone_number=phone_number)
-        else:
-            msg = 'Must include "phone_number".'
-            raise exceptions.ValidationError(detail=msg)
-        return user
-
-    def validate(self, attrs):
-        # first verify SMS
-        serializer = SMSVerificationSerializer(data=attrs)
-        serializer.is_valid(raise_exception=True)
-
-        # process login or registration
-        phone_number = attrs.get("phone_number")
-        user = self._validate_user(phone_number)
-
-        # Did we get back an active user?
-        if user:
-            if not user.is_active:
-                msg = "User account is disabled."
-                raise exceptions.ValidationError(detail=msg)
-        else:
-            msg = "Unable to log in with provided credentials."
-            raise exceptions.ValidationError(detail=str(msg))
-
-        attrs["user"] = user
-        return attrs
