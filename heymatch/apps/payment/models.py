@@ -93,28 +93,28 @@ class UserPurchase(models.Model):
     platform = models.CharField(
         null=False, blank=False, choices=PLATFORM_CHOICES, max_length=8
     )
-    play_store_receipt = models.OneToOneField(
+    play_store_receipt = models.ForeignKey(
         PlayStoreValidatedReceipt,
         null=True,
         blank=True,
         default=None,
         on_delete=models.PROTECT,
     )
-    apple_store_receipt = models.OneToOneField(
+    apple_store_receipt = models.ForeignKey(
         AppleStoreValidatedReceipt,
         null=True,
         blank=True,
         default=None,
         on_delete=models.PROTECT,
     )
-    point_item = models.OneToOneField(
+    point_item = models.ForeignKey(
         PointItem,
         null=True,
         blank=True,
         default=None,
         on_delete=models.PROTECT,
     )
-    free_pass_item = models.OneToOneField(
+    free_pass_item = models.ForeignKey(
         FreePassItem,
         null=True,
         blank=True,
