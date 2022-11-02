@@ -8,6 +8,7 @@ from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+from heymatch.apps.match.models import MatchRequest
 
 from heymatch.apps.group.models import Group, GroupBlackList
 from heymatch.apps.match.models import MatchRequest, StreamChannel
@@ -15,6 +16,7 @@ from heymatch.apps.user.models import User
 from heymatch.shared.permissions import (
     IsUserActive,
     IsUserGroupLeader,
+    IsUserJoinedGroup,
     IsUserJoinedGroupActive,
 )
 
@@ -33,7 +35,16 @@ stream = settings.STREAM_CLIENT
 class MatchRequestViewSet(viewsets.ModelViewSet):
     permission_classes = [
         IsAuthenticated,
+        IsUserJoinedGroup,
     ]
+
+    def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        # 1) Query MatchRequest where user.joined_group belongs
+        mr_sent_qs = MatchRequest.objects.select_related().filter(sender_group_id=self.request.user.joined_group.id)
+        mr_received_qs = MatchRequest.objects.select_related().filter(receiver_group_id=self.request.user.joined_group.id)
+
+        # TODO: serialize both sent, received with group info
+        return
 
 
 # LEGACY
