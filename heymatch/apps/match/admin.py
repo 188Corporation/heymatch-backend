@@ -7,15 +7,15 @@ from .models import MatchRequest
 class MatchRequestAdmin(admin.ModelAdmin):
     list_display = [
         "id",
-        "uuid",
         "sender_group",
         "receiver_group",
         "status",
+        "created_at",
     ]
     search_fields = [
         "id",
-        "uuid",
         "sender_group",
         "receiver_group",
         "status",
+        "created_at",
     ]

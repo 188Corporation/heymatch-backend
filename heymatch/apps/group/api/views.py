@@ -12,6 +12,7 @@ from rest_framework.response import Response
 
 from heymatch.apps.group.models import Group, GroupInvitationCode, GroupProfileImage
 from heymatch.apps.hotplace.models import HotPlace
+from heymatch.apps.match.api.serializers import MatchRequestSerializer
 from heymatch.apps.match.models import MatchRequest
 from heymatch.shared.exceptions import (
     GroupNotWithinSameHotplaceException,
@@ -43,7 +44,6 @@ from .serializers import (
     GroupRegisterStep3UpdatePhotoBodySerializer,
     GroupRegisterStep3UploadPhotoBodySerializer,
     GroupRegisterStep4Serializer,
-    MatchRequestSerializer,
     RestrictedGroupProfileByHotplaceSerializer,
 )
 

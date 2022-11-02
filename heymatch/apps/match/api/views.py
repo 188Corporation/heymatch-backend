@@ -8,7 +8,6 @@ from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
-from heymatch.apps.match.models import MatchRequest
 
 from heymatch.apps.group.models import Group, GroupBlackList
 from heymatch.apps.match.models import MatchRequest, StreamChannel
@@ -27,6 +26,7 @@ from .serializers import (
     MatchRequestReceivedSerializer,
     MatchRequestSendBodySerializer,
     MatchRequestSentSerializer,
+    MatchRequestSerializer,
 )
 
 stream = settings.STREAM_CLIENT
@@ -37,14 +37,30 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         IsAuthenticated,
         IsUserJoinedGroup,
     ]
+    serializer_class = MatchRequestSerializer
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        # 1) Query MatchRequest where user.joined_group belongs
-        mr_sent_qs = MatchRequest.objects.select_related().filter(sender_group_id=self.request.user.joined_group.id)
-        mr_received_qs = MatchRequest.objects.select_related().filter(receiver_group_id=self.request.user.joined_group.id)
+        # Query MatchRequest (newest to oldest)
+        joined_group_id = self.request.user.joined_group.id
+        mr_sent_qs = (
+            MatchRequest.objects.select_related()
+            .filter(sender_group_id=joined_group_id)
+            .order_by("-created_at")
+        )
+        mr_received_qs = (
+            MatchRequest.objects.select_related()
+            .filter(receiver_group_id=joined_group_id)
+            .order_by("-created_at")
+        )
 
-        # TODO: serialize both sent, received with group info
-        return
+        # Serialize
+        mr_sent_serializer = self.get_serializer(mr_sent_qs, many=True)
+        mr_received_serializer = self.get_serializer(mr_received_qs, many=True)
+        data = {
+            "sent": mr_sent_serializer.data,
+            "received": mr_received_serializer.data,
+        }
+        return Response(data=data, status=status.HTTP_200_OK)
 
 
 # LEGACY

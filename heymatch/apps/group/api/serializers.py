@@ -8,7 +8,6 @@ from rest_framework import serializers
 
 from heymatch.apps.group.models import Group, GroupInvitationCode, GroupProfileImage
 from heymatch.apps.hotplace.models import HotPlace
-from heymatch.apps.match.models import MatchRequest
 from heymatch.utils.util import is_geopt_within_boundary
 
 
@@ -190,12 +189,6 @@ class GroupCreationSerializer(serializers.ModelSerializer):
             instance=instance, context={"hotplace_id": instance.hotplace.id}
         )
         return serializer.data
-
-
-class MatchRequestSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MatchRequest
-        fields = "__all__"
 
 
 ##########

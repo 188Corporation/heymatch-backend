@@ -1,5 +1,3 @@
-from uuid import uuid4
-
 from django.db import models
 from django.utils import timezone
 
@@ -14,7 +12,6 @@ MATCH_REQUEST_CHOICES = (
 
 
 class MatchRequest(models.Model):
-    uuid = models.UUIDField(blank=False, null=False, editable=False, default=uuid4)
     sender_group = models.ForeignKey(
         "group.Group",
         blank=True,
@@ -34,6 +31,7 @@ class MatchRequest(models.Model):
         choices=MATCH_REQUEST_CHOICES,
         max_length=48,
     )
+    created_at = models.DateTimeField(default=timezone.now)
 
 
 def stream_channel_default_time():

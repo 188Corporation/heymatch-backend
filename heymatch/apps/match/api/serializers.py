@@ -5,15 +5,10 @@ from heymatch.apps.match.models import MatchRequest
 from heymatch.apps.user.models import User
 
 
-class MatchRequestListSerializer(serializers.Serializer):
-    received = serializers.SerializerMethodField()
-    sent = serializers.SerializerMethodField()
-
-    def get_received(self):
-        pass
-
-    def get_sent(self):
-        pass
+class MatchRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MatchRequest
+        fields = "__all__"
 
 
 # ====================================

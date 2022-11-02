@@ -32,7 +32,7 @@ class UserAdmin(auth_admin.UserAdmin):
             {
                 "fields": (
                     "point_balance",
-                    # "free_pass",
+                    "free_pass",
                     "free_pass_active_until",
                 )
             },
