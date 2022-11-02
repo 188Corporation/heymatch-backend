@@ -41,6 +41,11 @@ class UserPointBalanceNotEnoughException(BasePermissionDeniedException):
     detail = "젤리가 부족해요.. 충전해주세요! 🍬"
 
 
+class MatchRequestAlreadySubmitted(BasePermissionDeniedException):
+    status_code = 470
+    detail = "이미 매칭요청을 보낸 그룹입니다!"
+
+
 class ReceiptWrongEnvException(BasePermissionDeniedException):
     status_code = 480
     detail = (

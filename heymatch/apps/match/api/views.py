@@ -30,6 +30,16 @@ from .serializers import (
 stream = settings.STREAM_CLIENT
 
 
+class MatchRequestViewSet(viewsets.ModelViewSet):
+    permission_classes = [
+        IsAuthenticated,
+    ]
+
+
+# LEGACY
+# ============================
+
+
 class MatchRequestSentViewSet(viewsets.ModelViewSet):
     permission_classes = [
         IsAuthenticated,

@@ -6,7 +6,7 @@ from django.utils import timezone
 from .managers import ActiveStreamChannelManager
 
 MATCH_REQUEST_CHOICES = (
-    ("PENDING", "PENDING"),
+    ("WAITING", "WAITING"),
     ("ACCEPTED", "ACCEPTED"),
     ("REJECTED", "REJECTED"),
     ("CANCELED", "CANCELED"),
@@ -30,7 +30,9 @@ class MatchRequest(models.Model):
         related_name="match_request_receiver_group",
     )
     status = models.CharField(
-        default=MATCH_REQUEST_CHOICES[0][0], choices=MATCH_REQUEST_CHOICES
+        default=MATCH_REQUEST_CHOICES[0][0],
+        choices=MATCH_REQUEST_CHOICES,
+        max_length=48,
     )
 
 

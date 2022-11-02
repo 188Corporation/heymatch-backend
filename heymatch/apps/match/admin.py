@@ -8,16 +8,14 @@ class MatchRequestAdmin(admin.ModelAdmin):
     list_display = [
         "id",
         "uuid",
-        "sender",
-        "receiver",
-        "unread",
-        "accepted",
+        "sender_group",
+        "receiver_group",
+        "status",
     ]
     search_fields = [
         "id",
         "uuid",
-        "sender",
-        "receiver",
-        "unread",
-        "accepted",
+        "sender_group",
+        "receiver_group",
+        "status",
     ]

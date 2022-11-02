@@ -10,6 +10,10 @@ from heymatch.apps.match.api.views import (
 
 app_name = "match"
 
+# match_request_list_view = Match
+
+# LEGACY
+# ----------------------------
 match_request_sent_list_view = MatchRequestSentViewSet.as_view({"get": "list"})
 match_request_received_list_view = MatchRequestReceivedViewSet.as_view({"get": "list"})
 match_request_send_to_group_view = MatchRequestControlViewSet.as_view({"post": "send"})
@@ -25,7 +29,9 @@ match_matched_group_leader_detail_view = MatchedGroupLeaderDetailViewSet.as_view
 )
 
 urlpatterns = [
-    path(""),
+    path(
+        "",
+    ),
     # DEPRECATED
     # MatchRequest Sent
     path("request/sent/", match_request_sent_list_view, name="match-request-sent-list"),
