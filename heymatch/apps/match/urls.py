@@ -25,6 +25,8 @@ match_matched_group_leader_detail_view = MatchedGroupLeaderDetailViewSet.as_view
 )
 
 urlpatterns = [
+    path(""),
+    # DEPRECATED
     # MatchRequest Sent
     path("request/sent/", match_request_sent_list_view, name="match-request-sent-list"),
     # MatchRequest Received

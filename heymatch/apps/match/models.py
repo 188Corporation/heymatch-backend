@@ -5,26 +5,33 @@ from django.utils import timezone
 
 from .managers import ActiveStreamChannelManager
 
+MATCH_REQUEST_CHOICES = (
+    ("PENDING", "PENDING"),
+    ("ACCEPTED", "ACCEPTED"),
+    ("REJECTED", "REJECTED"),
+    ("CANCELED", "CANCELED"),
+)
+
 
 class MatchRequest(models.Model):
     uuid = models.UUIDField(blank=False, null=False, editable=False, default=uuid4)
-    sender = models.ForeignKey(
+    sender_group = models.ForeignKey(
         "group.Group",
         blank=True,
         null=True,
         on_delete=models.SET_NULL,
         related_name="match_request_sender_group",
     )
-    receiver = models.ForeignKey(
+    receiver_group = models.ForeignKey(
         "group.Group",
         blank=True,
         null=True,
         on_delete=models.SET_NULL,
         related_name="match_request_receiver_group",
     )
-    unread = models.BooleanField(default=True)
-    accepted = models.BooleanField(default=False)
-    denied = models.BooleanField(default=False)
+    status = models.CharField(
+        default=MATCH_REQUEST_CHOICES[0][0], choices=MATCH_REQUEST_CHOICES
+    )
 
 
 def stream_channel_default_time():
