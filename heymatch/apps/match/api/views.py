@@ -10,10 +10,14 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from heymatch.apps.group.models import Group, GroupBlackList
-from heymatch.apps.match.models import MatchRequest, StreamChannel
+from heymatch.apps.match.models import (
+    MATCH_REQUEST_CHOICES,
+    MatchRequest,
+    StreamChannel,
+)
 from heymatch.apps.user.models import User
 from heymatch.shared.exceptions import (
-    MatchRequestAcceptFailedException,
+    MatchRequestHandleFailedException,
     MatchRequestNotFoundException,
 )
 from heymatch.shared.permissions import (
@@ -67,15 +71,12 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         return Response(data=data, status=status.HTTP_200_OK)
 
     def accept(self, request: Request, match_request_id: int) -> Response:
-        try:
-            mr = MatchRequest.objects.get(id=match_request_id)
-        except MatchRequest.DoesNotExist:
-            raise MatchRequestNotFoundException()
-
-        if not mr.receiver_group.id == self.request.user.joined_group.id:
-            raise MatchRequestAcceptFailedException(
-                extra_info="You are not receiver group"
-            )
+        # Check validity
+        mr = self.get_match_request_obj(match_request_id=match_request_id)
+        self.is_user_receiver_group(match_request=mr)
+        self.check_match_request_status(
+            match_request=mr, target_status=MATCH_REQUEST_CHOICES[0][0]
+        )  # WAITING
 
         # Create Stream channel for group leaders for both groups
         sender_group = mr.sender_group
@@ -92,7 +93,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         res = channel.query()
 
         # Update MatchRequest
-        mr.status = "ACCEPTED"
+        mr.status = MATCH_REQUEST_CHOICES[1][0]  # ACCEPTED
         mr.stream_channel_id = res["channel"]["id"]
         mr.stream_channel_cid = res["channel"]["cid"]
         mr.stream_channel_type = res["channel"]["type"]
@@ -108,11 +109,57 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(instance=mr)
         return Response(serializer.data, status.HTTP_200_OK)
 
-    def reject(self):
-        pass
+    def reject(self, request: Request, match_request_id: int) -> Response:
+        # Check validity
+        mr = self.get_match_request_obj(match_request_id=match_request_id)
+        self.is_user_receiver_group(match_request=mr)
+        self.check_match_request_status(
+            match_request=mr, target_status=MATCH_REQUEST_CHOICES[0][0]
+        )  # WAITING
 
-    def cancel(self):
-        pass
+        mr.status = MATCH_REQUEST_CHOICES[2][0]  # REJECTED
+        mr.save(update_fields=["status"])
+        serializer = self.get_serializer(instance=mr)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def cancel(self, request: Request, match_request_id: int) -> Response:
+        # Check validity
+        mr = self.get_match_request_obj(match_request_id=match_request_id)
+        self._is_user_sender_group(match_request=mr)
+        self.check_match_request_status(
+            match_request=mr, target_status=MATCH_REQUEST_CHOICES[0][0]
+        )  # WAITING
+
+        mr.status = MATCH_REQUEST_CHOICES[3][0]  # CANCELED
+        mr.save(update_fields=["status"])
+        serializer = self.get_serializer(instance=mr)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def get_match_request_obj(self, match_request_id: int) -> MatchRequest:
+        try:
+            mr = MatchRequest.objects.get(id=match_request_id)
+        except MatchRequest.DoesNotExist:
+            raise MatchRequestNotFoundException()
+        return mr
+
+    def is_user_receiver_group(self, match_request: MatchRequest):
+        if not match_request.receiver_group.id == self.request.user.joined_group.id:
+            raise MatchRequestHandleFailedException(
+                extra_info="You are not receiver group"
+            )
+
+    def _is_user_sender_group(self, match_request: MatchRequest):
+        if not match_request.sender_group.id == self.request.user.joined_group.id:
+            raise MatchRequestHandleFailedException(
+                extra_info="You are not sender group"
+            )
+
+    @staticmethod
+    def check_match_request_status(match_request: MatchRequest, target_status: str):
+        if not match_request.status == target_status:
+            raise MatchRequestHandleFailedException(
+                extra_info=f"Status should be '{target_status}'"
+            )
 
 
 # LEGACY

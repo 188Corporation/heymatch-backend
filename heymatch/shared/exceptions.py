@@ -53,9 +53,9 @@ class MatchRequestNotFoundException(BasePermissionDeniedException):
     detail = "Requested MatchRequest not found."
 
 
-class MatchRequestAcceptFailedException(BasePermissionDeniedException):
+class MatchRequestHandleFailedException(BasePermissionDeniedException):
     status_code = 472
-    detail = "Cannot accept requested match request."
+    detail = "Cannot handle requested match request."
 
 
 class ReceiptWrongEnvException(BasePermissionDeniedException):
