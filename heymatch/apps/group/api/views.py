@@ -16,7 +16,7 @@ from heymatch.apps.match.api.serializers import MatchRequestSerializer
 from heymatch.apps.match.models import MatchRequest
 from heymatch.shared.exceptions import (
     GroupNotWithinSameHotplaceException,
-    MatchRequestAlreadySubmitted,
+    MatchRequestAlreadySubmittedException,
     UserPointBalanceNotEnoughException,
 )
 from heymatch.shared.permissions import (
@@ -149,7 +149,7 @@ class GroupMatchViewSet(viewsets.ViewSet):
         IsUserJoinedGroup,
     ]
 
-    def request_match(self, request, group_id: int) -> Response:
+    def request_match(self, request: Request, group_id: int) -> Response:
         """
         1) Check if user joined any group.
         2) Check if user does not belong to same hotplace of the other group.
@@ -169,7 +169,7 @@ class GroupMatchViewSet(viewsets.ViewSet):
             sender_group_id=user.joined_group.id, receiver_group_id=group_id
         )
         if mr_qs.exists():
-            raise MatchRequestAlreadySubmitted()
+            raise MatchRequestAlreadySubmittedException()
 
         # Check #4
         if user.free_pass and user.free_pass_active_until < timezone.now():

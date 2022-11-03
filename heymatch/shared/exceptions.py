@@ -4,11 +4,13 @@ from rest_framework.exceptions import APIException
 class BasePermissionDeniedException(APIException):
     default_code = "error"
 
-    def __init__(self, detail=None, status_code=None):
+    def __init__(self, detail=None, status_code=None, extra_info=None):
         if detail:
             self.detail = detail
-        if status_code is not None:
+        if status_code:
             self.status_code = status_code
+        if extra_info:
+            self.detail = f"{self.detail} ({extra_info})"
 
 
 class UserNotActiveException(BasePermissionDeniedException):
@@ -41,9 +43,19 @@ class UserPointBalanceNotEnoughException(BasePermissionDeniedException):
     detail = "젤리가 부족해요.. 충전해주세요! 🍬"
 
 
-class MatchRequestAlreadySubmitted(BasePermissionDeniedException):
+class MatchRequestAlreadySubmittedException(BasePermissionDeniedException):
     status_code = 470
     detail = "이미 매칭요청을 보낸 그룹입니다!"
+
+
+class MatchRequestNotFoundException(BasePermissionDeniedException):
+    status_code = 471
+    detail = "Requested MatchRequest not found."
+
+
+class MatchRequestAcceptFailedException(BasePermissionDeniedException):
+    status_code = 472
+    detail = "Cannot accept requested match request."
 
 
 class ReceiptWrongEnvException(BasePermissionDeniedException):

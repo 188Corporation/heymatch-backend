@@ -33,6 +33,22 @@ class MatchRequest(models.Model):
     )
     created_at = models.DateTimeField(default=timezone.now)
 
+    # getstream.io channel
+    stream_channel_id = models.CharField(
+        max_length=255, blank=True, null=True, default=None
+    )
+    stream_channel_cid = models.CharField(
+        max_length=255, blank=True, null=True, default=None
+    )
+    stream_channel_type = models.CharField(
+        max_length=32, blank=True, null=True, default=None
+    )
+
+
+# =============
+# DEPRECATED
+# =============
+
 
 def stream_channel_default_time():
     return timezone.now() + timezone.timedelta(hours=24)

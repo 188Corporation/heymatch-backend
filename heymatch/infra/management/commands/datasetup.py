@@ -8,7 +8,6 @@ from django.db.utils import IntegrityError
 from factory.django import ImageField
 from phone_verify.models import SMSVerification
 
-from heymatch.apps.group.models import Group
 from heymatch.apps.group.tests.factories import (
     ActiveGroupFactory,
     GroupProfileImageFactory,
@@ -20,7 +19,7 @@ from heymatch.apps.hotplace.tests.factories import (
     HotPlaceFactory,
 )
 from heymatch.apps.payment.models import FreePassItem, PointItem
-from heymatch.apps.user.tests.factories import ActiveUserFactory, InactiveUserFactory
+from heymatch.apps.user.tests.factories import ActiveUserFactory
 from heymatch.utils.util import generate_rand_geoopt_within_boundary
 
 User = get_user_model()
@@ -63,11 +62,9 @@ class Command(BaseCommand):
         # self.generate_developer_users()
 
         # -------------- Normal Users setup -------------- #
-        ActiveUserFactory.create_batch(size=10, joined_group=None)
-        InactiveUserFactory.create_batch(size=10)  # "joined_group=None" by default
-        self.stdout.write(
-            self.style.SUCCESS("Successfully set up data for [Users(Active, Inactive)]")
-        )
+        ActiveUserFactory.create_batch(size=2, joined_group=None)
+        # InactiveUserFactory.create_batch(size=10)  # "joined_group=None" by default
+        self.stdout.write(self.style.SUCCESS("Successfully set up data for [Users]"))
 
         # -------------- Hotplace, Group, Users setup -------------- #
         for name in RANDOM_HOTPLACE_NAMES:
@@ -80,7 +77,7 @@ class Command(BaseCommand):
                 ],
             )
             # create groups for each hotplaces
-            for _ in range(random.randint(3, 5)):
+            for _ in range(random.randint(2, 4)):
                 geopt = generate_rand_geoopt_within_boundary(
                     RANDOM_HOTPLACE_INFO[name]["zone_boundary_geoinfos"]
                 )
@@ -96,12 +93,13 @@ class Command(BaseCommand):
                     ),
                 )
                 # Create users for each groups
-                users = ActiveUserFactory.create_batch(
-                    size=random.randint(2, 5),
+                # NOTE: For now, only one user is mapped to one group so size is 1
+                ActiveUserFactory.create_batch(
+                    size=1,
                     joined_group=group,
                 )
-                Group.objects.register_group_leader_user(group, users[0])
-                Group.objects.register_normal_users(group, users[1:])
+                # Group.objects.register_group_leader_user(group, users[0])
+                # Group.objects.register_normal_users(group, users[1:])
 
         self.stdout.write(
             self.style.SUCCESS("Successfully set up data for [Hotplaces/Groups/User]")

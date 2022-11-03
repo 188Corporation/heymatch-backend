@@ -1,8 +1,11 @@
+from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
 from django.db.models import Avg
 from django.db.models.query import QuerySet
 
 from heymatch.utils.util import calculate_age_from_birthdate
+
+stream = settings.STREAM_CLIENT
 
 
 class UserManager(BaseUserManager):
@@ -55,6 +58,11 @@ class ActiveUserManager(UserManager):
 
     def create(self, **kwargs):
         user = self.model(**kwargs)
+        # Register Stream token
+        token = stream.create_token(user_id=str(user.id))
+        stream.upsert_user({"id": str(user.id), "role": "user"})
+        user.stream_token = token
+
         # calculate post-creation fields
         if user.birthdate:
             user.age = calculate_age_from_birthdate(user.birthdate)

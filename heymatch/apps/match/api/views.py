@@ -1,7 +1,7 @@
 from typing import Any
 
 from django.conf import settings
-from django.db.models import QuerySet
+from django.db.models import Q, QuerySet
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
@@ -12,6 +12,10 @@ from rest_framework.response import Response
 from heymatch.apps.group.models import Group, GroupBlackList
 from heymatch.apps.match.models import MatchRequest, StreamChannel
 from heymatch.apps.user.models import User
+from heymatch.shared.exceptions import (
+    MatchRequestAcceptFailedException,
+    MatchRequestNotFoundException,
+)
 from heymatch.shared.permissions import (
     IsUserActive,
     IsUserGroupLeader,
@@ -21,7 +25,6 @@ from heymatch.shared.permissions import (
 
 from .serializers import (
     MatchedGroupLeaderDetailSerializer,
-    MatchRequestAcceptSerializer,
     MatchRequestDetailSerializer,
     MatchRequestReceivedSerializer,
     MatchRequestSendBodySerializer,
@@ -41,15 +44,16 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         # Query MatchRequest (newest to oldest)
+        # Exclude "CANCELED" MatchRequest
         joined_group_id = self.request.user.joined_group.id
         mr_sent_qs = (
             MatchRequest.objects.select_related()
-            .filter(sender_group_id=joined_group_id)
+            .filter(Q(sender_group_id=joined_group_id) & ~Q(status="CANCELED"))
             .order_by("-created_at")
         )
         mr_received_qs = (
             MatchRequest.objects.select_related()
-            .filter(receiver_group_id=joined_group_id)
+            .filter(Q(receiver_group_id=joined_group_id) & ~Q(status="CANCELED"))
             .order_by("-created_at")
         )
 
@@ -61,6 +65,54 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
             "received": mr_received_serializer.data,
         }
         return Response(data=data, status=status.HTTP_200_OK)
+
+    def accept(self, request: Request, match_request_id: int) -> Response:
+        try:
+            mr = MatchRequest.objects.get(id=match_request_id)
+        except MatchRequest.DoesNotExist:
+            raise MatchRequestNotFoundException()
+
+        if not mr.receiver_group.id == self.request.user.joined_group.id:
+            raise MatchRequestAcceptFailedException(
+                extra_info="You are not receiver group"
+            )
+
+        # Create Stream channel for group leaders for both groups
+        sender_group = mr.sender_group
+        sender_user = User.active_objects.get(joined_group=sender_group)
+        channel = stream.channel(
+            settings.STREAM_CHAT_CHANNEL_TYPE,
+            None,
+            data=dict(
+                members=[str(request.user.id), str(sender_user.id)],
+                created_by_id=str(request.user.id),
+            ),
+        )
+        # Note: query method creates a channel
+        res = channel.query()
+
+        # Update MatchRequest
+        mr.status = "ACCEPTED"
+        mr.stream_channel_id = res["channel"]["id"]
+        mr.stream_channel_cid = res["channel"]["cid"]
+        mr.stream_channel_type = res["channel"]["type"]
+        mr.save(
+            update_fields=[
+                "status",
+                "stream_channel_id",
+                "stream_channel_cid",
+                "stream_channel_type",
+            ]
+        )
+
+        serializer = self.get_serializer(instance=mr)
+        return Response(serializer.data, status.HTTP_200_OK)
+
+    def reject(self):
+        pass
+
+    def cancel(self):
+        pass
 
 
 # LEGACY
@@ -115,11 +167,6 @@ class MatchRequestControlViewSet(viewsets.ModelViewSet):
         IsUserJoinedGroupActive,
     ]
     serializer_class = MatchRequestDetailSerializer
-
-    def get_serializer_class(self):
-        if self.action == "accept":
-            return MatchRequestAcceptSerializer
-        return self.serializer_class
 
     @swagger_auto_schema(request_body=MatchRequestSendBodySerializer)
     def send(self, request: Request, *args: Any, **kwargs: Any) -> Response:

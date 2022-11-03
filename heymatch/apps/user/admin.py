@@ -72,9 +72,10 @@ class UserAdmin(auth_admin.UserAdmin):
         "is_group_leader",
         "is_superuser",
         "point_balance",
-        # "free_pass",
+        "free_pass",
         "free_pass_active_until",
         "is_active",
+        "stream_token",
     ]
     search_fields = [
         "id",
@@ -89,7 +90,8 @@ class UserAdmin(auth_admin.UserAdmin):
         "is_group_leader",
         "is_superuser",
         "point_balance",
-        # "free_pass",
+        "free_pass",
         "free_pass_active_until",
         "is_active",
+        "stream_token",
     ]

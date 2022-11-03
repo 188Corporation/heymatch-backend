@@ -46,12 +46,10 @@ class UserLoginByPhoneNumberSerializer(LoginSerializer):
                 raise exceptions.ValidationError(detail=msg)
 
             # get user with phone_number
-            user, created = User.objects.get_or_create(phone_number=phone_number)
-            if created:
-                # Register Stream token
-                user.stream_token = stream.create_token(user_id=str(user.id))
-                user.save()
-                stream.upsert_user({"id": str(user.id), "role": "user"})
+            try:
+                user = User.active_objects.get(phone_number=phone_number)
+            except User.DoesNotExist:
+                user = User.active_objects.create(phone_number=phone_number)
         else:
             msg = 'Must include "phone_number".'
             raise exceptions.ValidationError(detail=msg)
