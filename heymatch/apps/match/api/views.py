@@ -34,6 +34,7 @@ from heymatch.shared.permissions import (
 
 from .serializers import (
     MatchedGroupLeaderDetailSerializer,
+    MatchRequestCreateBodySerializer,
     MatchRequestDetailSerializer,
     MatchRequestReceivedSerializer,
     MatchRequestSendBodySerializer,
@@ -75,6 +76,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         }
         return Response(data=data, status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(request_body=MatchRequestCreateBodySerializer)
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """
         1) Check if user joined any group.

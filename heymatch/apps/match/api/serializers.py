@@ -5,6 +5,10 @@ from heymatch.apps.match.models import MatchRequest
 from heymatch.apps.user.models import User
 
 
+class MatchRequestCreateBodySerializer(serializers.Serializer):
+    group_id = serializers.IntegerField()
+
+
 class MatchRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = MatchRequest
