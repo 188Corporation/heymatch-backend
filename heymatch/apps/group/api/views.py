@@ -2,7 +2,6 @@ from typing import Any
 
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.parsers import JSONParser, MultiPartParser
@@ -12,13 +11,7 @@ from rest_framework.response import Response
 
 from heymatch.apps.group.models import Group, GroupInvitationCode, GroupProfileImage
 from heymatch.apps.hotplace.models import HotPlace
-from heymatch.apps.match.api.serializers import MatchRequestSerializer
-from heymatch.apps.match.models import MatchRequest
-from heymatch.shared.exceptions import (
-    GroupNotWithinSameHotplaceException,
-    MatchRequestAlreadySubmittedException,
-    UserPointBalanceNotEnoughException,
-)
+from heymatch.shared.exceptions import GroupNotWithinSameHotplaceException
 from heymatch.shared.permissions import (
     IsGroupCreationAllowed,
     IsGroupRegisterAllowed,
@@ -132,75 +125,6 @@ class GroupDetailViewSet(viewsets.ViewSet):
             raise GroupNotWithinSameHotplaceException()
         serializer = FullGroupProfileSerializer(group)
         return Response(serializer.data)
-
-
-class GroupMatchViewSet(viewsets.ViewSet):
-    """
-    ViewSet for requesting match to other Group
-
-
-    If passes all 3 steps, open up chatting room for both groups.
-
-    """
-
-    permission_classes = [
-        IsAuthenticated,
-        IsUserActive,
-        IsUserJoinedGroup,
-    ]
-
-    def request_match(self, request: Request, group_id: int) -> Response:
-        """
-        1) Check if user joined any group.
-        2) Check if user does not belong to same hotplace of the other group.
-        3) Check if MatchRequest already created
-        4) Check if user has enough balance or free_pass item.
-        """
-        group_qs = Group.active_objects.all()
-        group = get_object_or_404(group_qs, id=group_id)
-        user = request.user
-        # Permission class checks #1
-        # Check #2
-        if user.joined_group.hotplace.id != group.hotplace.id:
-            raise GroupNotWithinSameHotplaceException()
-
-        # Check #3
-        mr_qs = MatchRequest.objects.select_related().filter(
-            sender_group_id=user.joined_group.id, receiver_group_id=group_id
-        )
-        if mr_qs.exists():
-            raise MatchRequestAlreadySubmittedException()
-
-        # Check #4
-        if user.free_pass and user.free_pass_active_until < timezone.now():
-            mr = self.create_match_request(
-                sender_group=user.joined_group, receiver_group=group
-            )
-            # Create MatchRequest
-            serializer = MatchRequestSerializer(instance=mr)
-            return Response(data=serializer.data, status=status.HTTP_200_OK)
-        if user.point_balance < group.match_point:
-            raise UserPointBalanceNotEnoughException()
-
-        # Deduct point
-        user.point_balance = user.point_balance - group.match_point
-        user.save(update_fields=["point_balance"])
-
-        # Create MatchRequest
-        mr = self.create_match_request(
-            sender_group=user.joined_group, receiver_group=group
-        )
-        serializer = MatchRequestSerializer(instance=mr)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
-
-    @staticmethod
-    def create_match_request(
-        sender_group: Group, receiver_group: Group
-    ) -> MatchRequest:
-        return MatchRequest.objects.create(
-            sender_group=sender_group,
-            receiver_group=receiver_group,
-        )
 
 
 #########

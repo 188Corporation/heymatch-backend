@@ -1,16 +1,11 @@
 from django.urls import path
 
-from heymatch.apps.group.api.views import (
-    GroupDetailViewSet,
-    GroupMatchViewSet,
-    GroupsGenericViewSet,
-)
+from heymatch.apps.group.api.views import GroupDetailViewSet, GroupsGenericViewSet
 
 app_name = "group"
 
 group_list_create_view = GroupsGenericViewSet.as_view({"get": "list", "post": "create"})
 group_detail_view = GroupDetailViewSet.as_view({"get": "retrieve"})
-group_match_request_view = GroupMatchViewSet.as_view({"post": "request_match"})
 
 # Legacy
 # group_registration_view = GroupUnregisterViewSet.as_view({"post": "register"})
@@ -40,7 +35,6 @@ group_match_request_view = GroupMatchViewSet.as_view({"post": "request_match"})
 urlpatterns = [
     path("", group_list_create_view, name="group-list-create"),
     path("<int:group_id>/", group_detail_view, name="group-detail"),
-    path("<int:group_id>/match/", group_match_request_view, name="group-match-request"),
     # Legacy
     # path(
     #     "registration/step/1/",

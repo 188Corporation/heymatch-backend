@@ -11,7 +11,7 @@ from heymatch.apps.match.api.views import (
 
 app_name = "match"
 
-match_request_list_view = MatchRequestViewSet.as_view({"get": "list"})
+match_request_list_crate_view = MatchRequestViewSet.as_view({"get": "list"})
 match_request_accept_view = MatchRequestViewSet.as_view({"post": "accept"})
 match_request_reject_view = MatchRequestViewSet.as_view({"post": "reject"})
 match_request_cancel_view = MatchRequestViewSet.as_view({"post": "cancel"})
@@ -34,7 +34,7 @@ match_matched_group_leader_detail_view = MatchedGroupLeaderDetailViewSet.as_view
 )
 
 urlpatterns = [
-    path("", match_request_list_view, name="match-request-list-view"),
+    path("", match_request_list_crate_view, name="match-request-list-view"),
     path(
         "<int:match_request_id>/accept/",
         match_request_accept_view,

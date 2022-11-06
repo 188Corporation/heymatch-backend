@@ -1,8 +1,10 @@
 from typing import Any
 
 from django.conf import settings
+from django.core.exceptions import FieldDoesNotExist
 from django.db.models import Q, QuerySet
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -17,8 +19,11 @@ from heymatch.apps.match.models import (
 )
 from heymatch.apps.user.models import User
 from heymatch.shared.exceptions import (
+    GroupNotWithinSameHotplaceException,
+    MatchRequestAlreadySubmittedException,
     MatchRequestHandleFailedException,
     MatchRequestNotFoundException,
+    UserPointBalanceNotEnoughException,
 )
 from heymatch.shared.permissions import (
     IsUserActive,
@@ -69,6 +74,63 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
             "received": mr_received_serializer.data,
         }
         return Response(data=data, status=status.HTTP_200_OK)
+
+    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        """
+        1) Check if user joined any group.
+        2) Check if user does not belong to same hotplace of the other group.
+        3) Check if MatchRequest already created
+        4) Check if user has enough balance or free_pass item.
+        """
+        group_id = request.data.get("group_id", None)
+        if not group_id:
+            raise FieldDoesNotExist("`group_id` should be provided.")
+
+        group_qs = Group.active_objects.all()
+        group = get_object_or_404(group_qs, id=group_id)
+        user = request.user
+        # Permission class checks #1
+        # Check #2
+        if user.joined_group.hotplace.id != group.hotplace.id:
+            raise GroupNotWithinSameHotplaceException()
+
+        # Check #3
+        mr_qs = MatchRequest.objects.select_related().filter(
+            sender_group_id=user.joined_group.id, receiver_group_id=group_id
+        )
+        if mr_qs.exists():
+            raise MatchRequestAlreadySubmittedException()
+
+        # Check #4
+        if user.free_pass and user.free_pass_active_until < timezone.now():
+            mr = self.create_match_request(
+                sender_group=user.joined_group, receiver_group=group
+            )
+            # Create MatchRequest
+            serializer = MatchRequestSerializer(instance=mr)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        if user.point_balance < group.match_point:
+            raise UserPointBalanceNotEnoughException()
+
+        # Deduct point
+        user.point_balance = user.point_balance - group.match_point
+        user.save(update_fields=["point_balance"])
+
+        # Create MatchRequest
+        mr = self.create_match_request(
+            sender_group=user.joined_group, receiver_group=group
+        )
+        serializer = MatchRequestSerializer(instance=mr)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+    @staticmethod
+    def create_match_request(
+        sender_group: Group, receiver_group: Group
+    ) -> MatchRequest:
+        return MatchRequest.objects.create(
+            sender_group=sender_group,
+            receiver_group=receiver_group,
+        )
 
     def accept(self, request: Request, match_request_id: int) -> Response:
         # Check validity
@@ -135,7 +197,8 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(instance=mr)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def get_match_request_obj(self, match_request_id: int) -> MatchRequest:
+    @staticmethod
+    def get_match_request_obj(match_request_id: int) -> MatchRequest:
         try:
             mr = MatchRequest.objects.get(id=match_request_id)
         except MatchRequest.DoesNotExist:
