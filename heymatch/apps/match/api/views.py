@@ -39,7 +39,8 @@ from .serializers import (
     MatchRequestReceivedSerializer,
     MatchRequestSendBodySerializer,
     MatchRequestSentSerializer,
-    MatchRequestSerializer,
+    ReceivedMatchRequestSerializer,
+    SentMatchRequestSerializer,
 )
 
 stream = settings.STREAM_CLIENT
@@ -50,7 +51,8 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         IsAuthenticated,
         IsUserJoinedGroup,
     ]
-    serializer_class = MatchRequestSerializer
+
+    # serializer_class = ReceivedMatchRequestSerializer
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         # Query MatchRequest (newest to oldest)
@@ -68,8 +70,10 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         )
 
         # Serialize
-        mr_sent_serializer = self.get_serializer(mr_sent_qs, many=True)
-        mr_received_serializer = self.get_serializer(mr_received_qs, many=True)
+        mr_sent_serializer = SentMatchRequestSerializer(mr_sent_qs, many=True)
+        mr_received_serializer = ReceivedMatchRequestSerializer(
+            mr_received_qs, many=True
+        )
         data = {
             "sent": mr_sent_serializer.data,
             "received": mr_received_serializer.data,
@@ -109,7 +113,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
                 sender_group=user.joined_group, receiver_group=group
             )
             # Create MatchRequest
-            serializer = MatchRequestSerializer(instance=mr)
+            serializer = ReceivedMatchRequestSerializer(instance=mr)
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         if user.point_balance < group.match_point:
             raise UserPointBalanceNotEnoughException()
@@ -122,7 +126,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         mr = self.create_match_request(
             sender_group=user.joined_group, receiver_group=group
         )
-        serializer = MatchRequestSerializer(instance=mr)
+        serializer = ReceivedMatchRequestSerializer(instance=mr)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     @staticmethod
