@@ -15,9 +15,11 @@ class GroupProfileImagesByJoinedGroupConditionSerializer(serializers.ModelSerial
     """
     Context "hotplace_id" should be provided from Viewset level.
     If there is hotplace_id, that means user is joined to specific group
-    so give out original profile photos conditinally.
+    so give out original profile photos conditionally.
 
     If not, give out blurred profile images.
+
+    If `force_original` is given, then give original image no matter what.
 
     This serializer handles both cases automatically.
     """
@@ -37,6 +39,8 @@ class GroupProfileImagesByJoinedGroupConditionSerializer(serializers.ModelSerial
         ]
 
     def decide_whether_original_or_blurred_image(self, obj):
+        if self.context.get("force_original", False):
+            return obj.image.url
         hotplace_id = self.context.get("hotplace_id", None)
         if hotplace_id:
             if obj.group.hotplace.id == hotplace_id:
@@ -44,6 +48,8 @@ class GroupProfileImagesByJoinedGroupConditionSerializer(serializers.ModelSerial
         return obj.image_blurred.url
 
     def decide_whether_original_or_blurred_thumbnail(self, obj):
+        if self.context.get("force_original", False):
+            return obj.image.url
         hotplace_id = self.context.get("hotplace_id", None)
         if hotplace_id:
             if obj.group.hotplace.id == hotplace_id:

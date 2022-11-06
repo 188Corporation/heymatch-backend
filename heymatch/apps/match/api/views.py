@@ -70,9 +70,11 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         )
 
         # Serialize
-        mr_sent_serializer = SentMatchRequestSerializer(mr_sent_qs, many=True)
+        mr_sent_serializer = SentMatchRequestSerializer(
+            mr_sent_qs, many=True, context={"force_original": True}
+        )
         mr_received_serializer = ReceivedMatchRequestSerializer(
-            mr_received_qs, many=True
+            mr_received_qs, many=True, context={"force_original": True}
         )
         data = {
             "sent": mr_sent_serializer.data,
