@@ -17,5 +17,6 @@ urlpatterns = [
     path("hotplaces/", include("heymatch.apps.hotplace.urls")),
     path("payments/", include("heymatch.apps.payment.urls")),
     path("match-requests/", include("heymatch.apps.match.urls")),
+    path("chats/", include("heymatch.apps.chat.urls")),
 ]
 urlpatterns += router.urls
