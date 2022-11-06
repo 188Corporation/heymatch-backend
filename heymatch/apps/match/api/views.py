@@ -52,7 +52,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         IsUserJoinedGroup,
     ]
 
-    # serializer_class = ReceivedMatchRequestSerializer
+    serializer_class = ReceivedMatchRequestSerializer
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         # Query MatchRequest (newest to oldest)
@@ -73,7 +73,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         mr_sent_serializer = SentMatchRequestSerializer(
             mr_sent_qs, many=True, context={"force_original": True}
         )
-        mr_received_serializer = ReceivedMatchRequestSerializer(
+        mr_received_serializer = self.get_serializer(
             mr_received_qs, many=True, context={"force_original": True}
         )
         data = {
