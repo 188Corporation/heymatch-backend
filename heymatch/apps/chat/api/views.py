@@ -46,30 +46,49 @@ class StreamChatViewSet(viewsets.ModelViewSet):
         """
         channels = stream.query_channels(
             {"members": {"$in": [str(request.user.id)]}},
-            {"last_message_at": -1},
+            {"last_message_at": 1},
         )
         # parse raw data
         serializer_data = []
         for channel in channels["channels"]:
+            fresh_data = {}
             members = channel["members"]
+            reads = channel["read"]
             target_user_id = None
+            is_last_message_read = True
+
+            # check target user exists
             for member in members:
                 if member["user_id"] != str(request.user.id):
                     target_user_id = str(member["user_id"])
             if not target_user_id:
                 continue
-
             # find joined group
             target_user = User.objects.get(id=target_user_id)
             target_group = target_user.joined_group
+            if not target_group:
+                continue
+            # check unread or read
+            for read in reads:
+                if read["user"]["id"] == str(request.user.id):
+                    is_last_message_read = (
+                        False if read["unread_messages"] > 0 else True
+                    )
+            # add group info
             group_serializer = RestrictedGroupProfileSerializer(
                 instance=target_group, context={"force_original": True}
             )
-            channel["group"] = group_serializer.data
-
-            # delete redundant fields
-            del channel["channel"]["config"]
-            del channel["channel"]["own_capabilities"]
-
-            serializer_data.append(channel)
+            fresh_data["group"] = group_serializer.data
+            fresh_data["channel"] = {
+                "cid": channel["channel"]["cid"],
+                "last_message": {
+                    "content": channel["messages"][-1]["text"],
+                    "sent_at": channel["messages"][-1]["created_at"],
+                    "is_read": is_last_message_read,
+                }
+                if len(channel["messages"]) > 0
+                else None,
+            }
+            # serialize
+            serializer_data.append(fresh_data)
         return Response(data=serializer_data, status=status.HTTP_200_OK)
