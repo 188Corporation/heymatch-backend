@@ -78,7 +78,7 @@ RANDOM_HOTPLACE_NAMES: list = list(RANDOM_HOTPLACE_INFO.keys())
 class HotPlaceFactory(DjangoModelFactory):
     # Group GPS
     name = Faker("random_element", elements=RANDOM_HOTPLACE_NAMES)
-    zone_color = Faker("color")
+    # zone_color = Faker("color")
     zone_center_geoinfo = FuzzyGeoPt(precision=5)
     zone_boundary_geoinfos = FuzzyGeoPtArray(precision=5, array_length=5)
 

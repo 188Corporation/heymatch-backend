@@ -4,12 +4,8 @@ from typing import Sequence
 import pytest
 from rest_framework.test import APIClient
 
-from heymatch.apps.group.models import Group, GroupInvitationCode
-from heymatch.apps.group.tests.factories import (
-    ActiveGroupFactory,
-    ActiveGroupInvitationCodeFactory,
-    InactiveGroupFactory,
-)
+from heymatch.apps.group.models import Group
+from heymatch.apps.group.tests.factories import ActiveGroupFactory, InactiveGroupFactory
 from heymatch.apps.hotplace.models import HotPlace
 from heymatch.apps.hotplace.tests.factories import (
     RANDOM_HOTPLACE_INFO,
@@ -97,11 +93,6 @@ def active_two_groups() -> Sequence[Group]:
 def inactive_group() -> Group:
     hotplace = HotPlaceFactory()
     return InactiveGroupFactory(hotplace=hotplace)
-
-
-@pytest.fixture
-def active_group_invitation_code() -> GroupInvitationCode:
-    return ActiveGroupInvitationCodeFactory()
 
 
 @pytest.fixture
@@ -209,3 +200,13 @@ def match_request() -> MatchRequest:
 @pytest.fixture
 def api_client() -> APIClient:
     return APIClient()
+
+
+# ========================
+#  DEPRECATED
+# ========================
+#
+# @pytest.fixture
+# def active_group_invitation_code() -> GroupInvitationCode:
+#     return ActiveGroupInvitationCodeFactory()
+#

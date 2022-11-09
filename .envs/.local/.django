@@ -14,8 +14,8 @@ REDIS_URL=redis://redis:6379/0
 # ------------------------------------------------------------------------------
 
 # Flower
-CELERY_FLOWER_USER=qPtfsrrQRAywAXwEMsNiRcjaqPfUGLWR
-CELERY_FLOWER_PASSWORD=CdyOd0QguHvKmp9T9JYjOYHdZZkkTKSq671OIM6eQbVZVQ14ngSoiNSNbWbNQvCf
+# CELERY_FLOWER_USER=qPtfsrrQRAywAXwEMsNiRcjaqPfUGLWR
+# CELERY_FLOWER_PASSWORD=CdyOd0QguHvKmp9T9JYjOYHdZZkkTKSq671OIM6eQbVZVQ14ngSoiNSNbWbNQvCf
 
 # Twilio
 TWILIO_SID=AC07a3175604875aef42ecf048f41dcd78

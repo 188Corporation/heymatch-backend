@@ -1,7 +1,6 @@
 from typing import Any
 
 import geopy.distance
-from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
@@ -10,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from heymatch.apps.group.models import Group, GroupBlackList
+from heymatch.apps.group.models import Group
 from heymatch.apps.hotplace.models import HotPlace
 
 from .serializers import (
@@ -87,16 +86,16 @@ class HotPlaceActiveGroupViewSet(viewsets.ModelViewSet):
     def get_queryset(self) -> QuerySet:
         qs = self.queryset
         qs = qs.filter(hotplace_id=self.kwargs["hotplace_id"])
-        joined_group = self.request.user.joined_group
-        exclude_ids = []
-        if joined_group:
-            # Exclude myself
-            exclude_ids.append(joined_group.id)
-            # Exclude Blacklist
-            blacklist_qs = GroupBlackList.active_objects.filter(group=joined_group)
-            blocked_groups_ids = [bl.blocked_group.id for bl in blacklist_qs]
-            exclude_ids.extend(blocked_groups_ids)
-        qs = qs.filter(~Q(id__in=exclude_ids))
+        # joined_group = self.request.user.joined_group
+        # exclude_ids = []
+        # if joined_group:
+        #     # Exclude myself
+        #     exclude_ids.append(joined_group.id)
+        #     # Exclude Blacklist
+        #     blacklist_qs = GroupBlackList.active_objects.filter(group=joined_group)
+        #     blocked_groups_ids = [bl.blocked_group.id for bl in blacklist_qs]
+        #     exclude_ids.extend(blocked_groups_ids)
+        # qs = qs.filter(~Q(id__in=exclude_ids))
         return qs
 
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:

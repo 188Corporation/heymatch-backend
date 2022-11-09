@@ -1,9 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
-from django.db.models import Avg
 from django.db.models.query import QuerySet
-
-from heymatch.utils.util import calculate_age_from_birthdate
 
 stream = settings.STREAM_CLIENT
 
@@ -43,18 +40,18 @@ class ActiveUserManager(UserManager):
     def get_queryset(self) -> QuerySet:
         return super().get_queryset().filter(is_active=True)
 
-    def get_group_members(self, group) -> QuerySet:
-        return self.get_queryset().filter(joined_group__id=group.id)
-
-    def count_group_members(self, group):
-        return self.get_group_members(group).count()
-
-    def count_group_members_avg_age(self, group) -> int or None:
-        qs = self.get_group_members(group)
-        if qs.count() == 0:
-            return None
-        avg = qs.aggregate(Avg("age"))["age__avg"]
-        return int(avg) if avg else None
+    # def get_group_members(self, group) -> QuerySet:
+    #     return self.get_queryset().filter(joined_group__id=group.id)
+    #
+    # def count_group_members(self, group):
+    #     return self.get_group_members(group).count()
+    #
+    # def count_group_members_avg_age(self, group) -> int or None:
+    #     qs = self.get_group_members(group)
+    #     if qs.count() == 0:
+    #         return None
+    #     avg = qs.aggregate(Avg("age"))["age__avg"]
+    #     return int(avg) if avg else None
 
     def create(self, **kwargs):
         user = self.model(**kwargs)
@@ -64,7 +61,7 @@ class ActiveUserManager(UserManager):
         user.stream_token = token
 
         # calculate post-creation fields
-        if user.birthdate:
-            user.age = calculate_age_from_birthdate(user.birthdate)
+        # if user.birthdate:
+        #     user.age = calculate_age_from_birthdate(user.birthdate)
         user.save(using=self._db)
         return user

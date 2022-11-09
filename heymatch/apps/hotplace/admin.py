@@ -8,7 +8,7 @@ class HotPlaceAdmin(admin.ModelAdmin):
     list_display = [
         "id",
         "name",
-        "zone_color",
+        # "zone_color",
         "zone_center_geoinfo",
         "zone_boundary_geoinfos",
     ]

@@ -3,7 +3,7 @@ from typing import List
 import pytest
 from rest_framework.test import APIClient
 
-from heymatch.apps.group.models import Group, GroupBlackList
+from heymatch.apps.group.models import Group
 from heymatch.apps.match.models import MatchRequest
 from heymatch.apps.user.tests.factories import ActiveUserFactory
 
@@ -392,14 +392,14 @@ class TestMatchRequestControlEndpoints:
         assert res.status_code == 200
         assert len(res.data) == 1
 
-        qs = GroupBlackList.active_objects.filter(
-            group=receiver.joined_group, blocked_group=sender.joined_group
-        )
-        assert len(qs) == 0
-        qs = GroupBlackList.active_objects.filter(
-            group=sender.joined_group, blocked_group=receiver.joined_group
-        )
-        assert len(qs) == 0
+        # qs = GroupBlackList.active_objects.filter(
+        #     group=receiver.joined_group, blocked_group=sender.joined_group
+        # )
+        # assert len(qs) == 0
+        # qs = GroupBlackList.active_objects.filter(
+        #     group=sender.joined_group, blocked_group=receiver.joined_group
+        # )
+        # assert len(qs) == 0
 
         api_client.force_authenticate(user=sender)
         res = api_client.get(
@@ -430,16 +430,16 @@ class TestMatchRequestControlEndpoints:
         assert match_request.accepted is False
         assert match_request.denied is True
 
-        qs = GroupBlackList.active_objects.all()
-        assert len(qs) == 2
-        qs = GroupBlackList.active_objects.filter(
-            group=receiver.joined_group, blocked_group=sender.joined_group
-        )
-        assert len(qs) == 1
-        qs = GroupBlackList.active_objects.filter(
-            group=sender.joined_group, blocked_group=receiver.joined_group
-        )
-        assert len(qs) == 1
+        # qs = GroupBlackList.active_objects.all()
+        # assert len(qs) == 2
+        # qs = GroupBlackList.active_objects.filter(
+        #     group=receiver.joined_group, blocked_group=sender.joined_group
+        # )
+        # assert len(qs) == 1
+        # qs = GroupBlackList.active_objects.filter(
+        #     group=sender.joined_group, blocked_group=receiver.joined_group
+        # )
+        # assert len(qs) == 1
 
         # check list after accepting
         res = api_client.get("/api/match/request/received/")

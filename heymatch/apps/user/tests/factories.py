@@ -4,21 +4,21 @@ from factory import Faker, SubFactory, post_generation
 from factory.django import DjangoModelFactory
 
 from heymatch.apps.group.tests.factories import ActiveGroupFactory
-from heymatch.apps.user.models import GENDER_CHOICES, MAX_HEIGHT_CM, MIN_HEIGHT_CM, User
+from heymatch.apps.user.models import User
 
-RANDOM_SCHOOLS = [
-    "서울대학교",
-    "고려대학교",
-    "연세대학교",
-    "카이스트",
-    "서강대학교",
-    "한양대학교",
-    "성균관대학교",
-    "Harvard University",
-    "Stanford University",
-    "Yale University",
-    "Cornell University",
-]
+# RANDOM_SCHOOLS = [
+#     "서울대학교",
+#     "고려대학교",
+#     "연세대학교",
+#     "카이스트",
+#     "서강대학교",
+#     "한양대학교",
+#     "성균관대학교",
+#     "Harvard University",
+#     "Stanford University",
+#     "Yale University",
+#     "Cornell University",
+# ]
 
 
 class ActiveUserFactory(DjangoModelFactory):
@@ -28,15 +28,15 @@ class ActiveUserFactory(DjangoModelFactory):
 
     id = Faker("uuid4")
     phone_number = Faker("phone_number", locale="ko_KR")
-    birthdate = Faker("date_of_birth")
-    gender = Faker("random_element", elements=[x[0] for x in GENDER_CHOICES])
-    height_cm = Faker("pyint", min_value=MIN_HEIGHT_CM, max_value=MAX_HEIGHT_CM)
-    workplace = Faker("company", locale="ko_KR")
-    school = Faker("random_element", elements=RANDOM_SCHOOLS)
+    # birthdate = Faker("date_of_birth")
+    # gender = Faker("random_element", elements=[x[0] for x in GENDER_CHOICES])
+    # height_cm = Faker("pyint", min_value=MIN_HEIGHT_CM, max_value=MAX_HEIGHT_CM)
+    # workplace = Faker("company", locale="ko_KR")
+    # school = Faker("random_element", elements=RANDOM_SCHOOLS)
 
     # Group related
     joined_group = SubFactory(ActiveGroupFactory)
-    is_group_leader = False
+    # is_group_leader = False
 
     # Other
     is_active = True

@@ -48,6 +48,7 @@ User = get_user_model()
 #     #     assert response.url == f"{login_url}?next=/fake-url/"
 
 
+@pytest.mark.skip
 class AccountTests(APITestCase):
     """
     Test Cases for

@@ -12,6 +12,7 @@ pytestmark = pytest.mark.django_db
 # --------------------------
 #  [Group] Model Test Codes
 # --------------------------
+@pytest.mark.skip
 def test_active_group_has_member_number(
     active_group: Group, active_users: Sequence[User]
 ):
@@ -27,6 +28,7 @@ def test_active_group_has_member_number(
     assert qs.count() == active_group.member_number
 
 
+@pytest.mark.skip
 def test_active_group_has_member_avg_age(
     active_group: Group, active_users: Sequence[User]
 ):
@@ -49,6 +51,7 @@ def test_active_group_has_member_avg_age(
     assert avg_age == active_group.member_avg_age
 
 
+@pytest.mark.skip
 def test_active_group_manager_register_user_when_all_good(
     active_group: Group, active_user: User
 ):
@@ -64,6 +67,7 @@ def test_active_group_manager_register_user_when_all_good(
     assert user.is_group_leader is False
 
 
+@pytest.mark.skip
 def test_active_group_manager_register_user_when_inactive(
     active_group: Group, active_user: User
 ):
@@ -83,6 +87,7 @@ def test_active_group_manager_register_user_when_inactive(
     assert active_user.is_group_leader is False
 
 
+@pytest.mark.skip
 def test_active_group_manager_register_user_when_group_leader(
     active_group: Group, active_user: User
 ):
@@ -99,6 +104,7 @@ def test_active_group_manager_register_user_when_group_leader(
     assert user.is_group_leader is False
 
 
+@pytest.mark.skip
 def test_active_group_manager_register_group_leader_user_when_all_good(
     active_group: Group, active_user: User
 ):
@@ -114,6 +120,7 @@ def test_active_group_manager_register_group_leader_user_when_all_good(
     assert user.is_group_leader is True
 
 
+@pytest.mark.skip
 def test_active_group_manager_register_group_leader_user_when_inactive(
     active_group: Group, active_user: User
 ):
@@ -133,6 +140,7 @@ def test_active_group_manager_register_group_leader_user_when_inactive(
     assert active_user.is_group_leader is False
 
 
+@pytest.mark.skip
 def test_active_group_manager_register_normal_users_when_all_good(
     active_group: Group, active_users: Sequence[User]
 ):
@@ -149,6 +157,7 @@ def test_active_group_manager_register_normal_users_when_all_good(
         assert user.is_group_leader is False
 
 
+@pytest.mark.skip
 def test_active_group_manager_register_normal_users_when_one_is_inactive(
     active_group: Group, active_users: List[User], inactive_user: User
 ):

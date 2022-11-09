@@ -12,10 +12,12 @@ pytestmark = pytest.mark.django_db
 
 
 # Test Cases for User model methods
+@pytest.mark.skip
 def test_user_calculate_age(active_user: User):
     assert active_user.age == calculate_age_from_birthdate(active_user.birthdate)
 
 
+@pytest.mark.skip
 def test_user_has_age(active_users: Sequence[User]):
     for user in active_users:
         assert user.age is not None
@@ -23,6 +25,7 @@ def test_user_has_age(active_users: Sequence[User]):
 
 
 # ActiveUserManager Test Cases
+@pytest.mark.skip
 def test_active_user_manager_methods(active_users: Sequence[User]):
     group = ActiveGroupFactory()
     manager = User.active_objects

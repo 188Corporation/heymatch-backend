@@ -7,6 +7,7 @@ from heymatch.apps.user.tests.factories import ActiveUserFactory
 pytestmark = pytest.mark.django_db
 
 
+@pytest.mark.skip
 class TestUserWithGroupFullInfoEndpoints:
     ENDPOINT = "/api/users/my/"
 
