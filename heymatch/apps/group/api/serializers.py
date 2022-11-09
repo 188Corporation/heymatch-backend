@@ -70,7 +70,7 @@ class RestrictedGroupProfileSerializer(serializers.ModelSerializer):
             "member_average_age",
             "match_point",
             "is_active",
-            "active_until",
+            # "active_until",
             "hotplace",
             "group_profile_images",
         ]
@@ -93,7 +93,7 @@ class FullGroupProfileSerializer(serializers.ModelSerializer):
             "member_average_age",
             "match_point",
             "is_active",
-            "active_until",
+            # "active_until",
             "hotplace",
             "group_profile_images",
         ]

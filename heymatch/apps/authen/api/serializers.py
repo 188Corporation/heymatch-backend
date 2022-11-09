@@ -20,11 +20,11 @@ class UserDetailByPhoneNumberSerializer(UserDetailsSerializer):
             "stream_token",
             "username",
             "phone_number",
-            "birthdate",
-            "gender",
-            "height_cm",
-            "workplace",
-            "school",
+            # "birthdate",
+            # "gender",
+            # "height_cm",
+            # "workplace",
+            # "school",
         )
         read_only_fields = ("phone_number",)
 
@@ -77,7 +77,9 @@ class UserLoginByPhoneNumberSerializer(LoginSerializer):
         return attrs
 
 
-# DEPRECATED
+# ===================
+#  DEPRECATED
+# ===================
 class UserRegisterByPhoneNumberSerializer(RegisterSerializer):
     email = None
     phone_number = serializers.CharField(required=True)

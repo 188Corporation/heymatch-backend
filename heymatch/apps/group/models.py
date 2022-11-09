@@ -11,8 +11,6 @@ from fernet_fields import EncryptedField
 from ordered_model.models import OrderedModel
 from PIL import Image, ImageFilter
 
-from heymatch.apps.user.models import User
-
 from .managers import ActiveGroupManager, GroupManager
 
 
@@ -81,10 +79,10 @@ class Group(models.Model):
     objects = GroupManager()
     active_objects = ActiveGroupManager()
 
-    @property
-    def member_number(self):
-        user_manager = User.active_objects
-        return user_manager.count_group_members(self)
+    # @property
+    # def member_number(self):
+    #     user_manager = User.active_objects
+    #     return user_manager.count_group_members(self)
 
     # @property
     # def member_avg_age(self):
