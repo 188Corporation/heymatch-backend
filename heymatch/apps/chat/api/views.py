@@ -24,6 +24,7 @@ class StreamChatViewSet(viewsets.ModelViewSet):
         IsAuthenticated,
         IsUserJoinedGroup,
     ]
+    serializer_class = RestrictedGroupProfileSerializer
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """
@@ -75,7 +76,7 @@ class StreamChatViewSet(viewsets.ModelViewSet):
                         False if read["unread_messages"] > 0 else True
                     )
             # add group info
-            group_serializer = RestrictedGroupProfileSerializer(
+            group_serializer = self.get_serializer(
                 instance=target_group, context={"force_original": True}
             )
             fresh_data["group"] = group_serializer.data
