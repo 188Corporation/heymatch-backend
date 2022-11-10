@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "pc-api-6429263181342577401-388",
+  "private_key_id": "e7a28f65e522d93c007e79d3982ad2b48c5a6fbc",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDQPCHJrZ0u/VjO\nJxfH4CeiX9WRaZC9FNQSS8BZxel0Nje73AsBk+ECe8YqtAd+E+BMVcQgbNLxYBRB\nKwHT7yQkUqGxKJeLGHVozG9vCQo3OW6OkBnM+sbEe/9R0e5zn69yvRelIh/2MxPA\n37ixdgB32+F5lWHnLE60g/vjzkwMZOPCQDl/nERvBFwH5vcV3DH6RLv5RSPLKOF/\n1+JJo98xtWmrWZb+M9YiWGbfy6pd9JT1wh31FdH2JZA8Kp67B+7qmaoMcyhoM9L+\nsSiqupMfh6d5h4r7AYVcQ8pmAN3Glpd+uLBvHmKnRuGUxL+CEAlJKces2cW48mDg\nYHz92IdRAgMBAAECggEABE/Kb0+d+pQaW6JplqTojS8oz+r8qT2eKobRA8raS6K3\nwrcKr0ytkwyXDNlPcmfc9BeuiPFX6NGRecv3LLk96VagrHdns+Scwb/B6u2n/X69\n8EvBjQIATZ83qS0Mn+5Fhr2tmKi9Oq7SEONRArOrzM+LuqXCMjQzqP82nv/tiTAg\nA5g7bj6dCU6Ou1qOab6fYqSPx3EhJQtzqrDxEQqmBoYvqdVa6RmLr3TTCRdd+eUf\niTl5cylhLMLuk46Fp0SHG/C0wMKBBnAjOj0w37k+kB0l6y83llnFokChHhzzkrMa\nmOEOzzeOEqw137+NDlXJluj6PAsdH6JidtSJsbn0pQKBgQD6HAOdDmfcrZpJsmOy\ngvstzBDh67nkxbd3zt16/QHkMjDQWQvyNXE4/swdkoy9e/5GwYE3sWgXyxlkyqg1\nl2MoJQb34By8ySLvRXb2LjSFipFVPsBbRXq6cHz+/rrubXmhhOttqru224DYO4Hx\nRWIxWufHYKQTPBYn8ryRsEcrOwKBgQDVI6S97qZMOjpV41MEYCAAW30oV7OBxWCt\nY+TBGcAm69u4cf5FDVfgrPqN/J2dmYBRKC2HoUgrVRi+4Gr6cMSWY4JXWA5laCNA\neBBLl9sUrtyokbiDvZIdW2iWcOGhsIUKWnTXj67U4QmoxFW1KvmyEZ4JKQ4MhaGI\nf6f4dXB24wKBgGqOHtf9uDAjYhU9xA3ckcicJSErPaKCvbx0TJXGTtT6sSNCnL1P\nGXKv0yRSOFXOCrH4ZOXmVjO02pe/Y1SZr6v9wm8+ct/XTWPlE16kpsmyFGLd/jOk\ncToXDJnSyq8jwusWZvrs/1ZTRBxblevFpKTkVtTxjlWHhuT0HHRxRpDbAoGAP+6D\nGd2d0DufB+g6HJPgxXqr3hAAbiqQRzIxiaJ5urMAoyC+TmQkOeZo+XIOrRlAHhfZ\nIFfGWAkcdRTHwftVXG7Yx+5H0y8bc9kPuj0AoAGbeozLNekFDP1AL/AIHgHexi4/\n4fDdVklyJkdOFhuf7kPOjZzc8/CZdWIlNiez5lUCgYEA3iAi1fC+ARpLBMEihNLz\n34Crp5YZpWQgcM1pon6Aepq3gb67yGpb1EHc4bZyd/uKyGoQcIQVnOJsH6DRPkOm\nUa2ph9/9H/wIh+6wxA6nM+Bgey+kd3BuB1PLSALzNQgLmpL2Y3zWOxqnAyOvMUsn\n1sys+XpwWUzzOdcNsnzWR+I=\n-----END PRIVATE KEY-----\n",
+  "client_email": "heymatch-play-console@pc-api-6429263181342577401-388.iam.gserviceaccount.com",
+  "client_id": "113588042400169768020",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/heymatch-play-console%40pc-api-6429263181342577401-388.iam.gserviceaccount.com"
+}
