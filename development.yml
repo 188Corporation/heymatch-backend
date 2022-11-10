@@ -4,7 +4,7 @@ volumes:
   django_static_volume:
 
 services:
-  django:
+  django: &django
     build:
       context: .
       dockerfile: ./compose/development/django/Dockerfile
@@ -20,6 +20,7 @@ services:
     ports:
       - "8000:8000"
     command: /start
+
   nginx:
     build:
       context: .
@@ -34,3 +35,35 @@ services:
       - django
     ports:
       - "80:80"
+
+  redis:
+    image: redis:7
+    container_name: heymatch_development_redis
+
+  celeryworker:
+    <<: *django
+    image: heymatch_development_celeryworker
+    container_name: heymatch_development_celeryworker
+    depends_on:
+      - postgres
+      - redis
+    ports: [ ]
+    command: /start-celeryworker
+
+  celerybeat:
+    <<: *django
+    image: heymatch_development_celerybeat
+    container_name: heymatch_development_celerybeat
+    depends_on:
+      - postgres
+      - redis
+    ports: [ ]
+    command: /start-celerybeat
+
+  flower:
+    <<: *django
+    image: heymatch_development_flower
+    container_name: heymatch_development_flower
+    ports:
+      - "5555:5555"
+    command: /start-flower
