@@ -45,7 +45,6 @@ services:
     image: heymatch_development_celeryworker
     container_name: heymatch_development_celeryworker
     depends_on:
-      - postgres
       - redis
     ports: [ ]
     command: /start-celeryworker
@@ -55,7 +54,6 @@ services:
     image: heymatch_development_celerybeat
     container_name: heymatch_development_celerybeat
     depends_on:
-      - postgres
       - redis
     ports: [ ]
     command: /start-celerybeat
