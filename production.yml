@@ -9,7 +9,7 @@ services:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
     image: heymatch_production_django
-    container_name: django
+    container_name: heymatch_production_django
     platform: linux/x86_64
     volumes:
       - .:/app:z
@@ -26,7 +26,7 @@ services:
       context: .
       dockerfile: ./compose/production/nginx/Dockerfile
     image: heymatch_production_nginx
-    container_name: nginx
+    container_name: heymatch_production_nginx
     volumes:
       - ./compose/production/nginx/conf:/etc/nginx/conf
       - ./compose/production/nginx/nginx.conf:/etc/nginx/nginx.conf
