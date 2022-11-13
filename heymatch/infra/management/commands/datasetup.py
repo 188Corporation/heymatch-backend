@@ -19,6 +19,7 @@ from heymatch.apps.hotplace.tests.factories import (
     HotPlaceFactory,
 )
 from heymatch.apps.payment.models import FreePassItem, PointItem
+from heymatch.apps.user.models import AppInfo
 from heymatch.apps.user.tests.factories import ActiveUserFactory
 from heymatch.utils.util import generate_rand_geoopt_within_boundary
 
@@ -107,6 +108,11 @@ class Command(BaseCommand):
         # -------------- Hotplace, Group, Users setup -------------- #
         self.generate_payment_items()
         self.stdout.write(self.style.SUCCESS("Successfully set up data for [Payments]"))
+
+        # -------------- AppInfo setup -------------- #
+        self.generate_app_info_item()
+        self.stdout.write(self.style.SUCCESS("Successfully set up data for [AppInfo]"))
+
         # -------------- Done! -------------- #
         self.stdout.write(self.style.SUCCESS("Successfully set up all mocking data!"))
 
@@ -210,4 +216,13 @@ class Command(BaseCommand):
             price_in_krw=12000,
             free_pass_duration_in_hour=24,
             best_deal_check=True,
+        )
+
+    def generate_app_info_item(self) -> None:
+        AppInfo.objects.create(
+            faq_url="",
+            terms_of_service_url="https://meowing-yew-938.notion.site/2f51b1339cfb407e93c13eba311f8c54",
+            privacy_policy_url="https://meowing-yew-938.notion.site/55160a02379a4bcd9dd28b4c1aced5db",
+            terms_of_location_service_url="https://meowing-yew-938.notion.site/1d45f72c0e42499f80e5749974dd065d",
+            business_registration_url="https://meowing-yew-938.notion.site/28ec816aa9e54771991c843f2689ca6e",
         )

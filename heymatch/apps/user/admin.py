@@ -5,6 +5,8 @@ from django.utils.translation import gettext_lazy as _
 
 from heymatch.apps.user.forms import UserChangeForm, UserCreationForm
 
+from .models import AppInfo
+
 User = get_user_model()
 
 
@@ -94,4 +96,24 @@ class UserAdmin(auth_admin.UserAdmin):
         "free_pass_active_until",
         "is_active",
         "stream_token",
+    ]
+
+
+@admin.register(AppInfo)
+class AppInfoAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "faq_url",
+        "terms_of_service_url",
+        "privacy_policy_url",
+        "terms_of_location_service_url",
+        "business_registration_url",
+    ]
+    search_fields = [
+        "id",
+        "faq_url",
+        "terms_of_service_url",
+        "privacy_policy_url",
+        "terms_of_location_service_url",
+        "business_registration_url",
     ]

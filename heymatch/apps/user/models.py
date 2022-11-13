@@ -89,3 +89,11 @@ class User(AbstractUser):
 
     objects = UserManager()
     active_objects = ActiveUserManager()
+
+
+class AppInfo(models.Model):
+    faq_url = models.URLField(max_length=200)  # 앱 문의, 건의
+    terms_of_service_url = models.URLField(max_length=200)  # 이용약관
+    privacy_policy_url = models.URLField(max_length=200)  # 개인정보처리방침
+    terms_of_location_service_url = models.URLField(max_length=200)  # 위치기반서비스
+    business_registration_url = models.URLField(max_length=200)  # 사업자정보

@@ -89,7 +89,13 @@ class UserPurchase(models.Model):
     id = models.UUIDField(
         primary_key=True, blank=False, null=False, editable=False, default=uuid4
     )
-    user = models.ForeignKey(User, blank=False, null=False, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User,
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name="user_purchases",
+    )
     platform = models.CharField(
         null=False, blank=False, choices=PLATFORM_CHOICES, max_length=8
     )
@@ -122,3 +128,4 @@ class UserPurchase(models.Model):
         on_delete=models.PROTECT,
     )
     purchase_processed = models.BooleanField(default=False)  # add up jelly etc
+    purchased_at = models.DateTimeField(auto_now_add=True)

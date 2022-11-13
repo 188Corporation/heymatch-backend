@@ -42,8 +42,24 @@ class UserPurchaseSerializer(serializers.ModelSerializer):
     apple_store_receipt = AppleStoreReceiptSerializer(read_only=True)
     play_store_receipt = PlayStoreReceiptSerializer(read_only=True)
     point_item = PointItemSerializer(read_only=True)
-    free_pass = FreePassItemItemSerializer(read_only=True)
+    free_pass_item = FreePassItemItemSerializer(read_only=True)
 
     class Meta:
         model = UserPurchase
         fields = "__all__"
+
+
+class SimpleUserPurchaseSerializer(serializers.ModelSerializer):
+    point_item = PointItemSerializer(read_only=True)
+    free_pass_item = FreePassItemItemSerializer(read_only=True)
+
+    class Meta:
+        model = UserPurchase
+        fields = [
+            "id",
+            "platform",
+            "point_item",
+            "free_pass_item",
+            "purchase_processed",
+            "purchased_at",
+        ]

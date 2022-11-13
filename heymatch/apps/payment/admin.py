@@ -138,7 +138,10 @@ class UserPurchaseAdmin(admin.ModelAdmin):
         "platform",
         "play_store_receipt",
         "apple_store_receipt",
+        "point_item",
+        "free_pass_item",
         "purchase_processed",
+        "purchased_at",
     ]
     search_fields = [
         "id",
@@ -146,5 +149,8 @@ class UserPurchaseAdmin(admin.ModelAdmin):
         "platform",
         "play_store_receipt",
         "apple_store_receipt",
+        "point_item",
+        "free_pass_item",
         "purchase_processed",
+        "purchased_at",
     ]
