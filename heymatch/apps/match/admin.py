@@ -11,6 +11,7 @@ class MatchRequestAdmin(admin.ModelAdmin):
         "receiver_group",
         "status",
         "created_at",
+        "is_active",
     ]
     search_fields = [
         "id",
@@ -18,4 +19,5 @@ class MatchRequestAdmin(admin.ModelAdmin):
         "receiver_group",
         "status",
         "created_at",
+        "is_active",
     ]

@@ -46,8 +46,11 @@ class StreamChatViewSet(viewsets.ModelViewSet):
         }
         """
         channels = stream.query_channels(
-            {"members": {"$in": [str(request.user.id)]}},
-            {"last_message_at": 1},
+            filter_conditions={
+                "members": {"$in": [str(request.user.id)]},
+                "disabled": False,
+            },
+            sort={"last_message_at": 1},
         )
         # parse raw data
         serializer_data = []

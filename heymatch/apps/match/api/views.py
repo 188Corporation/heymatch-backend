@@ -45,12 +45,12 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         # Exclude "CANCELED" MatchRequest
         joined_group_id = self.request.user.joined_group.id
         mr_sent_qs = (
-            MatchRequest.objects.select_related()
+            MatchRequest.active_objects.select_related()
             .filter(Q(sender_group_id=joined_group_id) & ~Q(status="CANCELED"))
             .order_by("-created_at")
         )
         mr_received_qs = (
-            MatchRequest.objects.select_related()
+            MatchRequest.active_objects.select_related()
             .filter(Q(receiver_group_id=joined_group_id) & ~Q(status="CANCELED"))
             .order_by("-created_at")
         )
@@ -89,7 +89,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
             raise GroupNotWithinSameHotplaceException()
 
         # Check #3
-        mr_qs = MatchRequest.objects.select_related().filter(
+        mr_qs = MatchRequest.active_objects.select_related().filter(
             sender_group_id=user.joined_group.id, receiver_group_id=group_id
         )
         if mr_qs.exists():
@@ -194,7 +194,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
     @staticmethod
     def get_match_request_obj(match_request_id: int) -> MatchRequest:
         try:
-            mr = MatchRequest.objects.get(id=match_request_id)
+            mr = MatchRequest.active_objects.get(id=match_request_id)
         except MatchRequest.DoesNotExist:
             raise MatchRequestNotFoundException()
         return mr

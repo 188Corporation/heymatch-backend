@@ -1,6 +1,7 @@
 from typing import Any
 
 from django.contrib.auth import get_user_model
+from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
@@ -38,7 +39,9 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
     serializer_class = RestrictedGroupProfileByHotplaceSerializer
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        queryset = HotPlace.objects.prefetch_related("groups")
+        queryset = HotPlace.objects.prefetch_related(
+            Prefetch("groups", queryset=Group.active_objects.all())
+        )
         # Automatically checks if user joined group
         # if joined group, will give out original profile photo of groups in the hotplace
         serializer = self.get_serializer(queryset, many=True)

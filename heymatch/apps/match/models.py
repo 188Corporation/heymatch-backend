@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 
+from .managers import ActiveMatchRequestManager
+
 MATCH_REQUEST_CHOICES = (
     ("WAITING", "WAITING"),
     ("ACCEPTED", "ACCEPTED"),
@@ -29,7 +31,6 @@ class MatchRequest(models.Model):
         choices=MATCH_REQUEST_CHOICES,
         max_length=48,
     )
-    created_at = models.DateTimeField(default=timezone.now)
 
     # getstream.io channel
     stream_channel_id = models.CharField(
@@ -41,3 +42,10 @@ class MatchRequest(models.Model):
     stream_channel_type = models.CharField(
         max_length=32, blank=True, null=True, default=None
     )
+
+    # Life cycle
+    created_at = models.DateTimeField(default=timezone.now)
+    is_active = models.BooleanField(blank=False, null=False, default=True)
+
+    objects = models.Manager()
+    active_objects = ActiveMatchRequestManager()

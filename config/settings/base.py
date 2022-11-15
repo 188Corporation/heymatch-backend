@@ -6,6 +6,7 @@ from pathlib import Path
 
 import environ
 import stream_chat
+from celery.schedules import crontab
 from inapppy import AppStoreValidator, GooglePlayVerifier
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
@@ -26,7 +27,7 @@ DEBUG = env.bool("DJANGO_DEBUG", False)
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # though not all of them may be available with every OS.
 # In Windows, this must be set to your system time zone.
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Seoul"
 # https://docs.djangoproject.com/en/dev/ref/settings/#language-code
 LANGUAGE_CODE = "en-us"
 # https://docs.djangoproject.com/en/dev/ref/settings/#site-id
@@ -98,6 +99,7 @@ LOCAL_APPS = [
     "heymatch.apps.group.apps.GroupAppConfig",
     "heymatch.apps.match.apps.MatchAppConfig",
     "heymatch.apps.payment.apps.PaymentAppConfig",
+    "heymatch.apps.celery.apps.CeleryAppConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -276,13 +278,14 @@ CELERY_TASK_TIME_LIMIT = 5 * 60
 CELERY_TASK_SOFT_TIME_LIMIT = 60
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#beat-scheduler
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
-# CELERY_BEAT_SCHEDULE = {
-#     "handle-expired-groups-every-1m": {
-#         "task": "heymatch.apps.group.tasks.handle_expired_groups",
-#         "schedule": timedelta(minutes=1),
-#         "args": (),
-#     },
-# }
+CELERY_BEAT_SCHEDULE = {
+    # Disable groups, matches, chat at the end of the day
+    "end-of-the-day": {
+        "task": "heymatch.apps.celery.tasks.end_of_the_day_task",
+        "schedule": crontab(minute=0, hour=5),  # execute daily at 5 a.m
+        "args": (),
+    },
+}
 
 # django-allauth
 # ------------------------------------------------------------------------------
