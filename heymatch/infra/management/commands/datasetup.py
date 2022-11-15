@@ -49,9 +49,23 @@ class Command(BaseCommand):
             action="store_true",
             help="Bypass input from command",
         )
+        parser.add_argument(
+            "--migrate_all",
+            action="store_true",
+            help="Migrate all steps",
+        )
 
     def handle(self, *args, **options):
         """Rest DB and migrate"""
+
+        migrate_all = False
+        if options["migrate_all"]:
+            self.stdout.write(
+                self.style.WARNING(
+                    "You selected `migrate all`. Will migrate all steps."
+                )
+            )
+            migrate_all = True
 
         if options["reset_db"]:
             if options["noinput"]:
@@ -59,39 +73,31 @@ class Command(BaseCommand):
             else:
                 management.call_command("reset_db")
 
-        # Get Input
-        super_user_input = input("Create Superuser? [y/N]")
-        developer_input = input("Create Developer? [y/N]")
-        normal_user_input = input("Create Normal User? [y/N]")
-        hotplace_group_input = input("Create Hotplace+Groups? [y/N]")
-        payment_input = input("Create Payments? [y/N]")
-        app_info_input = input("Create App info? [y/N]")
-
         # it is user's responsibility
         management.call_command("migrate", "--noinput")
 
         # -------------- Superuser setup -------------- #
-        if super_user_input == "y":
+        if migrate_all or input("Create Superuser? [y/N]") == "y":
             self.generate_superuser()
 
         # -------------- Normal Users setup -------------- #
-        if normal_user_input == "y":
+        if migrate_all or input("Create Normal User? [y/N]") == "y":
             self.generate_normal_users()
 
         # -------------- Hotplace, Group, Users setup -------------- #
-        if hotplace_group_input == "y":
+        if migrate_all or input("Create Hotplace+Groups? [y/N]") == "y":
             self.generate_hotplace_groups()
 
         # -------------- Developer setup -------------- #
-        if developer_input == "y":
+        if migrate_all or input("Create Developer? [y/N]") == "y":
             self.generate_developer_users()
 
         # -------------- Payment setup -------------- #
-        if payment_input == "y":
+        if migrate_all or input("Create Payments? [y/N]") == "y":
             self.generate_payment_items()
 
         # -------------- AppInfo setup -------------- #
-        if app_info_input == "y":
+        if migrate_all or input("Create App info? [y/N]") == "y":
             self.generate_app_info_item()
 
         # -------------- Done! -------------- #
