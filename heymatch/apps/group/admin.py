@@ -1,10 +1,11 @@
 from django.contrib import admin
+from simple_history.admin import SimpleHistoryAdmin
 
 from .models import Group, GroupProfileImage
 
 
 @admin.register(Group)
-class GroupAdmin(admin.ModelAdmin):
+class GroupAdmin(SimpleHistoryAdmin):
     list_display = [
         "id",
         "hotplace",
@@ -28,6 +29,7 @@ class GroupAdmin(admin.ModelAdmin):
     #     "member_number",
     #     "member_avg_age",
     # ]
+    history_list_display = ["status", *list_display]
     search_fields = [
         "id",
         "hotplace",
@@ -53,6 +55,7 @@ class GroupProfilePhotoAdmin(admin.ModelAdmin):
         "thumbnail_blurred",
         "order",
     ]
+    history_list_display = ["status", *list_display]
     search_fields = [
         "id",
         "group",

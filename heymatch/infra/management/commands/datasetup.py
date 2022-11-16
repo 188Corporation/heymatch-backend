@@ -21,7 +21,7 @@ from heymatch.apps.hotplace.tests.factories import (
     HotPlaceFactory,
 )
 from heymatch.apps.match.tests.factories import MatchRequestFactory
-from heymatch.apps.payment.models import FreePassItem, PointItem
+from heymatch.apps.payment.models import PointItem
 from heymatch.apps.user.models import AppInfo
 from heymatch.apps.user.tests.factories import ActiveUserFactory
 from heymatch.utils.util import generate_rand_geoopt_within_boundary
@@ -265,13 +265,13 @@ class Command(BaseCommand):
             bonus_point=30,
         )
         # Freepass Items
-        FreePassItem.objects.create(
-            name="원데이 프리패스 (24h)",
-            product_id="com.co188.heymatch.free_pass_item1",
-            price_in_krw=12000,
-            free_pass_duration_in_hour=24,
-            best_deal_check=True,
-        )
+        # FreePassItem.objects.create(
+        #     name="원데이 프리패스 (24h)",
+        #     product_id="com.co188.heymatch.free_pass_item1",
+        #     price_in_krw=12000,
+        #     free_pass_duration_in_hour=24,
+        #     best_deal_check=True,
+        # )
         self.stdout.write(self.style.SUCCESS("Successfully set up data for [Payments]"))
 
     def generate_app_info_item(self) -> None:

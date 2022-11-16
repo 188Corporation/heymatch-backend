@@ -1,10 +1,11 @@
 from django.contrib import admin
+from simple_history.admin import SimpleHistoryAdmin
 
 from .models import MatchRequest
 
 
 @admin.register(MatchRequest)
-class MatchRequestAdmin(admin.ModelAdmin):
+class MatchRequestAdmin(SimpleHistoryAdmin):
     list_display = [
         "id",
         "sender_group",
@@ -13,6 +14,7 @@ class MatchRequestAdmin(admin.ModelAdmin):
         "created_at",
         "is_active",
     ]
+    history_list_display = ["status", *list_display]
     search_fields = [
         "id",
         "sender_group",

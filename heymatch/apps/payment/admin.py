@@ -143,6 +143,7 @@ class UserPurchaseAdmin(admin.ModelAdmin):
         "purchase_processed",
         "purchased_at",
     ]
+    history_list_display = ["status", *list_display]
     search_fields = [
         "id",
         "user",

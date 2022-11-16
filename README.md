@@ -50,7 +50,7 @@ Moved
 to [Live reloading and SASS compilation](https://cookiecutter-django.readthedocs.io/en/latest/developing-locally.html#sass-compilation-live-reloading)
 .
 
-### (Deprecated) Celery
+### Celery
 
 This app comes with Celery.
 

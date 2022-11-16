@@ -10,6 +10,7 @@ from django_google_maps.fields import GeoLocationField
 from fernet_fields import EncryptedField
 from ordered_model.models import OrderedModel
 from PIL import Image, ImageFilter
+from simple_history.models import HistoricalRecords
 
 from .managers import ActiveGroupManager, GroupManager
 
@@ -76,6 +77,9 @@ class Group(models.Model):
     #     blank=True, null=True, default=group_default_time
     # )
 
+    # History
+    history = HistoricalRecords()
+
     objects = GroupManager()
     active_objects = ActiveGroupManager()
 
@@ -107,6 +111,9 @@ class GroupProfileImage(OrderedModel):
     image_blurred = models.ImageField(upload_to=upload_to)
     thumbnail = models.ImageField(upload_to=upload_to)
     thumbnail_blurred = models.ImageField(upload_to=upload_to)
+
+    # History
+    history = HistoricalRecords()
 
     order_with_respect_to = "group"
 

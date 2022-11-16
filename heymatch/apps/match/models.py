@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from simple_history.models import HistoricalRecords
 
 from .managers import ActiveMatchRequestManager
 
@@ -46,6 +47,9 @@ class MatchRequest(models.Model):
     # Life cycle
     created_at = models.DateTimeField(default=timezone.now)
     is_active = models.BooleanField(blank=False, null=False, default=True)
+
+    # History
+    history = HistoricalRecords()
 
     objects = models.Manager()
     active_objects = ActiveMatchRequestManager()

@@ -88,6 +88,7 @@ THIRD_PARTY_APPS = [
     "fcm_django",
     "ordered_model",
     "django_admin_logs",
+    "simple_history",
 ]
 
 LOCAL_APPS = [
@@ -429,3 +430,6 @@ APP_STORE_VALIDATOR = AppStoreValidator(
     sandbox=env("IS_INAPP_TESTING"),
     auto_retry_wrong_env_request=False,
 )
+
+# Simple History
+SIMPLE_HISTORY_REVERT_DISABLED = True

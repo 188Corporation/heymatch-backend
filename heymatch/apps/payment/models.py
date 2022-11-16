@@ -2,6 +2,7 @@ from uuid import uuid4
 
 from django.contrib.auth import get_user_model
 from django.db import models
+from simple_history.models import HistoricalRecords
 
 from .managers import (
     AppleStoreValidatedReceiptManager,
@@ -129,3 +130,6 @@ class UserPurchase(models.Model):
     )
     purchase_processed = models.BooleanField(default=False)  # add up jelly etc
     purchased_at = models.DateTimeField(auto_now_add=True)
+
+    # History
+    history = HistoricalRecords()

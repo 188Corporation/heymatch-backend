@@ -6,6 +6,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
 from phonenumber_field.modelfields import PhoneNumberField
+from simple_history.models import HistoricalRecords
 
 from .managers import ActiveUserManager, UserManager
 
@@ -83,6 +84,9 @@ class User(AbstractUser):
     free_pass_active_until = models.DateTimeField(
         blank=True, null=True, default=free_pass_default_time
     )
+
+    # History
+    history = HistoricalRecords()
 
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["phone_number"]

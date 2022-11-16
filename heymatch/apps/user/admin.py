@@ -1,7 +1,7 @@
 from django.contrib import admin
-from django.contrib.auth import admin as auth_admin
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
+from simple_history.admin import SimpleHistoryAdmin
 
 from heymatch.apps.user.forms import UserChangeForm, UserCreationForm
 
@@ -11,7 +11,7 @@ User = get_user_model()
 
 
 @admin.register(User)
-class UserAdmin(auth_admin.UserAdmin):
+class UserAdmin(SimpleHistoryAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
     fieldsets = (
@@ -78,6 +78,13 @@ class UserAdmin(auth_admin.UserAdmin):
         "free_pass_active_until",
         "is_active",
         "stream_token",
+    ]
+    history_list_display = [
+        "status",
+        "last_login",
+        "is_active",
+        "date_joined",
+        *list_display,
     ]
     search_fields = [
         "id",
