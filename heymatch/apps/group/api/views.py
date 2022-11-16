@@ -112,13 +112,14 @@ class GroupDetailViewSet(viewsets.ModelViewSet):
         IsUserActive,
         IsUserJoinedGroup,
     ]
+    serializer_class = FullGroupProfileSerializer
 
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         queryset = Group.active_objects.all()
         group = get_object_or_404(queryset, id=kwargs["group_id"])
         if request.user.joined_group.hotplace.id != group.hotplace.id:
             raise GroupNotWithinSameHotplaceException()
-        serializer = FullGroupProfileSerializer(group)
+        serializer = self.get_serializer(group)
         return Response(serializer.data)
 
     def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
@@ -129,7 +130,7 @@ class GroupDetailViewSet(viewsets.ModelViewSet):
         if user.joined_group.id != group.id:
             raise JoinedGroupNotMineException()
 
-        # Unlink from user
+        # Unlink from User
         user.joined_group = None
         user.save(update_fields=["joined_group"])
 
@@ -158,3 +159,5 @@ class GroupDetailViewSet(viewsets.ModelViewSet):
                 channel_id=channel["channel"]["id"],
             )
             ch.update_partial(to_set={"disabled": True})
+
+        return Response(status=status.HTTP_200_OK)
