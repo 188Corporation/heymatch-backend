@@ -1,5 +1,6 @@
 from typing import Any
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404
@@ -12,7 +13,11 @@ from rest_framework.response import Response
 
 from heymatch.apps.group.models import Group
 from heymatch.apps.hotplace.models import HotPlace
-from heymatch.shared.exceptions import GroupNotWithinSameHotplaceException
+from heymatch.apps.match.models import MatchRequest
+from heymatch.shared.exceptions import (
+    GroupNotWithinSameHotplaceException,
+    JoinedGroupNotMineException,
+)
 from heymatch.shared.permissions import (
     IsGroupCreationAllowed,
     IsUserActive,
@@ -28,6 +33,7 @@ from .serializers import (
 )
 
 User = get_user_model()
+stream = settings.STREAM_CLIENT
 
 
 class GroupsGenericViewSet(viewsets.ModelViewSet):
@@ -94,7 +100,7 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
         return parsers
 
 
-class GroupDetailViewSet(viewsets.ViewSet):
+class GroupDetailViewSet(viewsets.ModelViewSet):
     """
     ViewSet for detail view of Groups
 
@@ -107,10 +113,48 @@ class GroupDetailViewSet(viewsets.ViewSet):
         IsUserJoinedGroup,
     ]
 
-    def retrieve(self, request, group_id: int) -> Response:
+    def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         queryset = Group.active_objects.all()
-        group = get_object_or_404(queryset, id=group_id)
+        group = get_object_or_404(queryset, id=kwargs["group_id"])
         if request.user.joined_group.hotplace.id != group.hotplace.id:
             raise GroupNotWithinSameHotplaceException()
         serializer = FullGroupProfileSerializer(group)
         return Response(serializer.data)
+
+    def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        user = request.user
+        queryset = Group.active_objects.all()
+        group = get_object_or_404(queryset, id=kwargs["group_id"])
+
+        if user.joined_group.id != group.id:
+            raise JoinedGroupNotMineException()
+
+        # Unlink from user
+        user.joined_group = None
+        user.save(update_fields=["joined_group"])
+
+        # Deactivate Group
+        group.is_active = False
+        group.save(update_fields=["is_active"])
+
+        # Deactivate MatchRequest
+        sent_mrs = MatchRequest.active_objects.filter(sender_group=group)
+        sent_mrs.is_active = False
+        sent_mrs.save(update_fields=["is_active"])
+        received_mrs = MatchRequest.active_objects.filter(receiver_group=group)
+        received_mrs.is_active = False
+        received_mrs.save(update_fields=["is_active"])
+
+        # Deactivate Stream Chat
+        channels = stream.query_channels(
+            filter_conditions={
+                "members": {"$in": [str(request.user.id)]},
+                "disabled": False,
+            }
+        )
+        for channel in channels["channels"]:
+            ch = stream.channel(
+                channel_type=channel["channel"]["type"],
+                channel_id=channel["channel"]["id"],
+            )
+            ch.update_partial(to_set={"disabled": True})

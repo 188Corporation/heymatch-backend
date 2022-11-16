@@ -43,6 +43,11 @@ class UserPointBalanceNotEnoughException(BasePermissionDeniedException):
     detail = "젤리가 부족해요.. 충전해주세요! 🍬"
 
 
+class JoinedGroupNotMineException(BasePermissionDeniedException):
+    status_code = 466
+    detail = "Not your joined group. Permission Denied."
+
+
 class MatchRequestAlreadySubmittedException(BasePermissionDeniedException):
     status_code = 470
     detail = "이미 매칭요청을 보낸 그룹입니다!"

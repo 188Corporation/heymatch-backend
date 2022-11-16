@@ -227,7 +227,7 @@ EMAIL_TIMEOUT = 5
 # Django Admin URL.
 ADMIN_URL = "admin/"
 # https://docs.djangoproject.com/en/dev/ref/settings/#admins
-ADMINS = [("""Jin J""", "david.jeong0724@gmail.com")]
+ADMINS = [("""Jin J""", "jin@hey-match.com")]
 # https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS
 
@@ -357,8 +357,8 @@ PHONE_VERIFICATION = {
         "SANDBOX_TOKEN": "123456",
     },
     "TOKEN_LENGTH": 6,
-    "MESSAGE": "Welcome to {app}! Please use security code {security_code} to proceed.",
-    "APP_NAME": "Phone Verify",
+    "MESSAGE": "{app} 인증번호 [{security_code}]를 입력해주세요.",
+    "APP_NAME": "HeyMatch",
     "SECURITY_CODE_EXPIRATION_TIME": 300,  # In seconds only
     "VERIFY_SECURITY_CODE_ONLY_ONCE": True,
     # If False, then a security code can be used multiple times for verification
@@ -392,9 +392,6 @@ ENABLE_DEBUG_TOOLBAR = env.bool("ENABLE_DEBUG_TOOLBAR", default=False)
 
 # phonenumber
 PHONENUMBER_DEFAULT_REGION = "KR"
-
-# Group invitation
-GROUP_INVITATION_ACTIVE_MIN = "5"
 
 # django-storages
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
