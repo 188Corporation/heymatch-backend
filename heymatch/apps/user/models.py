@@ -52,7 +52,7 @@ class User(AbstractUser):
         max_length=MAX_USERNAME_LENGTH,
         default=generate_random_username,
     )
-    phone_number = PhoneNumberField(null=False, blank=False, unique=True)
+    phone_number = PhoneNumberField(null=False, blank=False)
     # age = models.IntegerField(blank=True, null=True)  # post create
     # birthdate = BirthdayField(blank=True, null=True)
     # gender = models.IntegerField(blank=True, null=True, choices=GENDER_CHOICES)
@@ -85,6 +85,9 @@ class User(AbstractUser):
         blank=True, null=True, default=free_pass_default_time
     )
 
+    # LifeCycle
+    is_deleted = models.BooleanField(default=False)
+
     # History
     history = HistoricalRecords()
 
@@ -93,6 +96,22 @@ class User(AbstractUser):
 
     objects = UserManager()
     active_objects = ActiveUserManager()
+
+
+def delete_schedule_default_time():
+    return timezone.now() + timezone.timedelta(days=7)
+
+
+class DeleteScheduledUser(models.Model):
+    user = models.OneToOneField(
+        "user.User",
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE,
+    )
+    created_at = models.DateTimeField(default=timezone.now)
+    delete_schedule_at = models.DateTimeField(default=delete_schedule_default_time)
+    delete_processed = models.BooleanField(default=False)
 
 
 class AppInfo(models.Model):

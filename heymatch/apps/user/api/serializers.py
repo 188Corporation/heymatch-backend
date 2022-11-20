@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from heymatch.apps.group.api.serializers import FullGroupProfileSerializer
 from heymatch.apps.payment.api.serializers import SimpleUserPurchaseSerializer
-from heymatch.apps.user.models import AppInfo, User
+from heymatch.apps.user.models import AppInfo, DeleteScheduledUser, User
 
 
 class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
@@ -40,6 +40,12 @@ class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
             "joined_group": joined_group,
             "user_purchases": user_purchases,
         }
+
+
+class DeleteScheduledUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DeleteScheduledUser
+        fields = "__all__"
 
 
 class AppInfoSerializer(serializers.ModelSerializer):

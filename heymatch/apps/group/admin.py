@@ -15,7 +15,6 @@ class GroupAdmin(SimpleHistoryAdmin):
         "male_member_number",
         "female_member_number",
         "member_average_age",
-        "is_active",
         "match_point",
         # "gps_checked",
         # "gps_last_check_time",
@@ -24,6 +23,8 @@ class GroupAdmin(SimpleHistoryAdmin):
         # "desired_other_group_member_number",
         # "desired_other_group_member_avg_age_range",
         # "active_until",
+        "is_active",
+        "is_deleted",
     ]
     # readonly_fields = [
     #     "member_number",
@@ -39,8 +40,9 @@ class GroupAdmin(SimpleHistoryAdmin):
         "male_member_number",
         "female_member_number",
         "member_average_age",
-        "is_active",
         "match_point",
+        "is_active",
+        "is_deleted",
     ]
 
 

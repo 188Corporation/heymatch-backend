@@ -5,7 +5,7 @@ from simple_history.admin import SimpleHistoryAdmin
 
 from heymatch.apps.user.forms import UserChangeForm, UserCreationForm
 
-from .models import AppInfo
+from .models import AppInfo, DeleteScheduledUser
 
 User = get_user_model()
 
@@ -53,6 +53,7 @@ class UserAdmin(SimpleHistoryAdmin):
             {
                 "fields": (
                     "is_active",
+                    "is_deleted",
                     "is_staff",
                     "is_superuser",
                 ),
@@ -77,12 +78,12 @@ class UserAdmin(SimpleHistoryAdmin):
         "free_pass",
         "free_pass_active_until",
         "is_active",
+        "is_deleted",
         "stream_token",
     ]
     history_list_display = [
         "status",
         "last_login",
-        "is_active",
         "date_joined",
         *list_display,
     ]
@@ -102,7 +103,26 @@ class UserAdmin(SimpleHistoryAdmin):
         "free_pass",
         "free_pass_active_until",
         "is_active",
+        "is_deleted",
         "stream_token",
+    ]
+
+
+@admin.register(DeleteScheduledUser)
+class DeleteScheduledUserAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "user",
+        "created_at",
+        "delete_schedule_at",
+        "delete_processed",
+    ]
+    search_fields = [
+        "id",
+        "user",
+        "created_at",
+        "delete_schedule_at",
+        "delete_processed",
     ]
 
 

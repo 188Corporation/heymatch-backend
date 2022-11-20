@@ -47,6 +47,7 @@ class MatchRequest(models.Model):
     # Life cycle
     created_at = models.DateTimeField(default=timezone.now)
     is_active = models.BooleanField(blank=False, null=False, default=True)
+    is_deleted = models.BooleanField(blank=False, null=False, default=False)
 
     # History
     history = HistoricalRecords()

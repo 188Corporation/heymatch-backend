@@ -13,6 +13,7 @@ class MatchRequestAdmin(SimpleHistoryAdmin):
         "status",
         "created_at",
         "is_active",
+        "is_deleted",
     ]
     history_list_display = ["status", *list_display]
     search_fields = [
@@ -22,4 +23,5 @@ class MatchRequestAdmin(SimpleHistoryAdmin):
         "status",
         "created_at",
         "is_active",
+        "is_deleted",
     ]

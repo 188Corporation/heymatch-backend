@@ -14,8 +14,13 @@ class BasePermissionDeniedException(APIException):
 
 
 class UserNotActiveException(BasePermissionDeniedException):
-    status_code = 460
+    status_code = 450
     detail = "비활성화 된 유저입니다 😰"
+
+
+class UserAlreadyScheduledDeletionException(BasePermissionDeniedException):
+    status_code = 451
+    detail = "이미 탈퇴가 진행중인 유저입니다 😰"
 
 
 class UserNotJoinedGroupException(BasePermissionDeniedException):

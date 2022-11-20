@@ -1,15 +1,21 @@
 from typing import Any
 
 from django.contrib.auth import get_user_model
+from django.db.utils import IntegrityError
 from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from heymatch.apps.user.models import AppInfo
+from heymatch.apps.user.models import AppInfo, DeleteScheduledUser
+from heymatch.shared.exceptions import UserAlreadyScheduledDeletionException
 
-from .serializers import AppInfoSerializer, UserWithGroupFullInfoSerializer
+from .serializers import (
+    AppInfoSerializer,
+    DeleteScheduledUserSerializer,
+    UserWithGroupFullInfoSerializer,
+)
 
 User = get_user_model()
 
@@ -24,3 +30,14 @@ class UserWithGroupFullInfoViewSet(viewsets.ViewSet):
         app_info_serializer = AppInfoSerializer(instance=app_info)
         data = {**user_info_serializer.data, "app_info": app_info_serializer.data}
         return Response(data, status.HTTP_200_OK)
+
+    def schedule_delete(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        # NOTE: jwt token must be deleted client side
+        # create DeleteScheduledUser
+        try:
+            dsu = DeleteScheduledUser.objects.create(user=request.user)
+        except IntegrityError:
+            raise UserAlreadyScheduledDeletionException()
+        serializer = DeleteScheduledUserSerializer(instance=dsu)
+        # rest of job will be done by celery-beat scheduler
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
