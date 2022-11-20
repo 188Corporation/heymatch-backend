@@ -144,12 +144,8 @@ class GroupDetailViewSet(viewsets.ModelViewSet):
         group.save(update_fields=["is_active"])
 
         # Deactivate MatchRequest
-        sent_mrs = MatchRequest.active_objects.filter(sender_group=group)
-        sent_mrs.is_active = False
-        sent_mrs.save(update_fields=["is_active"])
-        received_mrs = MatchRequest.active_objects.filter(receiver_group=group)
-        received_mrs.is_active = False
-        received_mrs.save(update_fields=["is_active"])
+        MatchRequest.active_objects.filter(sender_group=group).update(is_active=False)
+        MatchRequest.active_objects.filter(receiver_group=group).update(is_active=False)
 
         # Deactivate Stream Chat
         channels = stream.query_channels(
