@@ -17,6 +17,7 @@ from heymatch.apps.user.models import User
 from heymatch.shared.exceptions import (
     GroupNotWithinSameHotplaceException,
     MatchRequestAlreadySubmittedException,
+    MatchRequestGroupIsMineException,
     MatchRequestHandleFailedException,
     MatchRequestNotFoundException,
     UserPointBalanceNotEnoughException,
@@ -71,7 +72,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
     @swagger_auto_schema(request_body=MatchRequestCreateBodySerializer)
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """
-        1) Check if user joined any group.
+        1) Check if user joined any group + if group_is mine
         2) Check if user does not belong to same hotplace of the other group.
         3) Check if MatchRequest already created
         4) Check if user has enough balance or free_pass item.
@@ -80,10 +81,14 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         if not group_id:
             raise FieldDoesNotExist("`group_id` should be provided.")
 
+        user = request.user
+
+        # Permission class checks #1
+        if group_id == user.joined_group.id:
+            raise MatchRequestGroupIsMineException()
+
         group_qs = Group.active_objects.all()
         group = get_object_or_404(group_qs, id=group_id)
-        user = request.user
-        # Permission class checks #1
         # Check #2
         if user.joined_group.hotplace.id != group.hotplace.id:
             raise GroupNotWithinSameHotplaceException()

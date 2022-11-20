@@ -68,6 +68,11 @@ class MatchRequestHandleFailedException(BasePermissionDeniedException):
     detail = "Cannot handle requested match request."
 
 
+class MatchRequestGroupIsMineException(BasePermissionDeniedException):
+    status_code = 473
+    detail = "Cannot match with your own group."
+
+
 class ReceiptWrongEnvException(BasePermissionDeniedException):
     status_code = 480
     detail = (
