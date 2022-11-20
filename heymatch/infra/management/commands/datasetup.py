@@ -199,7 +199,7 @@ class Command(BaseCommand):
                 ],
             )
             # create groups for each hotplaces
-            for _ in range(random.randint(2, 4)):
+            for image_path in profile_image_filepath:
                 geopt = generate_rand_geoopt_within_boundary(
                     RANDOM_HOTPLACE_INFO[name]["zone_boundary_geoinfos"]
                 )
@@ -211,7 +211,7 @@ class Command(BaseCommand):
                 GroupProfileImageFactory.create(
                     group=group,
                     image=ImageField(
-                        from_path=f"{pathlib.Path().resolve()}/heymatch/data/{random.choice(profile_image_filepath)}"
+                        from_path=f"{pathlib.Path().resolve()}/heymatch/data/{image_path}"
                     ),
                 )
                 # Create users for each groups
