@@ -192,3 +192,13 @@ class GroupCreationSerializer(serializers.ModelSerializer):
             instance=instance, context={"hotplace_id": instance.hotplace.id}
         )
         return serializer.data
+
+
+class GroupUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = [
+            "gps_geoinfo",
+            "title",
+            "introduction",
+        ]

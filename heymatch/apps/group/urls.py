@@ -5,7 +5,9 @@ from heymatch.apps.group.api.views import GroupDetailViewSet, GroupsGenericViewS
 app_name = "group"
 
 group_list_create_view = GroupsGenericViewSet.as_view({"get": "list", "post": "create"})
-group_detail_view = GroupDetailViewSet.as_view({"get": "retrieve", "delete": "destroy"})
+group_detail_view = GroupDetailViewSet.as_view(
+    {"get": "retrieve", "delete": "destroy", "put": "update"}
+)
 
 urlpatterns = [
     path("", group_list_create_view, name="group-list-create"),

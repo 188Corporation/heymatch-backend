@@ -2,8 +2,10 @@ from typing import Any
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404
+from django_google_maps.fields import GeoPt
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.parsers import JSONParser, MultiPartParser
@@ -17,18 +19,21 @@ from heymatch.apps.match.models import MatchRequest
 from heymatch.shared.exceptions import (
     GroupNotWithinSameHotplaceException,
     JoinedGroupNotMineException,
+    UserGPSNotWithinHotplaceException,
 )
 from heymatch.shared.permissions import (
     IsGroupCreationAllowed,
     IsUserActive,
     IsUserJoinedGroup,
 )
+from heymatch.utils.util import is_geopt_within_boundary
 
 from .serializers import (
     FullGroupProfileByHotplaceSerializer,
     FullGroupProfileSerializer,
     GroupCreationRequestBodySerializer,
     GroupCreationSerializer,
+    GroupUpdateSerializer,
     RestrictedGroupProfileByHotplaceSerializer,
 )
 
@@ -161,3 +166,31 @@ class GroupDetailViewSet(viewsets.ModelViewSet):
             ch.update_partial(to_set={"disabled": True})
 
         return Response(status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(request_body=GroupUpdateSerializer)
+    def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        user = request.user
+        queryset = Group.active_objects.all()
+        group = get_object_or_404(queryset, id=kwargs["group_id"])
+
+        if user.joined_group.id != group.id:
+            raise JoinedGroupNotMineException()
+
+        gps_geoinfo = request.data.get("gps_geoinfo", group.gps_geoinfo)
+        # validate gps
+        try:
+            gpt = GeoPt(gps_geoinfo)
+        except ValidationError:
+            raise UserGPSNotWithinHotplaceException()
+
+        if not is_geopt_within_boundary(gpt, group.hotplace.zone_boundary_geoinfos):
+            raise UserGPSNotWithinHotplaceException()
+
+        group.gps_geoinfo = gps_geoinfo
+        group.title = request.data.get("title", group.title)
+        group.introduction = request.data.get("introduction", group.introduction)
+
+        group.save(update_fields=["gps_geoinfo", "title", "introduction"])
+        serializer = GroupUpdateSerializer(group)
+
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
