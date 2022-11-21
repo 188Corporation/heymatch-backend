@@ -8,7 +8,7 @@ from django.db import models
 from django_google_maps.fields import GeoLocationField
 from fernet_fields import EncryptedField
 from ordered_model.models import OrderedModel
-from PIL import Image, ImageFilter
+from PIL import Image, ImageFilter, ImageOps
 from simple_history.models import HistoricalRecords
 
 from .managers import ActiveGroupManager, GroupManager
@@ -120,9 +120,13 @@ class GroupProfileImage(OrderedModel):
         ftype = self.check_file_type()
         if not ftype:
             raise Exception("Could not process image - is the file type valid?")
-        self.process_image_blurred(ftype)
-        self.process_thumbnail(ftype)
-        self.process_thumbnail_blurred(ftype)
+
+        image = Image.open(self.image)
+        ImageOps.exif_transpose(image)
+
+        self.process_image_blurred(image, ftype)
+        self.process_thumbnail(image, ftype)
+        self.process_thumbnail_blurred(self.image_blurred, ftype)
         super(GroupProfileImage, self).save(*args, **kwargs)
 
     def check_file_type(self):
@@ -138,13 +142,12 @@ class GroupProfileImage(OrderedModel):
         else:
             return False  # Unrecognized file type
 
-    def process_image_blurred(self, filetype: str):
+    def process_image_blurred(self, image, filetype: str):
         """
         Blurs image and save
         :return:
         """
-        image = Image.open(self.image)
-        image = image.filter(ImageFilter.GaussianBlur(10))
+        image = image.filter(ImageFilter.GaussianBlur(8))
         temp_image = BytesIO()
         image.save(temp_image, filetype)
         temp_image.seek(0)
@@ -156,11 +159,10 @@ class GroupProfileImage(OrderedModel):
         )
         temp_image.close()
 
-    def process_thumbnail(self, filetype: str):
+    def process_thumbnail(self, image, filetype: str):
         """
         Creates thumbnail and blurred_thumbnail.
         """
-        image = Image.open(self.image)
         image.thumbnail((150, 150), Image.ANTIALIAS)
         temp_image = BytesIO()
         image.save(temp_image, filetype)
@@ -171,8 +173,8 @@ class GroupProfileImage(OrderedModel):
         )
         temp_image.close()
 
-    def process_thumbnail_blurred(self, filetype: str):
-        image = Image.open(self.image_blurred)
+    def process_thumbnail_blurred(self, image, filetype: str):
+        image = Image.open(image)
         image.thumbnail((150, 150), Image.ANTIALIAS)
         # Save thumbnail to in-memory file as StringIO
         temp_image = BytesIO()
