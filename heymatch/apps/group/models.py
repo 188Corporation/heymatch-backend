@@ -122,7 +122,7 @@ class GroupProfileImage(OrderedModel):
             raise Exception("Could not process image - is the file type valid?")
 
         image = Image.open(self.image)
-        ImageOps.exif_transpose(image)
+        image = ImageOps.exif_transpose(image)  # fix ios image rotation bug
 
         self.process_image_blurred(image, ftype)
         self.process_thumbnail(image, ftype)
