@@ -26,7 +26,9 @@ class UserWithGroupFullInfoViewSet(viewsets.ViewSet):
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         user = get_object_or_404(User, id=self.request.user.id)
         app_info = AppInfo.objects.all().first()
-        user_info_serializer = UserWithGroupFullInfoSerializer(instance=user)
+        user_info_serializer = UserWithGroupFullInfoSerializer(
+            instance=user, context={"force_original": True}
+        )
         app_info_serializer = AppInfoSerializer(instance=app_info)
         data = {**user_info_serializer.data, "app_info": app_info_serializer.data}
         return Response(data, status.HTTP_200_OK)

@@ -117,16 +117,16 @@ class GroupProfileImage(OrderedModel):
     order_with_respect_to = "group"
 
     def save(self, *args, **kwargs):
-        ftype = self.check_file_type()
-        if not ftype:
-            raise Exception("Could not process image - is the file type valid?")
+        # ftype = self.check_file_type()
+        # if not ftype:
+        #     raise Exception("Could not process image - is the file type valid?")
 
         image = Image.open(self.image)
         image = ImageOps.exif_transpose(image)  # fix ios image rotation bug
 
-        self.process_image_blurred(image, ftype)
-        self.process_thumbnail(image, ftype)
-        self.process_thumbnail_blurred(self.image_blurred, ftype)
+        self.process_image_blurred(image)
+        self.process_thumbnail(image)
+        self.process_thumbnail_blurred(image)
         super(GroupProfileImage, self).save(*args, **kwargs)
 
     def check_file_type(self):
@@ -142,12 +142,12 @@ class GroupProfileImage(OrderedModel):
         else:
             return False  # Unrecognized file type
 
-    def process_image_blurred(self, image, filetype: str):
+    def process_image_blurred(self, image, filetype: str = "JPEG"):
         """
         Blurs image and save
         :return:
         """
-        image = image.filter(ImageFilter.GaussianBlur(8))
+        image = image.filter(ImageFilter.BoxBlur(5))
         temp_image = BytesIO()
         image.save(temp_image, filetype)
         temp_image.seek(0)
@@ -159,11 +159,11 @@ class GroupProfileImage(OrderedModel):
         )
         temp_image.close()
 
-    def process_thumbnail(self, image, filetype: str):
+    def process_thumbnail(self, image, filetype: str = "JPEG"):
         """
         Creates thumbnail and blurred_thumbnail.
         """
-        image.thumbnail((150, 150), Image.ANTIALIAS)
+        image.thumbnail((120, 120), Image.Resampling.LANCZOS)
         temp_image = BytesIO()
         image.save(temp_image, filetype)
         temp_image.seek(0)
@@ -173,9 +173,9 @@ class GroupProfileImage(OrderedModel):
         )
         temp_image.close()
 
-    def process_thumbnail_blurred(self, image, filetype: str):
-        image = Image.open(image)
-        image.thumbnail((150, 150), Image.ANTIALIAS)
+    def process_thumbnail_blurred(self, image, filetype: str = "JPEG"):
+        image.thumbnail((120, 120), Image.Resampling.LANCZOS)
+        image = image.filter(ImageFilter.BoxBlur(1))
         # Save thumbnail to in-memory file as StringIO
         temp_image = BytesIO()
         image.save(temp_image, filetype)

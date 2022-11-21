@@ -46,7 +46,7 @@ class GroupProfileImagesByJoinedGroupConditionSerializer(serializers.ModelSerial
 
     def decide_whether_original_or_blurred_thumbnail(self, obj):
         if self.context.get("force_original", False):
-            return obj.image.url
+            return obj.thumbnail.url
         hotplace_id = self.context.get("hotplace_id", None)
         if hotplace_id:
             if obj.group.hotplace.id == hotplace_id:
