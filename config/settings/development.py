@@ -128,83 +128,35 @@ ADMIN_URL = env("DJANGO_ADMIN_URL")
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "filters": {
-        "require_debug_false": {
-            "()": "django.utils.log.RequireDebugFalse",
-        },
-        "require_debug_true": {
-            "()": "django.utils.log.RequireDebugTrue",
-        },
-    },
     "formatters": {
-        "django.request": {
-            "()": "django.utils.log.ServerFormatter",
-            "format": "[{server_time}] {message}",
-            "style": "{",
+        "verbose": {
+            "format": "%(levelname)s %(asctime)s %(module)s "
+            "%(process)d %(thread)d %(message)s"
         }
     },
     "handlers": {
         "console": {
-            "level": "INFO",
-            "filters": ["require_debug_true"],
+            "level": "DEBUG",
             "class": "logging.StreamHandler",
-        },
-        "django.request": {
-            "level": "INFO",
-            "class": "logging.StreamHandler",
-            "formatter": "django.request",
-        },
-        # 'mail_admins': {
-        #     'level': 'ERROR',
-        #     'filters': ['require_debug_false'],
-        #     'class': 'django.utils.log.AdminEmailHandler'
-        # }
+            "formatter": "verbose",
+        }
     },
+    "root": {"level": "INFO", "handlers": ["console"]},
     "loggers": {
-        "django": {
+        "django.db.backends": {
+            "level": "ERROR",
             "handlers": ["console"],
-            "level": "INFO",
+            "propagate": False,
         },
-        "django.request": {
-            "handlers": ["django.request"],
-            "level": "INFO",
+        # Errors logged by the SDK itself
+        "sentry_sdk": {"level": "ERROR", "handlers": ["console"], "propagate": False},
+        "django.security.DisallowedHost": {
+            "level": "ERROR",
+            "handlers": ["console"],
             "propagate": False,
         },
     },
 }
-#
-# LOGGING = {
-#     "version": 1,
-#     "disable_existing_loggers": False,
-#     "formatters": {
-#         "verbose": {
-#             "format": "%(levelname)s %(asctime)s %(module)s "
-#                       "%(process)d %(thread)d %(message)s"
-#         }
-#     },
-#     "handlers": {
-#         "console": {
-#             "level": "DEBUG",
-#             "class": "logging.StreamHandler",
-#             "formatter": "verbose",
-#         }
-#     },
-#     "root": {"level": "INFO", "handlers": ["console"]},
-#     "loggers": {
-#         "django.db.backends": {
-#             "level": "ERROR",
-#             "handlers": ["console"],
-#             "propagate": False,
-#         },
-#         # Errors logged by the SDK itself
-#         "sentry_sdk": {"level": "ERROR", "handlers": ["console"], "propagate": False},
-#         "django.security.DisallowedHost": {
-#             "level": "ERROR",
-#             "handlers": ["console"],
-#             "propagate": False,
-#         },
-#     },
-# }
 
 # Sentry
 # ------------------------------------------------------------------------------
