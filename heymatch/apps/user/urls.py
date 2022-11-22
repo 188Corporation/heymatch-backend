@@ -9,13 +9,10 @@ app_name = "user"
 urlpatterns = [
     path(
         "my/",
-        UserWithGroupFullInfoViewSet.as_view({"get": "retrieve"}),
+        UserWithGroupFullInfoViewSet.as_view(
+            {"get": "retrieve", "delete": "schedule_delete"}
+        ),
         name="user-my-detail",
-    ),
-    path(
-        "delete/",
-        UserWithGroupFullInfoViewSet.as_view({"post": "schedule_delete"}),
-        name="user-schedule-delete",
     ),
     # path("device/register/", user_device_register_view, name="user_device_register"),
 ]
