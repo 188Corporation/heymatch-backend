@@ -103,7 +103,7 @@ def delete_schedule_default_time():
 
 
 class DeleteScheduledUser(models.Model):
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         "user.User",
         blank=False,
         null=False,

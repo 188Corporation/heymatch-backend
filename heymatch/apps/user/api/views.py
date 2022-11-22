@@ -1,5 +1,6 @@
 from typing import Any
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.utils import IntegrityError
 from django.shortcuts import get_object_or_404
@@ -18,6 +19,7 @@ from .serializers import (
 )
 
 User = get_user_model()
+stream = settings.STREAM_CLIENT
 
 
 class UserWithGroupFullInfoViewSet(viewsets.ViewSet):
@@ -36,10 +38,13 @@ class UserWithGroupFullInfoViewSet(viewsets.ViewSet):
     def schedule_delete(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         # NOTE: jwt token must be deleted client side
         # create DeleteScheduledUser
+        user = request.user
         try:
-            dsu = DeleteScheduledUser.objects.create(user=request.user)
+            dsu = DeleteScheduledUser.objects.create(user=user)
         except IntegrityError:
             raise UserAlreadyScheduledDeletionException()
+
         serializer = DeleteScheduledUserSerializer(instance=dsu)
+
         # rest of job will be done by celery-beat scheduler
         return Response(data=serializer.data, status=status.HTTP_200_OK)

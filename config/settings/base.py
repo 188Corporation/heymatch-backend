@@ -286,6 +286,12 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(minute=0, hour=5),  # execute daily at 5 a.m
         "args": (),
     },
+    # Process DeleteScheduledUsers
+    "delete-scheduled-users": {
+        "task": "heymatch.apps.celery.tasks.delete_scheduled_users",
+        "schedule": crontab(minute=0, hour="*/1"),  # execute every hour
+        "args": (),
+    },
 }
 
 # django-allauth
