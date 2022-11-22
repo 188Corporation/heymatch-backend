@@ -2,11 +2,15 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from dj_rest_auth.serializers import LoginSerializer, UserDetailsSerializer
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from django.db.models.query import QuerySet
 from phone_verify.models import SMSVerification
 from phone_verify.serializers import SMSVerificationSerializer
 from phonenumber_field.phonenumber import to_python
 from rest_framework import exceptions, serializers
+
+from heymatch.apps.user.models import DeleteScheduledUser
+from heymatch.shared.exceptions import UserAlreadyScheduledDeletionException
 
 User = get_user_model()
 stream = settings.STREAM_CLIENT
@@ -64,11 +68,17 @@ class UserLoginByPhoneNumberSerializer(LoginSerializer):
         phone_number = attrs.get("phone_number")
         user = self._validate_user(phone_number)
 
-        # Did we get back an active user?
         if user:
+            # Did we get back an active user?
             if not user.is_active:
                 msg = "User account is disabled."
                 raise exceptions.ValidationError(detail=msg)
+            # Is user under scheduled deletion?
+            qs = DeleteScheduledUser.objects.filter(
+                Q(user=user) & Q(delete_processed=False)
+            )
+            if qs.exists():
+                raise UserAlreadyScheduledDeletionException()
         else:
             msg = "Unable to log in with provided credentials."
             raise exceptions.ValidationError(detail=str(msg))

@@ -27,6 +27,7 @@ from heymatch.shared.exceptions import (
     ReceiptProcessFailedException,
     ReceiptWrongEnvException,
 )
+from heymatch.shared.permissions import IsUserActive
 
 from .serializers import (
     FreePassItemItemSerializer,
@@ -40,7 +41,10 @@ apple_store_validator = settings.APP_STORE_VALIDATOR
 
 
 class PaymentItemViewSet(viewsets.ViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [
+        IsAuthenticated,
+        IsUserActive,
+    ]
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         pi_qs = PointItem.objects.all()
@@ -55,7 +59,7 @@ class PaymentItemViewSet(viewsets.ViewSet):
 
 
 class ReceiptValidationViewSet(viewsets.ViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsUserActive]
 
     @swagger_auto_schema(request_body=ReceiptValidationSerializer)
     def validate(self, request: Request, *args: Any, **kwargs: Any) -> Response:

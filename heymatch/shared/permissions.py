@@ -1,9 +1,14 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from rest_framework import exceptions, permissions
 from rest_framework.request import Request
 from rest_framework.views import APIView
 
+from heymatch.apps.user.models import DeleteScheduledUser
+
 from .exceptions import (
+    UserAlreadyScheduledDeletionException,
+    UserDeletedException,
     UserGroupLeaderException,
     UserJoinedGroupNotActiveException,
     UserNotActiveException,
@@ -14,9 +19,23 @@ User = get_user_model()
 
 
 class IsUserActive(permissions.BasePermission):
+    """
+    Active means
+    1) User is active
+    2) User is not deleted
+    3) User is not under scheduled deletion
+    """
+
     def has_permission(self, request: Request, view: APIView) -> bool:
         if not request.user.is_active:
             raise UserNotActiveException()
+        if request.user.is_deleted:
+            raise UserDeletedException()
+        qs = DeleteScheduledUser.objects.filter(
+            Q(user=request.user) & Q(delete_processed=False)
+        )
+        if qs.exists():
+            raise UserAlreadyScheduledDeletionException()
         return True
 
 

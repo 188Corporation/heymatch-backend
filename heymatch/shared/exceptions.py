@@ -20,7 +20,12 @@ class UserNotActiveException(BasePermissionDeniedException):
 
 class UserAlreadyScheduledDeletionException(BasePermissionDeniedException):
     status_code = 451
-    detail = "이미 탈퇴가 진행중인 유저입니다 😰"
+    detail = "탈퇴가 진행중인 유저입니다 😰"
+
+
+class UserDeletedException(BasePermissionDeniedException):
+    status_code = 452
+    detail = "회원 탈퇴한 유저입니다 😰"
 
 
 class UserNotJoinedGroupException(BasePermissionDeniedException):

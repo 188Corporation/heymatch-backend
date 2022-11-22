@@ -8,7 +8,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from heymatch.apps.group.api.serializers import RestrictedGroupProfileSerializer
-from heymatch.shared.permissions import IsUserJoinedGroup
+from heymatch.shared.permissions import IsUserActive, IsUserJoinedGroup
 
 User = get_user_model()
 stream = settings.STREAM_CLIENT
@@ -22,6 +22,7 @@ class StreamChatViewSet(viewsets.ModelViewSet):
 
     permission_classes = [
         IsAuthenticated,
+        IsUserActive,
         IsUserJoinedGroup,
     ]
     serializer_class = RestrictedGroupProfileSerializer

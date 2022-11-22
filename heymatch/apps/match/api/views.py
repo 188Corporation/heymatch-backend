@@ -22,7 +22,7 @@ from heymatch.shared.exceptions import (
     MatchRequestNotFoundException,
     UserPointBalanceNotEnoughException,
 )
-from heymatch.shared.permissions import IsUserJoinedGroup
+from heymatch.shared.permissions import IsUserActive, IsUserJoinedGroup
 
 from .serializers import (
     MatchRequestCreateBodySerializer,
@@ -36,6 +36,7 @@ stream = settings.STREAM_CLIENT
 class MatchRequestViewSet(viewsets.ModelViewSet):
     permission_classes = [
         IsAuthenticated,
+        IsUserActive,
         IsUserJoinedGroup,
     ]
 

@@ -11,6 +11,7 @@ from rest_framework.response import Response
 
 from heymatch.apps.group.models import Group
 from heymatch.apps.hotplace.models import HotPlace
+from heymatch.shared.permissions import IsUserActive
 
 from .serializers import (
     HotPlaceDetailSerializer,
@@ -24,7 +25,10 @@ class HotPlaceViewSet(viewsets.ViewSet):
     A simple ViewSet for listing or retrieving HotPlaces.
     """
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [
+        IsAuthenticated,
+        IsUserActive,
+    ]
 
     def list(self, request) -> Response:
         queryset = HotPlace.objects.all()

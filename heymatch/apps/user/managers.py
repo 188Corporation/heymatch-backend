@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
+from django.db.models import Q
 from django.db.models.query import QuerySet
 
 stream = settings.STREAM_CLIENT
@@ -37,8 +38,12 @@ class UserManager(BaseUserManager):
 
 
 class ActiveUserManager(UserManager):
+    """
+    Active means: is_active=True AND is_deleted=False
+    """
+
     def get_queryset(self) -> QuerySet:
-        return super().get_queryset().filter(is_active=True)
+        return super().get_queryset().filter(Q(is_active=True) & Q(is_deleted=False))
 
     # def get_group_members(self, group) -> QuerySet:
     #     return self.get_queryset().filter(joined_group__id=group.id)
