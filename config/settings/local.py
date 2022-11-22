@@ -28,6 +28,7 @@ MIDDLEWARE = [
     "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
+    "requestlogs.middleware.RequestLogsMiddleware",
 ]
 
 # CACHES

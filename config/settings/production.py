@@ -59,6 +59,7 @@ MIDDLEWARE = [
     "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
+    "requestlogs.middleware.RequestLogsMiddleware",
 ]
 
 # SECURITY
@@ -135,16 +136,28 @@ LOGGING = {
     },
     "handlers": {
         "console": {
-            "level": "DEBUG",
+            "level": "INFO",
             "class": "logging.StreamHandler",
             "formatter": "verbose",
-        }
+        },
+        "requestlogs_to_file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": "/tmp/requestlogs.log",
+        },
     },
     "root": {"level": "INFO", "handlers": ["console"]},
     "loggers": {
         "django.db.backends": {
             "level": "ERROR",
             "handlers": ["console"],
+            "propagate": False,
+        },
+        "requestlogs": {
+            "level": "INFO",
+            "handlers": [
+                "requestlogs_to_file"
+            ],  # if you want log into file, use "requestlogs_to_file"
             "propagate": False,
         },
         # Errors logged by the SDK itself

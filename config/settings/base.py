@@ -251,9 +251,28 @@ LOGGING = {
             "level": "DEBUG",
             "class": "logging.StreamHandler",
             "formatter": "verbose",
-        }
+        },
+        "requestlogs_to_file": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": "/tmp/requestlogs.log",
+        },
     },
-    "root": {"level": "INFO", "handlers": ["console"]},
+    "loggers": {
+        "django.db.backends": {
+            "level": "ERROR",
+            "handlers": ["console"],
+            "propagate": False,
+        },
+        "requestlogs": {
+            "level": "DEBUG",
+            "handlers": [
+                "console"
+            ],  # if you want log into file, use "requestlogs_to_file"
+            "propagate": False,
+        },
+        "root": {"level": "INFO", "handlers": ["console"]},
+    },
 }
 
 # Celery
@@ -325,6 +344,7 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_RENDERER_CLASSES": ("heymatch.shared.renderers.JSONResponseRenderer",),
+    "EXCEPTION_HANDLER": "requestlogs.views.exception_handler",
 }
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
