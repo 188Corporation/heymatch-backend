@@ -127,7 +127,7 @@ ADMIN_URL = env("DJANGO_ADMIN_URL")
 
 LOGGING = {
     "version": 1,
-    "disable_existing_loggers": True,  # 위 설정에서 해당 값만 True 로 변경
+    "disable_existing_loggers": False,
     "filters": {
         "require_debug_false": {
             "()": "django.utils.log.RequireDebugFalse",
