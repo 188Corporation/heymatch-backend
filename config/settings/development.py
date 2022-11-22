@@ -142,7 +142,7 @@ LOGGING = {
             "formatter": "verbose",
         },
         "requestlogs_to_file": {
-            "level": "DEBUG",
+            "level": "INFO",
             "class": "logging.FileHandler",
             "filename": "/tmp/requestlogs.log",
         },
@@ -155,9 +155,9 @@ LOGGING = {
             "propagate": False,
         },
         "requestlogs": {
-            "level": "DEBUG",
+            "level": "INFO",
             "handlers": [
-                "console"
+                "requestlogs_to_file"
             ],  # if you want log into file, use "requestlogs_to_file"
             "propagate": False,
         },
