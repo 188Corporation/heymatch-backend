@@ -2,6 +2,8 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 
+from heymatch.shared.renderers import server_error
+
 urlpatterns = [
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
@@ -44,3 +46,5 @@ if settings.ENABLE_DOCS:
         ]
 
         urlpatterns += [path(r"docs/", include(docs_urlpatterns))]
+
+handler500 = server_error

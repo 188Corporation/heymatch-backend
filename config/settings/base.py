@@ -344,8 +344,8 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_RENDERER_CLASSES": ("heymatch.shared.renderers.JSONResponseRenderer",),
-    "EXCEPTION_HANDLER": "heymatch.shared.renderers.custom_exception_handler",
-    # "EXCEPTION_HANDLER": "requestlogs.views.exception_handler",
+    # "EXCEPTION_HANDLER": "heymatch.shared.renderers.custom_exception_handler",
+    "EXCEPTION_HANDLER": "requestlogs.views.exception_handler",
 }
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup

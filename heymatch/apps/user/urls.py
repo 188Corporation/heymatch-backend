@@ -16,5 +16,3 @@ urlpatterns = [
     ),
     # path("device/register/", user_device_register_view, name="user_device_register"),
 ]
-
-handler500 = "rest_framework.exceptions.server_error"

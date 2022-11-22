@@ -4,12 +4,10 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.http import HttpResponseServerError
 from rest_framework import status, viewsets
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
 from heymatch.apps.user.models import DeleteScheduledUser
-from heymatch.shared.permissions import IsUserActive
 
 from .serializers import DeleteScheduledUserSerializer
 
@@ -19,8 +17,8 @@ stream = settings.STREAM_CLIENT
 
 class UserWithGroupFullInfoViewSet(viewsets.ViewSet):
     permission_classes = [
-        IsAuthenticated,
-        IsUserActive,
+        # IsAuthenticated,
+        # IsUserActive,
     ]
 
     def retrieve(self, request: Request, *args: Any, **kwargs: Any):

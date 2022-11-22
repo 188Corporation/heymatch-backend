@@ -1,5 +1,6 @@
+from django.http import JsonResponse
+from rest_framework import status
 from rest_framework.renderers import JSONRenderer
-from rest_framework.views import exception_handler
 
 
 class JSONResponseRenderer(JSONRenderer):
@@ -24,13 +25,10 @@ class JSONResponseRenderer(JSONRenderer):
         )
 
 
-def custom_exception_handler(exc, context):
-    # Call REST framework's default exception handler first,
-    # to get the standard error response.
-    response = exception_handler(exc, context)
-
-    # Now add the HTTP status code to the response.
-    if response is not None:
-        response.data["status_code"] = response.status_code
-
-    return response
+def server_error(request, *args, **kwargs):
+    """
+    Generic 500 error handler.
+    """
+    print("hihihihihi")
+    data = {"error": "Server Error (500)"}
+    return JsonResponse(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
