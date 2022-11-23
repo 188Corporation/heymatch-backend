@@ -3,6 +3,7 @@ from typing import Any
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -13,6 +14,7 @@ from heymatch.shared.permissions import IsUserActive
 
 from .serializers import (
     AppInfoSerializer,
+    DeleteScheduledUserRequestBodySerializer,
     DeleteScheduledUserSerializer,
     UserWithGroupFullInfoSerializer,
 )
@@ -37,11 +39,14 @@ class UserWithGroupFullInfoViewSet(viewsets.ViewSet):
         data = {**user_info_serializer.data, "app_info": app_info_serializer.data}
         return Response(data, status.HTTP_200_OK)
 
+    @swagger_auto_schema(request_body=DeleteScheduledUserRequestBodySerializer)
     def schedule_delete(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         # NOTE: jwt token must be deleted client side
         # Whether user is under scheduled deletion is checked in permission
         user = request.user
-        dsu = DeleteScheduledUser.objects.create(user=user)
+        dsu = DeleteScheduledUser.objects.create(
+            user=user, delete_reason=request.data.get("delete_reason", None)
+        )
         serializer = DeleteScheduledUserSerializer(instance=dsu)
 
         # rest of job will be done by celery-beat scheduler

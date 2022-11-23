@@ -42,6 +42,12 @@ class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
         }
 
 
+class DeleteScheduledUserRequestBodySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DeleteScheduledUser
+        fields = ["delete_reason"]
+
+
 class DeleteScheduledUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = DeleteScheduledUser

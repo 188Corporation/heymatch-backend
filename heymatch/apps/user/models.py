@@ -111,6 +111,9 @@ class DeleteScheduledUser(models.Model):
     )
     created_at = models.DateTimeField(default=timezone.now)
     delete_schedule_at = models.DateTimeField(default=delete_schedule_default_time)
+    delete_reason = models.TextField(
+        blank=True, null=True, max_length=500, default=None
+    )
     delete_processed = models.BooleanField(default=False)
 
 
