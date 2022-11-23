@@ -5,6 +5,7 @@ from .models import (
     FreePassItem,
     PlayStoreValidatedReceipt,
     PointItem,
+    UserPointConsumptionHistory,
     UserPurchase,
 )
 
@@ -154,4 +155,22 @@ class UserPurchaseAdmin(admin.ModelAdmin):
         "free_pass_item",
         "purchase_processed",
         "purchased_at",
+    ]
+
+
+@admin.register(UserPointConsumptionHistory)
+class UserPointConsumptionHistoryAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "user",
+        "consumed_point",
+        "consumed_reason",
+        "consumed_at",
+    ]
+    search_fields = [
+        "id",
+        "user",
+        "consumed_point",
+        "consumed_reason",
+        "consumed_at",
     ]
