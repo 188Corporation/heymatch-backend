@@ -2,6 +2,7 @@ import random
 import string
 from uuid import uuid4
 
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
@@ -72,7 +73,9 @@ class User(AbstractUser):
     # is_group_leader = models.BooleanField(blank=False, null=False, default=False)
 
     # Purchase related
-    point_balance = models.IntegerField(blank=False, null=False, default=0)
+    point_balance = models.IntegerField(
+        blank=False, null=False, default=settings.USER_INITIAL_POINT
+    )
     free_pass = models.BooleanField(default=False)
     free_pass_active_until = models.DateTimeField(
         blank=True, null=True, default=free_pass_default_time

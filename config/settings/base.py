@@ -345,6 +345,14 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_RENDERER_CLASSES": ("heymatch.shared.renderers.JSONResponseRenderer",),
     "EXCEPTION_HANDLER": "requestlogs.views.exception_handler",
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "100/day",
+        "user": "1000/min",
+    },
 }
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
@@ -459,3 +467,6 @@ APP_STORE_VALIDATOR = AppStoreValidator(
 
 # Simple History
 SIMPLE_HISTORY_REVERT_DISABLED = True
+
+# User initial point
+USER_INITIAL_POINT = 10

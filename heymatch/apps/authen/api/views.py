@@ -7,9 +7,22 @@ from phone_verify.services import send_security_code_and_generate_session_token
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
+
+
+class CustomUserRateThrottle(UserRateThrottle):
+    rate = "10/min"
+
+
+class CustomAnonRateThrottle(AnonRateThrottle):
+    rate = "10/min"
 
 
 class PhoneRegistrationViewSet(viewsets.ViewSet):
+    throttle_classes = [
+        CustomUserRateThrottle,
+        CustomAnonRateThrottle,
+    ]
     permission_classes = [AllowAny]
     serializer_class = PhoneSerializer
 
