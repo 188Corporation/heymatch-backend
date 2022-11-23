@@ -393,7 +393,7 @@ PHONE_VERIFICATION = {
     },
     "TOKEN_LENGTH": 6,
     "MESSAGE": "{app} 인증번호 [{security_code}]를 입력해주세요.",
-    "APP_NAME": "HeyMatch",
+    "APP_NAME": "헤이매치",
     "SECURITY_CODE_EXPIRATION_TIME": 300,  # In seconds only
     "VERIFY_SECURITY_CODE_ONLY_ONCE": True,
     # If False, then a security code can be used multiple times for verification
