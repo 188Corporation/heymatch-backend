@@ -16,6 +16,12 @@ stream = settings.STREAM_CLIENT
 
 
 class UserDetailByPhoneNumberSerializer(UserDetailsSerializer):
+    """
+    Check config.settings.base for usage.
+    """
+
+    schedule_delete_canceled = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = (
@@ -23,6 +29,7 @@ class UserDetailByPhoneNumberSerializer(UserDetailsSerializer):
             "stream_token",
             "username",
             "phone_number",
+            "schedule_delete_canceled",
             # "birthdate",
             # "gender",
             # "height_cm",
@@ -30,6 +37,15 @@ class UserDetailByPhoneNumberSerializer(UserDetailsSerializer):
             # "school",
         )
         read_only_fields = ("phone_number",)
+
+    def get_schedule_delete_canceled(self, obj):
+        # Is user under scheduled deletion?
+        qs = DeleteScheduledUser.objects.filter(Q(user=obj) & Q(delete_processed=False))
+        if qs.exists():
+            #  if so - cancel the deletion by deleting DeleteScheduledUser
+            qs.delete()
+            return True
+        return False
 
 
 class UserLoginByPhoneNumberSerializer(LoginSerializer):
@@ -72,13 +88,6 @@ class UserLoginByPhoneNumberSerializer(LoginSerializer):
             if not user.is_active:
                 msg = "User account is disabled."
                 raise exceptions.ValidationError(detail=msg)
-            # Is user under scheduled deletion?
-            qs = DeleteScheduledUser.objects.filter(
-                Q(user=user) & Q(delete_processed=False)
-            )
-            if qs.exists():
-                pass
-                # raise UserAlreadyScheduledDeletionException()
         else:
             msg = "Unable to log in with provided credentials."
             raise exceptions.ValidationError(detail=str(msg))
