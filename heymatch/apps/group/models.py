@@ -174,7 +174,7 @@ class GroupProfileImage(OrderedModel):
         temp_image.close()
 
     def process_thumbnail_blurred(self, image, filetype: str = "JPEG"):
-        image.thumbnail((120, 120), Image.Resampling.LANCZOS)
+        image.thumbnail((150, 150), Image.Resampling.LANCZOS)
         image = image.filter(ImageFilter.BoxBlur(3))
         # Save thumbnail to in-memory file as StringIO
         temp_image = BytesIO()
