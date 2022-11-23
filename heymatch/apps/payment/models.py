@@ -76,16 +76,14 @@ class AppleStoreValidatedReceipt(models.Model):
     objects = AppleStoreValidatedReceiptManager()
 
 
-PLATFORM_CHOICES = (
-    ("android", "android"),
-    ("ios", "ios"),
-)
-
-
 class UserPurchase(models.Model):
     """
     Stores validated receipt, and point or subscription purchased item info.
     """
+
+    class PlatformChoices(models.TextChoices):
+        ANDROID = "android"
+        IOS = "ios"
 
     id = models.UUIDField(
         primary_key=True, blank=False, null=False, editable=False, default=uuid4
@@ -98,7 +96,7 @@ class UserPurchase(models.Model):
         related_name="user_purchases",
     )
     platform = models.CharField(
-        null=False, blank=False, choices=PLATFORM_CHOICES, max_length=8
+        null=False, blank=False, choices=PlatformChoices.choices, max_length=8
     )
     play_store_receipt = models.ForeignKey(
         PlayStoreValidatedReceipt,
@@ -133,3 +131,21 @@ class UserPurchase(models.Model):
 
     # History
     history = HistoricalRecords()
+
+
+class UserPointConsumptionHistory(models.Model):
+    class ConsumedReasonChoice(models.TextChoices):
+        SEND_MATCH_REQUEST = "SEND_MATCH_REQUEST"
+
+    user = models.ForeignKey(
+        User,
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name="user_point_consumption_history",
+    )
+    consumed_point = models.IntegerField(blank=False, null=False)
+    consumed_reason = models.CharField(
+        blank=False, null=False, choices=ConsumedReasonChoice.choices, max_length=128
+    )
+    consumed_at = models.DateTimeField(auto_now_add=True)

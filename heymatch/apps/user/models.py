@@ -13,13 +13,6 @@ from .managers import ActiveUserManager, UserManager
 # from django.core.validators import MaxValueValidator, MinValueValidator
 # from birthday import BirthdayField
 
-GENDER_CHOICES = (
-    (0, "male"),
-    (1, "female"),
-    (2, "not specified"),
-)
-
-FREE_PASS_CHOICES = ((0, "one-day-pass"),)
 
 MAX_HEIGHT_CM = 195
 MIN_HEIGHT_CM = 155

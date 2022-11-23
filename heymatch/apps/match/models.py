@@ -4,15 +4,14 @@ from simple_history.models import HistoricalRecords
 
 from .managers import ActiveMatchRequestManager
 
-MATCH_REQUEST_CHOICES = (
-    ("WAITING", "WAITING"),
-    ("ACCEPTED", "ACCEPTED"),
-    ("REJECTED", "REJECTED"),
-    ("CANCELED", "CANCELED"),
-)
-
 
 class MatchRequest(models.Model):
+    class MatchRequestStatusChoices(models.TextChoices):
+        WAITING = "WAITING"
+        ACCEPTED = "ACCEPTED"
+        REJECTED = "REJECTED"
+        CANCELED = "CANCELED"
+
     sender_group = models.ForeignKey(
         "group.Group",
         blank=True,
@@ -28,8 +27,8 @@ class MatchRequest(models.Model):
         related_name="match_request_receiver_group",
     )
     status = models.CharField(
-        default=MATCH_REQUEST_CHOICES[0][0],
-        choices=MATCH_REQUEST_CHOICES,
+        default=MatchRequestStatusChoices.WAITING,
+        choices=MatchRequestStatusChoices.choices,
         max_length=48,
     )
 

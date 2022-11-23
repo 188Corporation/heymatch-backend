@@ -12,7 +12,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from heymatch.apps.group.models import Group
-from heymatch.apps.match.models import MATCH_REQUEST_CHOICES, MatchRequest
+from heymatch.apps.match.models import MatchRequest
+from heymatch.apps.payment.models import UserPointConsumptionHistory
 from heymatch.apps.user.models import User
 from heymatch.shared.exceptions import (
     GroupNotWithinSameHotplaceException,
@@ -116,6 +117,13 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         user.point_balance = user.point_balance - group.match_point
         user.save(update_fields=["point_balance"])
 
+        # Record ConsumptionHistory
+        UserPointConsumptionHistory.objects.create(
+            user=user,
+            consumed_point=group.match_point,
+            consumed_reason=UserPointConsumptionHistory.ConsumedReasonChoice.SEND_MATCH_REQUEST,
+        )
+
         # Create MatchRequest
         mr = self.create_match_request(
             sender_group=user.joined_group, receiver_group=group
@@ -137,7 +145,8 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         mr = self.get_match_request_obj(match_request_id=match_request_id)
         self.is_user_receiver_group(match_request=mr)
         self.check_match_request_status(
-            match_request=mr, target_status=MATCH_REQUEST_CHOICES[0][0]
+            match_request=mr,
+            target_status=MatchRequest.MatchRequestStatusChoices.WAITING,
         )  # WAITING
 
         # Create Stream channel for group leaders for both groups
@@ -155,7 +164,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         res = channel.query()
 
         # Update MatchRequest
-        mr.status = MATCH_REQUEST_CHOICES[1][0]  # ACCEPTED
+        mr.status = MatchRequest.MatchRequestStatusChoices.ACCEPTED  # ACCEPTED
         mr.stream_channel_id = res["channel"]["id"]
         mr.stream_channel_cid = res["channel"]["cid"]
         mr.stream_channel_type = res["channel"]["type"]
@@ -176,10 +185,11 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         mr = self.get_match_request_obj(match_request_id=match_request_id)
         self.is_user_receiver_group(match_request=mr)
         self.check_match_request_status(
-            match_request=mr, target_status=MATCH_REQUEST_CHOICES[0][0]
+            match_request=mr,
+            target_status=MatchRequest.MatchRequestStatusChoices.WAITING,
         )  # WAITING
 
-        mr.status = MATCH_REQUEST_CHOICES[2][0]  # REJECTED
+        mr.status = MatchRequest.MatchRequestStatusChoices.REJECTED  # REJECTED
         mr.save(update_fields=["status"])
         serializer = self.get_serializer(instance=mr)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -189,10 +199,11 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         mr = self.get_match_request_obj(match_request_id=match_request_id)
         self._is_user_sender_group(match_request=mr)
         self.check_match_request_status(
-            match_request=mr, target_status=MATCH_REQUEST_CHOICES[0][0]
+            match_request=mr,
+            target_status=MatchRequest.MatchRequestStatusChoices.WAITING,
         )  # WAITING
 
-        mr.status = MATCH_REQUEST_CHOICES[3][0]  # CANCELED
+        mr.status = MatchRequest.MatchRequestStatusChoices.CANCELED  # CANCELED
         mr.save(update_fields=["status"])
         serializer = self.get_serializer(instance=mr)
         return Response(serializer.data, status=status.HTTP_200_OK)

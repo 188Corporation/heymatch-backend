@@ -71,7 +71,7 @@ class ReceiptValidationViewSet(viewsets.ViewSet):
         all_items = list(chain(point_items, free_pass_items))
 
         # Validate receipt
-        if platform == "android":
+        if platform == UserPurchase.PlatformChoices.ANDROID:
             receipt = json.loads(receipt_str)
             validated_result = self.validate_android_receipt(receipt=receipt)
             try:
@@ -81,7 +81,7 @@ class ReceiptValidationViewSet(viewsets.ViewSet):
             except IntegrityError:
                 raise ReceiptAlreadyProcessedException()
             purchased_item = self.find_item(validated_receipt.productId, all_items)
-        elif platform == "ios":
+        elif platform == UserPurchase.PlatformChoices.IOS:
             validated_result = self.validate_ios_receipt(receipt=receipt_str)
             try:
                 validated_receipt = AppleStoreValidatedReceipt.objects.create(
