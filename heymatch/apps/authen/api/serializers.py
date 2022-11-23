@@ -10,7 +10,6 @@ from phonenumber_field.phonenumber import to_python
 from rest_framework import exceptions, serializers
 
 from heymatch.apps.user.models import DeleteScheduledUser
-from heymatch.shared.exceptions import UserAlreadyScheduledDeletionException
 
 User = get_user_model()
 stream = settings.STREAM_CLIENT
@@ -78,7 +77,8 @@ class UserLoginByPhoneNumberSerializer(LoginSerializer):
                 Q(user=user) & Q(delete_processed=False)
             )
             if qs.exists():
-                raise UserAlreadyScheduledDeletionException()
+                pass
+                # raise UserAlreadyScheduledDeletionException()
         else:
             msg = "Unable to log in with provided credentials."
             raise exceptions.ValidationError(detail=str(msg))
