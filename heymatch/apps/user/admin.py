@@ -116,7 +116,7 @@ class DeleteScheduledUserAdmin(admin.ModelAdmin):
         "created_at",
         "delete_schedule_at",
         "delete_reason",
-        "delete_processed",
+        "status",
     ]
     search_fields = [
         "id",
@@ -124,7 +124,7 @@ class DeleteScheduledUserAdmin(admin.ModelAdmin):
         "created_at",
         "delete_schedule_at",
         "delete_reason",
-        "delete_processed",
+        "status",
     ]
 
 

@@ -99,6 +99,11 @@ def delete_schedule_default_time():
 
 
 class DeleteScheduledUser(models.Model):
+    class DeleteStatusChoices(models.TextChoices):
+        WAITING = "WAITING"
+        COMPLETED = "COMPLETED"
+        CANCELED = "CANCELED"
+
     user = models.ForeignKey(
         "user.User",
         blank=False,
@@ -110,7 +115,11 @@ class DeleteScheduledUser(models.Model):
     delete_reason = models.TextField(
         blank=True, null=True, max_length=500, default=None
     )
-    delete_processed = models.BooleanField(default=False)
+    status = models.CharField(
+        max_length=24,
+        choices=DeleteStatusChoices.choices,
+        default=DeleteStatusChoices.WAITING,
+    )
 
 
 class AppInfo(models.Model):

@@ -32,7 +32,8 @@ class IsUserActive(permissions.BasePermission):
         if request.user.is_deleted:
             raise UserDeletedException()
         qs = DeleteScheduledUser.objects.filter(
-            Q(user=request.user) & Q(delete_processed=False)
+            Q(user=request.user)
+            & Q(status=DeleteScheduledUser.DeleteStatusChoices.WAITING)
         )
         if qs.exists():
             raise UserAlreadyScheduledDeletionException()

@@ -64,7 +64,8 @@ def delete_scheduled_users():
 
     logger.info("[1] Get users that are scheduled for deletion")
     ds_users = DeleteScheduledUser.objects.filter(
-        Q(delete_processed=False) & Q(delete_schedule_at__lt=timezone.now())
+        Q(status=DeleteScheduledUser.DeleteStatusChoices.WAITING)
+        & Q(delete_schedule_at__lt=timezone.now())
     )
     logger.info(f"[1] Target users to be deleted: {ds_users}")
 
@@ -110,6 +111,6 @@ def delete_scheduled_users():
         user.save(update_fields=["joined_group", "is_deleted"])
 
         # Mark DeleteScheduledUser as processed
-        logger.info("[2.5] Mark DeleteScheduledUser as `processed`")
-        dsu.delete_processed = True
-        dsu.save(update_fields=["delete_processed"])
+        logger.info("[2.5] Mark DeleteScheduledUser as `completed`")
+        dsu.status = DeleteScheduledUser.DeleteStatusChoices.COMPLETED
+        dsu.save(update_fields=["status"])

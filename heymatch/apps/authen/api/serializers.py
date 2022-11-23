@@ -40,10 +40,12 @@ class UserDetailByPhoneNumberSerializer(UserDetailsSerializer):
 
     def get_schedule_delete_canceled(self, obj):
         # Is user under scheduled deletion?
-        qs = DeleteScheduledUser.objects.filter(Q(user=obj) & Q(delete_processed=False))
+        qs = DeleteScheduledUser.objects.filter(
+            Q(user=obj) & Q(status=DeleteScheduledUser.DeleteStatusChoices.WAITING)
+        )
         if qs.exists():
-            #  if so - cancel the deletion by deleting DeleteScheduledUser
-            qs.delete()
+            #  if so - cancel the deletion
+            qs.update(status=DeleteScheduledUser.DeleteStatusChoices.CANCELED)
             return True
         return False
 
