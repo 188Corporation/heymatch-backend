@@ -96,3 +96,11 @@ REST_FRAMEWORK = {
         ],
     },
 }
+
+# OneSignal
+# - override base.py setting
+ONE_SIGNAL_CLIENT = OneSignalClient(  # noqa: F405
+    app_id=env("ONE_SIGNAL_APP_ID"),
+    rest_api_key=env("ONE_SIGNAL_REST_API_KEY"),
+    is_local=True,
+)

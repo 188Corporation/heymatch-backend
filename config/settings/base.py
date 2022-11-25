@@ -9,6 +9,8 @@ import stream_chat
 from celery.schedules import crontab
 from inapppy import AppStoreValidator, GooglePlayVerifier
 
+from heymatch.shared.clients import OneSignalClient
+
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # heymatch/
 APPS_DIR = ROOT_DIR / "heymatch"
@@ -470,3 +472,9 @@ SIMPLE_HISTORY_REVERT_DISABLED = True
 
 # User initial point
 USER_INITIAL_POINT = 10
+
+# OneSignal
+ONE_SIGNAL_CLIENT = OneSignalClient(
+    app_id=env("ONE_SIGNAL_APP_ID"),
+    rest_api_key=env("ONE_SIGNAL_REST_API_KEY"),
+)

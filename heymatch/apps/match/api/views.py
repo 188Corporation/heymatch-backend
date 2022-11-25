@@ -32,6 +32,7 @@ from .serializers import (
 )
 
 stream = settings.STREAM_CLIENT
+onesignal_client = settings.ONE_SIGNAL_CLIENT
 
 
 class MatchRequestViewSet(viewsets.ModelViewSet):
@@ -128,6 +129,15 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         mr = self.create_match_request(
             sender_group=user.joined_group, receiver_group=group
         )
+
+        # Send push notification
+        receiver_user_id = User.active_objects.get(joined_group=group).id
+        onesignal_client.send_notification_to_specific_users(
+            message=f"'{user.joined_group.title}' 그룹이 매칭요청을 보냈어요! 수락하면 바로 채팅할 수 있어요 😀",
+            user_ids=[receiver_user_id],
+        )
+        # TODO: handle OneSignal response
+
         serializer = ReceivedMatchRequestSerializer(instance=mr)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
@@ -149,7 +159,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
             target_status=MatchRequest.MatchRequestStatusChoices.WAITING,
         )  # WAITING
 
-        # Create Stream channel for group leaders for both groups
+        # Create Stream channel for both groups
         sender_group = mr.sender_group
         sender_user = User.active_objects.get(joined_group=sender_group)
         channel = stream.channel(
@@ -177,6 +187,13 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
             ]
         )
 
+        # Send push notification
+        onesignal_client.send_notification_to_specific_users(
+            message=f"[{request.user.joined_group.title}] 그룹이 매칭요청을 수락했어요!!🎉 지금 바로 메세지를 보내봐요 😆",
+            user_ids=[sender_user.id],
+        )
+        # TODO: handle OneSignal response
+
         serializer = self.get_serializer(instance=mr)
         return Response(serializer.data, status.HTTP_200_OK)
 
@@ -191,6 +208,15 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
 
         mr.status = MatchRequest.MatchRequestStatusChoices.REJECTED  # REJECTED
         mr.save(update_fields=["status"])
+
+        # Send push notification
+        sender_group = mr.sender_group
+        onesignal_client.send_notification_to_specific_users(
+            message=f"[{request.user.joined_group.title}] 그룹이 매칭요청을 거절했어요..😥",
+            user_ids=[sender_group.id],
+        )
+        # TODO: handle OneSignal response
+
         serializer = self.get_serializer(instance=mr)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

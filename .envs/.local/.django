@@ -44,3 +44,8 @@ GOOGLE_PLAY_BUNDLE_ID=com.co188.heythere
 GOOGLE_PLAY_CONSOLE_SA_PATH=/app/.envs/.local/play_console_sa.json
 # Apple App Store
 APP_STORE_BUNDLE_ID=com.co188.heythere
+
+# OneSignal
+# ------------------------------------------------------------------------------
+ONE_SIGNAL_APP_ID=fake-one-signal-app-id
+ONE_SIGNAL_REST_API_KEY=fake-one-signal-rest-api-key
