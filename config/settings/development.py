@@ -155,13 +155,13 @@ LOGGING = {
             "handlers": ["console"],
             "propagate": False,
         },
-        "requestlogs": {
-            "level": "INFO",
-            "handlers": [
-                "requestlogs_to_file"
-            ],  # if you want log into file, use "requestlogs_to_file"
-            "propagate": False,
-        },
+        # "requestlogs": {
+        #     "level": "DEBUG",
+        #     "handlers": [
+        #         "console"
+        #     ],  # if you want log into file, use "requestlogs_to_file"
+        #     "propagate": False,
+        # },
         # Errors logged by the SDK itself
         "sentry_sdk": {"level": "ERROR", "handlers": ["console"], "propagate": False},
         "django.security.DisallowedHost": {

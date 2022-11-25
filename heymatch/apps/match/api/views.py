@@ -1,3 +1,4 @@
+import logging
 from typing import Any
 
 from django.conf import settings
@@ -33,6 +34,8 @@ from .serializers import (
 
 stream = settings.STREAM_CLIENT
 onesignal_client = settings.ONE_SIGNAL_CLIENT
+
+logger = logging.getLogger(__name__)
 
 
 class MatchRequestViewSet(viewsets.ModelViewSet):
@@ -131,11 +134,13 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         )
 
         # Send push notification
+        logger.info("create MR")
         receiver_user_id = User.active_objects.get(joined_group=group).id
-        onesignal_client.send_notification_to_specific_users(
+        res = onesignal_client.send_notification_to_specific_users(
             message=f"'{user.joined_group.title}' 그룹이 매칭요청을 보냈어요! 수락하면 바로 채팅할 수 있어요 😀",
             user_ids=[receiver_user_id],
         )
+        logger.info(f"nono: {res}")
         # TODO: handle OneSignal response
 
         serializer = ReceivedMatchRequestSerializer(instance=mr)
@@ -188,10 +193,12 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         )
 
         # Send push notification
-        onesignal_client.send_notification_to_specific_users(
+        logger.info("accept MR")
+        res = onesignal_client.send_notification_to_specific_users(
             message=f"[{request.user.joined_group.title}] 그룹이 매칭요청을 수락했어요!!🎉 지금 바로 메세지를 보내봐요 😆",
             user_ids=[sender_user.id],
         )
+        logger.info(f"nono: {res}")
         # TODO: handle OneSignal response
 
         serializer = self.get_serializer(instance=mr)
@@ -211,10 +218,12 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
 
         # Send push notification
         sender_group = mr.sender_group
-        onesignal_client.send_notification_to_specific_users(
+        logger.info("deny MR")
+        res = onesignal_client.send_notification_to_specific_users(
             message=f"[{request.user.joined_group.title}] 그룹이 매칭요청을 거절했어요..😥",
             user_ids=[sender_group.id],
         )
+        logger.info(f"nono: {res}")
         # TODO: handle OneSignal response
 
         serializer = self.get_serializer(instance=mr)
