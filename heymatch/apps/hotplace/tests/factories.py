@@ -70,6 +70,24 @@ RANDOM_HOTPLACE_INFO = {
     #         GeoPt(37.4630372, 126.9847772),
     #     ],
     # },
+    "대구 동성로": {
+        "zone_center_geoinfo": GeoPt(35.8699661, 128.5957445),
+        "zone_boundary_geoinfos": [
+            GeoPt(35.8761561, 128.5879969),
+            GeoPt(35.8738262, 128.5876536),
+            GeoPt(35.8699314, 128.5872673),
+            GeoPt(35.8660015, 128.5866236),
+            GeoPt(35.8662798, 128.5878252),
+            GeoPt(35.8642626, 128.5982966),
+            GeoPt(35.8633583, 128.5994553),
+            GeoPt(35.8628019, 128.6027598),
+            GeoPt(35.8705988, 128.6045099),
+            GeoPt(35.872157, 128.604691),
+            GeoPt(35.8736871, 128.6031031),
+            GeoPt(35.8765386, 128.5888981),
+            GeoPt(35.8761561, 128.5879969),
+        ],
+    },
     "서울 테스트": {
         "zone_center_geoinfo": GeoPt(37.4940738, 126.9840068),
         "zone_boundary_geoinfos": [
@@ -86,7 +104,7 @@ RANDOM_HOTPLACE_INFO = {
             GeoPt(37.6252489, 126.8260275),
             GeoPt(37.5822636, 126.783446),
         ],
-    }
+    },
 }
 
 RANDOM_HOTPLACE_NAMES: list = list(RANDOM_HOTPLACE_INFO.keys())
