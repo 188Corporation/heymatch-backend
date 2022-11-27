@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from heymatch.apps.group.api.serializers import RestrictedGroupProfileSerializer
+from heymatch.apps.group.api.serializers import FullGroupProfileSerializer
 from heymatch.shared.permissions import IsUserActive, IsUserJoinedGroup
 
 User = get_user_model()
@@ -25,7 +25,7 @@ class StreamChatViewSet(viewsets.ModelViewSet):
         IsUserActive,
         IsUserJoinedGroup,
     ]
-    serializer_class = RestrictedGroupProfileSerializer
+    serializer_class = FullGroupProfileSerializer
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """
@@ -51,7 +51,7 @@ class StreamChatViewSet(viewsets.ModelViewSet):
                 "members": {"$in": [str(request.user.id)]},
                 "disabled": False,
             },
-            sort={"last_message_at": 1},
+            sort={"last_message_at": -1},
         )
         # parse raw data
         serializer_data = []
