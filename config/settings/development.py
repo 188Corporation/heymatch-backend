@@ -148,10 +148,10 @@ LOGGING = {
             "filename": "/tmp/requestlogs.log",
         },
     },
-    "root": {"level": "INFO", "handlers": ["console"]},
+    "root": {"level": "DEBUG", "handlers": ["console"]},
     "loggers": {
         "django.db.backends": {
-            "level": "ERROR",
+            "level": "INFO",
             "handlers": ["console"],
             "propagate": False,
         },
