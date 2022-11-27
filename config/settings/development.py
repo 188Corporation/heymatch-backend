@@ -138,7 +138,7 @@ LOGGING = {
     },
     "handlers": {
         "console": {
-            "level": "DEBUG",
+            "level": "INFO",
             "class": "logging.StreamHandler",
             "formatter": "verbose",
         },
@@ -148,10 +148,10 @@ LOGGING = {
             "filename": "/tmp/requestlogs.log",
         },
     },
-    "root": {"level": "DEBUG", "handlers": ["console"]},
+    "root": {"level": "INFO", "handlers": ["console"]},
     "loggers": {
         "django.db.backends": {
-            "level": "INFO",
+            "level": "ERROR",
             "handlers": ["console"],
             "propagate": False,
         },
