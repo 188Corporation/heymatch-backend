@@ -77,9 +77,11 @@ class UserLoginByPhoneNumberSerializer(LoginSerializer):
         return user
 
     def validate(self, attrs):
-        # first verify SMS
-        serializer = SMSVerificationSerializer(data=attrs)
-        serializer.is_valid(raise_exception=True)
+        # Bypass backdoor for App store review
+        if not (attrs.get("phone_number", None) == settings.BACKDOOR_PHONE_NUMBER):
+            # verify SMS
+            serializer = SMSVerificationSerializer(data=attrs)
+            serializer.is_valid(raise_exception=True)
 
         # process login or registration
         phone_number = attrs.get("phone_number")

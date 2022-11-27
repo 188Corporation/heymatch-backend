@@ -478,3 +478,8 @@ ONE_SIGNAL_CLIENT = OneSignalClient(
     app_id=env("ONE_SIGNAL_APP_ID"),
     rest_api_key=env("ONE_SIGNAL_REST_API_KEY"),
 )
+
+# Backdoor information
+BACKDOOR_PHONE_NUMBER = "00000000000"
+BACKDOOR_SECURITY_CODE = "509793"
+BACKDOOR_SESSION_TOKEN = "heymatch-this-is-session-token-for-backdoor-user"
