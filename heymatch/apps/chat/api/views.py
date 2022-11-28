@@ -49,7 +49,7 @@ class StreamChatViewSet(viewsets.ModelViewSet):
         channels = stream.query_channels(
             filter_conditions={
                 "members": {"$in": [str(request.user.id)]},
-                "disabled": False,
+                # "disabled": False,
             },
             sort={"last_message_at": -1},
         )
