@@ -100,10 +100,13 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
             raise GroupNotWithinSameHotplaceException()
 
         # Check #3
-        mr_qs = MatchRequest.active_objects.select_related().filter(
+        mr1_qs = MatchRequest.active_objects.select_related().filter(
             sender_group_id=user.joined_group.id, receiver_group_id=group_id
         )
-        if mr_qs.exists():
+        mr2_qs = MatchRequest.active_objects.select_related().filter(
+            sender_group_id=group_id, receiver_group_id=user.joined_group.id
+        )
+        if mr1_qs.exists() or mr2_qs.exists():
             raise MatchRequestAlreadySubmittedException()
 
         # Check #4
@@ -136,7 +139,8 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         # Send push notification
         receiver_user = User.active_objects.get(joined_group=group)
         res = onesignal_client.send_notification_to_specific_users(
-            message=f"'{user.joined_group.title}' 그룹이 매칭요청을 보냈어요! 수락하면 바로 채팅할 수 있어요 😀",
+            title="매칭 요청이 왔어요!",
+            content=f"그룹 [{user.joined_group.title}] 으로부터 매칭요청을 받았어요! 수락하면 바로 채팅할 수 있어요 😀",
             user_ids=[str(receiver_user.id)],
         )
         logger.info(f"OneSignal response: {res}")
@@ -193,7 +197,8 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
 
         # Send push notification
         res = onesignal_client.send_notification_to_specific_users(
-            message=f"[{request.user.joined_group.title}] 그룹이 매칭요청을 수락했어요!!🎉 지금 바로 메세지를 보내봐요 😆",
+            title="매칭 성공!!",
+            content=f"[{request.user.joined_group.title}] 그룹이 매칭요청을 수락했어요!! 지금 바로 메세지를 보내봐요 🎉",
             user_ids=[str(sender_user.id)],
         )
         logger.info(f"OneSignal response: {res}")
@@ -218,7 +223,8 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         sender_group = mr.sender_group
         sender_user = User.active_objects.get(joined_group=sender_group)
         res = onesignal_client.send_notification_to_specific_users(
-            message=f"[{request.user.joined_group.title}] 그룹이 매칭요청을 거절했어요..😥",
+            title="아쉬워요..",
+            message=f"[{request.user.joined_group.title}] 그룹이 매칭요청을 거절했어요..😥 다른 그룹을 찾아봐요!",
             user_ids=[str(sender_user.id)],
         )
         logger.info(f"OneSignal response: {res}")

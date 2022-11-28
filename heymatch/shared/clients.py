@@ -18,7 +18,7 @@ class OneSignalClient:
         self.is_local = is_local
 
     def send_notification_to_specific_users(
-        self, message: str, user_ids: List[str]
+        self, title: str, content: str, user_ids: List[str]
     ) -> dict:
         if self.is_local:
             return self.local_response()
@@ -29,7 +29,8 @@ class OneSignalClient:
             "content-type": "application/json",
         }
         payload = {
-            "contents": {"en": "HeyMatch", "ko": message},  # en: is required
+            "title": {"en": "HeyMatch", "ko": title},
+            "contents": {"en": "HeyMatch", "ko": content},  # en: is required
             "include_external_user_ids": user_ids,
             "channel_for_external_user_ids": "push",
             "app_id": self.app_id,
