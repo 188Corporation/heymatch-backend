@@ -89,7 +89,9 @@ def delete_scheduled_users():
                 "members": {"$in": [str(user.id)]},
             }
         )
+        print("CH: ", channels)
         cids = [ch["channel"]["cid"] for ch in channels["channels"]]
+        print("CIDS: ", cids)
         res = stream.delete_channels(cids=cids)
         for _ in range(20):
             if res["status"] == "completed":
