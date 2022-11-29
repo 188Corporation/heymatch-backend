@@ -1,5 +1,4 @@
 import pathlib
-import random
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -9,19 +8,16 @@ from django.db.utils import IntegrityError
 from factory.django import ImageField
 from phone_verify.models import SMSVerification
 
-from heymatch.apps.group.models import Group
 from heymatch.apps.group.tests.factories import (
     ActiveGroupFactory,
     GroupProfileImageFactory,
     profile_image_filepath,
 )
-from heymatch.apps.hotplace.models import HotPlace
 from heymatch.apps.hotplace.tests.factories import (
     RANDOM_HOTPLACE_INFO,
     RANDOM_HOTPLACE_NAMES,
     HotPlaceFactory,
 )
-from heymatch.apps.match.tests.factories import MatchRequestFactory
 from heymatch.apps.payment.models import PointItem
 from heymatch.apps.user.models import AppInfo
 from heymatch.apps.user.tests.factories import ActiveUserFactory
@@ -89,10 +85,6 @@ class Command(BaseCommand):
         if migrate_all or input("Create Hotplace+Groups? [y/N]") == "y":
             self.generate_hotplace_groups()
 
-        # -------------- Developer setup -------------- #
-        if migrate_all or input("Create Developer? [y/N]") == "y":
-            self.generate_developer_users()
-
         # -------------- Payment setup -------------- #
         if migrate_all or input("Create Payments? [y/N]") == "y":
             self.generate_payment_items()
@@ -130,60 +122,6 @@ class Command(BaseCommand):
         )
         self.stdout.write(
             self.style.SUCCESS("Successfully set up data for [Superuser]")
-        )
-
-    def generate_developer_users(self) -> None:
-        developer_phone_numbers = ["+821032433994"]
-
-        for phone_number in developer_phone_numbers:
-            try:
-                developer = User.active_objects.create(  # user 1
-                    phone_number=phone_number
-                )
-            except IntegrityError:
-                continue
-
-            SMSVerification.objects.get_or_create(  # sms for user 1
-                phone_number=phone_number,
-                defaults={
-                    "security_code": "123456",
-                    "session_token": "sessiontoken1",
-                    "is_verified": True,
-                },
-            )
-            # Create Group
-            geopt = generate_rand_geoopt_within_boundary(
-                RANDOM_HOTPLACE_INFO[RANDOM_HOTPLACE_NAMES[0]]["zone_boundary_geoinfos"]
-            )
-            hotplace = HotPlace.objects.all().first()
-            group = ActiveGroupFactory.create(
-                hotplace=hotplace,
-                gps_geoinfo=geopt,
-            )
-            # Create group profile image
-            GroupProfileImageFactory.create(
-                group=group,
-                image=ImageField(
-                    from_path=f"{pathlib.Path().resolve()}/heymatch/data/{random.choice(profile_image_filepath)}"
-                ),
-            )
-            developer.joined_group = group
-            developer.save()
-
-            # Create MatchRequest
-            first_group = Group.objects.all().filter(hotplace=hotplace)[0]
-            last_group = Group.objects.all().filter(hotplace=hotplace)[1]
-            MatchRequestFactory.create(
-                sender_group=group,
-                receiver_group=first_group,
-            )
-            MatchRequestFactory.create(
-                sender_group=last_group,
-                receiver_group=group,
-            )
-
-        self.stdout.write(
-            self.style.SUCCESS("Successfully set up data for [Developer]")
         )
 
     def generate_normal_users(self) -> None:

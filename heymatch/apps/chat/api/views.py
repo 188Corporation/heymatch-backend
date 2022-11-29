@@ -72,7 +72,7 @@ class StreamChatViewSet(viewsets.ModelViewSet):
                 continue
 
             # find joined group (can be both active or inactive)
-            sc = StreamChannel.objects.get(cid=channel["channel"]["cid"])
+            sc = StreamChannel.objects.filter(cid=channel["channel"]["cid"]).first()
             target_group_id = sc.joined_groups[target_user_id]
             target_group = Group.objects.get(id=target_group_id)
 
