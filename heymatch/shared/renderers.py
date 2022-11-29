@@ -49,15 +49,12 @@ class ErrorHandlerMiddleware:
             status_msg = str(exception.default_detail)
 
         # Sentry logging
-        strace = traceback.format_exc(exception)
-        logger.error(exception.message)
-        logger.error(strace)
+        logger.error(traceback.format_exc())
 
         return JsonResponse(
             data={
                 "status": "error",
                 "code": status_code,
-                "data": str(exception),
                 "message": status_msg,
             },
             status=status_code,
