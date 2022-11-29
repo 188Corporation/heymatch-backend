@@ -341,7 +341,7 @@ REST_FRAMEWORK = {
         "rest_framework.throttling.UserRateThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": {
-        "anon": "100/day",
+        "anon": "1000/day",
         "user": "1000/min",
     },
 }
@@ -416,7 +416,6 @@ SIMPLE_JWT = {
 DRF_API_LOGGER_DATABASE = True  # Default to False
 DRF_LOGGER_QUEUE_MAX_SIZE = 1  # Default to 50 if not specified.
 DRF_LOGGER_INTERVAL = 1  # In Seconds, Default to 10 seconds if not specified.
-
 
 # swagger and debug toolbar
 # ------------------------------------------------------------------------------

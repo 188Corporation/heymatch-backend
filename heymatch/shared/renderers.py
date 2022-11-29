@@ -1,5 +1,10 @@
+import logging
+import traceback
+
 from django.http import JsonResponse
 from rest_framework.renderers import JSONRenderer
+
+logger = logging.getLogger(__name__)
 
 
 class JSONResponseRenderer(JSONRenderer):
@@ -42,11 +47,17 @@ class ErrorHandlerMiddleware:
             status_code = int(exception.status_code)
         if hasattr(exception, "default_detail"):
             status_msg = str(exception.default_detail)
+
+        # Sentry logging
+        strace = traceback.format_exc(exception)
+        logger.error(exception.message)
+        logger.error(strace)
+
         return JsonResponse(
             data={
                 "status": "error",
                 "code": status_code,
-                "data": str(exception),
+                "data": exception.message,
                 "message": status_msg,
             },
             status=status_code,
