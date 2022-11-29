@@ -1,5 +1,4 @@
 import logging
-from time import sleep
 
 from celery import shared_task
 from django.conf import settings
@@ -91,11 +90,7 @@ def delete_scheduled_users():
         )
         cids = [ch["channel"]["cid"] for ch in channels["channels"]]
         if len(cids) > 0:
-            res = stream.delete_channels(cids=cids)
-            for _ in range(20):
-                if res["status"] == "completed":
-                    break
-                sleep(1)
+            stream.delete_channels(cids=cids)
 
         # Mark user as deleted
         logger.info("[2.4] Mark user as `deleted`")
