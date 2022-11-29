@@ -141,31 +141,31 @@ LOGGING = {
             "class": "logging.StreamHandler",
             "formatter": "verbose",
         },
-        "requestlogs_to_file": {
+        "to_file": {
             "level": "INFO",
-            "class": "logging.FileHandler",
-            "filename": "/tmp/requestlogs.log",
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "filename": "/var/log/django.log",
+            "when": "midnight",
+            "formatter": "verbose",
         },
     },
-    "root": {"level": "INFO", "handlers": ["console"]},
+    "root": {"level": "INFO", "handlers": ["to_file"]},
     "loggers": {
         "django.db.backends": {
             "level": "ERROR",
-            "handlers": ["console"],
+            "handlers": ["to_file"],
             "propagate": False,
         },
-        # "requestlogs": {
-        #     "level": "INFO",
-        #     "handlers": [
-        #         "requestlogs_to_file"
-        #     ],  # if you want log into file, use "requestlogs_to_file"
-        #     "propagate": False,
-        # },
+        "requestlogs": {
+            "level": "INFO",
+            "handlers": ["to_file"],
+            "propagate": False,
+        },
         # Errors logged by the SDK itself
         "sentry_sdk": {"level": "ERROR", "handlers": ["console"], "propagate": False},
         "django.security.DisallowedHost": {
             "level": "ERROR",
-            "handlers": ["console"],
+            "handlers": ["to_file"],
             "propagate": False,
         },
     },
