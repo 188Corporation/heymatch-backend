@@ -91,6 +91,7 @@ THIRD_PARTY_APPS = [
     "ordered_model",
     "django_admin_logs",
     "simple_history",
+    "drf_api_logger",
 ]
 
 LOCAL_APPS = [
@@ -334,7 +335,7 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_RENDERER_CLASSES": ("heymatch.shared.renderers.JSONResponseRenderer",),
-    "EXCEPTION_HANDLER": "requestlogs.views.exception_handler",
+    # "EXCEPTION_HANDLER": "heymatch.shared.renderers.exception_handler",
     "DEFAULT_THROTTLE_CLASSES": [
         "rest_framework.throttling.AnonRateThrottle",
         "rest_framework.throttling.UserRateThrottle",
@@ -409,6 +410,13 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": datetime.timedelta(days=30 * 6),  # 6 months
 }
+
+# DRF-API-Logger
+# ------------------------------------------------------------------------------
+DRF_API_LOGGER_DATABASE = True  # Default to False
+DRF_LOGGER_QUEUE_MAX_SIZE = 1  # Default to 50 if not specified.
+DRF_LOGGER_INTERVAL = 1  # In Seconds, Default to 10 seconds if not specified.
+
 
 # swagger and debug toolbar
 # ------------------------------------------------------------------------------

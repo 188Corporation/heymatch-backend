@@ -10,7 +10,7 @@ from .base import env
 
 # GENERAL
 # ------------------------------------------------------------------------------
-DEBUG = True
+DEBUG = False
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
@@ -61,6 +61,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
     "heymatch.shared.renderers.ErrorHandlerMiddleware",
+    "drf_api_logger.middleware.api_logger_middleware.APILoggerMiddleware",
 ]
 
 # SECURITY
@@ -186,7 +187,7 @@ sentry_sdk.init(
     dsn=SENTRY_DSN,
     integrations=integrations,
     environment=env("SENTRY_ENVIRONMENT", default="development"),
-    traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0.0),
+    traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=1.0),
     # If you wish to associate users to errors (assuming you are using
     # django.contrib.auth) you may enable sending PII data.
     send_default_pii=True,
@@ -194,3 +195,9 @@ sentry_sdk.init(
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+# DRF-API-Logger
+# ------------------------------------------------------------------------------
+DRF_API_LOGGER_DATABASE = True  # Default to False
+DRF_LOGGER_QUEUE_MAX_SIZE = 50  # Default to 50 if not specified.
+DRF_LOGGER_INTERVAL = 10  # In Seconds, Default to 10 seconds if not specified.
