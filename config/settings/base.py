@@ -244,20 +244,15 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "verbose": {
-            "format": "%(levelname)s %(asctime)s %(module)s "
-            "%(process)d %(thread)d %(message)s"
-        }
+            "format": "| %(levelname)s | %(asctime)s | %(filename)s | %(funcName)s | "
+            "%(process)d | %(thread)d | Message: %(message)s"
+        },
     },
     "handlers": {
         "console": {
             "level": "DEBUG",
             "class": "logging.StreamHandler",
             "formatter": "verbose",
-        },
-        "requestlogs_to_file": {
-            "level": "DEBUG",
-            "class": "logging.FileHandler",
-            "filename": "/tmp/requestlogs.log",
         },
     },
     "loggers": {
@@ -268,9 +263,7 @@ LOGGING = {
         },
         "requestlogs": {
             "level": "DEBUG",
-            "handlers": [
-                "console"
-            ],  # if you want log into file, use "requestlogs_to_file"
+            "handlers": ["console"],
             "propagate": False,
         },
         "root": {"level": "INFO", "handlers": ["console"]},

@@ -131,9 +131,9 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "verbose": {
-            "format": "%(levelname)s %(asctime)s %(module)s "
-            "%(process)d %(thread)d %(message)s"
-        }
+            "format": "| %(levelname)s | %(asctime)s | %(filename)s | %(funcName)s | "
+            "%(process)d | %(thread)d | Message: %(message)s"
+        },
     },
     "handlers": {
         "console": {
@@ -144,7 +144,8 @@ LOGGING = {
         "to_file": {
             "level": "INFO",
             "class": "logging.handlers.TimedRotatingFileHandler",
-            "filename": "/var/log/django.log",
+            "filename": "/tmp/log/heymatch/django.log",
+            "interval": 1,
             "when": "midnight",
             "formatter": "verbose",
         },
