@@ -2,6 +2,7 @@ version: '3'
 
 volumes:
   django_static_volume:
+  django_log_volume:
 
 services:
   django: &django
@@ -14,6 +15,7 @@ services:
     volumes:
       - .:/app:z
       - django_static_volume:/app/staticfiles
+      - django_log_volume:/var/log
     env_file:
       - ./.envs/.production/.django
       - ./.envs/.production/.postgres
