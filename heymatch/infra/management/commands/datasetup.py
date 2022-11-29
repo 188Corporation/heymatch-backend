@@ -1,6 +1,7 @@
 import pathlib
 import random
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core import management
 from django.core.management.base import BaseCommand
@@ -106,7 +107,9 @@ class Command(BaseCommand):
     def generate_superuser(self) -> None:
         try:
             User.objects.create_superuser(  # superuser
-                username="admin", phone_number="+821000000000", password="1234"
+                username=settings.DJANGO_ADMIN_ID,
+                phone_number="+821000000000",
+                password=settings.DJANGO_ADMIN_PASSWORD,
             )
             # Register Stream token
             # stream.upsert_user({"id": str(u.id), "role": "user"})
