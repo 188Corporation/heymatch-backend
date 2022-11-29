@@ -89,14 +89,13 @@ def delete_scheduled_users():
                 "members": {"$in": [str(user.id)]},
             }
         )
-        print("CH: ", channels)
         cids = [ch["channel"]["cid"] for ch in channels["channels"]]
-        print("CIDS: ", cids)
-        res = stream.delete_channels(cids=cids)
-        for _ in range(20):
-            if res["status"] == "completed":
-                break
-            sleep(1)
+        if len(cids) > 0:
+            res = stream.delete_channels(cids=cids)
+            for _ in range(20):
+                if res["status"] == "completed":
+                    break
+                sleep(1)
 
         # Mark user as deleted
         logger.info("[2.4] Mark user as `deleted`")
