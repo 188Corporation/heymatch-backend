@@ -12,6 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from heymatch.apps.chat.models import StreamChannel
 from heymatch.apps.group.models import Group
 from heymatch.apps.match.models import MatchRequest
 from heymatch.apps.payment.models import UserPointConsumptionHistory
@@ -193,6 +194,15 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
                 "stream_channel_cid",
                 "stream_channel_type",
             ]
+        )
+
+        # Save StreamChannel
+        StreamChannel.objects.create(
+            cid=res["channel"]["cid"],
+            joined_groups={
+                str(request.user.id): str(request.user.joined_group.id),
+                str(sender_user.id): str(sender_group.id),
+            },
         )
 
         # Send push notification

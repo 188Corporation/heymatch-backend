@@ -2,13 +2,17 @@ from typing import Any
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from heymatch.apps.chat.models import StreamChannel
 from heymatch.apps.group.api.serializers import FullGroupProfileSerializer
-from heymatch.shared.permissions import IsUserActive, IsUserJoinedGroup
+from heymatch.apps.group.models import Group
+from heymatch.shared.permissions import IsUserActive
 
 User = get_user_model()
 stream = settings.STREAM_CLIENT
@@ -23,7 +27,6 @@ class StreamChatViewSet(viewsets.ModelViewSet):
     permission_classes = [
         IsAuthenticated,
         IsUserActive,
-        IsUserJoinedGroup,
     ]
     serializer_class = FullGroupProfileSerializer
 
@@ -49,7 +52,6 @@ class StreamChatViewSet(viewsets.ModelViewSet):
         channels = stream.query_channels(
             filter_conditions={
                 "members": {"$in": [str(request.user.id)]},
-                # "disabled": False,
             },
             sort={"last_message_at": -1},
         )
@@ -68,11 +70,12 @@ class StreamChatViewSet(viewsets.ModelViewSet):
                     target_user_id = str(member["user_id"])
             if not target_user_id:
                 continue
-            # find joined group
-            target_user = User.objects.get(id=target_user_id)
-            target_group = target_user.joined_group
-            if not target_group:
-                continue
+
+            # find joined group (can be both active or inactive)
+            sc = StreamChannel.objects.get(cid=channel["channel"]["cid"])
+            target_group_id = sc.joined_groups[target_user_id]
+            target_group = Group.objects.get(id=target_group_id)
+
             # check unread or read
             for read in reads:
                 if read["user"]["id"] == str(request.user.id):
@@ -97,3 +100,13 @@ class StreamChatViewSet(viewsets.ModelViewSet):
             # serialize
             serializer_data.append(fresh_data)
         return Response(data=serializer_data, status=status.HTTP_200_OK)
+
+    def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        # check if Payload's cid is user's or not
+        sc = get_object_or_404(StreamChannel, cid=kwargs["stream_cid"])
+        if str(request.user.id) not in sc.joined_groups:
+            raise PermissionDenied("You are not owner of stream channel.")
+
+        # soft-delete channel
+        stream.delete_channels(cids=[kwargs["stream_cid"]])
+        return Response(status=status.HTTP_200_OK)

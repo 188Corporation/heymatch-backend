@@ -147,20 +147,8 @@ class GroupDetailViewSet(viewsets.ModelViewSet):
         MatchRequest.active_objects.filter(sender_group=group).update(is_active=False)
         MatchRequest.active_objects.filter(receiver_group=group).update(is_active=False)
 
-        # Deactivate Stream Chat
-        channels = stream.query_channels(
-            filter_conditions={
-                "members": {"$in": [str(request.user.id)]},
-                "disabled": False,
-            }
-        )
-        for channel in channels["channels"]:
-            ch = stream.channel(
-                channel_type=channel["channel"]["type"],
-                channel_id=channel["channel"]["id"],
-            )
-            ch.update_partial(to_set={"disabled": True})
-
+        # Note: Stream chat will not be deleted. User should exit chat room explicitly from chat tab
+        #  Thus, even though group is deleted, chat will still appear.
         return Response(status=status.HTTP_200_OK)
 
     @swagger_auto_schema(request_body=GroupUpdateSerializer)

@@ -1,4 +1,5 @@
 import logging
+from time import sleep
 
 from celery import shared_task
 from django.conf import settings
@@ -43,16 +44,8 @@ def end_of_the_day_task():
     logger.info(f"[3] MatchRequest count: {len(mrs)}")
     mrs.update(is_active=False)
 
-    # Make Stream Chat inactive
-    logger.info("[4] Make Stream Channel disabled")
-    channels = stream.query_channels({"disabled": False})
-    logger.info(f"[4] StreamChannel count: {len(channels['channels'])}")
-    for channel in channels["channels"]:
-        ch = stream.channel(
-            channel_type=channel["channel"]["type"], channel_id=channel["channel"]["id"]
-        )
-        ch.update_partial(to_set={"disabled": True})
-
+    # Stream Chat will not be deleted. User should be able to chat with already matched user
+    #  until they explicitly exit chat room
     logger.info("============== Success! ==============")
 
 
@@ -89,20 +82,19 @@ def delete_scheduled_users():
             is_active=False
         )
 
-        # Deactivate Stream Chat
+        # Soft-delete Stream Chat
         logger.info("[2.3] Deactivate all Stream Chats")
         channels = stream.query_channels(
             filter_conditions={
                 "members": {"$in": [str(user.id)]},
-                "disabled": False,
             }
         )
-        for channel in channels["channels"]:
-            ch = stream.channel(
-                channel_type=channel["channel"]["type"],
-                channel_id=channel["channel"]["id"],
-            )
-            ch.update_partial(to_set={"disabled": True})
+        cids = [ch["channel"]["cid"] for ch in channels["channels"]]
+        res = stream.delete_channels(cids=cids)
+        for _ in range(20):
+            if res["status"] == "completed":
+                break
+            sleep(1)
 
         # Mark user as deleted
         logger.info("[2.4] Mark user as `deleted`")

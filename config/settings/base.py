@@ -99,6 +99,7 @@ LOCAL_APPS = [
     "heymatch.infra",
     "heymatch.apps.authen.apps.AuthAppConfig",
     "heymatch.apps.user.apps.UserAppConfig",
+    "heymatch.apps.chat.apps.ChatConfig",
     "heymatch.apps.hotplace.apps.HotplaceAppConfig",
     "heymatch.apps.group.apps.GroupAppConfig",
     "heymatch.apps.match.apps.MatchAppConfig",
