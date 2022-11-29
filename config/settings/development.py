@@ -60,7 +60,6 @@ MIDDLEWARE = [
     # "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
-    # "requestlogs.middleware.RequestLogsMiddleware",
     "heymatch.shared.renderers.ErrorHandlerMiddleware",
 ]
 
@@ -132,8 +131,8 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "verbose": {
-            "format": "| %(levelname)s | %(asctime)s | %(filename)s | %(funcName)s | "
-            "%(process)d | %(thread)d | Message: %(message)s"
+            "format": "[%(asctime)s: %(levelname)s|%(filename)s|%(funcName)s|%(process)d|%(thread)d] "
+            "Message: %(message)s"
         },
     },
     "handlers": {
@@ -155,11 +154,6 @@ LOGGING = {
     "loggers": {
         "django.db.backends": {
             "level": "ERROR",
-            "handlers": ["to_file"],
-            "propagate": False,
-        },
-        "requestlogs": {
-            "level": "INFO",
             "handlers": ["to_file"],
             "propagate": False,
         },

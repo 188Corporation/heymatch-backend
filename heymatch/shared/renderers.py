@@ -46,7 +46,8 @@ class ErrorHandlerMiddleware:
             data={
                 "status": "error",
                 "code": status_code,
-                "data": None,
+                "data": str(exception),
                 "message": status_msg,
-            }
+            },
+            status=status_code,
         )

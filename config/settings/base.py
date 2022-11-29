@@ -244,8 +244,8 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "verbose": {
-            "format": "| %(levelname)s | %(asctime)s | %(filename)s | %(funcName)s | "
-            "%(process)d | %(thread)d | Message: %(message)s"
+            "format": "[%(asctime)s: %(levelname)s|%(filename)s|%(funcName)s|%(process)d|%(thread)d] "
+            "Message: %(message)s"
         },
     },
     "handlers": {
@@ -258,11 +258,6 @@ LOGGING = {
     "loggers": {
         "django.db.backends": {
             "level": "ERROR",
-            "handlers": ["console"],
-            "propagate": False,
-        },
-        "requestlogs": {
-            "level": "DEBUG",
             "handlers": ["console"],
             "propagate": False,
         },
