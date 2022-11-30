@@ -72,7 +72,13 @@ class StreamChatViewSet(viewsets.ModelViewSet):
                 continue
 
             # find joined group (can be both active or inactive)
-            sc = StreamChannel.objects.filter(cid=channel["channel"]["cid"]).first()
+            # StreamChannel.cid can be duplicate. Should give user the latest one
+            # so that the group profile is the latest.
+            sc = (
+                StreamChannel.objects.filter(cid=channel["channel"]["cid"])
+                .order_by("-created_at")
+                .first()
+            )
             target_group_id = sc.joined_groups[target_user_id]
             target_group = Group.objects.get(id=target_group_id)
 
