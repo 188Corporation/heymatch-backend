@@ -1,7 +1,7 @@
 import json
 from itertools import chain
 from typing import Any, Union
-
+import logging
 from django.conf import settings
 from django.db import IntegrityError
 from django.utils import timezone
@@ -38,7 +38,7 @@ from .serializers import (
 
 google_play_validator = settings.GOOGLE_PLAY_VALIDATOR
 apple_store_validator = settings.APP_STORE_VALIDATOR
-
+logger = logging.getLogger(__name__)
 
 class PaymentItemViewSet(viewsets.ViewSet):
     permission_classes = [
@@ -78,7 +78,8 @@ class ReceiptValidationViewSet(viewsets.ViewSet):
                 validated_receipt = PlayStoreValidatedReceipt.objects.create(
                     receipt=receipt, validated_result=validated_result
                 )
-            except IntegrityError:
+            except IntegrityError as e:
+                logger.error(e, exc_info=True)
                 raise ReceiptAlreadyProcessedException()
             purchased_item = self.find_item(validated_receipt.productId, all_items)
         elif platform == UserPurchase.PlatformChoices.IOS:
@@ -87,7 +88,8 @@ class ReceiptValidationViewSet(viewsets.ViewSet):
                 validated_receipt = AppleStoreValidatedReceipt.objects.create(
                     validated_result=validated_result
                 )
-            except IntegrityError:
+            except IntegrityError as e:
+                logger.error(e, exc_info=True)
                 raise ReceiptAlreadyProcessedException()
             purchased_item = self.find_item(validated_receipt.product_id, all_items)
         else:
