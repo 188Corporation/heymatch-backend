@@ -1,7 +1,7 @@
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 
-from .models import Group, GroupProfileImage
+from .models import Group, GroupProfileImage, ReportedGroup
 
 
 @admin.register(Group)
@@ -66,6 +66,26 @@ class GroupProfilePhotoAdmin(admin.ModelAdmin):
         "thumbnail",
         "thumbnail_blurred",
         "order",
+    ]
+
+
+@admin.register(ReportedGroup)
+class ReportedGroupAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "reported_group",
+        "reported_reason",
+        "reported_by",
+        "status",
+        "created_at",
+    ]
+    search_fields = [
+        "id",
+        "reported_group",
+        "reported_reason",
+        "reported_by",
+        "status",
+        "created_at",
     ]
 
 

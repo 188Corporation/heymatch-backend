@@ -5,6 +5,7 @@ from io import BytesIO
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db import models
+from django.utils import timezone
 from django_google_maps.fields import GeoLocationField
 from fernet_fields import EncryptedField
 from ordered_model.models import OrderedModel
@@ -12,9 +13,6 @@ from PIL import Image, ImageFilter, ImageOps
 from simple_history.models import HistoricalRecords
 
 from .managers import ActiveGroupManager, GroupManager
-
-# def group_default_time():
-#     return timezone.now() + timezone.timedelta(hours=24)
 
 
 class EncryptedGeoLocationField(EncryptedField, GeoLocationField):
@@ -187,6 +185,34 @@ class GroupProfileImage(OrderedModel):
             save=False,
         )
         temp_image.close()
+
+
+class ReportedGroup(models.Model):
+    class ReportGroupStatusChoices(models.TextChoices):
+        REPORTED = "REPORTED"
+        UNDER_REVIEW = "UNDER_REVIEW"
+        PROCESSED = "PROCESSED"
+
+    reported_group = models.ForeignKey(
+        "group.Group",
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+    )
+    reported_reason = models.TextField(max_length=500, null=True, blank=True)
+    reported_by = models.ForeignKey(
+        "user.User",
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="reported_by_user",
+    )
+    status = models.CharField(
+        max_length=32,
+        default=ReportGroupStatusChoices.REPORTED,
+        choices=ReportGroupStatusChoices.choices,
+    )
+    created_at = models.DateTimeField(default=timezone.now)
 
 
 # ========================

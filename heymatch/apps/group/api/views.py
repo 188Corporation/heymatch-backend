@@ -13,7 +13,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from heymatch.apps.group.models import Group
+from heymatch.apps.group.models import Group, ReportedGroup
 from heymatch.apps.hotplace.models import HotPlace
 from heymatch.apps.match.models import MatchRequest
 from heymatch.shared.exceptions import (
@@ -34,6 +34,8 @@ from .serializers import (
     GroupCreationRequestBodySerializer,
     GroupCreationSerializer,
     GroupUpdateSerializer,
+    ReportGroupRequestBodySerializer,
+    ReportGroupSerializer,
     RestrictedGroupProfileByHotplaceSerializer,
 )
 
@@ -177,4 +179,56 @@ class GroupDetailViewSet(viewsets.ModelViewSet):
         group.save(update_fields=["gps_geoinfo", "title", "introduction"])
         serializer = GroupUpdateSerializer(group)
 
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+class GroupReportViewSet(viewsets.ModelViewSet):
+    permission_classes = [
+        IsAuthenticated,
+        IsUserActive,
+        IsUserJoinedGroup,
+    ]
+    serializer_class = ReportGroupSerializer
+
+    @swagger_auto_schema(request_body=ReportGroupRequestBodySerializer)
+    def report(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        user = request.user
+        queryset = Group.active_objects.all()
+        group = get_object_or_404(queryset, id=kwargs["group_id"])
+        reported_reason = request.data.get("reported_reason", "")
+
+        rg = ReportedGroup.objects.create(
+            reported_group=group,
+            reported_reason=reported_reason,
+            reported_by=user,
+        )
+        serializer = self.get_serializer(rg)
+
+        # Notify via slack
+        slack_webhook = settings.SLACK_REPORT_GROUP_BOT
+        slack_webhook.send(
+            blocks=[
+                {
+                    "type": "section",
+                    "text": {"type": "mrkdwn", "text": "🚨*그룹 신고가 들어왔어요!*🚨"},
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "당직인 분은 당장 Django Admin에서 확인 후 조치를 취하세요!",
+                    },
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": f"• *Environment*: {str(settings.DJANGO_ENV).upper()} \n "
+                        f"• *신고한 유저 ID*: {str(request.user.id)} \n "
+                        f"• *신고된 그룹 ID*: {str(kwargs['group_id'])} \n"
+                        f"• *신고한 이유는?*: {str(reported_reason)}",
+                    },
+                },
+            ]
+        )
         return Response(data=serializer.data, status=status.HTTP_200_OK)

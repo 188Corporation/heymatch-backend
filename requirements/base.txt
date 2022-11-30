@@ -59,3 +59,6 @@ fcm-django==1.0.12
 
 # In-App Purchase
 inapppy==2.5.2  # https://github.com/dotpot/InAppPy
+
+# Slack
+slack-sdk==3.19.4   # https://pypi.org/project/slack-sdk/

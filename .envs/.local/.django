@@ -4,6 +4,7 @@ USE_DOCKER=yes
 DJANGO_ALLOWED_HOSTS="3.35.49.61"
 DJANGO_ADMIN_ID=admin
 DJANGO_ADMIN_PASSWORD=1234
+DJANGO_ENV=local
 
 # Docs (Swagger)
 ENABLE_DOCS=True
@@ -51,3 +52,7 @@ APP_STORE_BUNDLE_ID=com.co188.heythere
 # ------------------------------------------------------------------------------
 ONE_SIGNAL_APP_ID=fake-one-signal-app-id
 ONE_SIGNAL_REST_API_KEY=fake-one-signal-rest-api-key
+
+# Slack
+# ------------------------------------------------------------------------------
+SLACK_REPORT_GROUP_BOT_WEBHOOK_URL=https://hooks.slack.com/services/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

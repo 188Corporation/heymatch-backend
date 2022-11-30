@@ -3,7 +3,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django_google_maps.fields import GeoPt
 from rest_framework import serializers
 
-from heymatch.apps.group.models import Group, GroupProfileImage
+from heymatch.apps.group.models import Group, GroupProfileImage, ReportedGroup
 from heymatch.apps.hotplace.models import HotPlace
 from heymatch.utils.util import is_geopt_within_boundary
 
@@ -202,3 +202,22 @@ class GroupUpdateSerializer(serializers.ModelSerializer):
             "title",
             "introduction",
         ]
+
+
+class ReportGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReportedGroup
+        fields = [
+            "id",
+            "reported_group",
+            "reported_reason",
+            "reported_by",
+            "status",
+            "created_at",
+        ]
+
+
+class ReportGroupRequestBodySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReportedGroup
+        fields = ["reported_reason"]

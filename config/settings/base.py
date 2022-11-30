@@ -8,6 +8,7 @@ import environ
 import stream_chat
 from celery.schedules import crontab
 from inapppy import AppStoreValidator, GooglePlayVerifier
+from slack_sdk.webhook import WebhookClient
 
 from heymatch.shared.clients import OneSignalClient
 
@@ -25,6 +26,7 @@ if READ_DOT_ENV_FILE:
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
 DEBUG = env.bool("DJANGO_DEBUG", False)
+DJANGO_ENV = env("DJANGO_ENV")
 # Local time zone. Choices are
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # though not all of them may be available with every OS.
@@ -483,3 +485,8 @@ BACKDOOR_SESSION_TOKEN = "heymatch-this-is-session-token-for-backdoor-user"
 # Admin ID/PWD
 DJANGO_ADMIN_ID = env("DJANGO_ADMIN_ID")
 DJANGO_ADMIN_PASSWORD = env("DJANGO_ADMIN_PASSWORD")
+
+# Slack Webhook
+SLACK_REPORT_GROUP_BOT = WebhookClient(
+    url=env("SLACK_REPORT_GROUP_BOT_WEBHOOK_URL"),
+)  # report-group

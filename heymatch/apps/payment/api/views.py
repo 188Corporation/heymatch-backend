@@ -1,7 +1,8 @@
 import json
+import logging
 from itertools import chain
 from typing import Any, Union
-import logging
+
 from django.conf import settings
 from django.db import IntegrityError
 from django.utils import timezone
@@ -39,6 +40,7 @@ from .serializers import (
 google_play_validator = settings.GOOGLE_PLAY_VALIDATOR
 apple_store_validator = settings.APP_STORE_VALIDATOR
 logger = logging.getLogger(__name__)
+
 
 class PaymentItemViewSet(viewsets.ViewSet):
     permission_classes = [
