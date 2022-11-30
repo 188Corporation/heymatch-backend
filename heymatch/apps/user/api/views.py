@@ -3,6 +3,7 @@ from typing import Any
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from django.views.decorators.cache import never_cache
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -29,6 +30,7 @@ class UserWithGroupFullInfoViewSet(viewsets.ViewSet):
         IsUserActive,
     ]
 
+    @never_cache
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         user = get_object_or_404(User, id=self.request.user.id)
         app_info = AppInfo.objects.all().first()
