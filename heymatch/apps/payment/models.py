@@ -46,10 +46,10 @@ class PlayStoreValidatedReceipt(models.Model):
     purchaseState = models.IntegerField()
     consumptionState = models.IntegerField()
     # if prod, this field does not exist
-    purchaseType = models.IntegerField()
-    acknowledgementState = models.IntegerField()
-    kind = models.CharField(max_length=48)
-    regionCode = models.CharField(max_length=8)
+    purchaseType = models.IntegerField(null=True, blank=True, default=None)
+    acknowledgementState = models.IntegerField(null=True, blank=True)
+    kind = models.CharField(max_length=48, null=True, blank=True)
+    regionCode = models.CharField(max_length=8, null=True, blank=True)
 
     objects = PlayStoreValidatedReceiptManager()
 
@@ -69,9 +69,9 @@ class AppleStoreValidatedReceipt(models.Model):
     original_purchase_date_ms = models.CharField(max_length=32)
 
     # etc
-    is_trial_period = models.BooleanField()
-    in_app_ownership_type = models.CharField(max_length=32)
-    environment = models.CharField(max_length=32)
+    is_trial_period = models.BooleanField(null=True, blank=True)
+    in_app_ownership_type = models.CharField(max_length=32, null=True, blank=True)
+    environment = models.CharField(max_length=32, null=True, blank=True)
 
     objects = AppleStoreValidatedReceiptManager()
 
