@@ -78,7 +78,7 @@ class StreamChatViewSet(viewsets.ModelViewSet):
 
             # check unread or read
             for read in reads:
-                if read["user"]["id"] == str(target_user_id):
+                if read["user"]["id"] == str(request.user.id):
                     is_last_message_read = (
                         False if read["unread_messages"] > 0 else True
                     )
