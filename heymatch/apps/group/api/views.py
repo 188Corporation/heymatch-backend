@@ -193,7 +193,7 @@ class GroupReportViewSet(viewsets.ModelViewSet):
     @swagger_auto_schema(request_body=ReportGroupRequestBodySerializer)
     def report(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         user = request.user
-        queryset = Group.active_objects.all()
+        queryset = Group.objects.all()
         group = get_object_or_404(queryset, id=kwargs["group_id"])
         reported_reason = request.data.get("reported_reason", "")
 
