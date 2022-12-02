@@ -236,7 +236,8 @@ class GroupReportViewSet(viewsets.ModelViewSet):
 
         # Soft-delete chat channel of me + reported group
         cids = [mr.stream_channel_cid for mr in mr_qs]
-        stream.delete_channels(cids=cids)
+        if len(cids) > 0:
+            stream.delete_channels(cids=cids)
 
         # Notify via slack
         slack_webhook = settings.SLACK_REPORT_GROUP_BOT
