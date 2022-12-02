@@ -59,7 +59,9 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
 
         # Should exclude groups that reported me
         if request.user.joined_group:
-            rg_qs = ReportedGroup.objects.filter(reported_group=request.user.joined_group)
+            rg_qs = ReportedGroup.objects.filter(
+                reported_group=request.user.joined_group
+            )
             for rg in rg_qs:
                 joined_group = rg.reported_by.joined_group
                 if joined_group:
@@ -234,7 +236,7 @@ class GroupReportViewSet(viewsets.ModelViewSet):
 
         # Soft-delete chat channel of me + reported group
         cids = [mr.stream_channel_cid for mr in mr_qs]
-        stream.delete_channels(cids=[cids])
+        stream.delete_channels(cids=cids)
 
         # Notify via slack
         slack_webhook = settings.SLACK_REPORT_GROUP_BOT
