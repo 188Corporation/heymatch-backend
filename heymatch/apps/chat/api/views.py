@@ -80,7 +80,10 @@ class StreamChatViewSet(viewsets.ModelViewSet):
                 .first()
             )
             target_group_id = sc.joined_groups[target_user_id]
-            target_group = Group.objects.get(id=target_group_id)
+            try:
+                target_group = Group.objects.get(id=target_group_id)
+            except Group.DoesNotExist:
+                continue
 
             # check unread or read
             for read in reads:
