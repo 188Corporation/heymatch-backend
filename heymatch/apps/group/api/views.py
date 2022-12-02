@@ -229,8 +229,8 @@ class GroupReportViewSet(viewsets.ModelViewSet):
 
         # Deactivate MatchRequest sent or received by reported group
         mr_qs = MatchRequest.active_objects.select_related().filter(
-            Q(sender_group_id=group.id) & Q(receiver_group_id=user.joined_group.id)
-            | Q(sender_group_id=user.joined_group.id) & Q(receiver_group_id=group.id)
+            (Q(sender_group_id=group.id) & Q(receiver_group_id=user.joined_group.id))
+            | (Q(sender_group_id=user.joined_group.id) & Q(receiver_group_id=group.id))
         )
         mr_qs.update(is_active=False)
 
