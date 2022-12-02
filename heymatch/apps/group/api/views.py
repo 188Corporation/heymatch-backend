@@ -3,7 +3,7 @@ from typing import Any
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 from django.shortcuts import get_object_or_404
 from django_google_maps.fields import GeoPt
 from drf_yasg.utils import swagger_auto_schema
@@ -19,6 +19,7 @@ from heymatch.apps.match.models import MatchRequest
 from heymatch.shared.exceptions import (
     GroupNotWithinSameHotplaceException,
     JoinedGroupNotMineException,
+    ReportMyGroupException,
     UserGPSNotWithinHotplaceException,
 )
 from heymatch.shared.permissions import (
@@ -52,9 +53,25 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
     serializer_class = RestrictedGroupProfileByHotplaceSerializer
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        # Should exclude groups that I reported
+        rg_qs = ReportedGroup.objects.filter(reported_by=request.user)
+        exclude_group_ids = [rg.reported_group.id for rg in rg_qs]
+
+        # Should exclude groups that reported me
+        if request.user.joined_group:
+            rg_qs = ReportedGroup.objects.filter(group=request.user.joined_group)
+            for rg in rg_qs:
+                joined_group = rg.reported_by.joined_group
+                if joined_group:
+                    exclude_group_ids.append(joined_group.id)
+
+        group_qs = Group.active_objects.all().exclude(id__in=exclude_group_ids)
+
+        # prefetch related according to hotplace
         queryset = HotPlace.objects.prefetch_related(
-            Prefetch("groups", queryset=Group.active_objects.all())
+            Prefetch("groups", queryset=group_qs)
         )
+
         # Automatically checks if user joined group
         # if joined group, will give out original profile photo of groups in the hotplace
         serializer = self.get_serializer(queryset, many=True)
@@ -195,6 +212,10 @@ class GroupReportViewSet(viewsets.ModelViewSet):
         user = request.user
         queryset = Group.objects.all()
         group = get_object_or_404(queryset, id=kwargs["group_id"])
+
+        if user.joined_group.id == group.id:
+            raise ReportMyGroupException()
+
         reported_reason = request.data.get("reported_reason", "")
 
         rg = ReportedGroup.objects.create(
@@ -203,6 +224,17 @@ class GroupReportViewSet(viewsets.ModelViewSet):
             reported_by=user,
         )
         serializer = self.get_serializer(rg)
+
+        # Deactivate MatchRequest sent or received by reported group
+        mr_qs = MatchRequest.active_objects.select_related().filter(
+            Q(sender_group_id=group.id) & Q(receiver_group_id=user.joined_group.id)
+            | Q(sender_group_id=user.joined_group.id) & Q(receiver_group_id=group.id)
+        )
+        mr_qs.update(is_active=False)
+
+        # Soft-delete chat channel of me + reported group
+        cids = [mr.stream_channel_cid for mr in mr_qs]
+        stream.delete_channels(cids=[cids])
 
         # Notify via slack
         slack_webhook = settings.SLACK_REPORT_GROUP_BOT
@@ -216,7 +248,7 @@ class GroupReportViewSet(viewsets.ModelViewSet):
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "당직인 분은 당장 Django Admin에서 확인 후 조치를 취하세요!",
+                        "text": "Django Admin에서 확인 후 조치를 취해주세요!",
                     },
                 },
                 {
@@ -224,9 +256,13 @@ class GroupReportViewSet(viewsets.ModelViewSet):
                     "text": {
                         "type": "mrkdwn",
                         "text": f"• *Environment*: {str(settings.DJANGO_ENV).upper()} \n "
-                        f"• *신고한 유저 ID*: {str(request.user.id)} \n "
-                        f"• *신고된 그룹 ID*: {str(kwargs['group_id'])} \n"
-                        f"• *신고한 이유는?*: {str(reported_reason)}",
+                        f"• *신고한 유저 정보* \n "
+                        f"    - id        : {str(request.user.id)} \n "
+                        f"    - 휴대폰번호   : {str(request.user.phone_number)} \n "
+                        f"• *신고된 그룹 정보*  \n"
+                        f"    - id        : {str(group.id)} \n"
+                        f"    - 제목       : {str(group.title)} \n"
+                        f"    - 소개       : {str(group.introduction)} \n",
                     },
                 },
             ]

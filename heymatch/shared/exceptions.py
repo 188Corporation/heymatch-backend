@@ -78,6 +78,11 @@ class MatchRequestGroupIsMineException(BasePermissionDeniedException):
     detail = "Cannot match with your own group."
 
 
+class ReportMyGroupException(BasePermissionDeniedException):
+    status_code = 474
+    detail = "Cannot report myself."
+
+
 class ReceiptWrongEnvException(BasePermissionDeniedException):
     status_code = 480
     detail = (
