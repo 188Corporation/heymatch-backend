@@ -59,7 +59,7 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
 
         # Should exclude groups that reported me
         if request.user.joined_group:
-            rg_qs = ReportedGroup.objects.filter(group=request.user.joined_group)
+            rg_qs = ReportedGroup.objects.filter(reported_group=request.user.joined_group)
             for rg in rg_qs:
                 joined_group = rg.reported_by.joined_group
                 if joined_group:
