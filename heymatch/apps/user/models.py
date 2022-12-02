@@ -67,7 +67,7 @@ class User(AbstractUser):
         "group.Group",
         blank=True,
         null=True,
-        on_delete=models.SET_NULL,
+        on_delete=models.PROTECT,
         related_name="users",
     )
     # is_group_leader = models.BooleanField(blank=False, null=False, default=False)
@@ -108,7 +108,7 @@ class DeleteScheduledUser(models.Model):
         "user.User",
         blank=False,
         null=False,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
     )
     created_at = models.DateTimeField(default=timezone.now)
     delete_schedule_at = models.DateTimeField(default=delete_schedule_default_time)

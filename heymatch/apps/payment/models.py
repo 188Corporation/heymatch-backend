@@ -92,7 +92,7 @@ class UserPurchase(models.Model):
         User,
         blank=False,
         null=False,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="user_purchases",
     )
     platform = models.CharField(
@@ -141,7 +141,7 @@ class UserPointConsumptionHistory(models.Model):
         User,
         blank=False,
         null=False,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="user_point_consumption_history",
     )
     consumed_point = models.IntegerField(blank=False, null=False)

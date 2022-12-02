@@ -16,14 +16,14 @@ class MatchRequest(models.Model):
         "group.Group",
         blank=True,
         null=True,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="match_request_sender_group",
     )
     receiver_group = models.ForeignKey(
         "group.Group",
         blank=True,
         null=True,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="match_request_receiver_group",
     )
     status = models.CharField(

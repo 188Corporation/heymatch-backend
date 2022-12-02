@@ -101,7 +101,7 @@ class GroupProfileImage(OrderedModel):
         "group.Group",
         blank=True,
         null=True,
-        on_delete=models.SET_NULL,
+        on_delete=models.PROTECT,
         related_name="group_profile_images",
     )
     image = models.ImageField(upload_to=upload_to)
@@ -197,14 +197,14 @@ class ReportedGroup(models.Model):
         "group.Group",
         blank=True,
         null=True,
-        on_delete=models.SET_NULL,
+        on_delete=models.PROTECT,
     )
     reported_reason = models.TextField(max_length=500, null=True, blank=True)
     reported_by = models.ForeignKey(
         "user.User",
         blank=True,
         null=True,
-        on_delete=models.SET_NULL,
+        on_delete=models.PROTECT,
         related_name="reported_by_user",
     )
     status = models.CharField(
