@@ -5,7 +5,11 @@ from rest_framework import serializers
 
 from heymatch.apps.group.models import Group, GroupProfileImage, ReportedGroup
 from heymatch.apps.hotplace.models import HotPlace
-from heymatch.utils.util import is_geopt_within_boundary
+from heymatch.apps.user.models import FakeChatUser
+from heymatch.utils.util import (
+    generate_rand_geoopt_within_boundary,
+    is_geopt_within_boundary,
+)
 
 
 class GroupProfileImagesByJoinedGroupConditionSerializer(serializers.ModelSerializer):
@@ -160,10 +164,20 @@ class GroupCreationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = validated_data.pop("user")
         gps_geoinfo = validated_data.get("gps_geoinfo")
-        image: InMemoryUploadedFile = validated_data.pop("group_profile_images")
-        # Check hotplace inclusiveness
-        validated_data["hotplace"] = self.get_hotplace(gps_geoinfo)
+
+        # If user is FakeChatUser, replace gps_geoinfo
+        try:
+            fcu = FakeChatUser.objects.get(user=user)
+            validated_data["gps_geoinfo"] = generate_rand_geoopt_within_boundary(
+                boundary_geopts=fcu.target_hotplace.zone_boundary_geoinfos_for_fake_chat
+            )
+            validated_data["hotplace"] = fcu.target_hotplace
+        except FakeChatUser.DoesNotExist:
+            # Check hotplace inclusiveness
+            validated_data["hotplace"] = self.get_hotplace(str(gps_geoinfo))
+
         # Create Group
+        image: InMemoryUploadedFile = validated_data.pop("group_profile_images")
         group = Group.objects.create(**validated_data)
         # Create Group Profile
         GroupProfileImage.objects.create(group=group, image=image)

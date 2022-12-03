@@ -138,6 +138,9 @@ class Command(BaseCommand):
                 zone_boundary_geoinfos=RANDOM_HOTPLACE_INFO[name][
                     "zone_boundary_geoinfos"
                 ],
+                zone_boundary_geoinfos_for_fake_chat=RANDOM_HOTPLACE_INFO[name][
+                    "zone_boundary_geoinfos_for_fake_chat"
+                ],
             )
             # create groups for each hotplaces
             for image_path in profile_image_filepath:

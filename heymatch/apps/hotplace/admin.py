@@ -11,5 +11,6 @@ class HotPlaceAdmin(admin.ModelAdmin):
         # "zone_color",
         "zone_center_geoinfo",
         "zone_boundary_geoinfos",
+        "zone_boundary_geoinfos_for_fake_chat",
     ]
     search_fields = ["id", "name"]

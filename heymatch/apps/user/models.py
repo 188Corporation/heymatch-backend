@@ -122,6 +122,23 @@ class DeleteScheduledUser(models.Model):
     )
 
 
+class FakeChatUser(models.Model):
+    user = models.ForeignKey(
+        "user.User",
+        blank=False,
+        null=False,
+        on_delete=models.PROTECT,
+        related_name="fake_chat_user",
+    )
+    target_hotplace = models.ForeignKey(
+        "hotplace.HotPlace",
+        blank=False,
+        null=False,
+        on_delete=models.PROTECT,
+        related_name="fake_chat_user_hotplace",
+    )
+
+
 class AppInfo(models.Model):
     faq_url = models.URLField(max_length=200)  # 앱 문의, 건의
     terms_of_service_url = models.URLField(max_length=200)  # 이용약관

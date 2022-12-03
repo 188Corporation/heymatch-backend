@@ -141,7 +141,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         receiver_user = User.active_objects.get(joined_group=group)
         res = onesignal_client.send_notification_to_specific_users(
             title="매칭 요청이 왔어요!",
-            content=f"그룹 [{user.joined_group.title}] 으로부터 매칭요청을 받았어요! 수락하면 바로 채팅할 수 있어요 😀",
+            content=f"[{user.joined_group.title}] 그룹으로부터 매칭요청을 받았어요! 수락하면 바로 채팅할 수 있어요 😀",
             user_ids=[str(receiver_user.id)],
         )
         logger.info(f"OneSignal response: {res}")

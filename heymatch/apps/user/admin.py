@@ -5,7 +5,7 @@ from simple_history.admin import SimpleHistoryAdmin
 
 from heymatch.apps.user.forms import UserChangeForm, UserCreationForm
 
-from .models import AppInfo, DeleteScheduledUser
+from .models import AppInfo, DeleteScheduledUser, FakeChatUser
 
 User = get_user_model()
 
@@ -126,6 +126,27 @@ class DeleteScheduledUserAdmin(admin.ModelAdmin):
         "delete_reason",
         "status",
     ]
+
+
+@admin.register(FakeChatUser)
+class FakeChatUserAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "user",
+        "user_phone_number",
+        "target_hotplace",
+    ]
+    search_fields = [
+        "id",
+        "user",
+        "user_phone_number",
+        "target_hotplace",
+    ]
+
+    def user_phone_number(self, obj):
+        return obj.user.phone_number
+
+    user_phone_number.short_description = "Phone Number"
 
 
 @admin.register(AppInfo)
