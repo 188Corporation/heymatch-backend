@@ -1,3 +1,4 @@
+import logging
 from typing import Any
 
 from django.conf import settings
@@ -43,6 +44,7 @@ from .serializers import (
 
 User = get_user_model()
 stream = settings.STREAM_CLIENT
+logger = logging.getLogger(__name__)
 
 
 class GroupsGenericViewSet(viewsets.ModelViewSet):
@@ -237,12 +239,16 @@ class GroupReportViewSet(viewsets.ModelViewSet):
 
         # Soft-delete chat channel of me + reported group
         scs = StreamChannel.objects.filter(participants__users__contains=str(user.id))
+        to_be_deleted_cids = []
         for sc in scs:
             groups = sc.participants["groups"]
             if group.id not in groups:
                 continue
             # if found stream chat channel with reported group, delete
-            stream.delete_channels(cids=[sc.cid])
+            to_be_deleted_cids.append(sc.cid)
+            logger.info(to_be_deleted_cids)
+        if to_be_deleted_cids:
+            stream.delete_channels(cids=[to_be_deleted_cids])
 
         # Notify via slack
         slack_webhook = settings.SLACK_REPORT_GROUP_BOT

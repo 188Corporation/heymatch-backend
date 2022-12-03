@@ -122,5 +122,5 @@ class StreamChatViewSet(viewsets.ModelViewSet):
             raise PermissionDenied("You are not owner of stream channel.")
 
         # soft-delete channel
-        stream.delete_channels(cids=[kwargs["stream_cid"]])
+        stream.delete_channels(cids=[sc.cid])
         return Response(status=status.HTTP_200_OK)
