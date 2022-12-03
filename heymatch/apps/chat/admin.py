@@ -8,12 +8,12 @@ class StreamChannelAdmin(admin.ModelAdmin):
     list_display = [
         "id",
         "cid",
-        "joined_groups",
+        "participants",
         "created_at",
     ]
     search_fields = [
         "id",
         "cid",
-        "joined_groups",
+        "participants",
         "created_at",
     ]

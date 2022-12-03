@@ -11,8 +11,11 @@ class StreamChannel(models.Model):
     #
     # Data schema
     #   {
-    #       "user1.id": "user1.joined_group.id",
-    #       "user2.id": "user2.joined_group.id"
+    #       "users": [user1.id, user2.id],
+    #       "groups": {
+    #           "user1.joined_group.id": "user1.id",
+    #           "user2.joined_group.id": "user2.id",
+    #       }
     #   }
-    joined_groups = models.JSONField(null=False, blank=False)
+    participants = models.JSONField(null=False, blank=False)
     created_at = models.DateTimeField(default=timezone.now)

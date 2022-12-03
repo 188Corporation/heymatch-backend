@@ -13,6 +13,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from heymatch.apps.chat.models import StreamChannel
 from heymatch.apps.group.models import Group, ReportedGroup
 from heymatch.apps.hotplace.models import HotPlace
 from heymatch.apps.match.models import MatchRequest
@@ -235,9 +236,13 @@ class GroupReportViewSet(viewsets.ModelViewSet):
         mr_qs.update(is_active=False)
 
         # Soft-delete chat channel of me + reported group
-        cids = [mr.stream_channel_cid for mr in mr_qs]
-        if len(cids) > 0:
-            stream.delete_channels(cids=cids)
+        scs = StreamChannel.objects.filter(participants__users__contains=str(user.id))
+        for sc in scs:
+            groups = sc.participants["groups"]
+            if group.id not in groups:
+                continue
+            # if found stream chat channel with reported group, delete
+            stream.delete_channels(cids=[sc.cid])
 
         # Notify via slack
         slack_webhook = settings.SLACK_REPORT_GROUP_BOT

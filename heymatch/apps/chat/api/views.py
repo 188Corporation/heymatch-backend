@@ -79,7 +79,12 @@ class StreamChatViewSet(viewsets.ModelViewSet):
                 .order_by("-created_at")
                 .first()
             )
-            target_group_id = sc.joined_groups[target_user_id]
+            target_group_id = None
+            for k, v in sc.participants["groups"].items():
+                if v == target_user_id:
+                    target_group_id = k
+            if not target_group_id:
+                continue
             try:
                 target_group = Group.objects.get(id=target_group_id)
             except Group.DoesNotExist:
@@ -113,7 +118,7 @@ class StreamChatViewSet(viewsets.ModelViewSet):
     def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         # check if Payload's cid is user's or not
         sc = get_object_or_404(StreamChannel, cid=kwargs["stream_cid"])
-        if str(request.user.id) not in sc.joined_groups:
+        if str(request.user.id) not in sc.participants["users"]:
             raise PermissionDenied("You are not owner of stream channel.")
 
         # soft-delete channel

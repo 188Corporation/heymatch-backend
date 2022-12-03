@@ -199,9 +199,12 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         # Save StreamChannel
         StreamChannel.objects.create(
             cid=res["channel"]["cid"],
-            joined_groups={
-                str(request.user.id): str(request.user.joined_group.id),
-                str(sender_user.id): str(sender_group.id),
+            participants={
+                "users": [str(request.user.id), str(sender_user.id)],
+                "groups": {
+                    str(request.user.joined_group.id): str(request.user.id),
+                    str(sender_group.id): str(sender_user.id),
+                },
             },
         )
 
