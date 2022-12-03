@@ -219,9 +219,9 @@ class Command(BaseCommand):
         faq = "https://docs.google.com/forms/d/e/1FAIpQLScJwGBy92H9EoZagufzgBXGSwtN1dOxQbfctVnNPa1kOocACA/viewform"
         AppInfo.objects.create(
             faq_url=faq,
-            terms_of_service_url="https://meowing-yew-938.notion.site/2f51b1339cfb407e93c13eba311f8c54",
-            privacy_policy_url="https://meowing-yew-938.notion.site/55160a02379a4bcd9dd28b4c1aced5db",
-            terms_of_location_service_url="https://meowing-yew-938.notion.site/1d45f72c0e42499f80e5749974dd065d",
-            business_registration_url="https://meowing-yew-938.notion.site/28ec816aa9e54771991c843f2689ca6e",
+            terms_of_service_url="https://www.hey-match.com/agreement",
+            privacy_policy_url="https://www.hey-match.com/privacy-terms",
+            terms_of_location_service_url="https://www.hey-match.com/location-terms",
+            business_registration_url="https://www.hey-match.com/corporate",
         )
         self.stdout.write(self.style.SUCCESS("Successfully set up data for [AppInfo]"))
