@@ -3,6 +3,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_google_maps import fields as map_fields
 
+from .managers import ActiveHotplaceManager
+
 
 class HotPlace(models.Model):
     name = models.CharField(
@@ -16,6 +18,10 @@ class HotPlace(models.Model):
     zone_boundary_geoinfos_for_fake_chat = ArrayField(
         map_fields.GeoLocationField(), blank=True, null=True
     )
+    is_active = models.BooleanField(default=True)
+
+    objects = models.Manager
+    active_objects = ActiveHotplaceManager
 
     def __str__(self):
         return self.name

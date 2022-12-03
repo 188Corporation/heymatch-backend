@@ -31,12 +31,12 @@ class HotPlaceViewSet(viewsets.ViewSet):
     ]
 
     def list(self, request) -> Response:
-        queryset = HotPlace.objects.all()
+        queryset = HotPlace.active_objects.all()
         serializer = HotPlaceDetailSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, hotplace_id: int) -> Response:
-        queryset = HotPlace.objects.all()
+        queryset = HotPlace.active_objects.all()
         hotplace = get_object_or_404(queryset, id=hotplace_id)
         serializer = HotPlaceDetailSerializer(hotplace)
         return Response(serializer.data)
