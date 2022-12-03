@@ -268,12 +268,12 @@ class GroupReportViewSet(viewsets.ModelViewSet):
                         "type": "mrkdwn",
                         "text": f"• *Environment*: {str(settings.DJANGO_ENV).upper()} \n "
                         f"• *신고한 유저 정보* \n "
-                        f"    - id        : {str(request.user.id)} \n "
-                        f"    - 휴대폰번호   : {str(request.user.phone_number)} \n "
+                        f"    - id: {str(request.user.id)} \n "
+                        f"    - 휴대폰번호: {str(request.user.phone_number)} \n "
                         f"• *신고된 그룹 정보*  \n"
-                        f"    - id        : {str(group.id)} \n"
-                        f"    - 제목       : {str(group.title)} \n"
-                        f"    - 소개       : {str(group.introduction)} \n",
+                        f"    - id: {str(group.id)} \n"
+                        f"    - 제목: {str(group.title)} \n"
+                        f"    - 소개: {str(group.introduction)} \n",
                     },
                 },
             ]
