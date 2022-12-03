@@ -50,6 +50,10 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
     ViewSet for listing and creating Groups
     """
 
+    permission_classes = [
+        IsAuthenticated,
+        IsUserActive,
+    ]
     parser_classes = [MultiPartParser]
     serializer_class = RestrictedGroupProfileByHotplaceSerializer
 
