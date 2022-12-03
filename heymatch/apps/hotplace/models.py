@@ -20,8 +20,8 @@ class HotPlace(models.Model):
     )
     is_active = models.BooleanField(default=True)
 
-    objects = models.Manager
-    active_objects = ActiveHotplaceManager
+    objects = models.Manager()
+    active_objects = ActiveHotplaceManager()
 
     def __str__(self):
         return self.name
