@@ -1,3 +1,4 @@
+import logging
 from typing import Any
 
 from django.conf import settings
@@ -16,6 +17,7 @@ from heymatch.shared.permissions import IsUserActive
 
 User = get_user_model()
 stream = settings.STREAM_CLIENT
+logger = logging.getLogger(__name__)
 
 
 class StreamChatViewSet(viewsets.ModelViewSet):
@@ -112,7 +114,10 @@ class StreamChatViewSet(viewsets.ModelViewSet):
                 else None,
             }
             # serialize
-            serializer_data.append(fresh_data)
+            if len(channel["messages"]) == 0:
+                serializer_data.insert(0, fresh_data)
+            else:
+                serializer_data.append(fresh_data)
         return Response(data=serializer_data, status=status.HTTP_200_OK)
 
     def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
