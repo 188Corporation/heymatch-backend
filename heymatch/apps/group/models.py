@@ -145,7 +145,7 @@ class GroupProfileImage(OrderedModel):
         Blurs image and save
         :return:
         """
-        image = image.filter(ImageFilter.BoxBlur(5))
+        image = image.filter(ImageFilter.BoxBlur(10))
         temp_image = BytesIO()
         image.save(temp_image, filetype)
         temp_image.seek(0)
@@ -161,7 +161,7 @@ class GroupProfileImage(OrderedModel):
         """
         Creates thumbnail and blurred_thumbnail.
         """
-        image.thumbnail((120, 120), Image.Resampling.LANCZOS)
+        image.thumbnail((350, 350), Image.Resampling.LANCZOS)
         temp_image = BytesIO()
         image.save(temp_image, filetype)
         temp_image.seek(0)
@@ -172,8 +172,8 @@ class GroupProfileImage(OrderedModel):
         temp_image.close()
 
     def process_thumbnail_blurred(self, image, filetype: str = "JPEG"):
-        image.thumbnail((150, 150), Image.Resampling.LANCZOS)
-        image = image.filter(ImageFilter.BoxBlur(3))
+        image.thumbnail((350, 350), Image.Resampling.LANCZOS)
+        image = image.filter(ImageFilter.BoxBlur(5))
         # Save thumbnail to in-memory file as StringIO
         temp_image = BytesIO()
         image.save(temp_image, filetype)
