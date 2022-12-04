@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from heymatch.apps.chat.models import StreamChannel
 from heymatch.apps.group.api.serializers import FullGroupProfileSerializer
 from heymatch.apps.group.models import Group
+from heymatch.apps.match.models import MatchRequest
 from heymatch.shared.permissions import IsUserActive
 
 User = get_user_model()
@@ -129,4 +130,14 @@ class StreamChatViewSet(viewsets.ModelViewSet):
 
         # soft-delete channel
         stream.delete_channels(cids=[sc.cid])
+
+        # Deactivate MatchRequest
+        for group_id in sc.participants["groups"].keys():
+            MatchRequest.active_objects.filter(sender_group_id=group_id).update(
+                is_active=False
+            )
+            MatchRequest.active_objects.filter(receiver_group_id=group_id).update(
+                is_active=False
+            )
+
         return Response(status=status.HTTP_200_OK)

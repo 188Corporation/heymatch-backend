@@ -80,7 +80,7 @@ class MatchRequestGroupIsMineException(BasePermissionDeniedException):
 
 class ReportMyGroupException(BasePermissionDeniedException):
     status_code = 474
-    detail = "Cannot report myself."
+    detail = "자기 자신을 신고할 수 없어요! 😵"
 
 
 class ReceiptWrongEnvException(BasePermissionDeniedException):
