@@ -4,7 +4,6 @@ from typing import Any
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -122,7 +121,9 @@ class StreamChatViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         # check if Payload's cid is user's or not
-        sc = get_object_or_404(StreamChannel, cid=kwargs["stream_cid"])
+        sc = StreamChannel.objects.filter(
+            cid=kwargs["stream_cid"]
+        ).first()  # there can be multiple
         if str(request.user.id) not in sc.participants["users"]:
             raise PermissionDenied("You are not owner of stream channel.")
 
