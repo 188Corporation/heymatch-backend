@@ -133,10 +133,10 @@ class StreamChatViewSet(viewsets.ModelViewSet):
 
         # Deactivate MatchRequest
         for group_id in sc.participants["groups"].keys():
-            MatchRequest.active_objects.filter(sender_group_id=group_id).update(
+            MatchRequest.active_objects.filter(sender_group_id=int(group_id)).update(
                 is_active=False
             )
-            MatchRequest.active_objects.filter(receiver_group_id=group_id).update(
+            MatchRequest.active_objects.filter(receiver_group_id=int(group_id)).update(
                 is_active=False
             )
 
