@@ -87,6 +87,11 @@ class User(AbstractUser):
     # History
     history = HistoricalRecords()
 
+    # Agreement
+    # TODO: Fix this workding. We had no time submitting the app for release
+    #  so just decided bad wording for this. Should be `agreed_to_terms` or else.
+    is_old_user = models.BooleanField(default=True)
+
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["phone_number"]
 

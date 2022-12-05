@@ -29,6 +29,7 @@ class UserDetailByPhoneNumberSerializer(UserDetailsSerializer):
             "stream_token",
             "username",
             "phone_number",
+            "is_old_user",
             "schedule_delete_canceled",
             # "birthdate",
             # "gender",
@@ -69,6 +70,8 @@ class UserLoginByPhoneNumberSerializer(LoginSerializer):
             # get user with phone_number
             try:
                 user = User.active_objects.get(phone_number=phone_number)
+                user.is_old_user = False
+                user.save(update_fields=["is_old_user"])
             except User.DoesNotExist:
                 user = User.active_objects.create(phone_number=phone_number)
         else:

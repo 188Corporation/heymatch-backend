@@ -56,6 +56,7 @@ class UserAdmin(SimpleHistoryAdmin):
                     "is_deleted",
                     "is_staff",
                     "is_superuser",
+                    "is_old_user",
                 ),
             },
         ),
@@ -80,6 +81,7 @@ class UserAdmin(SimpleHistoryAdmin):
         "is_active",
         "is_deleted",
         "stream_token",
+        "is_old_user",
     ]
     history_list_display = [
         "status",
@@ -105,6 +107,7 @@ class UserAdmin(SimpleHistoryAdmin):
         "is_active",
         "is_deleted",
         "stream_token",
+        "is_old_user",
     ]
 
 
