@@ -157,13 +157,13 @@ class ReceiptValidationViewSet(viewsets.ViewSet):
         ):
             raise ReceiptNotPurchasedException()
 
-        # # if purchase is SANDBOX mode but server is PROD mode.
-        if (
-            validated_result["environment"] != "Sandbox"
-            and not settings.IS_INAPP_TESTING
-        ):
-            # receipt is fake (internal testing) but server is prod mode. Deny.
-            raise ReceiptWrongEnvException()
+        # # # if purchase is SANDBOX mode but server is PROD mode.
+        # if (
+        #     validated_result["environment"] != "Sandbox"
+        #     and not settings.IS_INAPP_TESTING
+        # ):
+        #     # receipt is fake (internal testing) but server is prod mode. Deny.
+        #     raise ReceiptWrongEnvException()
         return validated_result
 
     @staticmethod
