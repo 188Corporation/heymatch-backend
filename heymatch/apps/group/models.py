@@ -92,6 +92,7 @@ class Group(models.Model):
 
 
 def upload_to(instance, filename):
+    print("filename: ", filename)
     _, extension = filename.split(".")
     return f"{settings.AWS_S3_GROUP_PHOTO_FOLDER}/%s.%s" % (uuid.uuid4(), extension)
 
@@ -115,16 +116,18 @@ class GroupProfileImage(OrderedModel):
     order_with_respect_to = "group"
 
     def save(self, *args, **kwargs):
-        # ftype = self.check_file_type()
-        # if not ftype:
-        #     raise Exception("Could not process image - is the file type valid?")
-
         image = Image.open(self.image)
         image = ImageOps.exif_transpose(image)  # fix ios image rotation bug
 
-        self.process_image_blurred(image)
-        self.process_thumbnail(image)
-        self.process_thumbnail_blurred(image)
+        # crop
+        image_4x3 = self.crop_by_4x3(image)
+        image_1x1 = self.crop_by_1x1(image)
+
+        # process
+        self.process_image(image_4x3)
+        self.process_image_blurred(image_4x3)
+        self.process_thumbnail(image_1x1)
+        self.process_thumbnail_blurred(image_1x1)
         super(GroupProfileImage, self).save(*args, **kwargs)
 
     def check_file_type(self):
@@ -140,6 +143,45 @@ class GroupProfileImage(OrderedModel):
         else:
             return False  # Unrecognized file type
 
+    @staticmethod
+    def crop_by_4x3(image):
+        """
+        We always make sure that height is greater than width
+        """
+        width, height = image.size
+        expected_height = width * (4 / 3)
+        if height > expected_height:
+            offset = int(abs((height - expected_height) / 2))
+            image = image.crop([0, offset, width, height - offset])
+
+        return image
+
+    @staticmethod
+    def crop_by_1x1(image):
+        width, height = image.size
+        if width == height:
+            return image
+        offset = int(abs(height - width) / 2)
+        if width > height:
+            image = image.crop(
+                [offset, 0, width - offset, height]
+            )  # left, upper, right, and lower
+        else:
+            image = image.crop([0, offset, width, height - offset])
+        return image
+
+    def process_image(self, image, filetype: str = "JPEG"):
+        temp_image = BytesIO()
+        image.save(temp_image, filetype)
+        temp_image.seek(0)
+        # set save=False, otherwise it will run in an infinite loop
+        self.image.save(
+            f"image_4x3.{filetype.lower()}",
+            ContentFile(temp_image.read()),
+            save=False,
+        )
+        temp_image.close()
+
     def process_image_blurred(self, image, filetype: str = "JPEG"):
         """
         Blurs image and save
@@ -151,7 +193,7 @@ class GroupProfileImage(OrderedModel):
         temp_image.seek(0)
         # set save=False, otherwise it will run in an infinite loop
         self.image_blurred.save(
-            f"image_blurred.{filetype.lower()}",
+            f"image_4x3_blurred.{filetype.lower()}",
             ContentFile(temp_image.read()),
             save=False,
         )
@@ -167,7 +209,9 @@ class GroupProfileImage(OrderedModel):
         temp_image.seek(0)
         # set save=False, otherwise it will run in an infinite loop
         self.thumbnail.save(
-            f"thumbnail.{filetype.lower()}", ContentFile(temp_image.read()), save=False
+            f"thumbnail_1x1.{filetype.lower()}",
+            ContentFile(temp_image.read()),
+            save=False,
         )
         temp_image.close()
 
@@ -180,7 +224,7 @@ class GroupProfileImage(OrderedModel):
         temp_image.seek(0)
         # set save=False, otherwise it will run in an infinite loop
         self.thumbnail_blurred.save(
-            f"thumbnail_blurred.{filetype.lower()}",
+            f"thumbnail_1x1_blurred.{filetype.lower()}",
             ContentFile(temp_image.read()),
             save=False,
         )
