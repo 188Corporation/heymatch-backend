@@ -60,13 +60,13 @@ class AppleStoreValidatedReceipt(models.Model):
     transaction_id = models.CharField(max_length=48, unique=True)
     original_transaction_id = models.CharField(max_length=48)
     quantity = models.IntegerField()
-    status = models.IntegerField()
+    status = models.IntegerField(null=True, blank=True)
 
     # date
-    receipt_creation_date_ms = models.CharField(max_length=32)
-    request_date_ms = models.CharField(max_length=32)
-    purchase_date_ms = models.CharField(max_length=32)
-    original_purchase_date_ms = models.CharField(max_length=32)
+    receipt_creation_date_ms = models.CharField(max_length=32, null=True, blank=True)
+    request_date_ms = models.CharField(max_length=32, null=True, blank=True)
+    purchase_date_ms = models.CharField(max_length=32, null=True, blank=True)
+    original_purchase_date_ms = models.CharField(max_length=32, null=True, blank=True)
 
     # etc
     is_trial_period = models.BooleanField(null=True, blank=True)

@@ -4,7 +4,6 @@ from itertools import chain
 from typing import Any, Union
 
 from django.conf import settings
-from django.db import IntegrityError
 from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
 from inapppy import InAppPyValidationError
@@ -80,7 +79,7 @@ class ReceiptValidationViewSet(viewsets.ViewSet):
                 validated_receipt = PlayStoreValidatedReceipt.objects.create(
                     receipt=receipt, validated_result=validated_result
                 )
-            except IntegrityError as e:
+            except Exception as e:
                 logger.error(e, exc_info=True)
                 raise ReceiptAlreadyProcessedException()
             purchased_item = self.find_item(validated_receipt.productId, all_items)
@@ -90,7 +89,7 @@ class ReceiptValidationViewSet(viewsets.ViewSet):
                 validated_receipt = AppleStoreValidatedReceipt.objects.create(
                     validated_result=validated_result
                 )
-            except IntegrityError as e:
+            except Exception as e:
                 logger.error(e, exc_info=True)
                 raise ReceiptAlreadyProcessedException()
             purchased_item = self.find_item(validated_receipt.product_id, all_items)
