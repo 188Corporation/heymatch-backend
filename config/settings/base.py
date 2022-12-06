@@ -454,15 +454,15 @@ STREAM_CLIENT = stream_chat.StreamChat(
 # }
 
 # Inappy Validators
-IS_INAPP_TESTING = env("IS_INAPP_TESTING")
+IS_INAPP_TESTING = env.bool("IS_INAPP_TESTING")
 GOOGLE_PLAY_VALIDATOR = GooglePlayVerifier(
     bundle_id=env("GOOGLE_PLAY_BUNDLE_ID"),
     play_console_credentials=env("GOOGLE_PLAY_CONSOLE_SA_PATH"),
 )
 APP_STORE_VALIDATOR = AppStoreValidator(
     bundle_id=env("APP_STORE_BUNDLE_ID"),
-    sandbox=env("IS_INAPP_TESTING"),
-    auto_retry_wrong_env_request=False,
+    sandbox=IS_INAPP_TESTING,
+    auto_retry_wrong_env_request=True,
 )
 
 # Simple History
