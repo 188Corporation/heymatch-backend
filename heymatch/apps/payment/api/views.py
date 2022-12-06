@@ -4,6 +4,7 @@ from itertools import chain
 from typing import Any, Union
 
 from django.conf import settings
+from django.db import IntegrityError
 from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
 from inapppy import InAppPyValidationError
@@ -72,34 +73,44 @@ class ReceiptValidationViewSet(viewsets.ViewSet):
         all_items = list(chain(point_items, free_pass_items))
 
         # Validate receipt
-        if platform == UserPurchase.PlatformChoices.ANDROID:
-            receipt = json.loads(receipt_str)
-            validated_result = self.validate_android_receipt(receipt=receipt)
-            try:
-                validated_receipt = PlayStoreValidatedReceipt.objects.create(
-                    receipt=receipt, validated_result=validated_result
-                )
-            except Exception as e:
-                logger.error(e, exc_info=True)
-                raise ReceiptAlreadyProcessedException()
-            purchased_item = self.find_item(validated_receipt.productId, all_items)
-        elif platform == UserPurchase.PlatformChoices.IOS:
-            validated_result = self.validate_ios_receipt(receipt=receipt_str)
-            try:
-                validated_receipt = AppleStoreValidatedReceipt.objects.create(
-                    validated_result=validated_result
-                )
-            except Exception as e:
-                logger.error(e, exc_info=True)
-                raise ReceiptAlreadyProcessedException()
-            purchased_item = self.find_item(validated_receipt.product_id, all_items)
-        else:
-            raise ReceiptInvalidPlatformRequestException()
+        try:
+            if platform == UserPurchase.PlatformChoices.ANDROID:
+                receipt = json.loads(receipt_str)
+                validated_result = self.validate_android_receipt(receipt=receipt)
+                try:
+                    validated_receipt = PlayStoreValidatedReceipt.objects.create(
+                        receipt=receipt, validated_result=validated_result
+                    )
+                except IntegrityError as e:
+                    logger.error(e, exc_info=True)
+                    raise ReceiptAlreadyProcessedException()
+                purchased_item = self.find_item(validated_receipt.productId, all_items)
+            elif platform == UserPurchase.PlatformChoices.IOS:
+                validated_result = self.validate_ios_receipt(receipt=receipt_str)
+                try:
+                    validated_receipt = AppleStoreValidatedReceipt.objects.create(
+                        validated_result=validated_result
+                    )
+                except IntegrityError as e:
+                    logger.error(e, exc_info=True)
+                    raise ReceiptAlreadyProcessedException()
+                purchased_item = self.find_item(validated_receipt.product_id, all_items)
+            else:
+                raise ReceiptInvalidPlatformRequestException()
 
-        # Process item
-        up: UserPurchase = self.process_purchase(
-            platform=platform, receipt=validated_receipt, purchased_item=purchased_item
-        )
+            # Process item
+            up: UserPurchase = self.process_purchase(
+                platform=platform,
+                receipt=validated_receipt,
+                purchased_item=purchased_item,
+            )
+        # Since payment is critical, catch all exceptions
+        except Exception as e:
+            logger.error(e, exc_info=True)
+            return Response(
+                data="알 수 없는 문제가 생겼어요..😵‍💫",
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
         # Serialize and return
         serializer = UserPurchaseSerializer(instance=up)
