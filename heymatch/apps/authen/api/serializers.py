@@ -70,8 +70,8 @@ class UserLoginByPhoneNumberSerializer(LoginSerializer):
             # get user with phone_number
             try:
                 user = User.active_objects.get(phone_number=phone_number)
-                # user.is_old_user = True
-                # user.save(update_fields=["is_old_user"])
+                user.is_old_user = True
+                user.save(update_fields=["is_old_user"])
             except User.DoesNotExist:
                 user = User.active_objects.create(phone_number=phone_number)
         else:
