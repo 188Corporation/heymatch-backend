@@ -142,7 +142,7 @@ class ReceiptValidationViewSet(viewsets.ViewSet):
             validated_result = dict(
                 apple_store_validator.validate(
                     receipt=receipt,
-                    exclude_old_transactions=False,
+                    exclude_old_transactions=True,
                 )
             )
         except InAppPyValidationError as ex:
