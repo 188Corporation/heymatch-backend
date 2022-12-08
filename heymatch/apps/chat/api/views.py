@@ -139,7 +139,9 @@ class StreamChatViewSet(viewsets.ModelViewSet):
 
         # Deactivate any MatchRequests (there can be multiple since other user of group can
         # delete the previous group and make new one.
-        scs = StreamChannel.objects.filter(participants_users__contains=[other_user_id])
+        scs = StreamChannel.objects.filter(
+            participants__users__contains=[other_user_id]
+        )
         for sc in scs:
             group1_id = list(sc.participants["groups"])[0]
             group2_id = list(sc.participants["groups"])[1]
