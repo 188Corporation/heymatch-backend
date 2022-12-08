@@ -165,7 +165,7 @@ class StreamChatWebHookViewSet(viewsets.ViewSet):
         if not is_valid:
             return Response(
                 data="Webhook validation request body is invalid",
-                status=status.HTTP_401_UNAUTHORIZED,
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         logger.info("DATA:", request.data)
