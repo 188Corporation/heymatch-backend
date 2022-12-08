@@ -92,7 +92,6 @@ class Group(models.Model):
 
 
 def upload_to(instance, filename):
-    print("filename: ", filename)
     _, extension = filename.split(".")
     return f"{settings.AWS_S3_GROUP_PHOTO_FOLDER}/%s.%s" % (uuid.uuid4(), extension)
 

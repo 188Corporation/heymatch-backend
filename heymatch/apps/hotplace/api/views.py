@@ -50,7 +50,7 @@ class HotPlaceNearestViewSet(viewsets.ViewSet):
 
     @swagger_auto_schema(request_body=HotPlaceNearestBodySerializer)
     def nearest(self, request) -> Response:
-        queryset = HotPlace.objects.all()
+        queryset = HotPlace.active_objects.all()
         hotplace = self.get_nearest_hotplace(
             request.data["lat"], request.data["long"], hotplace_qs=queryset
         )

@@ -75,7 +75,7 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
         group_qs = Group.active_objects.all().exclude(id__in=exclude_group_ids)
 
         # prefetch related according to hotplace
-        queryset = HotPlace.objects.prefetch_related(
+        queryset = HotPlace.active_objects.prefetch_related(
             Prefetch("groups", queryset=group_qs)
         )
 

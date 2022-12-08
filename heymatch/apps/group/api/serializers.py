@@ -193,7 +193,7 @@ class GroupCreationSerializer(serializers.ModelSerializer):
         except ValidationError as e:
             raise serializers.ValidationError(detail=str(e))
         hotplace = None
-        for hp in HotPlace.objects.all():
+        for hp in HotPlace.active_objects.all():
             if is_geopt_within_boundary(geopt, hp.zone_boundary_geoinfos):
                 hotplace = hp
                 break
