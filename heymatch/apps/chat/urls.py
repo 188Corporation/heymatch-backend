@@ -10,6 +10,10 @@ stream_chat_webhook_viewset = StreamChatWebHookViewSet.as_view({"post": "hook"})
 
 urlpatterns = [
     path("", stream_chat_list_viewset, name="stream-chat-list-view"),
-    path("<str:stream_cid>/", stream_chat_delete_viewset, name="stream-exit-chat"),
-    path("webhook/", stream_chat_delete_viewset, name="stream-exit-chat"),
+    path(
+        "<str:stream_cid>/",
+        stream_chat_delete_viewset,
+        name="stream-chat-exit-channel-view",
+    ),
+    path("webhook/", stream_chat_webhook_viewset, name="stream-chat-webhook-view"),
 ]

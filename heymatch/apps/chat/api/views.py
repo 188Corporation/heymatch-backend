@@ -18,7 +18,7 @@ from heymatch.shared.permissions import IsUserActive
 
 User = get_user_model()
 stream = settings.STREAM_CLIENT
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 
 class StreamChatViewSet(viewsets.ModelViewSet):
@@ -161,10 +161,11 @@ class StreamChatWebHookViewSet(viewsets.ViewSet):
 
     def hook(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         is_valid = stream.verify_webhook(request.body, request.META["HTTP_X_SIGNATURE"])
+
         if not is_valid:
             return Response(
                 data="Webhook validation request body is invalid",
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
-        logger.critical("DATA:", request.data)
+        logger.info("DATA:", request.data)
