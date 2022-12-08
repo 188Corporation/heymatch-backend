@@ -133,8 +133,8 @@ class StreamChatViewSet(viewsets.ModelViewSet):
         stream.delete_channels(cids=[sc.cid])
 
         # Deactivate MatchRequest
-        group1_id = sc.participants["groups"].keys()[0]
-        group2_id = sc.participants["groups"].keys()[1]
+        group1_id = list(sc.participants["groups"])[0]
+        group2_id = list(sc.participants["groups"])[1]
 
         MatchRequest.active_objects.filter(
             Q(sender_group_id=int(group1_id)) & Q(receiver_group_id=int(group2_id))
