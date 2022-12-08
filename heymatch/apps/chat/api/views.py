@@ -4,6 +4,7 @@ from typing import Any
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -132,12 +133,14 @@ class StreamChatViewSet(viewsets.ModelViewSet):
         stream.delete_channels(cids=[sc.cid])
 
         # Deactivate MatchRequest
-        for group_id in sc.participants["groups"].keys():
-            MatchRequest.active_objects.filter(sender_group_id=int(group_id)).update(
-                is_active=False
-            )
-            MatchRequest.active_objects.filter(receiver_group_id=int(group_id)).update(
-                is_active=False
-            )
+        group1_id = sc.participants["groups"].keys()[0]
+        group2_id = sc.participants["groups"].keys()[1]
+
+        MatchRequest.active_objects.filter(
+            Q(sender_group_id=int(group1_id)) & Q(receiver_group_id=int(group2_id))
+        ).update(is_active=False)
+        MatchRequest.active_objects.filter(
+            Q(sender_group_id=int(group2_id)) & Q(receiver_group_id=int(group1_id))
+        ).update(is_active=False)
 
         return Response(status=status.HTTP_200_OK)
