@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from rest_framework import status, viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -154,3 +154,17 @@ class StreamChatViewSet(viewsets.ModelViewSet):
             ).update(is_active=False)
 
         return Response(status=status.HTTP_200_OK)
+
+
+class StreamChatWebHookViewSet(viewsets.ViewSet):
+    permission_classes = [AllowAny]
+
+    def hook(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        is_valid = stream.verify_webhook(request.body, request.META["HTTP_X_SIGNATURE"])
+        if not is_valid:
+            return Response(
+                data="Webhook validation request body is invalid",
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        logger.critical("DATA:", request.data)
