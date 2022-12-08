@@ -126,21 +126,29 @@ class StreamChatViewSet(viewsets.ModelViewSet):
         sc = StreamChannel.objects.filter(
             cid=kwargs["stream_cid"]
         ).first()  # there can be multiple
-        if str(request.user.id) not in sc.participants["users"]:
+
+        users = sc.participants["users"]
+        if str(request.user.id) not in users:
             raise PermissionDenied("You are not owner of stream channel.")
 
         # soft-delete channel
         stream.delete_channels(cids=[sc.cid])
 
-        # Deactivate MatchRequest
-        group1_id = list(sc.participants["groups"])[0]
-        group2_id = list(sc.participants["groups"])[1]
+        # Get other user.id
+        other_user_id = users.remove(request.user.id)
 
-        MatchRequest.active_objects.filter(
-            Q(sender_group_id=int(group1_id)) & Q(receiver_group_id=int(group2_id))
-        ).update(is_active=False)
-        MatchRequest.active_objects.filter(
-            Q(sender_group_id=int(group2_id)) & Q(receiver_group_id=int(group1_id))
-        ).update(is_active=False)
+        # Deactivate any MatchRequests (there can be multiple since other user of group can
+        # delete the previous group and make new one.
+        scs = StreamChannel.objects.filter(participants_users__contains=[other_user_id])
+        for sc in scs:
+            group1_id = list(sc.participants["groups"])[0]
+            group2_id = list(sc.participants["groups"])[1]
+
+            MatchRequest.active_objects.filter(
+                Q(sender_group_id=int(group1_id)) & Q(receiver_group_id=int(group2_id))
+            ).update(is_active=False)
+            MatchRequest.active_objects.filter(
+                Q(sender_group_id=int(group2_id)) & Q(receiver_group_id=int(group1_id))
+            ).update(is_active=False)
 
         return Response(status=status.HTTP_200_OK)
