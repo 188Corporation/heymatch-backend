@@ -135,7 +135,7 @@ class StreamChatViewSet(viewsets.ModelViewSet):
         stream.delete_channels(cids=[sc.cid])
 
         # Get other user.id
-        other_user_id = users.remove(request.user.id)
+        other_user_id = users.remove(str(request.user.id))
 
         # Deactivate any MatchRequests (there can be multiple since other user of group can
         # delete the previous group and make new one.
