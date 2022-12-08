@@ -160,8 +160,6 @@ class StreamChatWebHookViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]
 
     def hook(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        logger.info("BODY:", request.body)
-        logger.info("SIG:", request.META["HTTP_X_SIGNATURE"])
         is_valid = stream.verify_webhook(request.body, request.META["HTTP_X_SIGNATURE"])
 
         if not is_valid:
@@ -170,4 +168,4 @@ class StreamChatWebHookViewSet(viewsets.ViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        logger.info("DATA:", request.data)
+        return Response(status=status.HTTP_200_OK)
