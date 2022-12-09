@@ -144,7 +144,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
             content=f"[{user.joined_group.title}] 그룹으로부터 매칭요청을 받았어요! 수락하면 바로 채팅할 수 있어요 😀",
             user_ids=[str(receiver_user.id)],
         )
-        logger.info(f"OneSignal response: {res}")
+        logger.debug(f"OneSignal response for Match request: {res}")
         # TODO: handle OneSignal response
 
         serializer = ReceivedMatchRequestSerializer(instance=mr)
@@ -214,7 +214,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
             content=f"[{request.user.joined_group.title}] 그룹이 매칭요청을 수락했어요!! 지금 바로 메세지를 보내봐요 🎉",
             user_ids=[str(sender_user.id)],
         )
-        logger.info(f"OneSignal response: {res}")
+        logger.debug(f"OneSignal response for Match Success: {res}")
         # TODO: handle OneSignal response
 
         serializer = self.get_serializer(instance=mr)
@@ -240,7 +240,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
             content=f"[{request.user.joined_group.title}] 그룹이 매칭요청을 거절했어요..😥 다른 그룹을 찾아봐요!",
             user_ids=[str(sender_user.id)],
         )
-        logger.info(f"OneSignal response: {res}")
+        logger.debug(f"OneSignal response for Match deny: {res}")
         # TODO: handle OneSignal response
 
         serializer = self.get_serializer(instance=mr)

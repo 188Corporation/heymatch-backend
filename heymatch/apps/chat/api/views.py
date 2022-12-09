@@ -19,6 +19,7 @@ from heymatch.shared.permissions import IsUserActive
 User = get_user_model()
 stream = settings.STREAM_CLIENT
 logger = logging.getLogger()
+onesignal_client = settings.ONE_SIGNAL_CLIENT
 
 
 class StreamChatViewSet(viewsets.ModelViewSet):
@@ -160,14 +161,136 @@ class StreamChatWebHookViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]
 
     def hook(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        """
+        Webhook Message format
+            {
+                "type": "message.new",
+                "cid": "messaging:!members-9fb-LLVDHrWzp8Y9BJpOJhsyMnzO2F3yzkTjlNeM9Is",
+                "channel_id": "!members-9fb-LLVDHrWzp8Y9BJpOJhsyMnzO2F3yzkTjlNeM9Is",
+                "channel_type": "messaging",
+                "message": {
+                    "id": "82ddf881-ace6-4041-a615-c242ea4724c0",
+                    "text": "리리",
+                    "html": "<p>리리</p>\n",
+                    "type": "regular",
+                    "user": {
+                        "id": "20b39e2e-9aca-4470-8f85-ee6706338c95",
+                        "role": "user",
+                        "created_at": "2022-12-05T05:19:50.645351Z",
+                        "updated_at": "2022-12-05T05:19:50.645351Z",
+                        "last_active": "2022-12-09T02:18:00.679971296Z",
+                        "banned": False,
+                        "online": True,
+                    },
+                    "attachments": [],
+                    "latest_reactions": [],
+                    "own_reactions": [],
+                    "reaction_counts": {},
+                    "reaction_scores": {},
+                    "reply_count": 0,
+                    "cid": "messaging:!members-9fb-LLVDHrWzp8Y9BJpOJhsyMnzO2F3yzkTjlNeM9Is",
+                    "created_at": "2022-12-09T02:18:04.312673Z",
+                    "updated_at": "2022-12-09T02:18:04.312673Z",
+                    "shadowed": False,
+                    "mentioned_users": [],
+                    "silent": False,
+                    "pinned": False,
+                    "pinned_at": None,
+                    "pinned_by": None,
+                    "pin_expires": None,
+                },
+                "user": {
+                    "id": "20b39e2e-9aca-4470-8f85-ee6706338c95",
+                    "role": "user",
+                    "created_at": "2022-12-05T05:19:50.645351Z",
+                    "updated_at": "2022-12-05T05:19:50.645351Z",
+                    "last_active": "2022-12-09T02:18:00.679971296Z",
+                    "banned": False,
+                    "online": True,
+                    "channel_unread_count": 0,
+                    "channel_last_read_at": "2022-12-08T16:47:19.687913984Z",
+                    "total_unread_count": 0,
+                    "unread_channels": 0,
+                    "unread_count": 0,
+                },
+                "watcher_count": 1,
+                "created_at": "2022-12-09T02:18:04.331201052Z",
+                "members": [
+                    {
+                        "user_id": "20b39e2e-9aca-4470-8f85-ee6706338c95",
+                        "user": {
+                            "id": "20b39e2e-9aca-4470-8f85-ee6706338c95",
+                            "role": "user",
+                            "created_at": "2022-12-05T05:19:50.645351Z",
+                            "updated_at": "2022-12-05T05:19:50.645351Z",
+                            "last_active": "2022-12-09T02:18:00.679971296Z",
+                            "banned": False,
+                            "online": True,
+                            "channel_last_read_at": "2022-12-08T16:47:19.687913984Z",
+                            "total_unread_count": 0,
+                            "unread_channels": 0,
+                            "unread_count": 0,
+                            "channel_unread_count": 0,
+                        },
+                        "created_at": "2022-12-08T16:41:14.272136Z",
+                        "updated_at": "2022-12-08T16:41:14.272136Z",
+                        "banned": False,
+                        "shadow_banned": False,
+                        "role": "member",
+                        "channel_role": "channel_member",
+                    },
+                    {
+                        "user_id": "2f4f60ec-fdc2-4551-bd16-1da8056e0862",
+                        "user": {
+                            "id": "2f4f60ec-fdc2-4551-bd16-1da8056e0862",
+                            "role": "user",
+                            "created_at": "2022-12-04T19:09:07.009742Z",
+                            "updated_at": "2022-12-04T19:09:07.009742Z",
+                            "last_active": "2022-12-08T16:53:50.311381402Z",
+                            "banned": False,
+                            "online": False,
+                            "unread_channels": 1,
+                            "unread_count": 21,
+                            "channel_unread_count": 21,
+                            "channel_last_read_at": "2022-12-08T16:41:49.922396672Z",
+                            "total_unread_count": 21,
+                        },
+                        "created_at": "2022-12-08T16:41:14.272136Z",
+                        "updated_at": "2022-12-08T16:41:14.272136Z",
+                        "banned": False,
+                        "shadow_banned": False,
+                        "role": "owner",
+                        "channel_role": "channel_member",
+                    },
+                ],
+                "message_id": "82ddf881-ace6-4041-a615-c242ea4724c0",
+            }
+        """
         is_valid = stream.verify_webhook(request.body, request.META["HTTP_X_SIGNATURE"])
         if not is_valid:
             return Response(
                 data="Webhook validation request body is invalid",
-                status=status.HTTP_400_BAD_REQUEST,
+                status=status.HTTP_401_UNAUTHORIZED,
             )
 
-        logger.info(request.data)
-        print(request.data)
+        sender_user_id = request.data["user"]["id"]
+        receiver_user_id = None
+        for member in request.data["members"]:
+            if member["user_id"] != sender_user_id:
+                receiver_user_id = member["user_id"]
+                break
+
+        if not receiver_user_id:
+            return Response(
+                data="Could not find webhook message receiver user id",
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        res = onesignal_client.send_notification_to_specific_users(
+            title="세 매세지가 왔어요!",
+            content="세 메세지가 왔어요!",
+            user_ids=[receiver_user_id],
+        )
+        logger.debug(f"OneSignal response for Stream Webhook message: {res}")
 
         return Response(status=status.HTTP_200_OK)
