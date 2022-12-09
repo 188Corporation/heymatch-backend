@@ -161,11 +161,13 @@ class StreamChatWebHookViewSet(viewsets.ViewSet):
 
     def hook(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         is_valid = stream.verify_webhook(request.body, request.META["HTTP_X_SIGNATURE"])
-
         if not is_valid:
             return Response(
                 data="Webhook validation request body is invalid",
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+        logger.info(request.data)
+        print(request.data)
 
         return Response(status=status.HTTP_200_OK)
