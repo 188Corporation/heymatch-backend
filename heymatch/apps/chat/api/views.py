@@ -276,31 +276,27 @@ class StreamChatWebHookViewSet(viewsets.ViewSet):
         if not request.data:
             return Response(status=status.HTTP_200_OK)
 
-        print(request.data)
+        if request.data["type"] == "message.new":
+            sender_user_id = request.data["user"]["id"]
+            receiver_user_id = None
+            for member in request.data["members"]:
+                if member["user_id"] != sender_user_id:
+                    receiver_user_id = member["user_id"]
+                    break
 
-        sender_user_id = request.data["user"]["id"]
-        receiver_user_id = None
-        is_all_online = True
-        for member in request.data["members"]:
-            # mark all online False if any of member is offline
-            is_all_online = (
-                False if not bool(member["user"]["online"]) else is_all_online
+            if not receiver_user_id:
+                return Response(
+                    data="Could not find webhook message receiver user id",
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+
+            res = onesignal_client.send_notification_to_specific_users(
+                title="새로운 매세지가 왔어요!",
+                content="새로운 메세지가 왔어요! ",
+                user_ids=[receiver_user_id],
             )
-            if member["user_id"] != sender_user_id:
-                receiver_user_id = member["user_id"]
-                break
-
-        if not receiver_user_id:
-            return Response(
-                data="Could not find webhook message receiver user id",
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
-        res = onesignal_client.send_notification_to_specific_users(
-            title="새로운 매세지가 왔어요!",
-            content="새로운 메세지가 왔어요! ",
-            user_ids=[receiver_user_id],
-        )
-        logger.debug(f"OneSignal response for Stream Webhook message: {res}")
+            logger.debug(f"OneSignal response for Stream Webhook message: {res}")
+        else:
+            pass
 
         return Response(status=status.HTTP_200_OK)
