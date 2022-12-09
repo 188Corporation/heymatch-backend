@@ -287,8 +287,8 @@ class StreamChatWebHookViewSet(viewsets.ViewSet):
             )
 
         res = onesignal_client.send_notification_to_specific_users(
-            title="세 매세지가 왔어요!",
-            content="세 메세지가 왔어요!",
+            title="새로운 매세지가 왔어요!",
+            content="새로운 메세지가 왔어요! ",
             user_ids=[receiver_user_id],
         )
         logger.debug(f"OneSignal response for Stream Webhook message: {res}")
