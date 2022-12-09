@@ -277,9 +277,13 @@ class StreamChatWebHookViewSet(viewsets.ViewSet):
             return Response(status=status.HTTP_200_OK)
 
         sender_user_id = request.data["user"]["id"]
-        print("DATA: ", request.data)
         receiver_user_id = None
+        is_all_online = True
         for member in request.data["members"]:
+            # mark all online False if any of member is offline
+            is_all_online = (
+                False if not bool(member["user"]["online"]) else is_all_online
+            )
             if member["user_id"] != sender_user_id:
                 receiver_user_id = member["user_id"]
                 break
