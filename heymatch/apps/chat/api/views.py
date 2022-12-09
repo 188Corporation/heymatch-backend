@@ -273,8 +273,11 @@ class StreamChatWebHookViewSet(viewsets.ViewSet):
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
+        if not request.data:
+            return Response(status=status.HTTP_200_OK)
+
         sender_user_id = request.data["user"]["id"]
-        logger.info("DATA: ", request.data)
+        print("DATA: ", request.data)
         receiver_user_id = None
         for member in request.data["members"]:
             if member["user_id"] != sender_user_id:
