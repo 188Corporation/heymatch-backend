@@ -38,7 +38,7 @@ def end_of_the_day_task():
     logger.info(f"[2] Groups count: {len(groups)}")
     groups.update(is_active=False)
     # TODO: for a moment, just randomly pick and make them inactive
-    groups = Group.active_objects.all()
+    groups = Group.objects.all()
     groups = random.sample(list(groups), 10)
     groups.update(is_active=True)
 
