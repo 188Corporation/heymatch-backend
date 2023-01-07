@@ -37,8 +37,8 @@ def end_of_the_day_task():
     logger.info(f"[2] Groups count: {len(groups)}")
     groups.update(is_active=False)
     # TODO: for a moment, just randomly pick and make them inactive
-    groups = Group.objects.order_by("?")[:15]
-    groups.update(is_active=True)
+    group_ids = Group.objects.order_by("?")[:15]
+    Group.objects.filter(id__in=group_ids).update(is_active=True)
 
     # Make MatchRequest inactive
     logger.info("[3] Make MatchRequest inactive")
