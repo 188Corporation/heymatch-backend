@@ -96,6 +96,7 @@ def upload_to(instance, filename):
     return f"{settings.AWS_S3_GROUP_PHOTO_FOLDER}/%s.%s" % (uuid.uuid4(), extension)
 
 
+# TODO(@jin): LEGACY - Should delete GroupProfileImage related models and endpoints
 class GroupProfileImage(OrderedModel):
     group = models.ForeignKey(
         "group.Group",

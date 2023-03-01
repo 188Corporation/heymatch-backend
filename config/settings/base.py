@@ -293,18 +293,19 @@ CELERY_TASK_SOFT_TIME_LIMIT = 60
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#beat-scheduler
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 CELERY_BEAT_SCHEDULE = {
-    # Disable groups, matches, chat at the end of the day
-    "end-of-the-day": {
-        "task": "heymatch.apps.celery.tasks.end_of_the_day_task",
-        "schedule": crontab(minute=0, hour=5),  # execute daily at 5 a.m
-        "args": (),
-    },
     # Process DeleteScheduledUsers
     "delete-scheduled-users": {
         "task": "heymatch.apps.celery.tasks.delete_scheduled_users",
         "schedule": crontab(minute=0, hour="*/1"),  # execute every hour
         "args": (),
     },
+    # NOTE: We do not delete groups anymore
+    # Disable groups, matches, chat at the end of the day
+    # "end-of-the-day": {
+    #     "task": "heymatch.apps.celery.tasks.end_of_the_day_task",
+    #     "schedule": crontab(minute=0, hour=5),  # execute daily at 5 a.m
+    #     "args": (),
+    # },
 }
 
 # django-allauth
@@ -436,6 +437,7 @@ AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
 AWS_S3_REGION_NAME = "ap-northeast-2"
 AWS_S3_SIGNATURE_VERSION = "s3v4"
 AWS_S3_GROUP_PHOTO_FOLDER = "group_photos"
+AWS_S3_USER_PROFILE_PHOTO_FOLDER = "user_profile_photos"
 
 # stream-django
 STREAM_API_KEY = env("STREAM_API_KEY")

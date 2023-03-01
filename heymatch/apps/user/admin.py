@@ -5,7 +5,7 @@ from simple_history.admin import SimpleHistoryAdmin
 
 from heymatch.apps.user.forms import UserChangeForm, UserCreationForm
 
-from .models import AppInfo, DeleteScheduledUser, FakeChatUser
+from .models import AppInfo, DeleteScheduledUser, FakeChatUser, UserProfileImage
 
 User = get_user_model()
 
@@ -21,9 +21,10 @@ class UserAdmin(SimpleHistoryAdmin):
             {
                 "fields": (
                     "phone_number",
-                    # "birthdate",
-                    # "gender",
-                    # "height_cm",
+                    "birthdate",
+                    "gender",
+                    "height_cm",
+                    "body_form",
                     # "workplace",
                     # "school",
                 )
@@ -56,7 +57,7 @@ class UserAdmin(SimpleHistoryAdmin):
                     "is_deleted",
                     "is_staff",
                     "is_superuser",
-                    "is_old_user",
+                    "agreed_to_terms",
                 ),
             },
         ),
@@ -67,9 +68,10 @@ class UserAdmin(SimpleHistoryAdmin):
         "username",
         "phone_number",
         # "age",
-        # "birthdate",
-        # "gender",
-        # "height_cm",
+        "birthdate",
+        "gender",
+        "height_cm",
+        "body_form",
         # "workplace",
         # "school",
         "joined_group",
@@ -81,7 +83,7 @@ class UserAdmin(SimpleHistoryAdmin):
         "is_active",
         "is_deleted",
         "stream_token",
-        "is_old_user",
+        "agreed_to_terms",
     ]
     history_list_display = [
         "status",
@@ -94,9 +96,10 @@ class UserAdmin(SimpleHistoryAdmin):
         "username",
         "phone_number",
         # "age",
-        # "birthdate",
-        # "gender",
-        # "height_cm",
+        "birthdate",
+        "gender",
+        "height_cm",
+        "body_form",
         # "school",
         "joined_group",
         # "is_group_leader",
@@ -107,7 +110,30 @@ class UserAdmin(SimpleHistoryAdmin):
         "is_active",
         "is_deleted",
         "stream_token",
-        "is_old_user",
+        "agreed_to_terms",
+    ]
+
+
+@admin.register(UserProfileImage)
+class UserProfilePhotoAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "user",
+        "image",
+        "image_blurred",
+        "thumbnail",
+        "thumbnail_blurred",
+        "order",
+    ]
+    history_list_display = ["status", *list_display]
+    search_fields = [
+        "id",
+        "user",
+        "image",
+        "image_blurred",
+        "thumbnail",
+        "thumbnail_blurred",
+        "order",
     ]
 
 
