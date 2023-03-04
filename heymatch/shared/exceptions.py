@@ -28,6 +28,11 @@ class UserDeletedException(BasePermissionDeniedException):
     detail = "회원 탈퇴한 유저입니다 😰"
 
 
+class UserMainProfileImageNotFound(BasePermissionDeniedException):
+    status_code = 453
+    detail = "Should provide main profile image per user"
+
+
 class UserNotJoinedGroupException(BasePermissionDeniedException):
     status_code = 461
     detail = "그룹을 먼저 만들어 주세요! 😎"

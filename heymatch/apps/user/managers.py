@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
 from django.db.models import Q
 from django.db.models.query import QuerySet
+from ordered_model.models import OrderedModelManager
 
 stream = settings.STREAM_CLIENT
 
@@ -70,3 +71,8 @@ class ActiveUserManager(UserManager):
         #     user.age = calculate_age_from_birthdate(user.birthdate)
         user.save(using=self._db)
         return user
+
+
+class ActiveUserProfileManager(OrderedModelManager):
+    def get_queryset(self) -> QuerySet:
+        return super().get_queryset().filter(is_active=True)

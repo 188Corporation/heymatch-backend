@@ -10,7 +10,11 @@ urlpatterns = [
     path(
         "my/",
         UserWithGroupFullInfoViewSet.as_view(
-            {"get": "retrieve", "delete": "schedule_delete"}
+            {
+                "get": "retrieve",
+                "put": "update",
+                "delete": "schedule_delete",
+            }
         ),
         name="user-my-detail",
     ),

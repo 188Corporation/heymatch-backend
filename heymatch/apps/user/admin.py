@@ -20,6 +20,7 @@ class UserAdmin(SimpleHistoryAdmin):
             _("Personal info"),
             {
                 "fields": (
+                    "is_first_signup",
                     "phone_number",
                     "birthdate",
                     "gender",
@@ -65,6 +66,7 @@ class UserAdmin(SimpleHistoryAdmin):
     )
     list_display = [
         "id",
+        "is_first_signup",
         "username",
         "phone_number",
         # "age",
@@ -93,6 +95,7 @@ class UserAdmin(SimpleHistoryAdmin):
     ]
     search_fields = [
         "id",
+        "is_first_signup",
         "username",
         "phone_number",
         # "age",

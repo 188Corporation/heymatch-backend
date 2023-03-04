@@ -17,7 +17,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 from PIL import Image, ImageFilter, ImageOps
 from simple_history.models import HistoricalRecords
 
-from .managers import ActiveUserManager, UserManager
+from .managers import ActiveUserManager, ActiveUserProfileManager, UserManager
 
 MAX_HEIGHT_CM = 210
 MIN_HEIGHT_CM = 155
@@ -52,6 +52,17 @@ class User(AbstractUser):
         ("high_school", "고등학교"),
         ("bachelor", "학사"),
         ("master_or_above", "석박사"),
+        ("medical_graduate", "의/약/치전원"),
+        ("law_school", "로스쿨"),
+        ("etc", "기타"),
+    )
+    JOB_CHOICES = (
+        ("college_student", "대학생"),
+        ("employee", "직장인"),
+        ("self_employed", "자영업"),
+        ("part_time", "파트타임"),
+        ("businessman", "사업가"),
+        ("etc", "기타"),
     )
     # stream.io
     stream_token = models.TextField()
@@ -60,6 +71,9 @@ class User(AbstractUser):
     id = models.UUIDField(
         primary_key=True, blank=False, null=False, editable=False, default=uuid4
     )
+    # flag that points whether user is first signup or not
+    # use this flag to decide to show registration form or not
+    is_first_signup = models.BooleanField(default=True)
     username = models.CharField(
         unique=True,
         blank=False,
@@ -87,9 +101,24 @@ class User(AbstractUser):
     body_form = models.CharField(
         blank=True, null=True, max_length=15, choices=BODY_FORM_CHOICES
     )
-    # final_education = models.CharField(blank=True, null=True, max_length=32) # 최종 학력
-    # school_name = models.CharField(blank=True, null=True, max_length=32)
-    # workplace = models.CharField(blank=True, null=True, max_length=32)
+    # 학력 관련
+    final_education = models.CharField(
+        blank=True,
+        null=True,
+        max_length=32,
+        choices=FINAL_EDUCATION_CHOICES,
+        default=None,
+    )  # 최종 학력
+
+    school_name = models.CharField(
+        blank=True, null=True, max_length=32, default=None
+    )  # 학교 이름
+    is_school_verified = models.BooleanField(default=False)  # 학교 인증 여부
+    # 직업 관련
+    job_title = models.CharField(
+        blank=True, null=True, max_length=32, choices=JOB_CHOICES, default=None
+    )
+    is_company_verified = models.BooleanField(default=False)  # 직업=직장인 경우에만
 
     # Group related
     joined_group = models.ForeignKey(
@@ -152,6 +181,8 @@ class UserProfileImage(OrderedModel):
     history = HistoricalRecords()
 
     order_with_respect_to = "user"
+
+    active_objects = ActiveUserProfileManager()
 
     def save(self, *args, **kwargs):
         image = Image.open(self.image)
