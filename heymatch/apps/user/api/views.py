@@ -63,10 +63,13 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
             if not main_profile_image:
                 if not UserProfileImage.active_objects.filter(is_main=True).exists():
                     raise UserMainProfileImageNotFound()
-                else:
-                    UserProfileImage.active_objects.create(
-                        user=request.user, image=main_profile_image, is_main=True
-                    )
+            else:
+                UserProfileImage.active_objects.create(
+                    user=request.user,
+                    image=main_profile_image,
+                    is_main=True,
+                    status=UserProfileImage.STATUS_CHOICES[1][0],  # "u"
+                )
             # process other profile image
             other_profile_image_1: InMemoryUploadedFile or None = (
                 serializer.validated_data.pop("other_profile_image_1", None)
@@ -83,7 +86,8 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
             serializer.validated_data["is_first_signup"] = False
         # normal update flow
         else:
-            # TODO: WIP
+            # TODO: WIP. Should deal with image update.
+            #  Make old one inactive, deal with ordering etc.
             pass
 
         # user fields without image data

@@ -8,11 +8,36 @@ from django.utils import timezone
 
 from heymatch.apps.group.models import Group
 from heymatch.apps.match.models import MatchRequest
-from heymatch.apps.user.models import DeleteScheduledUser
+from heymatch.apps.user.models import DeleteScheduledUser, UserProfileImage
+from heymatch.utils.util import detect_face_with_haar_cascade_ml
 
 User = get_user_model()
 stream = settings.STREAM_CLIENT
 logger = logging.getLogger(__name__)
+
+
+@shared_task(soft_time_limit=60)
+def verify_main_profile_images():
+    logger.info("==================================================")
+    logger.info("=== 'verify_main_profile_images' task started! ===")
+    logger.info("==================================================")
+
+    logger.info("[1] Get target profile images to be verified")
+    target_upi_qs = UserProfileImage.active_objects.filter(
+        Q(is_main=True)
+        & (
+            Q(status=UserProfileImage.STATUS_CHOICES[0][0])
+            | Q(status=UserProfileImage.STATUS_CHOICES[1][0])
+        )
+    )
+    logger.info(f"[1] Target images to be verified: {target_upi_qs}")
+
+    # TODO: face detection ML model
+
+    # Create the haar cascade
+    for upi in target_upi_qs:  # type: UserProfileImage
+        faces_num = detect_face_with_haar_cascade_ml(upi.image.url)
+        logger.info(f"Found {faces_num} faces!")
 
 
 @shared_task(soft_time_limit=60)

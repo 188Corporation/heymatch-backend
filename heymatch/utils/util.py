@@ -1,8 +1,11 @@
 import decimal
+import urllib
 from datetime import datetime
 from random import randint, uniform
 from typing import Sequence
 
+import cv2
+import numpy as np
 from django_google_maps.fields import GeoPt
 from factory import random
 from factory.fuzzy import BaseFuzzyAttribute
@@ -98,3 +101,50 @@ def is_geopt_within_boundary(geopt: GeoPt, boundary_geopts: Sequence[GeoPt]) -> 
     polygon = Polygon([(geopt.lat, geopt.lon) for geopt in boundary_geopts])
     pnt = Point(geopt.lat, geopt.lon)
     return polygon.contains(pnt)
+
+
+def url_to_image(url: str):
+    resp = urllib.request.urlopen(url)
+    image = np.asarray(bytearray(resp.read()), dtype="uint8")
+    image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+    return image
+
+
+def detect_face_with_haar_cascade_ml(s3_url: str):
+    face_cascade = cv2.CascadeClassifier(
+        cv2.data.haarcascades + "haarcascade_frontalface_alt2.xml"
+    )
+
+    # Read the image
+    image = url_to_image(s3_url)
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # =====================
+    # === NOTE(@Ayoung)
+    # =====================
+    # Detect faces in the image
+    # image : Matrix of the type CV_8U containing an image where objects are detected.
+    # scaleFactor : Parameter specifying how much the image size is reduced at each image scale.
+    # (default=1.1) # 높일수록 탐지성공률 감소, 연산량 감소
+    #               This scale factor is used to create scale pyramid as shown in the picture.
+    #               Suppose, the scale factor is 1.03, it means we're using a small step for resizing,
+    #               i.e. reduce size by 3 %,
+    #               we increase the chance of a matching size with the model for detection is found,
+    #               while it's expensive.
+    # 높일수록 탐지성공률 감소, 정확도 증가
+    # minNeighbors : Parameter specifying how many neighbors each candidate rectangle should have to retain it.
+    #                This parameter will affect the quality of the detected faces: higher value results in less
+    #                detections but with higher quality. We're using 5 in the code.
+    # flags : Parameter with the same meaning for an old cascade as in the function cvHaarDetectObjects.
+    # It is not used for a new cascade.
+    # minSize : Minimum possible object size. Objects smaller than that are ignored.
+    # maxSize : Maximum possible object size. Objects larger than that are ignored.
+
+    faces = face_cascade.detectMultiScale(
+        gray,
+        scaleFactor=1.1,
+        minNeighbors=5,
+        minSize=(30, 30),
+        flags=cv2.CASCADE_SCALE_IMAGE,
+    )
+    return len(faces)

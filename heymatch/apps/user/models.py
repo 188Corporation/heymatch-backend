@@ -164,14 +164,26 @@ def upload_to(instance, filename):
 
 
 class UserProfileImage(OrderedModel):
+    STATUS_CHOICES = (
+        ("n", "Not verified"),
+        ("u", "Under verification"),
+        ("a", "Accepted"),
+        ("r", "Rejected"),
+    )
     user = models.ForeignKey(
         "user.User",
         null=False,
         on_delete=models.PROTECT,
         related_name="user_profile_images",
     )
-    is_main = models.BooleanField(default=False)  # 메인 프로필 사진 (필수로 심사받아야함)
-    is_verified = models.BooleanField(default=False)  # 심사완료
+    is_main = models.BooleanField(default=False)  # 메인 프로필 사진 (필수로 심사 받아야함)
+    status = models.CharField(
+        blank=True,
+        null=True,
+        default=STATUS_CHOICES[0][0],
+        choices=STATUS_CHOICES,
+        max_length=1,
+    )
     image = models.ImageField(upload_to=upload_to)
     image_blurred = models.ImageField(upload_to=upload_to)
     thumbnail = models.ImageField(upload_to=upload_to)
@@ -179,6 +191,9 @@ class UserProfileImage(OrderedModel):
 
     # History
     history = HistoricalRecords()
+
+    # ProfileImage Lifecycle
+    is_active = models.BooleanField(blank=False, null=False, default=True)
 
     order_with_respect_to = "user"
 

@@ -2,10 +2,33 @@ from rest_framework import serializers
 
 from heymatch.apps.group.api.serializers import FullGroupProfileSerializer
 from heymatch.apps.payment.api.serializers import SimpleUserPurchaseSerializer
-from heymatch.apps.user.models import AppInfo, DeleteScheduledUser, User
+from heymatch.apps.user.models import (
+    AppInfo,
+    DeleteScheduledUser,
+    User,
+    UserProfileImage,
+)
+
+
+class UserProfileImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfileImage
+        fields = [
+            "is_main",
+            "status",
+            "image",
+            "image_blurred",
+            "thumbnail",
+            "thumbnail_blurred",
+            "order",
+            "is_active",
+        ]
 
 
 class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
+    user_profile_images = UserProfileImageSerializer(
+        "user_profile_images", many=True, read_only=True
+    )
     joined_group = FullGroupProfileSerializer(read_only=True)
     user_purchases = SimpleUserPurchaseSerializer(read_only=True, many=True)
 
@@ -31,6 +54,7 @@ class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
             "user_purchases",
             "free_pass",
             "free_pass_active_until",
+            "user_profile_images",
             "joined_group",
             "agreed_to_terms",
         ]
