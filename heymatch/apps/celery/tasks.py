@@ -40,8 +40,9 @@ def verify_main_profile_images():
             logger.info(f"UserProfile(id={upi.id}) ACCEPTED!")
         else:
             upi.status = UserProfileImage.STATUS_CHOICES[3][0]
+            upi.is_active = False
             logger.info(f"UserProfile(id={upi.id}) REJECTED! (faces num = {faces_num})")
-        upi.save(update_fields=["status"])
+        upi.save(update_fields=["status", "is_active"])
 
 
 @shared_task(soft_time_limit=60)
