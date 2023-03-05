@@ -297,7 +297,7 @@ CELERY_BEAT_SCHEDULE = {
     # Verify main UserProfileImages
     "verify-main-profile-images": {
         "task": "heymatch.apps.celery.tasks.verify_main_profile_images",
-        "schedule": timedelta(seconds=15),  # execute every 15 secs
+        "schedule": timedelta(seconds=30),  # execute every 30 secs
         "args": (),
     },
     # Process DeleteScheduledUsers

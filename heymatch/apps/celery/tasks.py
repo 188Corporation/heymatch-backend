@@ -32,12 +32,16 @@ def verify_main_profile_images():
     )
     logger.info(f"[1] Target images to be verified: {target_upi_qs}")
 
-    # TODO: face detection ML model
-
     # Create the haar cascade
     for upi in target_upi_qs:  # type: UserProfileImage
         faces_num = detect_face_with_haar_cascade_ml(upi.image.url)
-        logger.info(f"Found {faces_num} faces!")
+        if faces_num == 1:
+            upi.status = UserProfileImage.STATUS_CHOICES[2][0]
+            logger.info(f"UserProfile(id={upi.id}) ACCEPTED!")
+        else:
+            upi.status = UserProfileImage.STATUS_CHOICES[3][0]
+            logger.info(f"UserProfile(id={upi.id}) REJECTED! (faces num = {faces_num})")
+        upi.save(update_fields=["status"])
 
 
 @shared_task(soft_time_limit=60)
