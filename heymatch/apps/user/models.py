@@ -40,12 +40,20 @@ class User(AbstractUser):
         ("f", "Female"),
         ("o", "Other"),
     )
-    BODY_FORM_CHOICES = (
+    MALE_BODY_FORM_CHOICES = (
         ("thin", "마른"),
         ("slender", "슬림탄탄"),
         ("normal", "보통"),
         ("chubby", "통통한"),
         ("muscular", "근육질의"),
+        ("bulky", "덩치가있는"),
+    )
+    FEMALE_BODY_FORM_CHOICES = (
+        ("thin", "마른"),
+        ("slender", "슬림탄탄"),
+        ("normal", "보통"),
+        ("chubby", "통통한"),
+        ("glamourous", "글래머러스한"),
         ("bulky", "덩치가있는"),
     )
     FINAL_EDUCATION_CHOICES = (
@@ -98,8 +106,11 @@ class User(AbstractUser):
             MaxValueValidator(MAX_HEIGHT_CM),
         ],
     )
-    body_form = models.CharField(
-        blank=True, null=True, max_length=15, choices=BODY_FORM_CHOICES
+    male_body_form = models.CharField(
+        blank=True, null=True, max_length=15, choices=MALE_BODY_FORM_CHOICES
+    )
+    female_body_form = models.CharField(
+        blank=True, null=True, max_length=15, choices=FEMALE_BODY_FORM_CHOICES
     )
     # 학력 관련
     final_education = models.CharField(

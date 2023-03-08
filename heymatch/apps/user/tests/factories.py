@@ -31,7 +31,9 @@ class ActiveUserFactory(DjangoModelFactory):
     birthdate = Faker("date_of_birth")
     gender = Faker("random_element", elements=[x[0] for x in User.GENDER_CHOICES])
     height_cm = Faker("pyint", min_value=MIN_HEIGHT_CM, max_value=MAX_HEIGHT_CM)
-    body_form = Faker("random_element", elements=[x[0] for x in User.BODY_FORM_CHOICES])
+    body_form = Faker(
+        "random_element", elements=[x[0] for x in User.MALE_BODY_FORM_CHOICES]
+    )
     # workplace = Faker("company", locale="ko_KR")
     # school = Faker("random_element", elements=RANDOM_SCHOOLS)
 
