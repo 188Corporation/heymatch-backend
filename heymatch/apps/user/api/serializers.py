@@ -49,6 +49,7 @@ class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
             "school_name",
             "is_school_verified",
             "job_title",
+            "company_name",
             "is_company_verified",
             "point_balance",
             "user_purchases",

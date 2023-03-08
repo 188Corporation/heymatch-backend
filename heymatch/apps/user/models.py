@@ -118,6 +118,7 @@ class User(AbstractUser):
     job_title = models.CharField(
         blank=True, null=True, max_length=32, choices=JOB_CHOICES, default=None
     )
+    company_name = models.CharField(blank=True, null=True, max_length=32, default=None)
     is_company_verified = models.BooleanField(default=False)  # 직업=직장인 경우에만
 
     # Group related
