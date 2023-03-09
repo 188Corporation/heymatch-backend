@@ -129,6 +129,7 @@ class UserProfilePhotoAdmin(admin.ModelAdmin):
     list_display = [
         "id",
         "user",
+        "is_main",
         "image",
         "image_blurred",
         "thumbnail",
@@ -139,6 +140,7 @@ class UserProfilePhotoAdmin(admin.ModelAdmin):
     search_fields = [
         "id",
         "user",
+        "is_main",
         "image",
         "image_blurred",
         "thumbnail",
