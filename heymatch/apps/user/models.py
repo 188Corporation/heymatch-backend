@@ -38,7 +38,6 @@ class User(AbstractUser):
     GENDER_CHOICES = (
         ("m", "Male"),
         ("f", "Female"),
-        ("o", "Other"),
     )
     MALE_BODY_FORM_CHOICES = (
         ("thin", "마른"),
@@ -65,7 +64,7 @@ class User(AbstractUser):
         ("etc", "기타"),
     )
     JOB_CHOICES = (
-        ("college_student", "대학생"),
+        ("college_student", "대학(원)생"),
         ("employee", "직장인"),
         ("self_employed", "자영업"),
         ("part_time", "파트타임"),
@@ -112,25 +111,15 @@ class User(AbstractUser):
     female_body_form = models.CharField(
         blank=True, null=True, max_length=15, choices=FEMALE_BODY_FORM_CHOICES
     )
-    # 학력 관련
-    final_education = models.CharField(
-        blank=True,
-        null=True,
-        max_length=32,
-        choices=FINAL_EDUCATION_CHOICES,
-        default=None,
-    )  # 최종 학력
-
-    school_name = models.CharField(
-        blank=True, null=True, max_length=32, default=None
-    )  # 학교 이름
-    is_school_verified = models.BooleanField(default=False)  # 학교 인증 여부
-    # 직업 관련
     job_title = models.CharField(
         blank=True, null=True, max_length=32, choices=JOB_CHOICES, default=None
     )
-    company_name = models.CharField(blank=True, null=True, max_length=32, default=None)
-    is_company_verified = models.BooleanField(default=False)  # 직업=직장인 경우에만
+    verified_school_name = models.CharField(
+        blank=True, null=True, max_length=32, default=None
+    )
+    verified_company_name = models.CharField(
+        blank=True, null=True, max_length=32, default=None
+    )
 
     # Group related
     joined_group = models.ForeignKey(
