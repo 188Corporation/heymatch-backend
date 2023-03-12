@@ -5,7 +5,13 @@ from simple_history.admin import SimpleHistoryAdmin
 
 from heymatch.apps.user.forms import UserChangeForm, UserCreationForm
 
-from .models import AppInfo, DeleteScheduledUser, FakeChatUser, UserProfileImage
+from .models import (
+    AppInfo,
+    DeleteScheduledUser,
+    EmailVerificationCode,
+    FakeChatUser,
+    UserProfileImage,
+)
 
 User = get_user_model()
 
@@ -146,6 +152,28 @@ class UserProfilePhotoAdmin(admin.ModelAdmin):
         "thumbnail",
         "thumbnail_blurred",
         "order",
+    ]
+
+
+@admin.register(EmailVerificationCode)
+class EmailVerificationCodeAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "email",
+        "type",
+        "user",
+        "code",
+        "active_until",
+        "is_active",
+    ]
+    search_fields = [
+        "id",
+        "email",
+        "type",
+        "user",
+        "code",
+        "active_until",
+        "is_active",
     ]
 
 

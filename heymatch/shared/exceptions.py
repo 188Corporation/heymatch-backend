@@ -120,5 +120,15 @@ class ReceiptAlreadyProcessedException(BasePermissionDeniedException):
     detail = "Receipt is already processed."
 
 
+class EmailVerificationCodeIncorrectException(BasePermissionDeniedException):
+    status_code = 488
+    detail = "Code is not correct"
+
+
+class EmailVerificationCodeExpiredException(BasePermissionDeniedException):
+    status_code = 489
+    detail = "Code is expired"
+
+
 class UserGroupLeaderException(BasePermissionDeniedException):
     status_code = 499

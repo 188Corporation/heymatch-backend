@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "heymatch-dev",
+  "private_key_id": "b3f104f86bc598c7f96a92b2bef28341e49aa47b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCqPqf4205ZmCw0\nBG8yhkhywEE9uCjxDIOlBoRZH6OsgN7BUXVawFjKHEWgortmkYNr3Dc6ZH8dLSs0\n6QsrjLI3ptXZ/1bBJxja/wxFqZptkMQJ764/eQCzeKC/PJoJlavmHv9of4k4v+/t\n/uAiTQgPm7PL0MMLaEbKEcwSeH+FLE3D+96PP9niOwcThkrdeKeazbhjmmq5dpdv\nSmxfeVim6HOTo7I6qqqZVxNF+/erZd5rq93WGquEGRvpl/oerOvthXbwsIFBh/xh\n7iXPxXNA4du4tSIGqWmU471WDW7jmCUVkgbc1uD5xepMwtWs/fU6FXCYgvnZ4bpV\nATZYdrqRAgMBAAECgf9GqDqOznZ2OPIfpLeCALmQ5rotI4HaiZcZptrHIpqLvfC1\ny1kpkStItvMu+FtO9pXU7lD9qzgWo+iKzS4VpQ9Siau4DoGzKMboHXK6dunhD3RN\nq2xma5Ie6rHMrRpBYB04JSVb+ZK6Ou8Zl+7uTYpK8BRvQvWwhlbbBwfropdKbatP\nM2Zm3utPl7T3H3Gtafc0BLgWBvnHChLNqkjbHxkzgdJshe2hU9oyiaYBRiD0/sVT\n9wWLyHcaVrKL2I9veaJm1ln98aIROlsfwr9TLsGc7l1HM4QfoYH07h+AgrgT5HAC\nSBLspHdaHt3zt9mlQdyNwGXQZ8kZpDO0SJqpjt0CgYEA3DaxBbtsjUdO+Wa6n/F6\nZAu2iEeH7m32h1SgOgiuhJxWhEqZ9DiSAokJhxChMvkYTly1c2vhy92uEb4ZTLE2\nM4OIgb+3BO3Y7a9gOQhcn+dZeBtJSwMvU0fRcv/QdtHCaPVpUs+9uzEFBqHpUwAO\nBv7Mna3QKXKX65qTsiPaHG0CgYEAxekp0L/lzRIo2SF1v+IYbDybSlyIZeA+w/v4\n5JWpzwwfboxFuzq0Gw2OXu3cje2jJnhon2VFfvIvSReDPVB3J4svjDDdeeP7I4i1\n/XA8qHkBhD19M5iBmgFTJvYkV6GHZGuHEroN92qTyZdegTJmk7tQK031b2lFdygX\nPUITODUCgYEAyVmMhNQ5TfhcgnfmviXapa18CaF17ZFH77d2BXo4r/IOvUlE+WPc\nRUstlfyjl+rgyY3FLzL+MxyPc5OgqFoEWBe1cgVsf6pGRhWr4pn9rwum58XzPw47\ncGdjYEX9QxdKLhPuaJSgQ49vq//RSl3rdYP2bVom0i8AL6GX2DMl1AUCgYAHrSmQ\nDUFumNu4wFF+5dgoqpkjYz9vJCmLFITs6NkzTLcTZKF3x6kgu3/gMr2xS5xea6Ez\nPYxahi5LWXwfrrVQdVecynBsv+kH0c+tSuMvbbIfXPs0OyAbxx1gj3+NXpiPzpPo\nqArOo/WjhhmGTVwpMsTDSTzR23V0T7vHBn8UWQKBgQCub7Ts/7ypeBOOw3p7bhKN\nb8v6iIiXDspZ9ISzfTZpE0wodCt6m3dr31SrSRZaBzI3sXWHjw7z5xmEa1wYWqyD\nFzoK2rLAoekAVZn/78kGINpw992hhr5hiXldSvXwi8uqu5kwaCAPEy+yBraoxG+P\n0C70FkmqCW450z0oMC5b/g==\n-----END PRIVATE KEY-----\n",
+  "client_email": "heymatch-email-django-sa@heymatch-dev.iam.gserviceaccount.com",
+  "client_id": "101917529715679391198",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/heymatch-email-django-sa%40heymatch-dev.iam.gserviceaccount.com"
+}

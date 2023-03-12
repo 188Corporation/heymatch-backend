@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
+from django.db import models
 from django.db.models import Q
 from django.db.models.query import QuerySet
 from ordered_model.models import OrderedModelManager
@@ -74,5 +75,10 @@ class ActiveUserManager(UserManager):
 
 
 class ActiveUserProfileManager(OrderedModelManager):
+    def get_queryset(self) -> QuerySet:
+        return super().get_queryset().filter(is_active=True)
+
+
+class ActiveEmailVerificationCodeManager(models.Manager):
     def get_queryset(self) -> QuerySet:
         return super().get_queryset().filter(is_active=True)

@@ -95,6 +95,7 @@ THIRD_PARTY_APPS = [
     "django_admin_logs",
     "simple_history",
     "drf_api_logger",
+    "django_gsuite_email",
 ]
 
 LOCAL_APPS = [
@@ -223,10 +224,8 @@ X_FRAME_OPTIONS = "DENY"
 # EMAIL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
-EMAIL_BACKEND = env(
-    "DJANGO_EMAIL_BACKEND",
-    default="django.core.mail.backends.smtp.EmailBackend",
-)
+EMAIL_BACKEND = "django_gsuite_email.GSuiteEmailBackend"
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-timeout
 EMAIL_TIMEOUT = 5
 
@@ -473,6 +472,9 @@ APP_STORE_VALIDATOR = AppStoreValidator(
     sandbox=IS_INAPP_TESTING,
     auto_retry_wrong_env_request=True,
 )
+
+# Email
+GSUITE_CREDENTIALS_FILE = env("GOOGLE_EMAIL_CREDENTIALS")
 
 # Simple History
 SIMPLE_HISTORY_REVERT_DISABLED = True

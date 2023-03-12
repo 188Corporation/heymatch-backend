@@ -35,6 +35,7 @@ django-extensions==3.1.5  # https://github.com/django-extensions/django-extensio
 django-fernet-fields==0.6  # https://django-fernet-fields.readthedocs.io/en/latest/
 django-admin-logs==1.0.2  # https://github.com/radwon/django-admin-logs
 django-simple-history==3.2.0  # https://django-simple-history.readthedocs.io/en/latest/quick_start.html
+django-gsuite-email==0.1.2  # https://pypi.org/project/django-gsuite-email/
 
 # Django REST Framework
 # ------------------------------------------------------------------------------

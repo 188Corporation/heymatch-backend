@@ -39,6 +39,9 @@ STREAM_CHAT_CHANNEL_TYPE=messaging
 # Google Firebase
 GOOGLE_APPLICATION_CREDENTIALS=/app/.envs/.local/firebase_sa.json
 
+# Google Workspace Email
+GOOGLE_EMAIL_CREDENTIALS=/app/.envs/.local/gsuite_email_sa.json
+
 # In-App Purchases
 # ------------------------------------------------------------------------------
 # Google Play Store

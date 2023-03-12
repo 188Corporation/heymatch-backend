@@ -9,7 +9,7 @@ from phone_verify.serializers import SMSVerificationSerializer
 from phonenumber_field.phonenumber import to_python
 from rest_framework import exceptions, serializers
 
-from heymatch.apps.user.models import DeleteScheduledUser
+from heymatch.apps.user.models import DeleteScheduledUser, EmailVerificationCode
 
 User = get_user_model()
 stream = settings.STREAM_CLIENT
@@ -102,6 +102,38 @@ class UserLoginByPhoneNumberSerializer(LoginSerializer):
 
         attrs["user"] = user
         return attrs
+
+
+class EmailVerificationSendCodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmailVerificationCode
+        fields = (
+            "email",
+            "type",
+        )
+        read_only_fields = (
+            "id",
+            "user",
+            "code",
+            "active_until",
+            "is_active",
+        )
+
+
+class EmailVerificationAuthCodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmailVerificationCode
+        fields = (
+            "email",
+            "code",
+        )
+        read_only_fields = (
+            "id",
+            "type",
+            "user",
+            "active_until",
+            "is_active",
+        )
 
 
 # ===================

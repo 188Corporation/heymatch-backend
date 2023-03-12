@@ -17,7 +17,12 @@ from phonenumber_field.modelfields import PhoneNumberField
 from PIL import Image, ImageFilter, ImageOps
 from simple_history.models import HistoricalRecords
 
-from .managers import ActiveUserManager, ActiveUserProfileManager, UserManager
+from .managers import (
+    ActiveEmailVerificationCodeManager,
+    ActiveUserManager,
+    ActiveUserProfileManager,
+    UserManager,
+)
 
 MAX_HEIGHT_CM = 210
 MIN_HEIGHT_CM = 155
@@ -314,6 +319,38 @@ class UserProfileImage(OrderedModel):
             save=False,
         )
         temp_image.close()
+
+
+def email_verification_code_valid_until():
+    return timezone.now() + timezone.timedelta(minutes=3)
+
+
+def auto_generate_email_verification_code():
+    return "".join(
+        random.choice(string.ascii_uppercase + string.digits) for _ in range(5)
+    )
+
+
+class EmailVerificationCode(models.Model):
+    class VerificationType(models.TextChoices):
+        SCHOOL = "school"
+        COMPANY = "company"
+
+    email = models.EmailField(null=False, blank=False)
+    type = models.CharField(
+        null=False, blank=False, max_length=15, choices=VerificationType.choices
+    )
+    user = models.ForeignKey(
+        "user.User",
+        null=False,
+        on_delete=models.PROTECT,
+        related_name="user_email_verification_code",
+    )
+    code = models.CharField(max_length=5, default=auto_generate_email_verification_code)
+    active_until = models.DateTimeField(default=email_verification_code_valid_until)
+    is_active = models.BooleanField(default=True)
+
+    active_objects = ActiveEmailVerificationCodeManager()
 
 
 def delete_schedule_default_time():
