@@ -222,9 +222,14 @@ SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = "DENY"
 
 # DATA
-MAX_UPLOAD_SIZE = 50000000
-DATA_UPLOAD_MAX_MEMORY_SIZE = 15000000
-FILE_UPLOAD_MAX_MEMORY_SIZE = 15000000
+FILE_UPLOAD_HANDLERS = [
+    "django.core.files.uploadhandler.MemoryFileUploadHandler",
+    "django.core.files.uploadhandler.TemporaryFileUploadHandler",
+]
+MAX_UPLOAD_SIZE = 52428800
+DATA_UPLOAD_MAX_MEMORY_SIZE = None
+FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800
+DATA_UPLOAD_MAX_NUMBER_FIELDS = None
 
 # EMAIL
 # ------------------------------------------------------------------------------
