@@ -10,7 +10,7 @@ from phone_verify.base import response
 from phone_verify.models import SMSVerification
 from phone_verify.serializers import PhoneSerializer
 from phone_verify.services import send_security_code_and_generate_session_token
-from rest_framework import viewsets
+from rest_framework import status, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -21,6 +21,7 @@ from heymatch.shared.exceptions import (
     EmailVerificationCodeExpiredException,
     EmailVerificationCodeIncorrectException,
     EmailVerificationDomainNotFoundException,
+    EmailVerificationSelectedNameNotFoundException,
 )
 from heymatch.utils.util import load_company_domain_file, load_school_domain_file
 
@@ -116,7 +117,19 @@ class EmailVerificationViewSet(viewsets.ViewSet):
             html_message=html_message,
             fail_silently=False,
         )
-        return response.Ok()
+        # Everything is good.
+        # Update user.verified_company_name or verified_school_name
+        found, names = self.determine_school_company_name_by_email(evc)
+        if not found:
+            raise EmailVerificationDomainNotFoundException()
+
+        return Response(
+            data={
+                "type": evc.type,
+                "names": names,
+            },
+            status=status.HTTP_200_OK,
+        )
 
     @swagger_auto_schema(request_body=EmailVerificationAuthCodeSerializer)
     def authorize(self, request: Request, *args: Any, **kwargs: Any):
@@ -126,6 +139,7 @@ class EmailVerificationViewSet(viewsets.ViewSet):
         evc_qs = EmailVerificationCode.active_objects.filter(
             user=request.user,
             email=serializer.validated_data["email"],
+            type=serializer.validated_data["type"],
             code=serializer.validated_data["code"],
         )
 
@@ -140,36 +154,42 @@ class EmailVerificationViewSet(viewsets.ViewSet):
             evc.save(update_fields=["is_active"])
             raise EmailVerificationCodeExpiredException()
 
-        # Everything is good.
-        # Update user.verified_company_name or verified_school_name
-        found, names = self.determine_domain_and_update_profile(evc, request.user)
+        found, names = self.determine_school_company_name_by_email(evc)
+        selected_name = serializer.validated_data["selected_name"]
         if not found:
             raise EmailVerificationDomainNotFoundException()
+        if selected_name not in names:
+            raise EmailVerificationSelectedNameNotFoundException()
 
-        # TODO: handle multiple company choices
-        if len(names) == 1:
-            return Response(data={"type": evc.type, "name": names[0]})
+        # update user
+        user = request.user
+        if evc.type == EmailVerificationCode.VerificationType.SCHOOL:
+            user.job_title = User.JobChoices.COLLEGE_STUDENT
+            user.verified_school_name = selected_name
+            user.save(update_fields=["job_title", "verified_school_name"])
+        elif evc.type == EmailVerificationCode.VerificationType.COMPANY:
+            user.job_title = User.JobChoices.EMPLOYEE
+            user.verified_company_name = selected_name
+            user.save(update_fields=["job_title", "verified_company_name"])
 
-        return response.Ok()
+        # inactivate code
+        evc.is_active = False
+        evc.save(update_fields=["is_active"])
+        return Response(status=status.HTTP_200_OK)
 
     @staticmethod
-    def determine_domain_and_update_profile(evc: EmailVerificationCode, user: User):
+    def determine_school_company_name_by_email(evc: EmailVerificationCode):
         # handle school
+        email = evc.email
+        email_domain = email.split("@")[1]
         if evc.type == EmailVerificationCode.VerificationType.SCHOOL:
-            if evc.email in SCHOOL_DOMAIN_FILE:
-                school_names = SCHOOL_DOMAIN_FILE[evc.email]
-                user.job_title = User.JobChoices.COLLEGE_STUDENT
-                if len(school_names) == 1:
-                    user.verified_school_name = school_names[0]
-                    user.save(update_fields=["job_title", "verified_school_name"])
-                else:
-                    user.save(update_fields=["job_title"])
-                return True, school_names
+            if email_domain in SCHOOL_DOMAIN_FILE:
+                return True, SCHOOL_DOMAIN_FILE[email_domain]
             else:
-                return False
+                return False, None
 
         # handle company
         if evc.type == EmailVerificationCode.VerificationType.COMPANY:
-            if evc.email in COMPANY_DOMAIN_FILE:
-                return True, COMPANY_DOMAIN_FILE[evc.email]
+            if email_domain in COMPANY_DOMAIN_FILE:
+                return True, COMPANY_DOMAIN_FILE[email_domain]
         return False, None

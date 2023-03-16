@@ -135,5 +135,10 @@ class EmailVerificationDomainNotFoundException(BasePermissionDeniedException):
     detail = "Could not find any school or company with your email. Please check."
 
 
+class EmailVerificationSelectedNameNotFoundException(BasePermissionDeniedException):
+    status_code = 491
+    detail = "Provided `selected_name` not found in our database. Check again."
+
+
 class UserGroupLeaderException(BasePermissionDeniedException):
     status_code = 499

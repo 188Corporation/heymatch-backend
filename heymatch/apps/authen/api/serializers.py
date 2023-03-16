@@ -121,10 +121,15 @@ class EmailVerificationSendCodeSerializer(serializers.ModelSerializer):
 
 
 class EmailVerificationAuthCodeSerializer(serializers.ModelSerializer):
+    type = serializers.CharField(required=True)
+    selected_name = serializers.CharField(required=True)
+
     class Meta:
         model = EmailVerificationCode
         fields = (
             "email",
+            "type",
+            "selected_name",
             "code",
         )
         read_only_fields = (
