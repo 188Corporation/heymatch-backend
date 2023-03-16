@@ -122,12 +122,17 @@ class ReceiptAlreadyProcessedException(BasePermissionDeniedException):
 
 class EmailVerificationCodeIncorrectException(BasePermissionDeniedException):
     status_code = 488
-    detail = "Code is not correct"
+    detail = "Code is not correct or wrong email"
 
 
 class EmailVerificationCodeExpiredException(BasePermissionDeniedException):
     status_code = 489
     detail = "Code is expired"
+
+
+class EmailVerificationDomainNotFoundException(BasePermissionDeniedException):
+    status_code = 490
+    detail = "Could not find any school or company with your email. Please check."
 
 
 class UserGroupLeaderException(BasePermissionDeniedException):

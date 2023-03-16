@@ -26,8 +26,8 @@ def verify_main_profile_images():
     target_upi_qs = UserProfileImage.active_objects.filter(
         Q(is_main=True)
         & (
-            Q(status=UserProfileImage.STATUS_CHOICES[0][0])
-            | Q(status=UserProfileImage.STATUS_CHOICES[1][0])
+            Q(status=UserProfileImage.StatusChoices.NOT_VERIFIED)
+            | Q(status=UserProfileImage.StatusChoices.UNDER_VERIFICATION)
         )
     )
     logger.debug(f"[1] Target images to be verified: {target_upi_qs}")
@@ -36,11 +36,10 @@ def verify_main_profile_images():
     for upi in target_upi_qs:  # type: UserProfileImage
         faces_num = detect_face_with_haar_cascade_ml(upi.image.url)
         if faces_num == 1:
-            upi.status = UserProfileImage.STATUS_CHOICES[2][0]
+            upi.status = UserProfileImage.StatusChoices.ACCEPTED
             logger.debug(f"UserProfile(id={upi.id}) ACCEPTED!")
         else:
-            upi.status = UserProfileImage.STATUS_CHOICES[3][0]
-            upi.is_active = False
+            upi.status = UserProfileImage.StatusChoices.REJECTED
             logger.debug(
                 f"UserProfile(id={upi.id}) REJECTED! (faces num = {faces_num})"
             )

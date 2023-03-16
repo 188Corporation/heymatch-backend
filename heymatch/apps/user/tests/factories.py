@@ -1,9 +1,8 @@
 from typing import Any, Sequence
 
-from factory import Faker, SubFactory, post_generation
+from factory import Faker, post_generation
 from factory.django import DjangoModelFactory
 
-from heymatch.apps.group.tests.factories import ActiveGroupFactory
 from heymatch.apps.user.models import MAX_HEIGHT_CM, MIN_HEIGHT_CM, User
 
 # RANDOM_SCHOOLS = [
@@ -29,16 +28,21 @@ class ActiveUserFactory(DjangoModelFactory):
     id = Faker("uuid4")
     phone_number = Faker("phone_number", locale="ko_KR")
     birthdate = Faker("date_of_birth")
-    gender = Faker("random_element", elements=[x[0] for x in User.GENDER_CHOICES])
+    gender = Faker(
+        "random_element", elements=[x[0] for x in User.GenderChoices.choices]
+    )
     height_cm = Faker("pyint", min_value=MIN_HEIGHT_CM, max_value=MAX_HEIGHT_CM)
-    body_form = Faker(
-        "random_element", elements=[x[0] for x in User.MALE_BODY_FORM_CHOICES]
+    male_body_form = Faker(
+        "random_element", elements=[x[0] for x in User.MaleBodyFormChoices.choices]
+    )
+    female_body_form = Faker(
+        "random_element", elements=[x[0] for x in User.FemaleBodyFormChoices.choices]
     )
     # workplace = Faker("company", locale="ko_KR")
     # school = Faker("random_element", elements=RANDOM_SCHOOLS)
 
     # Group related
-    joined_group = SubFactory(ActiveGroupFactory)
+    # joined_group = SubFactory(ActiveGroupFactory)
     # is_group_leader = False
 
     # Other

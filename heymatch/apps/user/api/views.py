@@ -13,7 +13,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from heymatch.apps.user.models import AppInfo, DeleteScheduledUser, UserProfileImage
-from heymatch.shared.exceptions import UserMainProfileImageNotFound
 from heymatch.shared.permissions import IsUserActive
 
 from .serializers import (
@@ -54,43 +53,65 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
         )
         serializer.is_valid(raise_exception=True)
 
-        # when it is first time signup
-        if request.user.is_first_signup:
-            # process main profile image
-            main_profile_image: InMemoryUploadedFile = serializer.validated_data.pop(
-                "main_profile_image", None
-            )
-            if not main_profile_image:
-                if not UserProfileImage.active_objects.filter(is_main=True).exists():
-                    raise UserMainProfileImageNotFound()
+        qs = UserProfileImage.active_objects.filter(user=request.user, is_main=True)
+        if len(qs) == 1:
+            orig_main_profile_image = qs[0]
+        else:
+            orig_main_profile_image = None
+
+        main_profile_image: InMemoryUploadedFile = serializer.validated_data.pop(
+            "main_profile_image", None
+        )
+        if main_profile_image:
+            if orig_main_profile_image:
+                orig_main_profile_image.image = main_profile_image
+                orig_main_profile_image.save(update_fields=["image"])
             else:
                 UserProfileImage.active_objects.create(
                     user=request.user,
                     image=main_profile_image,
                     is_main=True,
-                    status=UserProfileImage.STATUS_CHOICES[1][0],  # "u"
+                    status=UserProfileImage.StatusChoices.UNDER_VERIFICATION,
                 )
-            # process other profile image
-            other_profile_image_1: InMemoryUploadedFile or None = (
-                serializer.validated_data.pop("other_profile_image_1", None)
-            )
-            other_profile_image_2: InMemoryUploadedFile or None = (
-                serializer.validated_data.pop("other_profile_image_2", None)
-            )
-            for other_img in [other_profile_image_1, other_profile_image_2]:
-                if other_img:
-                    UserProfileImage.active_objects.create(
-                        user=request.user, image=other_img
-                    )
-            # mark is_first_signup=false
-            serializer.validated_data["is_first_signup"] = False
-        # normal update flow
-        else:
-            # TODO: WIP. Should deal with image update.
-            #  Make old one inactive, deal with ordering etc.
-            pass
 
-        # user fields without image data
+        # process other profile image
+        qs = UserProfileImage.active_objects.filter(user=request.user, is_main=False)
+        if len(qs) == 2:
+            orig_other_profile_image_1 = qs[0]
+            orig_other_profile_image_2 = qs[1]
+        elif len(qs) == 1:
+            orig_other_profile_image_1 = qs[0]
+            orig_other_profile_image_2 = None
+        else:
+            orig_other_profile_image_1 = None
+            orig_other_profile_image_2 = None
+
+        new_other_profile_image_1: InMemoryUploadedFile or None = (
+            serializer.validated_data.pop("other_profile_image_1", None)
+        )
+        new_other_profile_image_2: InMemoryUploadedFile or None = (
+            serializer.validated_data.pop("other_profile_image_2", None)
+        )
+
+        if new_other_profile_image_1:
+            if orig_other_profile_image_1:
+                orig_other_profile_image_1.image = new_other_profile_image_1
+                orig_other_profile_image_1.save(update_fields=["image"])
+            else:
+                orig_other_profile_image_1 = UserProfileImage.active_objects.create(
+                    user=request.user, image=new_other_profile_image_1
+                )
+
+        if new_other_profile_image_2:
+            if orig_other_profile_image_2:
+                orig_other_profile_image_2.image = new_other_profile_image_2
+                orig_other_profile_image_2.save(update_fields=["image"])
+            else:
+                orig_other_profile_image_2 = UserProfileImage.active_objects.create(
+                    user=request.user, image=new_other_profile_image_2
+                )
+                orig_other_profile_image_2.below(orig_other_profile_image_1)
+
         serializer.save()
         return Response(status=status.HTTP_200_OK)
 

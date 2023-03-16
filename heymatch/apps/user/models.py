@@ -40,42 +40,34 @@ def free_pass_default_time():
 
 
 class User(AbstractUser):
-    GENDER_CHOICES = (
-        ("m", "Male"),
-        ("f", "Female"),
-    )
-    MALE_BODY_FORM_CHOICES = (
-        ("thin", "마른"),
-        ("slender", "슬림탄탄"),
-        ("normal", "보통"),
-        ("chubby", "통통한"),
-        ("muscular", "근육질의"),
-        ("bulky", "덩치가있는"),
-    )
-    FEMALE_BODY_FORM_CHOICES = (
-        ("thin", "마른"),
-        ("slender", "슬림탄탄"),
-        ("normal", "보통"),
-        ("chubby", "통통한"),
-        ("glamourous", "글래머러스한"),
-        ("bulky", "덩치가있는"),
-    )
-    FINAL_EDUCATION_CHOICES = (
-        ("high_school", "고등학교"),
-        ("bachelor", "학사"),
-        ("master_or_above", "석박사"),
-        ("medical_graduate", "의/약/치전원"),
-        ("law_school", "로스쿨"),
-        ("etc", "기타"),
-    )
-    JOB_CHOICES = (
-        ("college_student", "대학(원)생"),
-        ("employee", "직장인"),
-        ("self_employed", "자영업"),
-        ("part_time", "파트타임"),
-        ("businessman", "사업가"),
-        ("etc", "기타"),
-    )
+    class GenderChoices(models.TextChoices):
+        MALE = "m"
+        FEMALE = "f"
+
+    class MaleBodyFormChoices(models.TextChoices):
+        THIN = "thin"
+        SLENDER = "slender"
+        NORMAL = "normal"
+        CHUBBY = "chubby"
+        MUSCULAR = "muscular"
+        BULKY = "bulky"
+
+    class FemaleBodyFormChoices(models.TextChoices):
+        THIN = "thin"
+        SLENDER = "slender"
+        NORMAL = "normal"
+        CHUBBY = "chubby"
+        GLAMOROUS = "glamorous"
+        BULKY = "bulky"
+
+    class JobChoices(models.TextChoices):
+        COLLEGE_STUDENT = "college_student"
+        EMPLOYEE = ("employee",)
+        SELF_EMPLOYED = "self_employed"
+        PART_TIME = "part_time"
+        BUSINESSMAN = "businessman"
+        ETC = "etc"
+
     # stream.io
     stream_token = models.TextField()
 
@@ -97,7 +89,7 @@ class User(AbstractUser):
     # Required
     phone_number = PhoneNumberField(blank=True, null=True)
     gender = models.CharField(
-        blank=True, null=True, max_length=1, choices=GENDER_CHOICES, default=None
+        blank=True, null=True, max_length=1, choices=GenderChoices.choices, default=None
     )
     birthdate = BirthdayField(blank=True, null=True, default=None)
 
@@ -111,13 +103,13 @@ class User(AbstractUser):
         ],
     )
     male_body_form = models.CharField(
-        blank=True, null=True, max_length=15, choices=MALE_BODY_FORM_CHOICES
+        blank=True, null=True, max_length=15, choices=MaleBodyFormChoices.choices
     )
     female_body_form = models.CharField(
-        blank=True, null=True, max_length=15, choices=FEMALE_BODY_FORM_CHOICES
+        blank=True, null=True, max_length=15, choices=FemaleBodyFormChoices.choices
     )
     job_title = models.CharField(
-        blank=True, null=True, max_length=32, choices=JOB_CHOICES, default=None
+        blank=True, null=True, max_length=32, choices=JobChoices.choices, default=None
     )
     verified_school_name = models.CharField(
         blank=True, null=True, max_length=32, default=None
@@ -170,12 +162,12 @@ def upload_to(instance, filename):
 
 
 class UserProfileImage(OrderedModel):
-    STATUS_CHOICES = (
-        ("n", "Not verified"),
-        ("u", "Under verification"),
-        ("a", "Accepted"),
-        ("r", "Rejected"),
-    )
+    class StatusChoices(models.TextChoices):
+        NOT_VERIFIED = "n"
+        UNDER_VERIFICATION = "u"
+        ACCEPTED = "a"
+        REJECTED = "r"
+
     user = models.ForeignKey(
         "user.User",
         null=False,
@@ -186,8 +178,8 @@ class UserProfileImage(OrderedModel):
     status = models.CharField(
         blank=True,
         null=True,
-        default=STATUS_CHOICES[0][0],
-        choices=STATUS_CHOICES,
+        default=StatusChoices.NOT_VERIFIED,
+        choices=StatusChoices.choices,
         max_length=1,
     )
     image = models.ImageField(upload_to=upload_to)
@@ -350,6 +342,7 @@ class EmailVerificationCode(models.Model):
     active_until = models.DateTimeField(default=email_verification_code_valid_until)
     is_active = models.BooleanField(default=True)
 
+    objects = models.Manager()
     active_objects = ActiveEmailVerificationCodeManager()
 
 

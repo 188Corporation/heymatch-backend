@@ -1,4 +1,5 @@
 import decimal
+import json
 import urllib
 from datetime import datetime
 from random import randint, uniform
@@ -6,6 +7,7 @@ from typing import Sequence
 
 import cv2
 import numpy as np
+from django.conf import settings
 from django_google_maps.fields import GeoPt
 from factory import random
 from factory.fuzzy import BaseFuzzyAttribute
@@ -148,3 +150,13 @@ def detect_face_with_haar_cascade_ml(s3_url: str):
         flags=cv2.CASCADE_SCALE_IMAGE,
     )
     return len(faces)
+
+
+def load_company_domain_file():
+    f = open(f"{settings.APPS_DIR}/data/domains/company.json")
+    return json.load(f)
+
+
+def load_school_domain_file():
+    f = open(f"{settings.APPS_DIR}/data/domains/school.json")
+    return json.load(f)
