@@ -21,6 +21,58 @@ class EncryptedGeoLocationField(EncryptedField, GeoLocationField):
     pass
 
 
+class GroupV2(models.Model):
+    class MeetUpTimeRange(models.TextChoices):
+        LUNCH = "lunch"  # 11am ~ 2pm
+        AFTERNOON = "afternoon"  # 2pm ~ 5pm
+        DINNER = "dinner"  # 5pm ~ 8pm
+        NIGHT = "night"  # 8pm ~
+        NOT_SURE = "not_sure"
+
+    title = models.CharField(blank=False, null=False, max_length=100)
+    introduction = models.TextField(blank=False, null=False, max_length=500)
+    meetup_date = models.DateField(blank=False, null=False)
+    meetup_timerange = models.CharField(
+        blank=False, null=False, choices=MeetUpTimeRange.choices, max_length=20
+    )
+    gps_geoinfo = EncryptedGeoLocationField(blank=False, null=False, max_length=20)
+
+    # Lifecycle
+    is_active = models.BooleanField(default=True)
+
+    # History
+    history = HistoricalRecords()
+
+
+class GroupMember(models.Model):
+    group = models.ForeignKey(
+        "group.GroupV2",
+        blank=True,
+        null=True,
+        on_delete=models.PROTECT,
+        related_name="group_member_group",
+    )
+    user = models.ForeignKey(
+        "user.User",
+        blank=True,
+        null=True,
+        on_delete=models.PROTECT,
+        related_name="group_member_user",
+    )
+    is_user_leader = models.BooleanField(default=False)
+
+    # Lifecycle
+    is_active = models.BooleanField(default=True)
+
+    # History
+    history = HistoricalRecords()
+
+
+##################
+# Deprecated - V1
+##################
+
+
 class Group(models.Model):
     # Group GPS
     hotplace = models.ForeignKey(
@@ -35,7 +87,7 @@ class Group(models.Model):
     # gps_last_check_time = models.DateTimeField(blank=True, null=True)
 
     # Group Profile
-    title = models.CharField("Title of Group", blank=False, null=False, max_length=100)
+    title = models.CharField(blank=False, null=False, max_length=100)
     introduction = models.TextField(blank=False, null=False, max_length=500)
     male_member_number = models.IntegerField(
         blank=True,

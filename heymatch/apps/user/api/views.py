@@ -4,7 +4,6 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.shortcuts import get_object_or_404
-from django.views.decorators.cache import never_cache
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.parsers import MultiPartParser
@@ -19,6 +18,7 @@ from .serializers import (
     AppInfoSerializer,
     DeleteScheduledUserRequestBodySerializer,
     DeleteScheduledUserSerializer,
+    TempUserCreateSerializer,
     UserInfoUpdateBodyRequestSerializer,
     UserWithGroupFullInfoSerializer,
 )
@@ -35,7 +35,7 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
     parser_classes = [MultiPartParser]
     serializer_class = UserWithGroupFullInfoSerializer
 
-    @never_cache
+    # @never_cache
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         user = get_object_or_404(User, id=self.request.user.id)
         app_info = AppInfo.objects.all().first()
@@ -127,3 +127,21 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
 
         # rest of job will be done by celery-beat scheduler
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+class TempUserCreateViewSet(viewsets.ModelViewSet):
+    permission_classes = [
+        IsAuthenticated,
+        IsUserActive,
+    ]
+    serializer_class = TempUserCreateSerializer
+
+    @swagger_auto_schema(request_body=TempUserCreateSerializer)
+    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def perform_create(self, serializer) -> None:
+        serializer.save(is_temp_user=True)

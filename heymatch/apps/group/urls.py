@@ -4,11 +4,17 @@ from heymatch.apps.group.api.views import (
     GroupDetailViewSet,
     GroupReportViewSet,
     GroupsGenericViewSet,
+    V1GroupsGenericViewSet,
 )
 
 app_name = "group"
 
 group_list_create_view = GroupsGenericViewSet.as_view({"get": "list", "post": "create"})
+
+# DEPRECATED
+v1_group_list_create_view = V1GroupsGenericViewSet.as_view(
+    {"get": "list", "post": "create"}
+)
 group_detail_view = GroupDetailViewSet.as_view(
     {"get": "retrieve", "delete": "destroy", "put": "update"}
 )

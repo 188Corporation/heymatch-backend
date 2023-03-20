@@ -3,13 +3,48 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django_google_maps.fields import GeoPt
 from rest_framework import serializers
 
-from heymatch.apps.group.models import Group, GroupProfileImage, ReportedGroup
+from heymatch.apps.group.models import Group, GroupProfileImage, GroupV2, ReportedGroup
 from heymatch.apps.hotplace.models import HotPlace
 from heymatch.apps.user.models import FakeChatUser
 from heymatch.utils.util import (
     generate_rand_geoopt_within_boundary,
     is_geopt_within_boundary,
 )
+
+
+class V2GroupListRequestBodySerializer(serializers.ModelSerializer):
+    user_ids = serializers.ListField(child=serializers.UUIDField())
+
+    class Meta:
+        model = GroupV2
+        fields = [
+            "title",
+            "introduction",
+            "gps_geoinfo",
+            "meetup_date",
+            "meetup_timerange",
+            "user_ids",
+        ]
+
+
+class V2GroupCreationRequestBodySerializer(serializers.ModelSerializer):
+    user_ids = serializers.ListField(child=serializers.UUIDField())
+
+    class Meta:
+        model = GroupV2
+        fields = [
+            "title",
+            "introduction",
+            "gps_geoinfo",
+            "meetup_date",
+            "meetup_timerange",
+            "user_ids",
+        ]
+
+
+##################
+# Deprecated - V1
+##################
 
 
 class GroupProfileImagesByJoinedGroupConditionSerializer(serializers.ModelSerializer):

@@ -36,6 +36,7 @@ class UserAdmin(SimpleHistoryAdmin):
                     "job_title",
                     "verified_school_name",
                     "verified_company_name",
+                    "is_temp_user",
                 )
             },
         ),
@@ -53,7 +54,7 @@ class UserAdmin(SimpleHistoryAdmin):
             _("Group info"),
             {
                 "fields": (
-                    "joined_group",
+                    # "joined_group",
                     # "is_group_leader",
                 )
             },
@@ -86,7 +87,7 @@ class UserAdmin(SimpleHistoryAdmin):
         "job_title",
         "verified_school_name",
         "verified_company_name",
-        "joined_group",
+        # "joined_group",
         # "is_group_leader",
         "is_superuser",
         "point_balance",
@@ -96,6 +97,7 @@ class UserAdmin(SimpleHistoryAdmin):
         "is_deleted",
         "stream_token",
         "agreed_to_terms",
+        "is_temp_user",
     ]
     history_list_display = [
         "status",
@@ -117,7 +119,7 @@ class UserAdmin(SimpleHistoryAdmin):
         "job_title",
         "verified_school_name",
         "verified_company_name",
-        "joined_group",
+        # "joined_group",
         # "is_group_leader",
         "is_superuser",
         "point_balance",
@@ -127,6 +129,7 @@ class UserAdmin(SimpleHistoryAdmin):
         "is_deleted",
         "stream_token",
         "agreed_to_terms",
+        "is_temp_user",
     ]
 
 

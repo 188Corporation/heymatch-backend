@@ -14,7 +14,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from heymatch.apps.chat.models import StreamChannel
-from heymatch.apps.group.models import Group, ReportedGroup
+from heymatch.apps.group.models import Group, GroupMember, GroupV2, ReportedGroup
 from heymatch.apps.hotplace.models import HotPlace
 from heymatch.apps.match.models import MatchRequest
 from heymatch.shared.exceptions import (
@@ -39,6 +39,7 @@ from .serializers import (
     ReportGroupRequestBodySerializer,
     ReportGroupSerializer,
     RestrictedGroupProfileByHotplaceSerializer,
+    V2GroupCreationRequestBodySerializer,
 )
 
 User = get_user_model()
@@ -46,6 +47,55 @@ stream = settings.STREAM_CLIENT
 
 
 class GroupsGenericViewSet(viewsets.ModelViewSet):
+    permission_classes = [
+        # IsAuthenticated,
+        # IsUserActive,
+    ]
+    parser_classes = [MultiPartParser]
+    serializer_class = V2GroupCreationRequestBodySerializer
+
+    @swagger_auto_schema(request_body=V2GroupCreationRequestBodySerializer)
+    def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        # Get search bar GPS info
+        # Fetch Group, GroupMember, Member's profile
+        # filter
+        #  1. default 15km
+        #  2. ....
+        return Response(status=status.HTTP_201_CREATED)
+
+    @swagger_auto_schema(request_body=V2GroupCreationRequestBodySerializer)
+    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(status=status.HTTP_201_CREATED)
+
+    def perform_create(self, serializer) -> None:
+        # Get members
+        user_ids = serializer.validated_data.get("user_ids")
+        qs = User.active_objects.all()
+        users = [get_object_or_404(qs, id=user_id) for user_id in user_ids]
+        # create Group
+        serializer.validated_data.pop("user_ids")
+        group = GroupV2.objects.create(**serializer.validated_data)
+        # create GroupMember
+        for user in users:
+            GroupMember.objects.create(
+                group=group,
+                user=user,
+            )
+        # add myself as group leader
+        GroupMember.objects.create(
+            group=group, user=self.request.user, is_user_leader=True
+        )
+
+
+##################
+# Deprecated - V1
+##################
+
+
+class V1GroupsGenericViewSet(viewsets.ModelViewSet):
     """
     ViewSet for listing and creating Groups
     """
@@ -104,7 +154,7 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def get_serializer_context(self):
-        context = super(GroupsGenericViewSet, self).get_serializer_context()
+        context = super(V1GroupsGenericViewSet, self).get_serializer_context()
         if self.request.method == "POST":
             return context
         if (
@@ -125,7 +175,7 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
         return self.serializer_class
 
     def get_parsers(self):
-        parsers = super(GroupsGenericViewSet, self).get_parsers()
+        parsers = super(V1GroupsGenericViewSet, self).get_parsers()
         if self.request.method == "GET":
             parsers = [JSONParser]
         return parsers

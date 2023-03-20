@@ -1,7 +1,52 @@
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 
-from .models import Group, GroupProfileImage, ReportedGroup
+from .models import Group, GroupMember, GroupProfileImage, GroupV2, ReportedGroup
+
+
+@admin.register(GroupV2)
+class GroupV2Admin(SimpleHistoryAdmin):
+    list_display = [
+        "id",
+        "title",
+        "introduction",
+        "meetup_date",
+        "meetup_timerange",
+        "gps_geoinfo",
+        "is_active",
+    ]
+    history_list_display = ["status", *list_display]
+    search_fields = [
+        "id",
+        "title",
+        "introduction",
+        "meetup_date",
+        "meetup_timerange",
+        "gps_geoinfo",
+        "is_active",
+    ]
+
+
+@admin.register(GroupMember)
+class GroupMemberAdmin(SimpleHistoryAdmin):
+    list_display = [
+        "id",
+        "group",
+        "user",
+        "is_user_leader",
+        "is_active",
+    ]
+    history_list_display = ["status", *list_display]
+    search_fields = [
+        "id",
+        "group",
+        "user",
+        "is_user_leader",
+        "is_active",
+    ]
+
+
+# DEPRECATED
 
 
 @admin.register(Group)

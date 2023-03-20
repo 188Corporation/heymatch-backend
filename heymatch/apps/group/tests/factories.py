@@ -1,10 +1,41 @@
+import datetime
+
 from factory import SubFactory
 from factory.django import DjangoModelFactory, ImageField
 from factory.faker import Faker
+from factory.fuzzy import FuzzyDate
 
-from heymatch.apps.group.models import Group, GroupProfileImage
+from heymatch.apps.group.models import Group, GroupMember, GroupProfileImage, GroupV2
 from heymatch.apps.hotplace.tests.factories import HotPlaceFactory
+from heymatch.apps.user.tests.factories import ActiveUserFactory
 from heymatch.utils.util import FuzzyGeoPt
+
+
+class GroupV2Factory(DjangoModelFactory):
+    class Meta:
+        model = GroupV2
+
+    title = Faker("sentence")
+    introduction = Faker("paragraph", nb_sentences=3)
+    meetup_date = FuzzyDate(
+        start_date=datetime.date.today(),
+        end_date=datetime.date.today() + datetime.timedelta(days=10),
+    )
+    meetup_timerange = Faker(
+        "random_element", elements=[x[0] for x in GroupV2.MeetUpTimeRange.choices]
+    )
+    gps_geoinfo = FuzzyGeoPt(precision=5)
+
+    # Group Lifecycle
+    is_active = True
+
+
+class GroupMemberFactory(DjangoModelFactory):
+    class Meta:
+        model = GroupMember
+
+    group = SubFactory(GroupV2Factory)
+    user = SubFactory(ActiveUserFactory)
 
 
 class ActiveGroupFactory(DjangoModelFactory):

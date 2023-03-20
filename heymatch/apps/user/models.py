@@ -25,7 +25,7 @@ from .managers import (
 )
 
 MAX_HEIGHT_CM = 210
-MIN_HEIGHT_CM = 155
+MIN_HEIGHT_CM = 125
 MAX_USERNAME_LENGTH = 10
 
 
@@ -62,7 +62,7 @@ class User(AbstractUser):
 
     class JobChoices(models.TextChoices):
         COLLEGE_STUDENT = "college_student"
-        EMPLOYEE = ("employee",)
+        EMPLOYEE = "employee"
         SELF_EMPLOYED = "self_employed"
         PART_TIME = "part_time"
         BUSINESSMAN = "businessman"
@@ -119,13 +119,13 @@ class User(AbstractUser):
     )
 
     # Group related
-    joined_group = models.ForeignKey(
-        "group.Group",
-        blank=True,
-        null=True,
-        on_delete=models.PROTECT,
-        related_name="users",
-    )
+    # joined_group = models.ForeignKey(
+    #     "group.Group",
+    #     blank=True,
+    #     null=True,
+    #     on_delete=models.PROTECT,
+    #     related_name="users",
+    # )
     # is_group_leader = models.BooleanField(blank=False, null=False, default=False)
 
     # Purchase related
@@ -136,6 +136,10 @@ class User(AbstractUser):
     free_pass_active_until = models.DateTimeField(
         blank=True, null=True, default=free_pass_default_time
     )
+
+    # Is real or fake?
+    # this is needed for inviting non-heymatch user to group
+    is_temp_user = models.BooleanField(default=False)
 
     # LifeCycle
     is_deleted = models.BooleanField(default=False)

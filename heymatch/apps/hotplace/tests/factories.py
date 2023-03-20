@@ -6,18 +6,18 @@ from heymatch.apps.hotplace.models import HotPlace
 from heymatch.utils.util import FuzzyGeoPt, FuzzyGeoPtArray
 
 RANDOM_HOTPLACE_INFO = {
-    # "압구정 로데오": {
-    #     "zone_center_geoinfo": GeoPt(37.5262894, 127.0395281),
-    #     "zone_boundary_geoinfos": [
-    #         GeoPt(37.530342, 127.0384723),
-    #         GeoPt(37.5286403, 127.0360262),
-    #         GeoPt(37.5232287, 127.036627),
-    #         GeoPt(37.5242498, 127.0433218),
-    #         GeoPt(37.5275172, 127.0437938),
-    #         GeoPt(37.5284021, 127.039159),
-    #         GeoPt(37.530342, 127.0384723),
-    #     ],
-    # },
+    "압구정 로데오": {
+        "zone_center_geoinfo": GeoPt(37.5262894, 127.0395281),
+        "zone_boundary_geoinfos": [
+            GeoPt(37.530342, 127.0384723),
+            GeoPt(37.5286403, 127.0360262),
+            GeoPt(37.5232287, 127.036627),
+            GeoPt(37.5242498, 127.0433218),
+            GeoPt(37.5275172, 127.0437938),
+            GeoPt(37.5284021, 127.039159),
+            GeoPt(37.530342, 127.0384723),
+        ],
+    },
     # "을지로 노가리거리": {
     #     "zone_center_geoinfo": GeoPt(37.5672038, 126.9916705),
     #     "zone_boundary_geoinfos": [

@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-from heymatch.apps.group.api.serializers import FullGroupProfileSerializer
 from heymatch.apps.payment.api.serializers import SimpleUserPurchaseSerializer
 from heymatch.apps.user.models import (
     AppInfo,
@@ -29,7 +28,7 @@ class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
     user_profile_images = UserProfileImageSerializer(
         "user_profile_images", many=True, read_only=True
     )
-    joined_group = FullGroupProfileSerializer(read_only=True)
+    # joined_group = FullGroupProfileSerializer(read_only=True)
     user_purchases = SimpleUserPurchaseSerializer(read_only=True, many=True)
 
     class Meta:
@@ -54,19 +53,19 @@ class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
             "free_pass",
             "free_pass_active_until",
             "user_profile_images",
-            "joined_group",
+            # "joined_group",
             "agreed_to_terms",
         ]
 
     def to_representation(self, instance: User):
         representation = super().to_representation(instance)
-        joined_group = representation["joined_group"]
+        # joined_group = representation["joined_group"]
         user_purchases = representation["user_purchases"]
         del representation["joined_group"]
         del representation["user_purchases"]
         return {
             "user": representation,
-            "joined_group": joined_group,
+            # "joined_group": joined_group,
             "user_purchases": user_purchases,
         }
 
@@ -129,3 +128,16 @@ class AppInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = AppInfo
         fields = "__all__"
+
+
+class TempUserCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "gender",
+            "birthdate",
+            "height_cm",
+            "male_body_form",
+            "female_body_form",
+            "job_title",
+        ]
