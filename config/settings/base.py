@@ -96,6 +96,7 @@ THIRD_PARTY_APPS = [
     "simple_history",
     "drf_api_logger",
     "django_gsuite_email",
+    "django_filters",
 ]
 
 LOCAL_APPS = [
