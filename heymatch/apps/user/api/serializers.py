@@ -54,7 +54,6 @@ class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
             "free_pass_active_until",
             "user_profile_images",
             # "joined_group",
-            "agreed_to_terms",
         ]
 
     def to_representation(self, instance: User):
@@ -81,7 +80,6 @@ class UserInfoUpdateSerializer(serializers.ModelSerializer):
             "female_body_form",
             # "workplace",
             # "school",
-            "agreed_to_terms",
         ]
 
 
@@ -105,7 +103,6 @@ class UserInfoUpdateBodyRequestSerializer(serializers.ModelSerializer):
             "male_body_form",
             "female_body_form",
             "job_title",
-            "agreed_to_terms",
             "main_profile_image",
             "other_profile_image_1",
             "other_profile_image_2",

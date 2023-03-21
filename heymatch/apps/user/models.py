@@ -147,9 +147,6 @@ class User(AbstractUser):
     # History
     history = HistoricalRecords()
 
-    # Agreement
-    agreed_to_terms = models.BooleanField(default=False)
-
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["phone_number"]
 

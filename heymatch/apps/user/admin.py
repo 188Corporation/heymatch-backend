@@ -67,7 +67,6 @@ class UserAdmin(SimpleHistoryAdmin):
                     "is_deleted",
                     "is_staff",
                     "is_superuser",
-                    "agreed_to_terms",
                 ),
             },
         ),
@@ -96,7 +95,6 @@ class UserAdmin(SimpleHistoryAdmin):
         "is_active",
         "is_deleted",
         "stream_token",
-        "agreed_to_terms",
         "is_temp_user",
     ]
     history_list_display = [
@@ -128,7 +126,6 @@ class UserAdmin(SimpleHistoryAdmin):
         "is_active",
         "is_deleted",
         "stream_token",
-        "agreed_to_terms",
         "is_temp_user",
     ]
 

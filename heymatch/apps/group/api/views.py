@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db.models import Prefetch, Q
 from django.shortcuts import get_object_or_404
-from django_filters.rest_framework import CharFilter, DjangoFilterBackend, FilterSet
+from django_filters.rest_framework import DjangoFilterBackend
 from django_google_maps.fields import GeoPt
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
@@ -47,23 +47,23 @@ User = get_user_model()
 stream = settings.STREAM_CLIENT
 
 
-class GroupV2Filter(FilterSet):
-    geoinfo = CharFilter(lookup_expr="lt")
-
-    class Meta:
-        model = GroupV2
-        fields = ["geoinfo", "meetup_date", "gender", "height_cm", "max_distance"]
+# class GroupV2Filter(FilterSet):
+#     geoinfo = CharFilter(lookup_expr="lt")
+#
+#     class Meta:
+#         model = GroupV2
+#         fields = ["geoinfo", "meetup_date", "gender", "height_cm", "max_distance"]
 
 
 class GroupsGenericViewSet(viewsets.ModelViewSet):
     permission_classes = [
-        # IsAuthenticated,
-        # IsUserActive,
+        IsAuthenticated,
+        IsUserActive,
     ]
     parser_classes = [MultiPartParser]
     serializer_class = V2GroupCreationRequestBodySerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_class = GroupV2Filter
+    # filterset_class = GroupV2Filter
     queryset = GroupV2.objects.all()
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:

@@ -33,7 +33,6 @@ class UserDetailByPhoneNumberSerializer(UserDetailsSerializer):
             # "gender",
             # "birthdate",
             # "height_cm",
-            # "agreed_to_terms",
             "schedule_delete_canceled",
             # "workplace",
             # "school",
@@ -71,8 +70,6 @@ class UserLoginByPhoneNumberSerializer(LoginSerializer):
             # get user with phone_number
             try:
                 user = User.active_objects.get(phone_number=phone_number)
-                user.agreed_to_terms = True
-                user.save(update_fields=["agreed_to_terms"])
             except User.DoesNotExist:
                 user = User.active_objects.create(phone_number=phone_number)
         else:

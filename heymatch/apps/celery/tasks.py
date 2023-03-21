@@ -37,6 +37,8 @@ def verify_main_profile_images():
         faces_num = detect_face_with_haar_cascade_ml(upi.image.url)
         if faces_num == 1:
             upi.status = UserProfileImage.StatusChoices.ACCEPTED
+            upi.user.is_first_signup = False
+            upi.user.save(update_fields=["is_first_signup"])
             logger.debug(f"UserProfile(id={upi.id}) ACCEPTED!")
         else:
             upi.status = UserProfileImage.StatusChoices.REJECTED

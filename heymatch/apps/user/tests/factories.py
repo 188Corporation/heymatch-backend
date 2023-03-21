@@ -61,7 +61,6 @@ class ActiveUserFactory(DjangoModelFactory):
     # Other
     is_temp_user = False
     is_active = True
-    agreed_to_terms = True
 
     @post_generation
     def password(self, create: bool, extracted: Sequence[Any], **kwargs):
