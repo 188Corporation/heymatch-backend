@@ -65,7 +65,11 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
         if main_profile_image:
             if orig_main_profile_image:
                 orig_main_profile_image.image = main_profile_image
-                orig_main_profile_image.save(update_fields=["image"])
+                # should verify again
+                orig_main_profile_image.status = (
+                    UserProfileImage.StatusChoices.NOT_VERIFIED
+                )
+                orig_main_profile_image.save(update_fields=["image", "status"])
             else:
                 UserProfileImage.active_objects.create(
                     user=request.user,
