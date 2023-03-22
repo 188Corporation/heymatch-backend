@@ -165,7 +165,6 @@ def upload_to(instance, filename):
 class UserProfileImage(OrderedModel):
     class StatusChoices(models.TextChoices):
         NOT_VERIFIED = "n"
-        UNDER_VERIFICATION = "u"
         ACCEPTED = "a"
         REJECTED = "r"
 

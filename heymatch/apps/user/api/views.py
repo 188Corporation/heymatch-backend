@@ -71,7 +71,7 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
                     user=request.user,
                     image=main_profile_image,
                     is_main=True,
-                    status=UserProfileImage.StatusChoices.UNDER_VERIFICATION,
+                    status=UserProfileImage.StatusChoices.NOT_VERIFIED,
                 )
 
         # process other profile image

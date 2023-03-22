@@ -13,6 +13,8 @@ from heymatch.utils.util import detect_face_with_haar_cascade_ml
 
 User = get_user_model()
 stream = settings.STREAM_CLIENT
+onesignal_client = settings.ONE_SIGNAL_CLIENT
+
 logger = logging.getLogger(__name__)
 
 
@@ -24,11 +26,7 @@ def verify_main_profile_images():
 
     logger.debug("[1] Get target profile images to be verified")
     target_upi_qs = UserProfileImage.active_objects.filter(
-        Q(is_main=True)
-        & (
-            Q(status=UserProfileImage.StatusChoices.NOT_VERIFIED)
-            | Q(status=UserProfileImage.StatusChoices.UNDER_VERIFICATION)
-        )
+        Q(is_main=True) & Q(status=UserProfileImage.StatusChoices.NOT_VERIFIED)
     )
     logger.debug(f"[1] Target images to be verified: {target_upi_qs}")
 
@@ -40,10 +38,22 @@ def verify_main_profile_images():
             upi.user.is_first_signup = False
             upi.user.save(update_fields=["is_first_signup"])
             logger.debug(f"UserProfile(id={upi.id}) ACCEPTED!")
+
+            # Send notification
+            onesignal_client.send_notification_to_specific_users(
+                title="프로필 사진 통과!",
+                content="메인 프로필 사진 심사 통과 하셨습니다! 이제 헤이매치를 이용해봐요 😀",
+                user_ids=[str(upi.user.id)],
+            )
         else:
             upi.status = UserProfileImage.StatusChoices.REJECTED
             logger.debug(
                 f"UserProfile(id={upi.id}) REJECTED! (faces num = {faces_num})"
+            )
+            onesignal_client.send_notification_to_specific_users(
+                title="프로필 사진 심사 거절",
+                content="새로운 메인 프로필 사진을 올려주세요",
+                user_ids=[str(upi.user.id)],
             )
         upi.save(update_fields=["status", "is_active"])
 
