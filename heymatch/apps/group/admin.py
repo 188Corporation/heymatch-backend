@@ -13,6 +13,9 @@ class GroupV2Admin(SimpleHistoryAdmin):
         "meetup_date",
         "meetup_timerange",
         "gps_geoinfo",
+        "member_number",
+        "member_avg_height",
+        "member_gender_type",
         "is_active",
     ]
     history_list_display = ["status", *list_display]
@@ -23,6 +26,9 @@ class GroupV2Admin(SimpleHistoryAdmin):
         "meetup_date",
         "meetup_timerange",
         "gps_geoinfo",
+        "member_number",
+        "member_avg_height",
+        "member_gender_type",
         "is_active",
     ]
 

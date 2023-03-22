@@ -1,3 +1,5 @@
+from statistics import mean
+
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models.query import QuerySet
@@ -12,6 +14,39 @@ class GroupManager(models.Manager):
         # Group should pass all registration step in order to mark this as True
         group.save(using=self._db)
         return group
+
+
+class GroupMemberManager(models.Manager):
+    def get_group_members(self, group) -> QuerySet:
+        return self.get_queryset().filter(group=group)
+
+    def count_group_members(self, group):
+        return self.get_group_members(group).count()
+
+    def count_group_members_avg_height(self, group) -> int or None:
+        qs = self.get_group_members(group)
+        if qs.count() == 0:
+            return None
+        members_heights = [gm.user.height_cm for gm in qs]
+        return int(mean(members_heights))
+
+    def get_member_gender_type(self, group) -> str or None:
+        qs = self.get_group_members(group)
+        if qs.count() == 0:
+            return None
+        males = 0
+        females = 0
+        for gm in qs:
+            if gm.user.gender == User.GenderChoices.MALE:
+                males += 1
+            else:
+                females += 1
+        if females == 0 and males > 0:
+            return "male_only"
+        elif males == 0 and females > 0:
+            return "female_only"
+        else:
+            return "mixed"
 
 
 class ActiveGroupManager(models.Manager):

@@ -12,7 +12,7 @@ from ordered_model.models import OrderedModel
 from PIL import Image, ImageFilter, ImageOps
 from simple_history.models import HistoricalRecords
 
-from .managers import ActiveGroupManager, GroupManager
+from .managers import ActiveGroupManager, GroupManager, GroupMemberManager
 
 
 class EncryptedGeoLocationField(EncryptedField, GeoLocationField):
@@ -43,6 +43,21 @@ class GroupV2(models.Model):
     # History
     history = HistoricalRecords()
 
+    @property
+    def member_number(self):
+        manager = GroupMember.objects
+        return manager.count_group_members(self)
+
+    @property
+    def member_avg_height(self):
+        manager = GroupMember.objects
+        return manager.count_group_members_avg_height(self)
+
+    @property
+    def member_gender_type(self):
+        manager = GroupMember.objects
+        return manager.get_member_gender_type(self)
+
 
 class GroupMember(models.Model):
     group = models.ForeignKey(
@@ -66,6 +81,8 @@ class GroupMember(models.Model):
 
     # History
     history = HistoricalRecords()
+
+    objects = GroupMemberManager()
 
 
 ##################

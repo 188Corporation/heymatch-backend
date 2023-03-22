@@ -43,33 +43,58 @@ from .serializers import (
     V2GroupCreationRequestBodySerializer,
 )
 
+# from django_filters.filters import CharFilter, ChoiceFilter, DateRangeFilter
+# from django_filters.filterset import FilterSet
 User = get_user_model()
 stream = settings.STREAM_CLIENT
 
 
 # class GroupV2Filter(FilterSet):
-#     geoinfo = CharFilter(lookup_expr="lt")
+#     gps_geoinfo = CharFilter(field_name="geoinfo")
+#     meetup_date_range = DateRangeFilter(field_name="meetup_date")
+#     gender = ChoiceFilter(field_name="gender")
 #
 #     class Meta:
 #         model = GroupV2
-#         fields = ["geoinfo", "meetup_date", "gender", "height_cm", "max_distance"]
+#         fields = ["gps_geoinfo", "meetup_date_range", "gender", "height_cm", "max_distance"]
+
+
+#
+# class  ProductDetailsFilter(filters.FilterSet):
+#     # here are defined fields by which there is a need to filter
+#     brand = filters.AllLookupsFilter(name='brand')
+#     bodyStyle = filters.AllLookupsFilter(name='bodyStyle')
+#     transmission = filters.AllLookupsFilter(name='transmission')
+#     budget = filters.AllLookupsFilter(name='budget')
+#     model = filters.AllLookupsFilter(name='model')
+#
+#     class Meta:
+#         model = product_details
+#         fields = {
+#             'brand': ['exact', 'in'],
+#             'bodyStyle: ['exact', 'in'],
+#             'transmission': ['exact', 'in'],
+#             'budget': ['exact', 'in'],
+#             'model': ['exact', 'in']
+#         }
 
 
 class GroupsGenericViewSet(viewsets.ModelViewSet):
     permission_classes = [
-        IsAuthenticated,
-        IsUserActive,
+        # IsAuthenticated,
+        # IsUserActive,
     ]
     parser_classes = [MultiPartParser]
     serializer_class = V2GroupCreationRequestBodySerializer
     filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["gps_geoinfo", "meetup_date"]
     # filterset_class = GroupV2Filter
     queryset = GroupV2.objects.all()
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         # GET /api/groups/
-        #   ?geoinfo=37.1234,128.1234
-        #   &meetup_date=2023-01-01
+        #   ?gps_geoinfo=37.1234,128.1234
+        #   &meetup_date_range=2023-01-01,2023-01-05
         #   &gender=f
         #   &height_cm=170,188
         #   &max_distance_km=30

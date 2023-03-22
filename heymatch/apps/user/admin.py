@@ -136,17 +136,19 @@ class UserProfilePhotoAdmin(admin.ModelAdmin):
         "id",
         "user",
         "is_main",
+        "status",
         "image",
         "image_blurred",
         "thumbnail",
         "thumbnail_blurred",
         "order",
     ]
-    history_list_display = ["status", *list_display]
+    history_list_display = [*list_display]
     search_fields = [
         "id",
         "user",
         "is_main",
+        "status",
         "image",
         "image_blurred",
         "thumbnail",
