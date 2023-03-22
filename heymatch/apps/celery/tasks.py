@@ -67,19 +67,19 @@ def delete_scheduled_users():
         logger.debug(f"=== Target user: {user.id} ===")
         logger.debug("[2.1] Deactivate joined_group if any")
         # Disable group
-        joined_group = user.joined_group
-        if joined_group:
-            joined_group.is_active = False
-            joined_group.save(update_fields=["is_active"])
+        # joined_group = user.joined_group
+        # if joined_group:
+        #     joined_group.is_active = False
+        #     joined_group.save(update_fields=["is_active"])
 
         # Deactivate MatchRequest
         logger.debug("[2.2] Deactivate all MatchRequests")
-        MatchRequest.active_objects.filter(sender_group=joined_group).update(
-            is_active=False
-        )
-        MatchRequest.active_objects.filter(receiver_group=joined_group).update(
-            is_active=False
-        )
+        # MatchRequest.active_objects.filter(sender_group=joined_group).update(
+        #     is_active=False
+        # )
+        # MatchRequest.active_objects.filter(receiver_group=joined_group).update(
+        #     is_active=False
+        # )
 
         # Soft-delete Stream Chat
         logger.debug("[2.3] Deactivate all Stream Chats")
@@ -94,9 +94,9 @@ def delete_scheduled_users():
 
         # Mark user as deleted
         logger.debug("[2.4] Mark user as `deleted`")
-        user.joined_group = None
+        # user.joined_group = None
         user.is_deleted = True
-        user.save(update_fields=["joined_group", "is_deleted"])
+        user.save(update_fields=["is_deleted"])
 
         # Mark DeleteScheduledUser as processed
         logger.debug("[2.5] Mark DeleteScheduledUser as `completed`")

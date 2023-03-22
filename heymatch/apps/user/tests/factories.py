@@ -108,7 +108,7 @@ class UserProfileImageFactory(DjangoModelFactory):
 
 class InactiveUserFactory(ActiveUserFactory):
     is_active = False
-    joined_group = None
+    # joined_group = None
 
 
 class AdminUserFactory(ActiveUserFactory):

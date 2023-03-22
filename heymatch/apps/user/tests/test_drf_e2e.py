@@ -12,7 +12,7 @@ class TestUserWithGroupFullInfoEndpoints:
     ENDPOINT = "/api/users/my/"
 
     def test_registration_status_all_good(self, api_client: APIClient):
-        active_user = ActiveUserFactory(joined_group=None)
+        active_user = ActiveUserFactory()
         api_client.force_authenticate(user=active_user)
         res = api_client.get(self.ENDPOINT)
         assert res.status_code == 200

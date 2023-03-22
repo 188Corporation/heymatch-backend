@@ -60,7 +60,7 @@ class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         # joined_group = representation["joined_group"]
         user_purchases = representation["user_purchases"]
-        del representation["joined_group"]
+        # del representation["joined_group"]
         del representation["user_purchases"]
         return {
             "user": representation,
