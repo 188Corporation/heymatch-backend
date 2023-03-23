@@ -43,6 +43,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   gettext \
   # OpenCV related dependencies
   libgl1-mesa-glx libglib2.0-0 libsm6 libxrender1 libxext6 \
+  # GeoDjango dependencies
+  binutils libproj-dev gdal-bin postgis \
   # cleaning up unused files
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*

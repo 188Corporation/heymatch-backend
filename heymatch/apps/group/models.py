@@ -3,8 +3,10 @@ import uuid
 from io import BytesIO
 
 from django.conf import settings
+from django.contrib.gis.db import models
+from django.contrib.postgres.operations import CreateExtension
 from django.core.files.base import ContentFile
-from django.db import models
+from django.db import migrations
 from django.utils import timezone
 from django_google_maps.fields import GeoLocationField
 from fernet_fields import EncryptedField
@@ -21,6 +23,12 @@ class EncryptedGeoLocationField(EncryptedField, GeoLocationField):
     pass
 
 
+class Migration(migrations.Migration):
+    operations = [
+        CreateExtension("postgis"),
+    ]
+
+
 class GroupV2(models.Model):
     class MeetUpTimeRange(models.TextChoices):
         LUNCH = "lunch"  # 11am ~ 2pm
@@ -35,6 +43,7 @@ class GroupV2(models.Model):
     meetup_timerange = models.CharField(
         blank=False, null=False, choices=MeetUpTimeRange.choices, max_length=20
     )
+    gps_point = models.PointField(blank=False, null=False)
     gps_geoinfo = EncryptedGeoLocationField(blank=False, null=False, max_length=20)
 
     # Lifecycle
