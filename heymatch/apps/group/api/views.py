@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db.models import Prefetch, Q
 from django.shortcuts import get_object_or_404
+from django_filters.filterset import FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
 from django_google_maps.fields import GeoPt
 from drf_yasg.utils import swagger_auto_schema
@@ -43,43 +44,32 @@ from .serializers import (
     V2GroupCreationRequestBodySerializer,
 )
 
-# from django_filters.filters import CharFilter, ChoiceFilter, DateRangeFilter
-# from django_filters.filterset import FilterSet
 User = get_user_model()
 stream = settings.STREAM_CLIENT
 
 
-# class GroupV2Filter(FilterSet):
-#     gps_geoinfo = CharFilter(field_name="geoinfo")
-#     meetup_date_range = DateRangeFilter(field_name="meetup_date")
-#     gender = ChoiceFilter(field_name="gender")
-#
-#     class Meta:
-#         model = GroupV2
-#         fields = ["gps_geoinfo", "meetup_date_range", "gender", "height_cm", "max_distance"]
+class GroupV2Filter(FilterSet):
+    # searched_gps = CharFilter()
+    # meetup_date_range = DateRangeFilter()
+    # gender_type = CharFilter(field_name="member_gender_type")  # male_only, female_only, mixed
+    # min_height = CharFilter(name="member_avg_height", lookup_expr='gte')
+    # max_height = CharFilter(name="member_avg_height", lookup_expr='lte')
+    # max_distance_km = NumberFilter()
 
-
-#
-# class  ProductDetailsFilter(filters.FilterSet):
-#     # here are defined fields by which there is a need to filter
-#     brand = filters.AllLookupsFilter(name='brand')
-#     bodyStyle = filters.AllLookupsFilter(name='bodyStyle')
-#     transmission = filters.AllLookupsFilter(name='transmission')
-#     budget = filters.AllLookupsFilter(name='budget')
-#     model = filters.AllLookupsFilter(name='model')
-#
-#     class Meta:
-#         model = product_details
-#         fields = {
-#             'brand': ['exact', 'in'],
-#             'bodyStyle: ['exact', 'in'],
-#             'transmission': ['exact', 'in'],
-#             'budget': ['exact', 'in'],
-#             'model': ['exact', 'in']
-#         }
+    class Meta:
+        model = GroupV2
+        fields = {
+            "searched_gps"
+            # "meetup_date_range",
+            # "gender_type",
+            # "min_height",
+            # "max_height",
+            # "max_distance_km",
+        }
 
 
 class GroupsGenericViewSet(viewsets.ModelViewSet):
+    queryset = GroupV2.objects.all()
     permission_classes = [
         # IsAuthenticated,
         # IsUserActive,
@@ -87,13 +77,13 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
     parser_classes = [MultiPartParser]
     serializer_class = V2GroupCreationRequestBodySerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["gps_geoinfo", "meetup_date"]
-    # filterset_class = GroupV2Filter
-    queryset = GroupV2.objects.all()
+    filterset_class = GroupV2Filter
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        # GET /api/groups/
-        #   ?gps_geoinfo=37.1234,128.1234
+        print(request)
+        filtered_qs = self.filter_queryset(self.get_queryset())
+        print(filtered_qs)
+        # GET /api/groups/?gps_geoinfo=37.1234,128.1234
         #   &meetup_date_range=2023-01-01,2023-01-05
         #   &gender=f
         #   &height_cm=170,188

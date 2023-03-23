@@ -38,6 +38,7 @@ class GroupV2(models.Model):
     gps_geoinfo = EncryptedGeoLocationField(blank=False, null=False, max_length=20)
 
     # Lifecycle
+    created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
 
     # History

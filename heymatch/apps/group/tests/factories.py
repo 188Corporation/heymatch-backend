@@ -10,13 +10,28 @@ from heymatch.apps.hotplace.tests.factories import HotPlaceFactory
 from heymatch.apps.user.tests.factories import ActiveUserFactory
 from heymatch.utils.util import FuzzyGeoPt
 
+TITLE_CHOICES = [
+    "압구정 2:2 보실분!!",
+    "저희 부산에서 놀라왔어요~~",
+    "훈남 3명 (의, 약, 대기업) 대기중",
+    "이거 뭐에요~~?? 놀아요!!",
+    "잘생긴 오빠들만 :D",
+]
+
+INTRO_CHOICES = [
+    "일주일 후에 압구정 레스토랑 예약해뒀어요~ 같이 얘기나눠요~~",
+    "평균 키 180 이상, 의사 약사 외국계 대기업 종사자입니당 ㅎㅎ 아무나 연락 줘요~~",
+    "안녕하세요!! 저희랑 재밌게 놀아요~",
+    "이런거 처음 올려보지만... 재밌어 보여서 ㅎㅎㅎ 시간 되시는 분들 만나서 재밌게 놀아요!!",
+]
+
 
 class GroupV2Factory(DjangoModelFactory):
     class Meta:
         model = GroupV2
 
-    title = Faker("sentence")
-    introduction = Faker("paragraph", nb_sentences=3)
+    title = Faker("random_element", elements=TITLE_CHOICES)
+    introduction = Faker("random_element", elements=INTRO_CHOICES)
     meetup_date = FuzzyDate(
         start_date=datetime.date.today(),
         end_date=datetime.date.today() + datetime.timedelta(days=10),

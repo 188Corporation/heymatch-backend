@@ -131,7 +131,7 @@ class UserAdmin(SimpleHistoryAdmin):
 
 
 @admin.register(UserProfileImage)
-class UserProfilePhotoAdmin(admin.ModelAdmin):
+class UserProfilePhotoAdmin(SimpleHistoryAdmin):
     list_display = [
         "id",
         "user",
