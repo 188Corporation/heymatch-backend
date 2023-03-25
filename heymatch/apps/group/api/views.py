@@ -5,7 +5,12 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db.models import Prefetch, Q
 from django.shortcuts import get_object_or_404
-from django_filters.rest_framework import DjangoFilterBackend
+from django_filters.rest_framework import (
+    DateFromToRangeFilter,
+    DjangoFilterBackend,
+    FilterSet,
+    RangeFilter,
+)
 from django_google_maps.fields import GeoPt
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
@@ -13,6 +18,7 @@ from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework_gis.filters import DistanceToPointFilter
 
 from heymatch.apps.chat.models import StreamChannel
 from heymatch.apps.group.models import Group, GroupMember, GroupV2, ReportedGroup
@@ -47,24 +53,41 @@ User = get_user_model()
 stream = settings.STREAM_CLIENT
 
 
-# class GroupV2Filter(FilterSet):
-#     # searched_gps = CharFilter()
-#     # meetup_date_range = DateRangeFilter()
-#     # gender_type = CharFilter(field_name="member_gender_type")  # male_only, female_only, mixed
-#     # min_height = CharFilter(name="member_avg_height", lookup_expr='gte')
-#     # max_height = CharFilter(name="member_avg_height", lookup_expr='lte')
-#     # max_distance_km = NumberFilter()
-#
-#     class Meta:
-#         model = GroupV2
-#         fields = {
-#             "searched_gps"
-#             # "meetup_date_range",
-#             # "gender_type",
-#             # "min_height",
-#             # "max_height",
-#             # "max_distance_km",
-#         }
+class GroupV2Filter(FilterSet):
+    meetup_date = DateFromToRangeFilter(field_name="meetup_date")
+    height = RangeFilter(method="filter_avg_height")
+
+    # max_height = RangeFilter(method="filter_max_avg_height")
+
+    # gender_type = CharFilter(field_name="member_gender_type")  # male_only, female_only, mixed
+
+    class Meta:
+        model = GroupV2
+        fields = [
+            # "searched_gps"
+            "meetup_date",
+            # "min_height",
+            # "max_height",
+            # "max_distance_km",
+        ]
+
+    # TODO(@jin): Optimize height filtering speed
+    def filter_avg_height(self, queryset, field_name, value):
+        print("QS: ", queryset)
+        print("VALUE: ", value)
+
+        if value:
+            filtered_list = [
+                groupv2.id
+                for groupv2 in queryset
+                if value.start <= groupv2.member_avg_height <= value.stop
+            ]
+            return queryset.filter(id__in=filtered_list)
+        return queryset
+
+    # def filter_max_avg_height(self, queryset, value):
+    #     filtered_list = [groupv2 for groupv2 in queryset if groupv2.member_avg_height <= value]
+    #     return queryset.filter(id__in=filtered_list)
 
 
 class GroupsGenericViewSet(viewsets.ModelViewSet):
@@ -75,14 +98,22 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
     ]
     parser_classes = [MultiPartParser]
     serializer_class = V2GroupCreationRequestBodySerializer
-    filter_backends = [DjangoFilterBackend]
-
-    # filterset_class = GroupV2Filter
+    distance_filter_field = "gps_point"
+    filter_backends = [DjangoFilterBackend, DistanceToPointFilter]
+    filterset_class = GroupV2Filter
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        print(request)
+        """
+        1) 거리로 QS 나누고
+            ?dist=5000&point=127.03952,37.52628
+        2) Date로 나누고
+            ?meetup_date_after=2023-01-01&meetup_date_before=2023-01-05
+        3) height로 나누고
+            ?height_min=130&height_max=180
+        """
         filtered_qs = self.filter_queryset(self.get_queryset())
         print(filtered_qs)
+
         # GET /api/groups/?gps_geoinfo=37.1234,128.1234
         #   &meetup_date_range=2023-01-01,2023-01-05
         #   &gender=f

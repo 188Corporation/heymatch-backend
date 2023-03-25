@@ -45,6 +45,7 @@ django-cors-headers==3.11.0 # https://github.com/adamchainz/django-cors-headers
 # DRF-spectacular for api documentation
 drf-spectacular==0.22.0  # https://github.com/tfranzel/drf-spectacular
 drf-api-logger==1.1.11  # https://github.com/vishalanandl177/DRF-API-Logger
+djangorestframework-gis==1.0  # https://github.com/openwisp/django-rest-framework-gis
 
 # Face Detection ML related
 opencv-python==4.7.0.72

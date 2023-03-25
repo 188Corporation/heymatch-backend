@@ -20,7 +20,7 @@ class V2GroupListRequestBodySerializer(serializers.ModelSerializer):
         fields = [
             "title",
             "introduction",
-            "gps_geoinfo",
+            "gps_point",
             "meetup_date",
             "meetup_timerange",
             "user_ids",
@@ -35,7 +35,7 @@ class V2GroupCreationRequestBodySerializer(serializers.ModelSerializer):
         fields = [
             "title",
             "introduction",
-            "gps_geoinfo",
+            "gps_point",
             "meetup_date",
             "meetup_timerange",
             "user_ids",

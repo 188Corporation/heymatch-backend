@@ -99,6 +99,7 @@ THIRD_PARTY_APPS = [
     "drf_api_logger",
     "django_gsuite_email",
     "django_filters",
+    "rest_framework_gis",
 ]
 
 LOCAL_APPS = [
@@ -367,6 +368,7 @@ REST_FRAMEWORK = {
         "anon": "1000/day",
         "user": "1000/min",
     },
+    "DEFAULT_SCHEMA_CLASS": "rest_framework_gis.schema.GeoFeatureAutoSchema",
 }
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
