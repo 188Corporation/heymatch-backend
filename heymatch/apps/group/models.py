@@ -43,8 +43,7 @@ class GroupV2(models.Model):
     meetup_timerange = models.CharField(
         blank=False, null=False, choices=MeetUpTimeRange.choices, max_length=20
     )
-    gps_point = models.PointField(blank=False, null=False)
-    gps_geoinfo = EncryptedGeoLocationField(blank=False, null=False, max_length=20)
+    gps_point = models.PointField(geography=True, blank=False, null=False)
 
     # Lifecycle
     created_at = models.DateTimeField(auto_now_add=True)

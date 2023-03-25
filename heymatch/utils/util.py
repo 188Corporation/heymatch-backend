@@ -1,5 +1,6 @@
 import decimal
 import json
+import random
 import urllib
 from datetime import datetime
 from random import randint, uniform
@@ -8,11 +9,21 @@ from typing import Sequence
 import cv2
 import numpy as np
 from django.conf import settings
+from django.contrib.gis.geos import Point as GisPoint
 from django_google_maps.fields import GeoPt
-from factory import random
+from factory import random as f_random
 from factory.fuzzy import BaseFuzzyAttribute
 from psycopg2._range import Range
 from shapely.geometry import Point, Polygon
+
+
+class FuzzyPointGangnam(BaseFuzzyAttribute):
+    """
+    DjangoGIS Point for GangNam district
+    """
+
+    def fuzz(self):
+        return GisPoint(random.uniform(127.01, 127.1), random.uniform(37.4, 37.5))
 
 
 class FuzzyGeoPt(BaseFuzzyAttribute):
@@ -30,10 +41,10 @@ class FuzzyGeoPt(BaseFuzzyAttribute):
 
     def generate_geopt(self):
         lat_base = decimal.Decimal(
-            str(random.randgen.uniform(self.lat_low, self.lat_high))
+            str(f_random.randgen.uniform(self.lat_low, self.lat_high))
         )
         long_base = decimal.Decimal(
-            str(random.randgen.uniform(self.long_low, self.long_hgh))
+            str(f_random.randgen.uniform(self.long_low, self.long_hgh))
         )
         lat = lat_base.quantize(decimal.Decimal(10) ** -self.precision)
         long = long_base.quantize(decimal.Decimal(10) ** -self.precision)
@@ -61,8 +72,8 @@ class FuzzyInt4Range(BaseFuzzyAttribute):
         super().__init__()
 
     def fuzz(self):
-        lower = int(random.randgen.randrange(self.low, self.high, self.step))
-        upper = int(random.randgen.randrange(lower + 1, self.high + 1, self.step))
+        lower = int(f_random.randgen.randrange(self.low, self.high, self.step))
+        upper = int(f_random.randgen.randrange(lower + 1, self.high + 1, self.step))
         return str(Range(lower=lower, upper=upper))
 
 

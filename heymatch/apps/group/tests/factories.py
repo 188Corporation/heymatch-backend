@@ -8,7 +8,7 @@ from factory.fuzzy import FuzzyDate
 from heymatch.apps.group.models import Group, GroupMember, GroupProfileImage, GroupV2
 from heymatch.apps.hotplace.tests.factories import HotPlaceFactory
 from heymatch.apps.user.tests.factories import ActiveUserFactory
-from heymatch.utils.util import FuzzyGeoPt
+from heymatch.utils.util import FuzzyGeoPt, FuzzyPointGangnam
 
 TITLE_CHOICES = [
     "압구정 2:2 보실분!!",
@@ -39,7 +39,8 @@ class GroupV2Factory(DjangoModelFactory):
     meetup_timerange = Faker(
         "random_element", elements=[x[0] for x in GroupV2.MeetUpTimeRange.choices]
     )
-    gps_geoinfo = FuzzyGeoPt(precision=5)
+    gps_point = FuzzyPointGangnam()
+    # gps_geoinfo = FuzzyGeoPt(precision=5)
 
     # Group Lifecycle
     is_active = True

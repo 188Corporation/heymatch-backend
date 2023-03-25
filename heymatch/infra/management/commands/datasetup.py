@@ -142,12 +142,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Successfully set up data for [Users]"))
 
     def generate_groups(self) -> None:
-        groups = []
-        for _ in range(10):
-            geopt = generate_rand_geoopt_within_boundary(
-                RANDOM_HOTPLACE_INFO["압구정 로데오"]["zone_boundary_geoinfos"]
-            )
-            groups.append(GroupV2Factory.create(gps_geoinfo=geopt))
+        groups = GroupV2Factory.create_batch(size=30)
         for group in groups:
             users = ActiveUserFactory.create_batch(size=random.choice([2, 3, 4]))
             for idx, user in enumerate(users):

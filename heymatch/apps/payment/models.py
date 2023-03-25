@@ -1,7 +1,7 @@
 from uuid import uuid4
 
 from django.contrib.auth import get_user_model
-from django.db import models
+from django.contrib.gis.db import models
 from simple_history.models import HistoricalRecords
 
 from .managers import (
