@@ -24,28 +24,6 @@ class UserProfileImageSerializer(serializers.ModelSerializer):
         ]
 
 
-class UserRestrictedInfoSerializer(serializers.ModelSerializer):
-    user_profile_images = UserProfileImageSerializer(
-        "user_profile_images", many=True, read_only=True
-    )
-
-    class Meta:
-        model = User
-        fields = [
-            "id",
-            "username",
-            "gender",
-            "birthdate",
-            "height_cm",
-            "male_body_form",
-            "female_body_form",
-            "job_title",
-            "verified_school_name",
-            "verified_company_name",
-            "user_profile_images",
-        ]
-
-
 class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
     user_profile_images = UserProfileImageSerializer(
         "user_profile_images", many=True, read_only=True

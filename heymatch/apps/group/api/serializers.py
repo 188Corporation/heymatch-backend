@@ -11,30 +11,50 @@ from heymatch.apps.group.models import (
     ReportedGroup,
 )
 from heymatch.apps.hotplace.models import HotPlace
-from heymatch.apps.user.api.serializers import UserRestrictedInfoSerializer
-from heymatch.apps.user.models import FakeChatUser
+from heymatch.apps.user.api.serializers import UserProfileImageSerializer
+from heymatch.apps.user.models import FakeChatUser, User
 from heymatch.utils.util import (
     generate_rand_geoopt_within_boundary,
     is_geopt_within_boundary,
 )
 
 
-class GroupMemberSerializer(serializers.ModelSerializer):
-    group_member_user = UserRestrictedInfoSerializer(
-        "group_member_user", many=True, read_only=True
+class UserRestrictedInfoSerializer(serializers.ModelSerializer):
+    user_profile_images = UserProfileImageSerializer(
+        "user_profile_images", many=True, read_only=True
     )
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "username",
+            "gender",
+            "birthdate",
+            "height_cm",
+            "male_body_form",
+            "female_body_form",
+            "job_title",
+            "verified_school_name",
+            "verified_company_name",
+            "user_profile_images",
+        ]
+
+
+class GroupMemberSerializer(serializers.ModelSerializer):
+    user = UserRestrictedInfoSerializer(read_only=True)
 
     class Meta:
         model = GroupMember
         fields = [
-            "group_member_user",
+            "user",
             "is_user_leader",
         ]
 
 
 class V2GroupFilteredListSerializer(serializers.ModelSerializer):
-    group_member_group = GroupMemberSerializer(
-        "group_member_group", many=True, read_only=True
+    group_members = GroupMemberSerializer(
+        many=True, read_only=True, source="group_member_group"
     )
 
     class Meta:
@@ -45,7 +65,7 @@ class V2GroupFilteredListSerializer(serializers.ModelSerializer):
             "gps_point",
             "meetup_date",
             "meetup_timerange",
-            "group_member_group",
+            "group_members",
         ]
 
 
