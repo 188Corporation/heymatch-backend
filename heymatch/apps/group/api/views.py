@@ -1,11 +1,24 @@
 from typing import Any
 
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from django.db.models import Prefetch, Q
+from django.db.models import (
+    Avg,
+    Case,
+    Count,
+    F,
+    IntegerField,
+    OuterRef,
+    Prefetch,
+    Q,
+    Subquery,
+    Sum,
+    When,
+)
+from django.db.models.functions import Coalesce
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import (
+    CharFilter,
     DateFromToRangeFilter,
     DjangoFilterBackend,
     FilterSet,
@@ -24,6 +37,7 @@ from heymatch.apps.chat.models import StreamChannel
 from heymatch.apps.group.models import Group, GroupMember, GroupV2, ReportedGroup
 from heymatch.apps.hotplace.models import HotPlace
 from heymatch.apps.match.models import MatchRequest
+from heymatch.apps.user.models import User
 from heymatch.shared.exceptions import (
     GroupNotWithinSameHotplaceException,
     JoinedGroupNotMineException,
@@ -47,47 +61,90 @@ from .serializers import (
     ReportGroupSerializer,
     RestrictedGroupProfileByHotplaceSerializer,
     V2GroupCreationRequestBodySerializer,
+    V2GroupFilteredListSerializer,
 )
 
-User = get_user_model()
+# User = get_user_model()
 stream = settings.STREAM_CLIENT
 
 
 class GroupV2Filter(FilterSet):
     meetup_date = DateFromToRangeFilter(field_name="meetup_date")
-    height = RangeFilter(method="filter_avg_height")
-
-    # max_height = RangeFilter(method="filter_max_avg_height")
-
-    # gender_type = CharFilter(field_name="member_gender_type")  # male_only, female_only, mixed
+    height = RangeFilter(method="filter_avg_heights_in_group")
+    gender = CharFilter(method="filter_gender_type_in_group")
 
     class Meta:
         model = GroupV2
         fields = [
-            # "searched_gps"
             "meetup_date",
-            # "min_height",
-            # "max_height",
-            # "max_distance_km",
         ]
 
-    # TODO(@jin): Optimize height filtering speed
-    def filter_avg_height(self, queryset, field_name, value):
-        print("QS: ", queryset)
-        print("VALUE: ", value)
+    def filter_avg_heights_in_group(self, queryset, field_name, value):
+        # Define subquery to get the height of each user
+        if not value:
+            return queryset
 
-        if value:
-            filtered_list = [
-                groupv2.id
-                for groupv2 in queryset
-                if value.start <= groupv2.member_avg_height <= value.stop
-            ]
-            return queryset.filter(id__in=filtered_list)
+        height_subquery = Subquery(
+            User.objects.filter(id=OuterRef("user_id")).values("height_cm")[:1]
+        )
+        # Define subquery to get the group IDs
+        group_subquery = Subquery(
+            GroupV2.objects.filter(id=OuterRef("group_id")).values("id")[:1]
+        )
+        # Define subquery to get the average height for each group
+        avg_height_subquery = (
+            GroupMember.objects.filter(group_id=OuterRef("group_id"))
+            .annotate(height_cm=Coalesce(height_subquery, 0))
+            .values("group_id")
+            .annotate(avg_height=Avg("height_cm", output_field=IntegerField()))
+            .values("avg_height")
+        )
+        # Define the final queryset
+        gm_queryset = (
+            GroupMember.objects.annotate(height_cm=Coalesce(height_subquery, 0))
+            .annotate(group_anno_id=Coalesce(group_subquery, 0))
+            .annotate(avg_height=Coalesce(avg_height_subquery, 0))
+            .filter(avg_height__gte=value.start, avg_height__lte=value.stop)
+            .distinct("group_id")
+        )
+        # Get final GroupV2 QS
+        queryset = queryset.filter(
+            id__in=list(gm_queryset.values_list("group_id", flat=True))
+        )
         return queryset
 
-    # def filter_max_avg_height(self, queryset, value):
-    #     filtered_list = [groupv2 for groupv2 in queryset if groupv2.member_avg_height <= value]
-    #     return queryset.filter(id__in=filtered_list)
+    def filter_gender_type_in_group(self, queryset, field_name, value):
+        if value not in ["m", "f"]:
+            return queryset
+
+        groupmember = (
+            GroupMember.objects.annotate(
+                gender=Subquery(
+                    User.objects.filter(id=OuterRef("user_id")).values("gender")[:1]
+                )
+            )
+            .select_related("group")
+            .values("group_id")
+            .distinct()
+        )
+
+        gm_queryset = (
+            groupmember.annotate(num_members=Count("user_id", distinct=True))
+            .annotate(
+                num_target_members=Sum(
+                    Case(
+                        When(Q(gender=value), then=1),
+                        default=0,
+                        output_field=IntegerField(),
+                    ),
+                )
+            )
+            .filter(num_members=F("num_target_members"))
+        )
+        queryset = queryset.filter(
+            id__in=list(gm_queryset.values_list("group_id", flat=True))
+        )
+        return queryset
 
 
 class GroupsGenericViewSet(viewsets.ModelViewSet):
@@ -110,9 +167,18 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
             ?meetup_date_after=2023-01-01&meetup_date_before=2023-01-05
         3) height로 나누고
             ?height_min=130&height_max=180
+
+        예시) 압구정역 기준 반경 5km 내 미팅날짜가 2023-01-01~2023-01-05 사이고 멤버들의 평균키가 130cm-180cm 사이인 그룹들
+            GET ../api/groups/
+                    ?dist=5000&point=127.03952,37.52628
+                    ?meetup_date_after=2023-01-01&meetup_date_before=2023-01-05
+                    ?height_min=130&height_max=180
+
         """
         filtered_qs = self.filter_queryset(self.get_queryset())
         print(filtered_qs)
+        serializer = V2GroupFilteredListSerializer(filtered_qs, many=True)
+        # print(serializer.data)
 
         # GET /api/groups/?gps_geoinfo=37.1234,128.1234
         #   &meetup_date_range=2023-01-01,2023-01-05
@@ -125,7 +191,7 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
         # filter
         #  1. default 15km
         #  2. ....
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(request_body=V2GroupCreationRequestBodySerializer)
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
