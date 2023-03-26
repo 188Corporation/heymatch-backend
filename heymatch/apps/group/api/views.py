@@ -191,6 +191,7 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
     queryset = GroupV2.objects.all().prefetch_related(
         "group_member_group",
         "group_member_group__user",
+        "group_member_group__user__user_profile_images",
     )
     # TODO(@jin): selected_related -> UserProfileImage
     permission_classes = [
