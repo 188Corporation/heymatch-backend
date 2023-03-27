@@ -27,6 +27,7 @@ from django_filters.rest_framework import (
 from django_google_maps.fields import GeoPt
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -187,13 +188,20 @@ class GroupV2Filter(FilterSet):
         return queryset
 
 
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 15
+
+
 class GroupsGenericViewSet(viewsets.ModelViewSet):
-    queryset = GroupV2.objects.all().prefetch_related(
-        "group_member_group",
-        "group_member_group__user",
-        "group_member_group__user__user_profile_images",
+    queryset = (
+        GroupV2.objects.all()
+        .prefetch_related(
+            "group_member_group",
+            "group_member_group__user",
+            "group_member_group__user__user_profile_images",
+        )
+        .order_by("-created_at")
     )
-    # TODO(@jin): selected_related -> UserProfileImage
     permission_classes = [
         IsAuthenticated,
         IsUserActive,
@@ -203,6 +211,7 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
     distance_filter_field = "gps_point"
     filter_backends = [DjangoFilterBackend, DistanceToPointFilter]
     filterset_class = GroupV2Filter
+    pagination_class = StandardResultsSetPagination
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """
@@ -214,23 +223,28 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
             ?height_min=130&height_max=180
         4) "성별"로 나누고
             ?gender=male_only or ?gender=female_only or ?gender=mixed
+        5) 마지막 pagination
+            ?page=3
 
         예시) 압구정역 기준 반경 5km 내 미팅날짜가 2023-01-01~2023-01-05 사이고 멤버들의 평균키가 130cm-180cm 사이인 그룹들
             GET ../api/groups/
                     ?dist=5000&point=127.03952,37.52628
                     ?meetup_date_after=2023-01-01&meetup_date_before=2023-01-05
                     ?height_min=130&height_max=180
+                    ?page=1
 
         예시2) 압구정역 기준 반경 5km 내 멤버들의 평균키가 130cm-180cm 사이인 남성 그룹들
             GET ../api/groups/
                     ?dist=5000&point=127.03952,37.52628
                     ?height_min=130&height_max=180
                     ?gender=male_only
+                    ?page=1
         """
         filtered_qs = self.filter_queryset(self.get_queryset())
-        serializer = V2GroupFilteredListSerializer(filtered_qs, many=True)
+        paginated_qs = self.paginate_queryset(filtered_qs)
+        serializer = V2GroupFilteredListSerializer(paginated_qs, many=True)
         data = serializer.data
-        return Response(data=data, status=status.HTTP_200_OK)
+        return self.get_paginated_response(data=data)
 
     @swagger_auto_schema(request_body=V2GroupCreationRequestBodySerializer)
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:

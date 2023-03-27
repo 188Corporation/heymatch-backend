@@ -3,7 +3,7 @@ import datetime
 from factory import SubFactory
 from factory.django import DjangoModelFactory, ImageField
 from factory.faker import Faker
-from factory.fuzzy import FuzzyDate
+from factory.fuzzy import FuzzyDate, FuzzyDateTime
 
 from heymatch.apps.group.models import Group, GroupMember, GroupProfileImage, GroupV2
 from heymatch.apps.hotplace.tests.factories import HotPlaceFactory
@@ -41,6 +41,11 @@ class GroupV2Factory(DjangoModelFactory):
     )
     gps_point = FuzzyPointGangnam()
     # gps_geoinfo = FuzzyGeoPt(precision=5)
+    created_at = FuzzyDateTime(
+        start_dt=datetime.datetime.now(tz=datetime.timezone.utc)
+        - datetime.timedelta(days=10),
+        end_dt=datetime.datetime.now(tz=datetime.timezone.utc),
+    )
 
     # Group Lifecycle
     is_active = True

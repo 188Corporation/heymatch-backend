@@ -17,6 +17,7 @@ class GroupV2Admin(SimpleHistoryAdmin):
         "member_number",
         "member_avg_height",
         "member_gender_type",
+        "created_at",
         "is_active",
     ]
     history_list_display = ["status", *list_display]
@@ -31,6 +32,7 @@ class GroupV2Admin(SimpleHistoryAdmin):
         "member_number",
         "member_avg_height",
         "member_gender_type",
+        "created_at",
         "is_active",
     ]
 

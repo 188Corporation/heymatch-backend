@@ -11,16 +11,28 @@ from heymatch.apps.group.models import (
     ReportedGroup,
 )
 from heymatch.apps.hotplace.models import HotPlace
-from heymatch.apps.user.api.serializers import UserProfileImageSerializer
-from heymatch.apps.user.models import FakeChatUser, User
+from heymatch.apps.user.models import FakeChatUser, User, UserProfileImage
 from heymatch.utils.util import (
     generate_rand_geoopt_within_boundary,
     is_geopt_within_boundary,
 )
 
 
+class UserProfileThumbnailImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfileImage
+        fields = [
+            "is_main",
+            "status",
+            # "thumbnail",
+            "thumbnail_blurred",
+            "order",
+            "is_active",
+        ]
+
+
 class UserRestrictedInfoSerializer(serializers.ModelSerializer):
-    user_profile_images = UserProfileImageSerializer(
+    user_profile_images = UserProfileThumbnailImageSerializer(
         "user_profile_images", many=True, read_only=True
     )
 
@@ -28,12 +40,12 @@ class UserRestrictedInfoSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             "id",
-            "username",
+            # "username",
             "gender",
             "birthdate",
-            "height_cm",
-            "male_body_form",
-            "female_body_form",
+            # "height_cm",
+            # "male_body_form",
+            # "female_body_form",
             "job_title",
             "verified_school_name",
             "verified_company_name",
@@ -61,11 +73,12 @@ class V2GroupFilteredListSerializer(serializers.ModelSerializer):
         model = GroupV2
         fields = [
             "title",
-            "introduction",
-            "gps_point",
+            # "introduction",
+            # "gps_point",
             "meetup_date",
-            "meetup_timerange",
+            # "meetup_timerange",
             "group_members",
+            "created_at",
         ]
 
 

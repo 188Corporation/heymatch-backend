@@ -8,6 +8,7 @@ from django.contrib.postgres.operations import CreateExtension
 from django.core.files.base import ContentFile
 from django.db import migrations
 from django.utils import timezone
+from django.utils.timezone import now
 from django_google_maps.fields import GeoLocationField
 from fernet_fields import EncryptedField
 from ordered_model.models import OrderedModel
@@ -46,7 +47,7 @@ class GroupV2(models.Model):
     gps_point = models.PointField(geography=True, blank=False, null=False)
 
     # Lifecycle
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=now, editable=False)
     is_active = models.BooleanField(default=True)
 
     # History
