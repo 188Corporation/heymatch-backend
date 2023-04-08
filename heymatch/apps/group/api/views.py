@@ -22,6 +22,7 @@ from django_filters.rest_framework import (
     DateFromToRangeFilter,
     DjangoFilterBackend,
     FilterSet,
+    NumberFilter,
     RangeFilter,
 )
 from django_google_maps.fields import GeoPt
@@ -73,6 +74,7 @@ class GroupV2Filter(FilterSet):
     meetup_date = DateFromToRangeFilter(field_name="meetup_date")
     height = RangeFilter(method="filter_avg_heights_in_group")
     gender = CharFilter(method="filter_gender_type_in_group")
+    member_num = NumberFilter(method="filter_member_number_in_group")
 
     class Meta:
         model = GroupV2
@@ -111,6 +113,31 @@ class GroupV2Filter(FilterSet):
         # Get final GroupV2 QS
         queryset = queryset.filter(
             id__in=list(gm_queryset.values_list("group_id", flat=True))
+        )
+        return queryset
+
+    def filter_member_number_in_group(self, queryset, field_name, value):
+        if not value:
+            return queryset
+
+        # Define a subquery for filtering GroupMembers with Users
+        group_member_subquery = GroupMember.objects.filter(
+            user__in=User.objects.all()
+        ).values("id", "group_id", "user_id")
+
+        # Use the subquery to group GroupMembers by group_id
+        group_member_groups = group_member_subquery.values("group_id").annotate(
+            total_members=Count("id")
+        )
+        # Filter the groups with exactly two members
+        if value < 5:
+            groups_with_members = group_member_groups.filter(total_members=value)
+        else:
+            groups_with_members = group_member_groups.filter(total_members__gte=value)
+
+        # Extract the group ids as a list
+        queryset = queryset.filter(
+            id__in=list(groups_with_members.values_list("group_id", flat=True))
         )
         return queryset
 
@@ -203,8 +230,7 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
         .order_by("-created_at")
     )
     permission_classes = [
-        IsAuthenticated,
-        IsUserActive,
+        # IsAuthenticated,
     ]
     parser_classes = [MultiPartParser]
     serializer_class = V2GroupCreationRequestBodySerializer
@@ -216,35 +242,36 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """
         1) "검색 장소 기준 반경 km" 나누고
-            ?dist=5000&point=127.03952,37.52628
+            dist=5000&point=127.03952,37.52628
         2) "만남날짜"로 나누고
-            ?meetup_date_after=2023-01-01&meetup_date_before=2023-01-05
-        3) "평균키"로 나누고
-            ?height_min=130&height_max=180
-        4) "성별"로 나누고
-            ?gender=male_only or ?gender=female_only or ?gender=mixed
-        5) 마지막 pagination
-            ?page=3
+            meetup_date_after=2023-01-01&meetup_date_before=2023-01-05
+        3) "멤버수"로 나누고
+            member_num=3
+        4) "평균키"로 나누고
+            height_min=130&height_max=180
+        5) "성별"로 나누고
+            gender=male_only or gender=female_only or gender=mixed
+        6) 마지막 pagination
+            page=3
 
         예시) 압구정역 기준 반경 5km 내 미팅날짜가 2023-01-01~2023-01-05 사이고 멤버들의 평균키가 130cm-180cm 사이인 그룹들
             GET ../api/groups/
                     ?dist=5000&point=127.03952,37.52628
-                    ?meetup_date_after=2023-01-01&meetup_date_before=2023-01-05
-                    ?height_min=130&height_max=180
-                    ?page=1
+                    &meetup_date_after=2023-01-01&meetup_date_before=2023-01-05
+                    &height_min=130&height_max=180
+                    &page=1
 
         예시2) 압구정역 기준 반경 5km 내 멤버들의 평균키가 130cm-180cm 사이인 남성 그룹들
             GET ../api/groups/
                     ?dist=5000&point=127.03952,37.52628
-                    ?height_min=130&height_max=180
-                    ?gender=male_only
-                    ?page=1
+                    &height_min=130&height_max=180
+                    &gender=male_only
+                    &page=1
         """
         filtered_qs = self.filter_queryset(self.get_queryset())
         paginated_qs = self.paginate_queryset(filtered_qs)
         serializer = V2GroupFilteredListSerializer(paginated_qs, many=True)
-        data = serializer.data
-        return self.get_paginated_response(data=data)
+        return self.get_paginated_response(data=serializer.data)
 
     @swagger_auto_schema(request_body=V2GroupCreationRequestBodySerializer)
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:

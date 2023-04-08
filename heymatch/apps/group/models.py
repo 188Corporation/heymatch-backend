@@ -42,7 +42,7 @@ class GroupV2(models.Model):
     introduction = models.TextField(blank=False, null=False, max_length=500)
     meetup_date = models.DateField(blank=False, null=False)
     meetup_timerange = models.CharField(
-        blank=False, null=False, choices=MeetUpTimeRange.choices, max_length=20
+        blank=True, null=True, choices=MeetUpTimeRange.choices, max_length=20
     )
     gps_point = models.PointField(geography=True, blank=False, null=False)
 
