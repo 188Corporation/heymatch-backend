@@ -8,7 +8,9 @@ from django.core.management.base import BaseCommand
 from django.db.utils import IntegrityError
 from factory.django import ImageField
 from phone_verify.models import SMSVerification
+from tqdm import tqdm
 
+from heymatch.apps.group.models import GroupV2
 from heymatch.apps.group.tests.factories import (
     ActiveGroupFactory,
     GroupMemberFactory,
@@ -103,6 +105,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Successfully set up all mocking data!"))
 
     def generate_superuser(self) -> None:
+        self.stdout.write(self.style.SUCCESS("Setting up data for [Superuser]"))
         try:
             User.objects.create_superuser(  # superuser
                 username=settings.DJANGO_ADMIN_ID,
@@ -126,11 +129,9 @@ class Command(BaseCommand):
                 "is_verified": True,
             },
         )
-        self.stdout.write(
-            self.style.SUCCESS("Successfully set up data for [Superuser]")
-        )
 
     def generate_normal_users(self) -> None:
+        self.stdout.write(self.style.SUCCESS("Setting up data for [Users]"))
         users = ActiveUserFactory.create_batch(size=2)
         for user in users:
             UserProfileImageFactory.create(
@@ -139,10 +140,13 @@ class Command(BaseCommand):
                     from_path=f"{pathlib.Path().resolve()}/heymatch/data/{random.choice(profile_image_filepath)}"
                 ),
             )
-        self.stdout.write(self.style.SUCCESS("Successfully set up data for [Users]"))
 
     def generate_groups(self) -> None:
-        groups = GroupV2Factory.create_batch(size=30)
+        # Invite Groups
+        self.stdout.write(self.style.SUCCESS("Setting up data for [Groups.INVITE]"))
+        SIZE = 20
+        pbar = tqdm(total=SIZE)
+        groups = GroupV2Factory.create_batch(size=SIZE, mode=GroupV2.GroupMode.INVITE)
         for group in groups:
             users = ActiveUserFactory.create_batch(size=random.choice([2, 3, 4]))
             for idx, user in enumerate(users):
@@ -158,9 +162,20 @@ class Command(BaseCommand):
                 GroupMemberFactory.create(
                     group=group, user=user, is_user_leader=is_leader
                 )
-        self.stdout.write(self.style.SUCCESS("Successfully set up data for [Groups]"))
+            pbar.update(1)
+        pbar.close()
+        # Simple Groups
+        self.stdout.write(self.style.SUCCESS("Setting up data for [Groups.SIMPLE]"))
+        pbar = tqdm(total=SIZE)
+        groups = GroupV2Factory.create_batch(size=SIZE, mode=GroupV2.GroupMode.SIMPLE)
+        for group in groups:
+            user = ActiveUserFactory.create()
+            GroupMemberFactory.create(group=group, user=user, is_user_leader=True)
+            pbar.update(1)
+        pbar.close()
 
     def generate_payment_items(self) -> None:
+        self.stdout.write(self.style.SUCCESS("Setting up data for [Payments]"))
         # Point Items
         PointItem.objects.create(
             name="캔디 5개",
@@ -205,9 +220,9 @@ class Command(BaseCommand):
         #     free_pass_duration_in_hour=24,
         #     best_deal_check=True,
         # )
-        self.stdout.write(self.style.SUCCESS("Successfully set up data for [Payments]"))
 
     def generate_app_info_item(self) -> None:
+        self.stdout.write(self.style.SUCCESS("Setting up data for [AppInfo]"))
         faq = "https://docs.google.com/forms/d/e/1FAIpQLScJwGBy92H9EoZagufzgBXGSwtN1dOxQbfctVnNPa1kOocACA/viewform"
         AppInfo.objects.create(
             faq_url=faq,
@@ -216,7 +231,6 @@ class Command(BaseCommand):
             terms_of_location_service_url="https://www.hey-match.com/location-terms",
             business_registration_url="https://www.hey-match.com/corporate",
         )
-        self.stdout.write(self.style.SUCCESS("Successfully set up data for [AppInfo]"))
 
     # DEPRECATED
     def generate_hotplace_groups(self) -> None:

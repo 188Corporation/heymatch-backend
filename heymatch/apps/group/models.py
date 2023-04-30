@@ -31,6 +31,10 @@ class Migration(migrations.Migration):
 
 
 class GroupV2(models.Model):
+    class GroupMode(models.TextChoices):
+        SIMPLE = "simple"
+        INVITE = "invite"
+
     class MeetUpTimeRange(models.TextChoices):
         LUNCH = "lunch"  # 11am ~ 2pm
         AFTERNOON = "afternoon"  # 2pm ~ 5pm
@@ -38,6 +42,9 @@ class GroupV2(models.Model):
         NIGHT = "night"  # 8pm ~
         NOT_SURE = "not_sure"
 
+    mode = models.CharField(
+        blank=False, null=False, choices=GroupMode.choices, max_length=10
+    )
     title = models.CharField(blank=False, null=False, max_length=100)
     introduction = models.TextField(blank=False, null=False, max_length=500)
     meetup_date = models.DateField(blank=False, null=False)

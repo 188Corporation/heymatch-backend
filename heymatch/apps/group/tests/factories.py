@@ -30,6 +30,7 @@ class GroupV2Factory(DjangoModelFactory):
     class Meta:
         model = GroupV2
 
+    mode = Faker("random_element", elements=[x[0] for x in GroupV2.GroupMode.choices])
     title = Faker("random_element", elements=TITLE_CHOICES)
     introduction = Faker("random_element", elements=INTRO_CHOICES)
     meetup_date = FuzzyDate(

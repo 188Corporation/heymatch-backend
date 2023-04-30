@@ -1,6 +1,7 @@
 from typing import Any
 
 from django.conf import settings
+from django.contrib.gis.geos import Point
 from django.core.exceptions import ValidationError
 from django.db.models import (
     Avg,
@@ -230,7 +231,7 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
         .order_by("-created_at")
     )
     permission_classes = [
-        # IsAuthenticated,
+        IsAuthenticated,
     ]
     parser_classes = [MultiPartParser]
     serializer_class = V2GroupCreationRequestBodySerializer
@@ -277,27 +278,45 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        return Response(status=status.HTTP_201_CREATED)
+        group = self.perform_create(serializer)
+        return Response(
+            data=V2GroupFilteredListSerializer(instance=group).data,
+            status=status.HTTP_201_CREATED,
+        )
 
-    def perform_create(self, serializer) -> None:
+    def perform_create(self, serializer) -> GroupV2:
         # Get members
-        user_ids = serializer.validated_data.get("user_ids")
-        qs = User.active_objects.all()
-        users = [get_object_or_404(qs, id=user_id) for user_id in user_ids]
-        # create Group
-        serializer.validated_data.pop("user_ids")
-        group = GroupV2.objects.create(**serializer.validated_data)
-        # create GroupMember
-        for user in users:
-            GroupMember.objects.create(
-                group=group,
-                user=user,
-            )
-        # add myself as group leader
+        # qs = User.active_objects.all()
+        # user_ids = serializer.validated_data.get("user_ids")
+        # parse gps_point
+        gps_point = serializer.validated_data.get("gps_point")
+        gps = gps_point.split(",")
+        serializer.validated_data["gps_point"] = Point(x=float(gps[1]), y=float(gps[0]))
+
+        # INVITE Mode
+        # if user_ids:
+        #     serializer.validated_data.pop("user_ids")
+        #     users = [get_object_or_404(qs, id=user_id) for user_id in user_ids]
+        #     group = GroupV2.objects.create(
+        #         **serializer.validated_data, mode=GroupV2.GroupMode.INVITE
+        #     )
+        #     # add myself as group leader
+        #     GroupMember.objects.create(
+        #         group=group, user=self.request.user, is_user_leader=True
+        #     )
+        #     for user in users:
+        #         GroupMember.objects.create(
+        #             group=group,
+        #             user=user,
+        #         )
+        # SIMPLE Mode
+        group = GroupV2.objects.create(
+            **serializer.validated_data, mode=GroupV2.GroupMode.SIMPLE
+        )
         GroupMember.objects.create(
             group=group, user=self.request.user, is_user_leader=True
         )
+        return group
 
 
 ##################

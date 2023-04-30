@@ -70,3 +70,6 @@ inapppy==2.5.2  # https://github.com/dotpot/InAppPy
 
 # Slack
 slack-sdk==3.19.4   # https://pypi.org/project/slack-sdk/
+
+# ETC
+tqdm==4.65.0
