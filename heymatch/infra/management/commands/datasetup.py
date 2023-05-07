@@ -144,26 +144,26 @@ class Command(BaseCommand):
     def generate_groups(self) -> None:
         # Invite Groups
         self.stdout.write(self.style.SUCCESS("Setting up data for [Groups.INVITE]"))
-        SIZE = 20
-        pbar = tqdm(total=SIZE)
-        groups = GroupV2Factory.create_batch(size=SIZE, mode=GroupV2.GroupMode.INVITE)
-        for group in groups:
-            users = ActiveUserFactory.create_batch(size=random.choice([2, 3, 4]))
-            for idx, user in enumerate(users):
-                UserProfileImageFactory.create(
-                    user=user,
-                    image=ImageField(
-                        from_path=f"{pathlib.Path().resolve()}/heymatch/data/{random.choice(profile_image_filepath)}"
-                    ),
-                )
-                is_leader = False
-                if idx == 0:
-                    is_leader = True
-                GroupMemberFactory.create(
-                    group=group, user=user, is_user_leader=is_leader
-                )
-            pbar.update(1)
-        pbar.close()
+        SIZE = 200
+        # pbar = tqdm(total=SIZE)
+        # groups = GroupV2Factory.create_batch(size=SIZE, mode=GroupV2.GroupMode.INVITE)
+        # for group in groups:
+        #     users = ActiveUserFactory.create_batch(size=random.choice([2, 3, 4]))
+        #     for idx, user in enumerate(users):
+        #         UserProfileImageFactory.create(
+        #             user=user,
+        #             image=ImageField(
+        #                 from_path=f"{pathlib.Path().resolve()}/heymatch/data/{random.choice(profile_image_filepath)}"
+        #             ),
+        #         )
+        #         is_leader = False
+        #         if idx == 0:
+        #             is_leader = True
+        #         GroupMemberFactory.create(
+        #             group=group, user=user, is_user_leader=is_leader
+        #         )
+        #     pbar.update(1)
+        # pbar.close()
         # Simple Groups
         self.stdout.write(self.style.SUCCESS("Setting up data for [Groups.SIMPLE]"))
         pbar = tqdm(total=SIZE)

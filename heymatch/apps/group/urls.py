@@ -9,7 +9,9 @@ from heymatch.apps.group.api.views import (
 
 app_name = "group"
 
-group_list_create_view = GroupsGenericViewSet.as_view({"get": "list", "post": "create"})
+group_list_create_view = GroupsGenericViewSet.as_view(
+    {"get": "list", "post": "create", "put": "update"}
+)
 
 # DEPRECATED
 v1_group_list_create_view = V1GroupsGenericViewSet.as_view(
@@ -22,6 +24,7 @@ group_report_view = GroupReportViewSet.as_view({"post": "report"})
 
 urlpatterns = [
     path("", group_list_create_view, name="group-list-create"),
-    path("<int:group_id>/", group_detail_view, name="group-detail"),
-    path("<int:group_id>/report/", group_report_view, name="group-report"),
+    # path("/top-ranking/", )
+    # path("<int:group_id>/", group_detail_view, name="group-detail"),
+    # path("<int:group_id>/report/", group_report_view, name="group-report"),
 ]

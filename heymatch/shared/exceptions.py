@@ -60,7 +60,7 @@ class UserPointBalanceNotEnoughException(BasePermissionDeniedException):
 
 class JoinedGroupNotMineException(BasePermissionDeniedException):
     status_code = 466
-    detail = "Not your joined group. Permission Denied."
+    detail = "Not joined group. Permission Denied."
 
 
 class MatchRequestAlreadySubmittedException(BasePermissionDeniedException):
@@ -86,6 +86,11 @@ class MatchRequestGroupIsMineException(BasePermissionDeniedException):
 class ReportMyGroupException(BasePermissionDeniedException):
     status_code = 474
     detail = "자기 자신을 신고할 수 없어요! 😵"
+
+
+class OneGroupPerUserException(BasePermissionDeniedException):
+    status_code = 475
+    detail = "One group per user. Cannot create more groups"
 
 
 class ReceiptWrongEnvException(BasePermissionDeniedException):

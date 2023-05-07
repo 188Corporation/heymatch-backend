@@ -78,12 +78,14 @@ class V2GroupFilteredListSerializer(serializers.ModelSerializer):
             # "gps_point",
             "meetup_date",
             # "meetup_timerange",
+            "member_number",
+            "member_avg_age",
             "group_members",
             "created_at",
         ]
 
 
-class V2GroupCreationRequestBodySerializer(serializers.ModelSerializer):
+class V2GroupCreateUpdateRequestBodySerializer(serializers.ModelSerializer):
     # user_ids = serializers.ListField(child=serializers.UUIDField(), required=False)
     gps_point = serializers.CharField(max_length=120, required=True)
 
@@ -94,6 +96,8 @@ class V2GroupCreationRequestBodySerializer(serializers.ModelSerializer):
             "introduction",
             "gps_point",
             "meetup_date",
+            "member_number",
+            "member_avg_age",
             # "meetup_timerange",
             # "user_ids",
         ]

@@ -58,6 +58,13 @@ def verify_main_profile_images():
         upi.save(update_fields=["status", "is_active"])
 
 
+@shared_task(soft_time_limit=120)
+def aggregate_top_ranking_places():
+    """
+    Aggregate top ranked places that has most Groups
+    """
+
+
 @shared_task(soft_time_limit=60)
 def delete_scheduled_users():
     logger.debug("======================================")

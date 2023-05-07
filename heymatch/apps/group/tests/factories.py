@@ -42,6 +42,8 @@ class GroupV2Factory(DjangoModelFactory):
     )
     gps_point = FuzzyPointGangnam()
     # gps_geoinfo = FuzzyGeoPt(precision=5)
+    member_number = Faker("pyint", min_value=2, max_value=6)
+    member_avg_age = Faker("pyint", min_value=22, max_value=35)
     created_at = FuzzyDateTime(
         start_dt=datetime.datetime.now(tz=datetime.timezone.utc)
         - datetime.timedelta(days=10),

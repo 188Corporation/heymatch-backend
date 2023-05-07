@@ -44,6 +44,7 @@ from heymatch.apps.user.models import User
 from heymatch.shared.exceptions import (
     GroupNotWithinSameHotplaceException,
     JoinedGroupNotMineException,
+    OneGroupPerUserException,
     ReportMyGroupException,
     UserGPSNotWithinHotplaceException,
 )
@@ -63,7 +64,7 @@ from .serializers import (
     ReportGroupRequestBodySerializer,
     ReportGroupSerializer,
     RestrictedGroupProfileByHotplaceSerializer,
-    V2GroupCreationRequestBodySerializer,
+    V2GroupCreateUpdateRequestBodySerializer,
     V2GroupFilteredListSerializer,
 )
 
@@ -120,27 +121,34 @@ class GroupV2Filter(FilterSet):
     def filter_member_number_in_group(self, queryset, field_name, value):
         if not value:
             return queryset
-
-        # Define a subquery for filtering GroupMembers with Users
-        group_member_subquery = GroupMember.objects.filter(
-            user__in=User.objects.all()
-        ).values("id", "group_id", "user_id")
-
-        # Use the subquery to group GroupMembers by group_id
-        group_member_groups = group_member_subquery.values("group_id").annotate(
-            total_members=Count("id")
-        )
-        # Filter the groups with exactly two members
         if value < 5:
-            groups_with_members = group_member_groups.filter(total_members=value)
-        else:
-            groups_with_members = group_member_groups.filter(total_members__gte=value)
+            return queryset.filter(member_number=value)
+        return queryset.filter(member_number__gte=value)
 
-        # Extract the group ids as a list
-        queryset = queryset.filter(
-            id__in=list(groups_with_members.values_list("group_id", flat=True))
-        )
-        return queryset
+    # def filter_member_number_in_group(self, queryset, field_name, value):
+    #     if not value:
+    #         return queryset
+    #
+    #     # Define a subquery for filtering GroupMembers with Users
+    #     group_member_subquery = GroupMember.objects.filter(
+    #         user__in=User.objects.all()
+    #     ).values("id", "group_id", "user_id")
+    #
+    #     # Use the subquery to group GroupMembers by group_id
+    #     group_member_groups = group_member_subquery.values("group_id").annotate(
+    #         total_members=Count("id")
+    #     )
+    #     # Filter the groups with exactly two members
+    #     if value < 5:
+    #         groups_with_members = group_member_groups.filter(total_members=value)
+    #     else:
+    #         groups_with_members = group_member_groups.filter(total_members__gte=value)
+    #
+    #     # Extract the group ids as a list
+    #     queryset = queryset.filter(
+    #         id__in=list(groups_with_members.values_list("group_id", flat=True))
+    #     )
+    #     return queryset
 
     def filter_gender_type_in_group(self, queryset, field_name, value):
         query_filter = {
@@ -234,7 +242,7 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
         IsAuthenticated,
     ]
     parser_classes = [MultiPartParser]
-    serializer_class = V2GroupCreationRequestBodySerializer
+    serializer_class = V2GroupCreateUpdateRequestBodySerializer
     distance_filter_field = "gps_point"
     filter_backends = [DjangoFilterBackend, DistanceToPointFilter]
     filterset_class = GroupV2Filter
@@ -274,7 +282,7 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
         serializer = V2GroupFilteredListSerializer(paginated_qs, many=True)
         return self.get_paginated_response(data=serializer.data)
 
-    @swagger_auto_schema(request_body=V2GroupCreationRequestBodySerializer)
+    @swagger_auto_schema(request_body=V2GroupCreateUpdateRequestBodySerializer)
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -310,6 +318,10 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
         #             user=user,
         #         )
         # SIMPLE Mode
+        qs = GroupMember.objects.filter(user=self.request.user)
+        if qs.exists():
+            raise OneGroupPerUserException()
+
         group = GroupV2.objects.create(
             **serializer.validated_data, mode=GroupV2.GroupMode.SIMPLE
         )
@@ -317,6 +329,24 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
             group=group, user=self.request.user, is_user_leader=True
         )
         return group
+
+    @swagger_auto_schema(request_body=V2GroupCreateUpdateRequestBodySerializer)
+    def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        user = request.user
+        queryset = GroupMember.objects.filter(user=user)
+        if not queryset.exists():
+            raise JoinedGroupNotMineException()
+
+        gm = queryset.first()
+        group = gm.group
+        # group.title = request.data.get("title", group.title)
+        # group.introduction = request.data.get("introduction", group.introduction)
+        # group.meetup_data = request.data.get("meetup_date", group.meetup_date)
+        # group.gps_point = request.data.get("gps_point", group.gps_point)
+        group.save(update_fields=["title", "introduction", "meetup_date", "gps_point"])
+        serializer = V2GroupCreateUpdateRequestBodySerializer(data=request.data)
+        serializer.update(instance=group)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
 ##################

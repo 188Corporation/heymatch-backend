@@ -52,6 +52,8 @@ class GroupV2(models.Model):
         blank=True, null=True, choices=MeetUpTimeRange.choices, max_length=20
     )
     gps_point = models.PointField(geography=True, blank=False, null=False)
+    member_number = models.IntegerField(blank=True, null=True)
+    member_avg_age = models.IntegerField(blank=True, null=True)
 
     # Lifecycle
     created_at = models.DateTimeField(default=now, editable=False)
@@ -60,10 +62,12 @@ class GroupV2(models.Model):
     # History
     history = HistoricalRecords()
 
-    @property
-    def member_number(self):
-        manager = GroupMember.objects
-        return manager.count_group_members(self)
+    # @property
+    # def member_number(self):
+    #     if not self.member_number:
+    #         manager = GroupMember.objects
+    #         return manager.count_group_members(self)
+    #     return self.member_number
 
     @property
     def member_avg_height(self):

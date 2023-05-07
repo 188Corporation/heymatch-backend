@@ -15,8 +15,9 @@ class GroupV2Admin(SimpleHistoryAdmin):
         "gps_point",
         # "gps_geoinfo",
         "member_number",
-        "member_avg_height",
-        "member_gender_type",
+        "member_avg_age",
+        # "member_avg_height",
+        # "member_gender_type",
         "created_at",
         "is_active",
     ]
@@ -30,8 +31,9 @@ class GroupV2Admin(SimpleHistoryAdmin):
         "gps_point",
         # "gps_geoinfo",
         "member_number",
-        "member_avg_height",
-        "member_gender_type",
+        "member_avg_age",
+        # "member_avg_height",
+        # "member_gender_type",
         "created_at",
         "is_active",
     ]
