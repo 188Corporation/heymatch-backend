@@ -18,6 +18,8 @@ from django.db.models import (
 )
 from django.db.models.functions import Coalesce
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django_filters.rest_framework import (
     CharFilter,
     DateFromToRangeFilter,
@@ -37,7 +39,13 @@ from rest_framework.response import Response
 from rest_framework_gis.filters import DistanceToPointFilter
 
 from heymatch.apps.chat.models import StreamChannel
-from heymatch.apps.group.models import Group, GroupMember, GroupV2, ReportedGroup
+from heymatch.apps.group.models import (
+    Group,
+    GroupMember,
+    GroupV2,
+    Recent24HrTopGroupAddress,
+    ReportedGroupV2,
+)
 from heymatch.apps.hotplace.models import HotPlace
 from heymatch.apps.match.models import MatchRequest
 from heymatch.apps.user.models import User
@@ -53,13 +61,14 @@ from heymatch.shared.permissions import (
     IsUserActive,
     IsUserJoinedGroup,
 )
-from heymatch.utils.util import is_geopt_within_boundary
+from heymatch.utils.util import NaverGeoAPI, is_geopt_within_boundary
 
 from .serializers import (
     FullGroupProfileByHotplaceSerializer,
     FullGroupProfileSerializer,
     GroupCreationRequestBodySerializer,
     GroupCreationSerializer,
+    GroupsTopAddressSerializer,
     GroupUpdateSerializer,
     ReportGroupRequestBodySerializer,
     ReportGroupSerializer,
@@ -70,6 +79,7 @@ from .serializers import (
 
 # User = get_user_model()
 stream = settings.STREAM_CLIENT
+NAVER_GEO_API = NaverGeoAPI()
 
 
 class GroupV2Filter(FilterSet):
@@ -299,7 +309,10 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
         # parse gps_point
         gps_point = serializer.validated_data.get("gps_point")
         gps = gps_point.split(",")
-        serializer.validated_data["gps_point"] = Point(x=float(gps[1]), y=float(gps[0]))
+        serializer.validated_data["gps_point"] = Point(x=float(gps[0]), y=float(gps[1]))
+        serializer.validated_data["gps_address"] = NAVER_GEO_API.reverse_geocode(
+            long=gps[0], lat=gps[1]
+        )
 
         # INVITE Mode
         # if user_ids:
@@ -349,6 +362,25 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
+class GroupsTopAddressViewSet(viewsets.ModelViewSet):
+    permission_classes = [
+        IsAuthenticated,
+    ]
+    serializer_class = GroupsTopAddressSerializer
+
+    @method_decorator(cache_page(60 * 5))  # cache every 5min
+    def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        queryset = Recent24HrTopGroupAddress.objects.first()
+        serializer = self.get_serializer(queryset)
+        data = serializer.data
+        # re-order
+        data["result"] = {
+            k: v
+            for k, v in sorted(data["result"].items(), key=lambda x: x[1], reverse=True)
+        }
+        return Response(data=data, status=status.HTTP_200_OK)
+
+
 ##################
 # Deprecated - V1
 ##################
@@ -368,12 +400,12 @@ class V1GroupsGenericViewSet(viewsets.ModelViewSet):
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         # Should exclude groups that I reported
-        rg_qs = ReportedGroup.objects.filter(reported_by=request.user)
+        rg_qs = ReportedGroupV2.objects.filter(reported_by=request.user)
         exclude_group_ids = [rg.reported_group.id for rg in rg_qs]
 
         # Should exclude groups that reported me
         if request.user.joined_group:
-            rg_qs = ReportedGroup.objects.filter(
+            rg_qs = ReportedGroupV2.objects.filter(
                 reported_group=request.user.joined_group
             )
             for rg in rg_qs:
@@ -534,7 +566,7 @@ class GroupReportViewSet(viewsets.ModelViewSet):
 
         reported_reason = request.data.get("reported_reason", "")
 
-        rg = ReportedGroup.objects.create(
+        rg = ReportedGroupV2.objects.create(
             reported_group=group,
             reported_reason=reported_reason,
             reported_by=user,

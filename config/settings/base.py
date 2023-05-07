@@ -319,6 +319,12 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(minute=0, hour="*/1"),  # execute every hour
         "args": (),
     },
+    # Aggregate recent 24 hours Top Ranked group addresses
+    "top-ranked-group-addresses-24hrs": {
+        "task": "heymatch.apps.celery.tasks.aggregate_recent_24hr_top_ranked_group_address",
+        "schedule": crontab(minute=0, hour=3),  # execute 3 a.m
+        "args": (),
+    },
     # NOTE: We do not delete groups anymore
     # Disable groups, matches, chat at the end of the day
     # "end-of-the-day": {
@@ -516,3 +522,7 @@ DJANGO_ADMIN_PASSWORD = env("DJANGO_ADMIN_PASSWORD")
 SLACK_REPORT_GROUP_BOT = WebhookClient(
     url=env("SLACK_REPORT_GROUP_BOT_WEBHOOK_URL"),
 )  # report-group
+
+# Naver API
+NAVER_CLIENT_ID = env("NAVER_API_CLIENT_ID")
+NAVER_CLIENT_SECRET = env("NAVER_API_CLIENT_SECRET")

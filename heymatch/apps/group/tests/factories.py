@@ -25,6 +25,13 @@ INTRO_CHOICES = [
     "이런거 처음 올려보지만... 재밌어 보여서 ㅎㅎㅎ 시간 되시는 분들 만나서 재밌게 놀아요!!",
 ]
 
+GPS_ADDR_CHOICES = [
+    "서울특별시 강남구 압구정동",
+    "서울특별시 강남구 역삼동",
+    "서울특별시 성동구 성수동",
+    "서울특별시 용산구 한남동",
+]
+
 
 class GroupV2Factory(DjangoModelFactory):
     class Meta:
@@ -41,6 +48,7 @@ class GroupV2Factory(DjangoModelFactory):
         "random_element", elements=[x[0] for x in GroupV2.MeetUpTimeRange.choices]
     )
     gps_point = FuzzyPointGangnam()
+    gps_address = Faker("random_element", elements=GPS_ADDR_CHOICES)
     # gps_geoinfo = FuzzyGeoPt(precision=5)
     member_number = Faker("pyint", min_value=2, max_value=6)
     member_avg_age = Faker("pyint", min_value=22, max_value=35)

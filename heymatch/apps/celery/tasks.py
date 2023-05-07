@@ -1,4 +1,6 @@
+import datetime
 import logging
+from collections import Counter
 
 from celery import shared_task
 from django.conf import settings
@@ -6,7 +8,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.utils import timezone
 
-from heymatch.apps.group.models import Group
+from heymatch.apps.group.models import Group, GroupV2, Recent24HrTopGroupAddress
 from heymatch.apps.match.models import MatchRequest
 from heymatch.apps.user.models import DeleteScheduledUser, UserProfileImage
 from heymatch.utils.util import detect_face_with_haar_cascade_ml
@@ -59,10 +61,28 @@ def verify_main_profile_images():
 
 
 @shared_task(soft_time_limit=120)
-def aggregate_top_ranking_places():
+def aggregate_recent_24hr_top_ranked_group_address():
     """
-    Aggregate top ranked places that has most Groups
+    Aggregate Top Ranked Group addresses within recent 24 hours for recommendation feature
     """
+    logger.debug(
+        "======================================================================="
+    )
+    logger.debug(
+        "=== 'aggregate_recent_24hr_top_ranked_group_address' task started! ==="
+    )
+    logger.debug(
+        "======================================================================="
+    )
+    date_from = timezone.now() - datetime.timedelta(days=1)
+    last_24_group_addresses = list(
+        GroupV2.objects.filter(created_at__gte=date_from).values_list(
+            "gps_address", flat=True
+        )
+    )
+    if len(last_24_group_addresses) > 0:
+        top_10_counter = dict(Counter(last_24_group_addresses).most_common(10))
+        Recent24HrTopGroupAddress.objects.create(result=top_10_counter)
 
 
 @shared_task(soft_time_limit=60)

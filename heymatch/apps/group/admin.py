@@ -1,7 +1,14 @@
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 
-from .models import Group, GroupMember, GroupProfileImage, GroupV2, ReportedGroup
+from .models import (
+    Group,
+    GroupMember,
+    GroupProfileImage,
+    GroupV2,
+    Recent24HrTopGroupAddress,
+    ReportedGroupV2,
+)
 
 
 @admin.register(GroupV2)
@@ -13,6 +20,7 @@ class GroupV2Admin(SimpleHistoryAdmin):
         "meetup_date",
         "meetup_timerange",
         "gps_point",
+        "gps_address",
         # "gps_geoinfo",
         "member_number",
         "member_avg_age",
@@ -29,6 +37,7 @@ class GroupV2Admin(SimpleHistoryAdmin):
         "meetup_date",
         "meetup_timerange",
         "gps_point",
+        "gps_address",
         # "gps_geoinfo",
         "member_number",
         "member_avg_age",
@@ -126,7 +135,21 @@ class GroupProfilePhotoAdmin(admin.ModelAdmin):
     ]
 
 
-@admin.register(ReportedGroup)
+@admin.register(Recent24HrTopGroupAddress)
+class Recent24HrTopGroupAddressAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "result",
+        "aggregated_at",
+    ]
+    search_fields = [
+        "id",
+        "result",
+        "aggregated_at",
+    ]
+
+
+@admin.register(ReportedGroupV2)
 class ReportedGroupAdmin(admin.ModelAdmin):
     list_display = [
         "id",

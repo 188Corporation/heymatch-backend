@@ -8,7 +8,8 @@ from heymatch.apps.group.models import (
     GroupMember,
     GroupProfileImage,
     GroupV2,
-    ReportedGroup,
+    Recent24HrTopGroupAddress,
+    ReportedGroupV2,
 )
 from heymatch.apps.hotplace.models import HotPlace
 from heymatch.apps.user.models import FakeChatUser, User, UserProfileImage
@@ -100,6 +101,15 @@ class V2GroupCreateUpdateRequestBodySerializer(serializers.ModelSerializer):
             "member_avg_age",
             # "meetup_timerange",
             # "user_ids",
+        ]
+
+
+class GroupsTopAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recent24HrTopGroupAddress
+        fields = [
+            "result",
+            "aggregated_at",
         ]
 
 
@@ -316,7 +326,7 @@ class GroupUpdateSerializer(serializers.ModelSerializer):
 
 class ReportGroupSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ReportedGroup
+        model = ReportedGroupV2
         fields = [
             "id",
             "reported_group",
@@ -329,5 +339,5 @@ class ReportGroupSerializer(serializers.ModelSerializer):
 
 class ReportGroupRequestBodySerializer(serializers.ModelSerializer):
     class Meta:
-        model = ReportedGroup
+        model = ReportedGroupV2
         fields = ["reported_reason"]

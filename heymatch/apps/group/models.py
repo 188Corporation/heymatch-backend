@@ -52,6 +52,9 @@ class GroupV2(models.Model):
         blank=True, null=True, choices=MeetUpTimeRange.choices, max_length=20
     )
     gps_point = models.PointField(geography=True, blank=False, null=False)
+    gps_address = models.CharField(
+        blank=False, null=False, max_length=250
+    )  # NAVER reverse geocoded address
     member_number = models.IntegerField(blank=True, null=True)
     member_avg_age = models.IntegerField(blank=True, null=True)
 
@@ -104,6 +107,41 @@ class GroupMember(models.Model):
     history = HistoricalRecords()
 
     objects = GroupMemberManager()
+
+
+class Recent24HrTopGroupAddress(models.Model):
+    result = models.JSONField(
+        null=False, blank=False, default=dict
+    )  # should use RawJSON to keep dict order intact
+    aggregated_at = models.DateTimeField(default=now, editable=False)
+
+
+class ReportedGroupV2(models.Model):
+    class ReportGroupStatusChoices(models.TextChoices):
+        REPORTED = "REPORTED"
+        UNDER_REVIEW = "UNDER_REVIEW"
+        PROCESSED = "PROCESSED"
+
+    reported_group = models.ForeignKey(
+        "group.GroupV2",
+        blank=True,
+        null=True,
+        on_delete=models.PROTECT,
+    )
+    reported_reason = models.TextField(max_length=500, null=True, blank=True)
+    reported_by = models.ForeignKey(
+        "user.User",
+        blank=True,
+        null=True,
+        on_delete=models.PROTECT,
+        related_name="reported_by_user",
+    )
+    status = models.CharField(
+        max_length=32,
+        default=ReportGroupStatusChoices.REPORTED,
+        choices=ReportGroupStatusChoices.choices,
+    )
+    created_at = models.DateTimeField(default=timezone.now)
 
 
 ##################
@@ -319,31 +357,3 @@ class GroupProfileImage(OrderedModel):
             save=False,
         )
         temp_image.close()
-
-
-class ReportedGroup(models.Model):
-    class ReportGroupStatusChoices(models.TextChoices):
-        REPORTED = "REPORTED"
-        UNDER_REVIEW = "UNDER_REVIEW"
-        PROCESSED = "PROCESSED"
-
-    reported_group = models.ForeignKey(
-        "group.Group",
-        blank=True,
-        null=True,
-        on_delete=models.PROTECT,
-    )
-    reported_reason = models.TextField(max_length=500, null=True, blank=True)
-    reported_by = models.ForeignKey(
-        "user.User",
-        blank=True,
-        null=True,
-        on_delete=models.PROTECT,
-        related_name="reported_by_user",
-    )
-    status = models.CharField(
-        max_length=32,
-        default=ReportGroupStatusChoices.REPORTED,
-        choices=ReportGroupStatusChoices.choices,
-    )
-    created_at = models.DateTimeField(default=timezone.now)

@@ -8,6 +8,7 @@ from typing import Sequence
 
 import cv2
 import numpy as np
+import requests
 from django.conf import settings
 from django.contrib.gis.geos import Point as GisPoint
 from django_google_maps.fields import GeoPt
@@ -171,3 +172,29 @@ def load_company_domain_file():
 def load_school_domain_file():
     f = open(f"{settings.APPS_DIR}/data/domains/school.json")
     return json.load(f)
+
+
+class NaverGeoAPI:
+    def __init__(self):
+        # NCP 콘솔에서 복사한 클라이언트ID와 클라이언트Secret 값
+        self._client_id = settings.NAVER_CLIENT_ID
+        self._client_secret = settings.NAVER_CLIENT_SECRET
+
+    def reverse_geocode(self, long: str, lat: str):
+        # 좌표 (경도, 위도)
+        output = "json"
+        orders = "admcode"  # 행정동
+        endpoint = "https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc"
+        url = f"{endpoint}?coords={long},{lat}&output={output}&orders={orders}"
+        # 헤더
+        headers = {
+            "X-NCP-APIGW-API-KEY-ID": self._client_id,
+            "X-NCP-APIGW-API-KEY": self._client_secret,
+        }
+        # 요청
+        res = requests.get(url, headers=headers)
+        res_json = res.json()
+        info = res_json["results"][0]["region"]
+        return (
+            f'{info["area1"]["name"]} {info["area2"]["name"]} {info["area3"]["name"]}'
+        )
