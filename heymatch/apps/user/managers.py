@@ -73,6 +73,15 @@ class ActiveUserManager(UserManager):
         user.save(using=self._db)
         return user
 
+    def fake_create(self, **kwargs):
+        """
+        For datasetup command
+        """
+        user = self.model(**kwargs)
+        user.stream_token = "fake-stream-token"
+        user.save(using=self._db)
+        return user
+
 
 class ActiveUserProfileManager(OrderedModelManager):
     def get_queryset(self) -> QuerySet:

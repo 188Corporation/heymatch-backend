@@ -83,7 +83,7 @@ class ActiveUserFactory(DjangoModelFactory):
         """Override the default ``_create`` with our custom call."""
         manager = User.active_objects
         # The default would use ``manager.create(*args, **kwargs)``
-        return manager.create(**kwargs)
+        return manager.fake_create(**kwargs)
 
 
 profile_image_filepath = [
