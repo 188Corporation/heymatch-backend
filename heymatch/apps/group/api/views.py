@@ -377,7 +377,7 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
         group = gm.group
         group.is_active = False
         group.save(update_fields=["is_active"])
-        return Response(status=status.HTTP_410_GONE)
+        return Response(status=status.HTTP_200_OK)
 
     @swagger_auto_schema(request_body=V2GroupGeneralRequestBodySerializer)
     def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
