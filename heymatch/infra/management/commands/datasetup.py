@@ -10,6 +10,7 @@ from factory.django import ImageField
 from phone_verify.models import SMSVerification
 from tqdm import tqdm
 
+from heymatch.apps.celery.tasks import aggregate_recent_24hr_top_ranked_group_address
 from heymatch.apps.group.models import GroupV2
 from heymatch.apps.group.tests.factories import (
     ActiveGroupFactory,
@@ -97,6 +98,10 @@ class Command(BaseCommand):
         if migrate_all or input("Create Payments? [y/N]") == "y":
             self.generate_payment_items()
 
+        # -------------- Recent24HrTopGroupAddress setup -------------- #
+        if migrate_all or input("Create Recent24HrTopGroupAddress? [y/N]") == "y":
+            self.generate_24hr_top_group_address()
+
         # -------------- AppInfo setup -------------- #
         if migrate_all or input("Create App info? [y/N]") == "y":
             self.generate_app_info_item()
@@ -170,6 +175,12 @@ class Command(BaseCommand):
         groups = GroupV2Factory.create_batch(size=SIZE, mode=GroupV2.GroupMode.SIMPLE)
         for group in groups:
             user = ActiveUserFactory.create()
+            UserProfileImageFactory.create(
+                user=user,
+                image=ImageField(
+                    from_path=f"{pathlib.Path().resolve()}/heymatch/data/{random.choice(profile_image_filepath)}"
+                ),
+            )
             GroupMemberFactory.create(group=group, user=user, is_user_leader=True)
             pbar.update(1)
         pbar.close()
@@ -220,6 +231,12 @@ class Command(BaseCommand):
         #     free_pass_duration_in_hour=24,
         #     best_deal_check=True,
         # )
+
+    def generate_24hr_top_group_address(self) -> None:
+        self.stdout.write(
+            self.style.SUCCESS("Setting up data for [Recent24HrTopGroupAddress]")
+        )
+        aggregate_recent_24hr_top_ranked_group_address()
 
     def generate_app_info_item(self) -> None:
         self.stdout.write(self.style.SUCCESS("Setting up data for [AppInfo]"))

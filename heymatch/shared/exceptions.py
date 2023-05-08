@@ -63,6 +63,11 @@ class JoinedGroupNotMineException(BasePermissionDeniedException):
     detail = "Not joined group. Permission Denied."
 
 
+class UserNotGroupLeaderException(BasePermissionDeniedException):
+    status_code = 466
+    detail = "User is not group leader. Only leader can operate."
+
+
 class MatchRequestAlreadySubmittedException(BasePermissionDeniedException):
     status_code = 470
     detail = "이미 매칭요청을 보낸 그룹입니다!"

@@ -55,6 +55,7 @@ from heymatch.shared.exceptions import (
     OneGroupPerUserException,
     ReportMyGroupException,
     UserGPSNotWithinHotplaceException,
+    UserNotGroupLeaderException,
 )
 from heymatch.shared.permissions import (
     IsGroupCreationAllowed,
@@ -238,7 +239,7 @@ class StandardResultsSetPagination(PageNumberPagination):
     page_size = 15
 
 
-class GroupsGenericViewSet(viewsets.ModelViewSet):
+class GroupV2GeneralViewSet(viewsets.ModelViewSet):
     queryset = (
         GroupV2.objects.all()
         .prefetch_related(
@@ -343,15 +344,47 @@ class GroupsGenericViewSet(viewsets.ModelViewSet):
         )
         return group
 
-    @swagger_auto_schema(request_body=V2GroupCreateUpdateRequestBodySerializer)
-    def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        user = request.user
-        queryset = GroupMember.objects.filter(user=user)
-        if not queryset.exists():
+
+class GroupV2DetailViewSet(viewsets.ModelViewSet):
+    permission_classes = [
+        IsAuthenticated,
+    ]
+    serializer_class = ""
+
+    def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        queryset = GroupV2.objects.all().filter(is_active=True)
+        group = get_object_or_404(queryset, id=kwargs["group_id"])
+        serializer = self.get_serializer(group)
+        return Response(serializer.data)
+
+    def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        # only leader can destroy
+        qs = GroupMember.objects.filter(
+            user=request.user, group_id=kwargs["group_id"], is_active=True
+        )
+        if not qs.exists():
             raise JoinedGroupNotMineException()
 
-        gm = queryset.first()
+        gm = qs.first()
+        if not gm.is_user_leader:
+            raise UserNotGroupLeaderException()
+
+        return
+
+    @swagger_auto_schema(request_body=V2GroupCreateUpdateRequestBodySerializer)
+    def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        # only leader can update
+        qs = GroupMember.objects.filter(
+            user=request.user, group_id=kwargs["group_id"], is_active=True
+        )
+        if not qs.exists():
+            raise JoinedGroupNotMineException()
+
+        gm = qs.first()
+        if not gm.is_user_leader:
+            raise UserNotGroupLeaderException()
         group = gm.group
+        # TODO: reverse geolocatoin
         # group.title = request.data.get("title", group.title)
         # group.introduction = request.data.get("introduction", group.introduction)
         # group.meetup_data = request.data.get("meetup_date", group.meetup_date)
