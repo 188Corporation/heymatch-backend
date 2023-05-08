@@ -65,6 +65,28 @@ class GroupMemberSerializer(serializers.ModelSerializer):
         ]
 
 
+class V2GroupRetrieveSerializer(serializers.ModelSerializer):
+    group_members = GroupMemberSerializer(
+        many=True, read_only=True, source="group_member_group"
+    )
+
+    class Meta:
+        model = GroupV2
+        fields = [
+            "mode",
+            "title",
+            "introduction",
+            # "gps_point",
+            "meetup_date",
+            "meetup_address",
+            # "meetup_timerange",
+            "member_number",
+            "member_avg_age",
+            "group_members",
+            "created_at",
+        ]
+
+
 class V2GroupFilteredListSerializer(serializers.ModelSerializer):
     group_members = GroupMemberSerializer(
         many=True, read_only=True, source="group_member_group"
@@ -86,7 +108,7 @@ class V2GroupFilteredListSerializer(serializers.ModelSerializer):
         ]
 
 
-class V2GroupCreateUpdateRequestBodySerializer(serializers.ModelSerializer):
+class V2GroupGeneralRequestBodySerializer(serializers.ModelSerializer):
     # user_ids = serializers.ListField(child=serializers.UUIDField(), required=False)
     gps_point = serializers.CharField(max_length=120, required=True)
 
@@ -97,6 +119,7 @@ class V2GroupCreateUpdateRequestBodySerializer(serializers.ModelSerializer):
             "introduction",
             "gps_point",
             "meetup_date",
+            "meetup_address",
             "member_number",
             "member_avg_age",
             # "meetup_timerange",

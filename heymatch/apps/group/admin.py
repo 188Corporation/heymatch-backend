@@ -19,6 +19,7 @@ class GroupV2Admin(SimpleHistoryAdmin):
         "introduction",
         "meetup_date",
         "meetup_timerange",
+        "meetup_address",
         "gps_point",
         "gps_address",
         # "gps_geoinfo",
@@ -36,6 +37,7 @@ class GroupV2Admin(SimpleHistoryAdmin):
         "introduction",
         "meetup_date",
         "meetup_timerange",
+        "meetup_address",
         "gps_point",
         "gps_address",
         # "gps_geoinfo",
@@ -67,7 +69,43 @@ class GroupMemberAdmin(SimpleHistoryAdmin):
     ]
 
 
-# DEPRECATED
+@admin.register(Recent24HrTopGroupAddress)
+class Recent24HrTopGroupAddressAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "result",
+        "aggregated_at",
+    ]
+    search_fields = [
+        "id",
+        "result",
+        "aggregated_at",
+    ]
+
+
+@admin.register(ReportedGroupV2)
+class ReportedGroupAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "reported_group",
+        "reported_reason",
+        "reported_by",
+        "status",
+        "created_at",
+    ]
+    search_fields = [
+        "id",
+        "reported_group",
+        "reported_reason",
+        "reported_by",
+        "status",
+        "created_at",
+    ]
+
+
+# ========================
+#  DEPRECATED
+# ========================
 
 
 @admin.register(Group)
@@ -134,44 +172,6 @@ class GroupProfilePhotoAdmin(admin.ModelAdmin):
         "order",
     ]
 
-
-@admin.register(Recent24HrTopGroupAddress)
-class Recent24HrTopGroupAddressAdmin(admin.ModelAdmin):
-    list_display = [
-        "id",
-        "result",
-        "aggregated_at",
-    ]
-    search_fields = [
-        "id",
-        "result",
-        "aggregated_at",
-    ]
-
-
-@admin.register(ReportedGroupV2)
-class ReportedGroupAdmin(admin.ModelAdmin):
-    list_display = [
-        "id",
-        "reported_group",
-        "reported_reason",
-        "reported_by",
-        "status",
-        "created_at",
-    ]
-    search_fields = [
-        "id",
-        "reported_group",
-        "reported_reason",
-        "reported_by",
-        "status",
-        "created_at",
-    ]
-
-
-# ========================
-#  DEPRECATED
-# ========================
 
 # @admin.register(GroupInvitationCode)
 # class GroupInvitationCodeAdmin(admin.ModelAdmin):

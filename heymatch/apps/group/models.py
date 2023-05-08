@@ -51,10 +51,13 @@ class GroupV2(models.Model):
     meetup_timerange = models.CharField(
         blank=True, null=True, choices=MeetUpTimeRange.choices, max_length=20
     )
+    meetup_address = models.CharField(
+        blank=False, null=False, max_length=250
+    )  # from client
     gps_point = models.PointField(geography=True, blank=False, null=False)
     gps_address = models.CharField(
         blank=False, null=False, max_length=250
-    )  # NAVER reverse geocoded address
+    )  # NAVER reverse geocoded address. For Top rank aggregation purpose
     member_number = models.IntegerField(blank=True, null=True)
     member_avg_age = models.IntegerField(blank=True, null=True)
 

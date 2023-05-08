@@ -74,8 +74,9 @@ from .serializers import (
     ReportGroupRequestBodySerializer,
     ReportGroupSerializer,
     RestrictedGroupProfileByHotplaceSerializer,
-    V2GroupCreateUpdateRequestBodySerializer,
     V2GroupFilteredListSerializer,
+    V2GroupGeneralRequestBodySerializer,
+    V2GroupRetrieveSerializer,
 )
 
 # User = get_user_model()
@@ -253,7 +254,7 @@ class GroupV2GeneralViewSet(viewsets.ModelViewSet):
         IsAuthenticated,
     ]
     parser_classes = [MultiPartParser]
-    serializer_class = V2GroupCreateUpdateRequestBodySerializer
+    serializer_class = V2GroupGeneralRequestBodySerializer
     distance_filter_field = "gps_point"
     filter_backends = [DjangoFilterBackend, DistanceToPointFilter]
     filterset_class = GroupV2Filter
@@ -293,7 +294,7 @@ class GroupV2GeneralViewSet(viewsets.ModelViewSet):
         serializer = V2GroupFilteredListSerializer(paginated_qs, many=True)
         return self.get_paginated_response(data=serializer.data)
 
-    @swagger_auto_schema(request_body=V2GroupCreateUpdateRequestBodySerializer)
+    @swagger_auto_schema(request_body=V2GroupGeneralRequestBodySerializer)
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -349,13 +350,13 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
     permission_classes = [
         IsAuthenticated,
     ]
-    serializer_class = ""
+    serializer_class = V2GroupRetrieveSerializer
 
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         queryset = GroupV2.objects.all().filter(is_active=True)
         group = get_object_or_404(queryset, id=kwargs["group_id"])
         serializer = self.get_serializer(group)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         # only leader can destroy
@@ -371,7 +372,7 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
 
         return
 
-    @swagger_auto_schema(request_body=V2GroupCreateUpdateRequestBodySerializer)
+    @swagger_auto_schema(request_body=V2GroupGeneralRequestBodySerializer)
     def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         # only leader can update
         qs = GroupMember.objects.filter(
@@ -390,7 +391,7 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
         # group.meetup_data = request.data.get("meetup_date", group.meetup_date)
         # group.gps_point = request.data.get("gps_point", group.gps_point)
         group.save(update_fields=["title", "introduction", "meetup_date", "gps_point"])
-        serializer = V2GroupCreateUpdateRequestBodySerializer(data=request.data)
+        serializer = V2GroupGeneralRequestBodySerializer(data=request.data)
         serializer.update(instance=group)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
