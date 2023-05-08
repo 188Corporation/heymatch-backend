@@ -60,12 +60,12 @@ class UserPointBalanceNotEnoughException(BasePermissionDeniedException):
 
 class JoinedGroupNotMineException(BasePermissionDeniedException):
     status_code = 466
-    detail = "Not joined group. Permission Denied."
+    detail = "Not member of the group. Permission Denied."
 
 
 class UserNotGroupLeaderException(BasePermissionDeniedException):
     status_code = 466
-    detail = "User is not group leader. Only leader can operate."
+    detail = "You are not group leader. Only leader can operate this."
 
 
 class MatchRequestAlreadySubmittedException(BasePermissionDeniedException):

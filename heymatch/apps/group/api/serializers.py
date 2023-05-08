@@ -115,6 +115,7 @@ class V2GroupGeneralRequestBodySerializer(serializers.ModelSerializer):
     class Meta:
         model = GroupV2
         fields = [
+            "id",
             "title",
             "introduction",
             "gps_point",

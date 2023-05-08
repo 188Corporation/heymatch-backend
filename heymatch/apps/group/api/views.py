@@ -384,16 +384,33 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
         gm = qs.first()
         if not gm.is_user_leader:
             raise UserNotGroupLeaderException()
+
         group = gm.group
-        # TODO: reverse geolocatoin
-        # group.title = request.data.get("title", group.title)
-        # group.introduction = request.data.get("introduction", group.introduction)
-        # group.meetup_data = request.data.get("meetup_date", group.meetup_date)
-        # group.gps_point = request.data.get("gps_point", group.gps_point)
-        group.save(update_fields=["title", "introduction", "meetup_date", "gps_point"])
-        serializer = V2GroupGeneralRequestBodySerializer(data=request.data)
-        serializer.update(instance=group)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+        group.title = request.data.get("title", group.title)
+        group.introduction = request.data.get("introduction", group.introduction)
+        if request.data.get("gps_point", None):
+            gps_point = request.data.get("gps_point")
+            gps = gps_point.split(",")
+            group.gps_point = Point(x=float(gps[0]), y=float(gps[1]))
+            group.gps_address = NAVER_GEO_API.reverse_geocode(long=gps[0], lat=gps[1])
+        group.meetup_date = request.data.get("meetup_date", group.meetup_date)
+        group.meetup_address = request.data.get("meetup_address", group.meetup_address)
+        group.member_number = request.data.get("member_number", group.member_number)
+        group.member_avg_age = request.data.get("member_avg_age", group.member_avg_age)
+        group.save(
+            update_fields=[
+                "title",
+                "introduction",
+                "gps_point",
+                "gps_address",
+                "meetup_date",
+                "meetup_address",
+                "member_number",
+                "member_avg_age",
+            ]
+        )
+        serializer = self.get_serializer(group)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class GroupsTopAddressViewSet(viewsets.ModelViewSet):
