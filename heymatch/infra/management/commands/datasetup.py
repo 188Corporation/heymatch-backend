@@ -86,6 +86,10 @@ class Command(BaseCommand):
         if migrate_all or input("Create Superuser? [y/N]") == "y":
             self.generate_superuser()
 
+        # -------------- Developer Users setup -------------- #
+        if migrate_all or input("Create Developer User? [y/N]") == "y":
+            self.generate_developer_users()
+
         # -------------- Normal Users setup -------------- #
         if migrate_all or input("Create Normal User? [y/N]") == "y":
             self.generate_normal_users()
@@ -134,6 +138,20 @@ class Command(BaseCommand):
                 "is_verified": True,
             },
         )
+
+    def generate_developer_users(self) -> None:
+        self.stdout.write(self.style.SUCCESS("Setting up data for [Developer]"))
+        users = [
+            ActiveUserFactory.create(phone_number="+821043509595"),
+            ActiveUserFactory.create(phone_number="+821032433994"),
+        ]
+        for user in users:
+            UserProfileImageFactory.create(
+                user=user,
+                image=ImageField(
+                    from_path=f"{pathlib.Path().resolve()}/heymatch/data/{random.choice(profile_image_filepath)}"
+                ),
+            )
 
     def generate_normal_users(self) -> None:
         self.stdout.write(self.style.SUCCESS("Setting up data for [Users]"))

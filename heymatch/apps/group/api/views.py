@@ -243,6 +243,7 @@ class StandardResultsSetPagination(PageNumberPagination):
 class GroupV2GeneralViewSet(viewsets.ModelViewSet):
     queryset = (
         GroupV2.objects.all()
+        .filter(is_active=True)
         .prefetch_related(
             "group_member_group",
             "group_member_group__user",
@@ -332,7 +333,9 @@ class GroupV2GeneralViewSet(viewsets.ModelViewSet):
         #             user=user,
         #         )
         # SIMPLE Mode
-        qs = GroupMember.objects.filter(user=self.request.user)
+        qs = GroupMember.objects.filter(
+            user=self.request.user, group__is_active=True, is_active=True
+        )
         if qs.exists():
             raise OneGroupPerUserException()
 
@@ -369,7 +372,12 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
         if not gm.is_user_leader:
             raise UserNotGroupLeaderException()
 
-        return
+        gm.is_active = False
+        gm.save(update_fields=["is_active"])
+        group = gm.group
+        group.is_active = False
+        group.save(update_fields=["is_active"])
+        return Response(status=status.HTTP_410_GONE)
 
     @swagger_auto_schema(request_body=V2GroupGeneralRequestBodySerializer)
     def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:

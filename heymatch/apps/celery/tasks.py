@@ -76,7 +76,7 @@ def aggregate_recent_24hr_top_ranked_group_address():
     )
     date_from = timezone.now() - datetime.timedelta(days=1)
     last_24_group_addresses = list(
-        GroupV2.objects.filter(created_at__gte=date_from).values_list(
+        GroupV2.objects.filter(created_at__gte=date_from, is_active=True).values_list(
             "gps_address", flat=True
         )
     )
