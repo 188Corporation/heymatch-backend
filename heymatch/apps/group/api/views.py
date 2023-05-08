@@ -253,7 +253,6 @@ class GroupV2GeneralViewSet(viewsets.ModelViewSet):
     permission_classes = [
         IsAuthenticated,
     ]
-    parser_classes = [MultiPartParser]
     serializer_class = V2GroupGeneralRequestBodySerializer
     distance_filter_field = "gps_point"
     filter_backends = [DjangoFilterBackend, DistanceToPointFilter]
