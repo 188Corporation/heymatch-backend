@@ -137,6 +137,25 @@ class GroupsTopAddressSerializer(serializers.ModelSerializer):
         ]
 
 
+class ReportGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReportedGroupV2
+        fields = [
+            "id",
+            "reported_group",
+            "reported_reason",
+            "reported_by",
+            "status",
+            "created_at",
+        ]
+
+
+class ReportGroupRequestBodySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReportedGroupV2
+        fields = ["reported_reason"]
+
+
 ##################
 # Deprecated - V1
 ##################
@@ -346,22 +365,3 @@ class GroupUpdateSerializer(serializers.ModelSerializer):
             "title",
             "introduction",
         ]
-
-
-class ReportGroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ReportedGroupV2
-        fields = [
-            "id",
-            "reported_group",
-            "reported_reason",
-            "reported_by",
-            "status",
-            "created_at",
-        ]
-
-
-class ReportGroupRequestBodySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ReportedGroupV2
-        fields = ["reported_reason"]

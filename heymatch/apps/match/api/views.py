@@ -13,7 +13,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from heymatch.apps.chat.models import StreamChannel
-from heymatch.apps.group.models import Group
+from heymatch.apps.group.models import Group, GroupMember
 from heymatch.apps.match.models import MatchRequest
 from heymatch.apps.payment.models import UserPointConsumptionHistory
 from heymatch.apps.user.models import User
@@ -25,7 +25,7 @@ from heymatch.shared.exceptions import (
     MatchRequestNotFoundException,
     UserPointBalanceNotEnoughException,
 )
-from heymatch.shared.permissions import IsUserActive, IsUserJoinedGroup
+from heymatch.shared.permissions import IsUserActive
 
 from .serializers import (
     MatchRequestCreateBodySerializer,
@@ -43,7 +43,6 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
     permission_classes = [
         IsAuthenticated,
         IsUserActive,
-        IsUserJoinedGroup,
     ]
 
     serializer_class = ReceivedMatchRequestSerializer
@@ -51,15 +50,29 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         # Query MatchRequest (newest to oldest)
         # Exclude "CANCELED" MatchRequest
-        joined_group_id = self.request.user.joined_group.id
+        gm_queryset = GroupMember.objects.filter(user=request.user, is_active=True)
         mr_sent_qs = (
             MatchRequest.active_objects.select_related()
-            .filter(Q(sender_group_id=joined_group_id) & ~Q(status="CANCELED"))
+            .filter(
+                Q(
+                    sender_group_id__in=list(
+                        gm_queryset.values_list("group_id", flat=True)
+                    )
+                )
+                & ~Q(status="CANCELED")
+            )
             .order_by("-created_at")
         )
         mr_received_qs = (
             MatchRequest.active_objects.select_related()
-            .filter(Q(receiver_group_id=joined_group_id) & ~Q(status="CANCELED"))
+            .filter(
+                Q(
+                    receiver_group_id__in=list(
+                        gm_queryset.values_list("group_id", flat=True)
+                    )
+                )
+                & ~Q(status="CANCELED")
+            )
             .order_by("-created_at")
         )
 

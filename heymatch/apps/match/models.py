@@ -13,14 +13,14 @@ class MatchRequest(models.Model):
         CANCELED = "CANCELED"
 
     sender_group = models.ForeignKey(
-        "group.Group",
+        "group.GroupV2",
         blank=True,
         null=True,
         on_delete=models.PROTECT,
         related_name="match_request_sender_group",
     )
     receiver_group = models.ForeignKey(
-        "group.Group",
+        "group.GroupV2",
         blank=True,
         null=True,
         on_delete=models.PROTECT,
