@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from heymatch.apps.group.models import GroupMember
 from heymatch.apps.user.models import AppInfo, DeleteScheduledUser, UserProfileImage
 from heymatch.shared.permissions import IsUserActive
 
@@ -18,6 +19,7 @@ from .serializers import (
     AppInfoSerializer,
     DeleteScheduledUserRequestBodySerializer,
     DeleteScheduledUserSerializer,
+    GroupMemberSerializer,
     TempUserCreateSerializer,
     UserInfoUpdateBodyRequestSerializer,
     UserWithGroupFullInfoSerializer,
@@ -42,8 +44,14 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
         user_info_serializer = self.get_serializer(
             instance=user, context={"force_original": True}
         )
+        gm_qs = GroupMember.objects.filter(user=request.user)
+        gm_serializer = GroupMemberSerializer(gm_qs, many=True)
         app_info_serializer = AppInfoSerializer(instance=app_info)
-        data = {**user_info_serializer.data, "app_info": app_info_serializer.data}
+        data = {
+            **user_info_serializer.data,
+            "joined_groups": gm_serializer.data,
+            "app_info": app_info_serializer.data,
+        }
         return Response(data, status.HTTP_200_OK)
 
     @swagger_auto_schema(request_body=UserInfoUpdateBodyRequestSerializer)
