@@ -225,18 +225,22 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         )
 
         # Save StreamChannel
+        stream_channel_id = res["channel"]["id"]
+        stream_channel_cid = res["channel"]["cid"]
+        stream_channel_type = res["channel"]["type"]
+
         for receiver_gm in receiver_group_member_qs:
             StreamChannel.objects.create(
-                stream_id=res["channel"]["id"],
-                cid=res["channel"]["cid"],
-                type=res["channel"]["type"],
+                stream_id=stream_channel_id,
+                cid=stream_channel_cid,
+                type=stream_channel_type,
                 group_member=receiver_gm,
             )
         for sender_gm in sender_group_member_qs:
             StreamChannel.objects.create(
-                stream_id=res["channel"]["id"],
-                cid=res["channel"]["cid"],
-                type=res["channel"]["type"],
+                stream_id=stream_channel_id,
+                cid=stream_channel_cid,
+                type=stream_channel_type,
                 group_member=sender_gm,
             )
         # Send push notification
@@ -248,8 +252,14 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         logger.debug(f"OneSignal response for Match Success: {res}")
         # TODO: handle OneSignal response
 
-        serializer = self.get_serializer(instance=mr)
-        return Response(serializer.data, status.HTTP_200_OK)
+        return Response(
+            {
+                "stream_chat_id": stream_channel_id,
+                "stream_chat_cid": stream_channel_cid,
+                "stream_chat_type": stream_channel_type,
+            },
+            status.HTTP_200_OK,
+        )
 
     def reject(self, request: Request, match_request_id: int) -> Response:
         # Check validity
@@ -280,9 +290,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         )
         logger.debug(f"OneSignal response for Match deny: {res}")
         # TODO: handle OneSignal response
-
-        serializer = self.get_serializer(instance=mr)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_200_OK)
 
     def cancel(self, request: Request, match_request_id: int) -> Response:
         # Check validity
@@ -295,8 +303,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
 
         mr.status = MatchRequest.MatchRequestStatusChoices.CANCELED  # CANCELED
         mr.save(update_fields=["status"])
-        serializer = self.get_serializer(instance=mr)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_200_OK)
 
     @staticmethod
     def get_match_request_obj(match_request_id: int) -> MatchRequest:
