@@ -83,7 +83,16 @@ class ActiveUserFactory(DjangoModelFactory):
         """Override the default ``_create`` with our custom call."""
         manager = User.active_objects
         # The default would use ``manager.create(*args, **kwargs)``
-        return manager.fake_create(**kwargs)
+        return manager.create(**kwargs)
+
+
+# class ActiveDeveloperUserFactory(ActiveUserFactory):
+#     @classmethod
+#     def _create(cls, model_class, *args, **kwargs):
+#         """Override the default ``_create`` with our custom call."""
+#         manager = User.active_objects
+#         # developer should have getstream registered.
+#         return manager.create(**kwargs)
 
 
 profile_image_filepath = [

@@ -22,9 +22,6 @@ class ReceivedMatchRequestSerializer(serializers.ModelSerializer):
             "sender_group",
             "status",
             "created_at",
-            "stream_channel_id",
-            "stream_channel_cid",
-            "stream_channel_type",
         ]
 
 
@@ -41,7 +38,4 @@ class SentMatchRequestSerializer(serializers.ModelSerializer):
             "receiver_group",
             "status",
             "created_at",
-            "stream_channel_id",
-            "stream_channel_cid",
-            "stream_channel_type",
         ]

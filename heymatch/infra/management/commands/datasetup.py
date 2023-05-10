@@ -167,7 +167,7 @@ class Command(BaseCommand):
     def generate_groups(self) -> None:
         # Invite Groups
         self.stdout.write(self.style.SUCCESS("Setting up data for [Groups.INVITE]"))
-        SIZE = 500 if not settings.DEBUG else 20
+        SIZE = 100 if not settings.DEBUG else 10
         # pbar = tqdm(total=SIZE)
         # groups = GroupV2Factory.create_batch(size=SIZE, mode=GroupV2.GroupMode.INVITE)
         # for group in groups:

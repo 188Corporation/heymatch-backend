@@ -16,7 +16,6 @@ from heymatch.apps.chat.models import StreamChannel
 from heymatch.apps.group.models import Group, GroupMember, GroupV2
 from heymatch.apps.match.models import MatchRequest
 from heymatch.apps.payment.models import UserPointConsumptionHistory
-from heymatch.apps.user.models import User
 from heymatch.shared.exceptions import (
     MatchRequestAlreadySubmittedException,
     MatchRequestGroupIsMineException,
@@ -190,13 +189,27 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         )  # WAITING
 
         # Create Stream channel for both groups
+        receiver_group = mr.receiver_group
+        receiver_group_member_qs = GroupMember.objects.filter(
+            group=receiver_group, is_active=True
+        )
+        receiver_user_ids = [
+            str(user_id)
+            for user_id in receiver_group_member_qs.values_list("user_id", flat=True)
+        ]
         sender_group = mr.sender_group
-        sender_user = User.active_objects.get(joined_group=sender_group)
+        sender_group_member_qs = GroupMember.objects.filter(
+            group=sender_group, is_active=True
+        )
+        sender_user_ids = [
+            str(user_id)
+            for user_id in sender_group_member_qs.values_list("user_id", flat=True)
+        ]
         channel = stream.channel(
             settings.STREAM_CHAT_CHANNEL_TYPE,
             None,
             data=dict(
-                members=[str(request.user.id), str(sender_user.id)],
+                members=[*receiver_user_ids, *sender_user_ids],
                 created_by_id=str(request.user.id),
             ),
         )
@@ -205,35 +218,32 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
 
         # Update MatchRequest
         mr.status = MatchRequest.MatchRequestStatusChoices.ACCEPTED  # ACCEPTED
-        mr.stream_channel_id = res["channel"]["id"]
-        mr.stream_channel_cid = res["channel"]["cid"]
-        mr.stream_channel_type = res["channel"]["type"]
         mr.save(
             update_fields=[
                 "status",
-                "stream_channel_id",
-                "stream_channel_cid",
-                "stream_channel_type",
             ]
         )
 
         # Save StreamChannel
-        StreamChannel.objects.create(
-            cid=res["channel"]["cid"],
-            participants={
-                "users": [str(request.user.id), str(sender_user.id)],
-                "groups": {
-                    str(request.user.joined_group.id): str(request.user.id),
-                    str(sender_group.id): str(sender_user.id),
-                },
-            },
-        )
-
+        for receiver_gm in receiver_group_member_qs:
+            StreamChannel.objects.create(
+                stream_id=res["channel"]["id"],
+                cid=res["channel"]["cid"],
+                type=res["channel"]["type"],
+                group_member=receiver_gm,
+            )
+        for sender_gm in sender_group_member_qs:
+            StreamChannel.objects.create(
+                stream_id=res["channel"]["id"],
+                cid=res["channel"]["cid"],
+                type=res["channel"]["type"],
+                group_member=sender_gm,
+            )
         # Send push notification
         res = onesignal_client.send_notification_to_specific_users(
             title="매칭 성공!!",
-            content=f"[{request.user.joined_group.title}] 그룹이 매칭요청을 수락했어요!! 지금 바로 메세지를 보내봐요 🎉",
-            user_ids=[str(sender_user.id)],
+            content=f"[{receiver_group.title}] 그룹이 매칭요청을 수락했어요!! 지금 바로 메세지를 보내봐요 🎉",
+            user_ids=sender_user_ids,
         )
         logger.debug(f"OneSignal response for Match Success: {res}")
         # TODO: handle OneSignal response
@@ -253,13 +263,20 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         mr.status = MatchRequest.MatchRequestStatusChoices.REJECTED  # REJECTED
         mr.save(update_fields=["status"])
 
-        # Send push notification
+        receiver_group = mr.receiver_group
         sender_group = mr.sender_group
-        sender_user = User.active_objects.get(joined_group=sender_group)
+        sender_group_member_qs = GroupMember.objects.filter(
+            group=sender_group, is_active=True
+        )
+        sender_user_ids = [
+            str(user_id)
+            for user_id in sender_group_member_qs.values_list("user_id", flat=True)
+        ]
+        # Send push notification
         res = onesignal_client.send_notification_to_specific_users(
             title="아쉬워요..",
-            content=f"[{request.user.joined_group.title}] 그룹이 매칭요청을 거절했어요..😥 다른 그룹을 찾아봐요!",
-            user_ids=[str(sender_user.id)],
+            content=f"[{receiver_group.title}] 그룹이 매칭요청을 거절했어요..😥 다른 그룹을 찾아봐요!",
+            user_ids=sender_user_ids,
         )
         logger.debug(f"OneSignal response for Match deny: {res}")
         # TODO: handle OneSignal response
@@ -270,7 +287,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
     def cancel(self, request: Request, match_request_id: int) -> Response:
         # Check validity
         mr = self.get_match_request_obj(match_request_id=match_request_id)
-        self._is_user_sender_group(match_request=mr)
+        self.is_user_sender_group(match_request=mr)
         self.check_match_request_status(
             match_request=mr,
             target_status=MatchRequest.MatchRequestStatusChoices.WAITING,
@@ -290,13 +307,17 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         return mr
 
     def is_user_receiver_group(self, match_request: MatchRequest):
-        if not match_request.receiver_group.id == self.request.user.joined_group.id:
+        if not GroupMember.objects.filter(
+            user=self.request.user, group=match_request.receiver_group, is_active=True
+        ).exists():
             raise MatchRequestHandleFailedException(
                 extra_info="You are not receiver group"
             )
 
-    def _is_user_sender_group(self, match_request: MatchRequest):
-        if not match_request.sender_group.id == self.request.user.joined_group.id:
+    def is_user_sender_group(self, match_request: MatchRequest):
+        if not GroupMember.objects.filter(
+            user=self.request.user, group=match_request.sender_group, is_active=True
+        ).exists():
             raise MatchRequestHandleFailedException(
                 extra_info="You are not sender group"
             )

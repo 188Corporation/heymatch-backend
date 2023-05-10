@@ -32,17 +32,6 @@ class MatchRequest(models.Model):
         max_length=48,
     )
 
-    # getstream.io channel
-    stream_channel_id = models.CharField(
-        max_length=255, blank=True, null=True, default=None
-    )
-    stream_channel_cid = models.CharField(
-        max_length=255, blank=True, null=True, default=None
-    )
-    stream_channel_type = models.CharField(
-        max_length=32, blank=True, null=True, default=None
-    )
-
     # Life cycle
     created_at = models.DateTimeField(default=timezone.now)
     is_active = models.BooleanField(blank=False, null=False, default=True)

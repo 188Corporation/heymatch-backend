@@ -12,7 +12,6 @@ from rest_framework.response import Response
 
 from heymatch.apps.chat.models import StreamChannel
 from heymatch.apps.group.api.serializers import FullGroupProfileSerializer
-from heymatch.apps.group.models import Group
 from heymatch.apps.match.models import MatchRequest
 from heymatch.shared.permissions import IsUserActive
 
@@ -63,35 +62,14 @@ class StreamChatViewSet(viewsets.ModelViewSet):
         serializer_data = []
         for channel in channels["channels"]:
             fresh_data = {}
-            members = channel["members"]
             reads = channel["read"]
             target_user_id = None
             is_last_message_read = True
 
-            # check target user exists
-            for member in members:
-                if member["user_id"] != str(request.user.id):
-                    target_user_id = str(member["user_id"])
-            if not target_user_id:
-                continue
-
-            # find joined group (can be both active or inactive)
-            # StreamChannel.cid can be duplicate. Should give user the latest one
-            # so that the group profile is the latest.
-            sc = (
-                StreamChannel.objects.filter(cid=channel["channel"]["cid"])
-                .order_by("-created_at")
-                .first()
-            )
-            target_group_id = None
-            for k, v in sc.participants["groups"].items():
-                if v == target_user_id:
-                    target_group_id = k
-            if not target_group_id:
-                continue
-            try:
-                target_group = Group.objects.get(id=target_group_id)
-            except Group.DoesNotExist:
+            sc = StreamChannel.objects.filter(
+                cid=channel["channel"]["cid"], group_member__user_id=target_user_id
+            ).first()
+            if not sc or not sc.group_member.group:
                 continue
 
             # check unread or read
@@ -102,7 +80,7 @@ class StreamChatViewSet(viewsets.ModelViewSet):
                     )
             # add group info
             group_serializer = self.get_serializer(
-                instance=target_group, context={"force_original": True}
+                instance=sc.group_member.group, context={"force_original": True}
             )
             fresh_data["group"] = group_serializer.data
             fresh_data["channel"] = {
@@ -124,35 +102,33 @@ class StreamChatViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         # check if Payload's cid is user's or not
-        sc = StreamChannel.objects.filter(
-            cid=kwargs["stream_cid"]
-        ).first()  # there can be multiple
+        sc_qs = StreamChannel.objects.filter(
+            cid=kwargs["stream_cid"], group_member__user_id=str(request.user.id)
+        )  # there can be multiple
 
-        users = sc.participants["users"]
-        if str(request.user.id) not in users:
+        if sc_qs.exists():
             raise PermissionDenied("You are not owner of stream channel.")
 
         # soft-delete channel
-        stream.delete_channels(cids=[sc.cid])
+        stream.delete_channels(cids=[kwargs["stream_cid"]])
 
-        # Get other user.id
-        other_user_id = users.remove(str(request.user.id))
+        # Deactivate MatchRequest
+        sc_qs = StreamChannel.objects.filter(cid=kwargs["stream_cid"])
+        unique_group_ids = set([sc.group_member.group.id for sc in sc_qs])
+        if len(unique_group_ids) != 2:
+            raise PermissionDenied(
+                f"Something is wrong. Stream channel must only has two groups joined, but {len(unique_group_ids)}"
+            )
 
-        # Deactivate any MatchRequests (there can be multiple since other user of group can
-        # delete the previous group and make new one.
-        scs = StreamChannel.objects.filter(
-            participants__users__contains=[other_user_id, str(request.user.id)]
-        )
-        for sc in scs:
-            group1_id = list(sc.participants["groups"])[0]
-            group2_id = list(sc.participants["groups"])[1]
+        group1_id = list(unique_group_ids)[0]
+        group2_id = list(unique_group_ids)[1]
 
-            MatchRequest.active_objects.filter(
-                Q(sender_group_id=int(group1_id)) & Q(receiver_group_id=int(group2_id))
-            ).update(is_active=False)
-            MatchRequest.active_objects.filter(
-                Q(sender_group_id=int(group2_id)) & Q(receiver_group_id=int(group1_id))
-            ).update(is_active=False)
+        MatchRequest.active_objects.filter(
+            Q(sender_group_id=int(group1_id)) & Q(receiver_group_id=int(group2_id))
+        ).update(is_active=False)
+        MatchRequest.active_objects.filter(
+            Q(sender_group_id=int(group2_id)) & Q(receiver_group_id=int(group1_id))
+        ).update(is_active=False)
 
         return Response(status=status.HTTP_200_OK)
 

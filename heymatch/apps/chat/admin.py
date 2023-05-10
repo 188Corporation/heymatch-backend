@@ -7,13 +7,19 @@ from .models import StreamChannel
 class StreamChannelAdmin(admin.ModelAdmin):
     list_display = [
         "id",
+        "stream_id",
         "cid",
-        "participants",
+        "type",
+        "group_member",
+        "is_active",
         "created_at",
     ]
     search_fields = [
         "id",
+        "stream_id",
         "cid",
-        "participants",
+        "type",
+        "group_member",
+        "is_active",
         "created_at",
     ]
