@@ -4,7 +4,9 @@ from heymatch.apps.match.api.views import MatchRequestViewSet
 
 app_name = "match"
 
-match_request_list_crate_view = MatchRequestViewSet.as_view({"get": "list"})
+match_request_list_crate_view = MatchRequestViewSet.as_view(
+    {"get": "list", "post": "create"}
+)
 match_request_accept_view = MatchRequestViewSet.as_view({"post": "accept"})
 match_request_reject_view = MatchRequestViewSet.as_view({"post": "reject"})
 match_request_cancel_view = MatchRequestViewSet.as_view({"post": "cancel"})

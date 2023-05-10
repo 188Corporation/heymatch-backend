@@ -13,14 +13,14 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from heymatch.apps.chat.models import StreamChannel
-from heymatch.apps.group.models import Group, GroupMember
+from heymatch.apps.group.models import Group, GroupMember, GroupV2
 from heymatch.apps.match.models import MatchRequest
 from heymatch.apps.payment.models import UserPointConsumptionHistory
 from heymatch.apps.user.models import User
 from heymatch.shared.exceptions import (
-    GroupNotWithinSameHotplaceException,
     MatchRequestAlreadySubmittedException,
     MatchRequestGroupIsMineException,
+    MatchRequestGroupIsNotMineException,
     MatchRequestHandleFailedException,
     MatchRequestNotFoundException,
     UserPointBalanceNotEnoughException,
@@ -93,32 +93,40 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """
         1) Check if user joined any group + if group_is mine
-        2) Check if user does not belong to same hotplace of the other group.
-        3) Check if MatchRequest already created
-        4) Check if user has enough balance or free_pass item.
+        2) Check if MatchRequest already created
+        3) Check if user has enough balance or free_pass item.
         """
-        group_id = request.data.get("group_id", None)
-        if not group_id:
-            raise FieldDoesNotExist("`group_id` should be provided.")
+        to_group_id = request.data.get("to_group_id", None)
+        from_group_id = request.data.get("from_group_id", None)
+        if not to_group_id or not from_group_id:
+            raise FieldDoesNotExist("All fields should be provided.")
 
         user = request.user
 
         # Permission class checks #1
-        if group_id == user.joined_group.id:
+        # TODO: request param에서 user의 group id도 받아서 처리하기. 어떤 그룹을 선택해서 할건지 알아야하니깐 (추후)
+        if GroupMember.objects.filter(
+            user=user, is_active=True, group_id__in=[to_group_id]
+        ).exists():
             raise MatchRequestGroupIsMineException()
+        if not GroupMember.objects.filter(
+            user=user, is_active=True, group_id__in=[from_group_id]
+        ).exists():
+            raise MatchRequestGroupIsNotMineException()
 
-        group_qs = Group.active_objects.all()
-        group = get_object_or_404(group_qs, id=group_id)
+        group_qs = GroupV2.objects.all().filter(is_active=True)
+        to_group = get_object_or_404(group_qs, id=to_group_id)
+        from_group = get_object_or_404(group_qs, id=from_group_id)
+
         # Check #2
-        if user.joined_group.hotplace.id != group.hotplace.id:
-            raise GroupNotWithinSameHotplaceException()
-
-        # Check #3
+        user_groups_id = GroupMember.objects.filter(
+            user=user, is_active=True
+        ).values_list("group_id", flat=True)
         mr1_qs = MatchRequest.active_objects.select_related().filter(
-            sender_group_id=user.joined_group.id, receiver_group_id=group_id
+            sender_group_id__in=list(user_groups_id), receiver_group_id=to_group_id
         )
         mr2_qs = MatchRequest.active_objects.select_related().filter(
-            sender_group_id=group_id, receiver_group_id=user.joined_group.id
+            sender_group_id=to_group_id, receiver_group_id__in=list(user_groups_id)
         )
         if mr1_qs.exists() or mr2_qs.exists():
             raise MatchRequestAlreadySubmittedException()
@@ -126,39 +134,39 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         # Check #4
         if user.free_pass and user.free_pass_active_until < timezone.now():
             mr = self.create_match_request(
-                sender_group=user.joined_group, receiver_group=group
+                sender_group=from_group, receiver_group=to_group
             )
             # Create MatchRequest
             serializer = ReceivedMatchRequestSerializer(instance=mr)
             return Response(data=serializer.data, status=status.HTTP_200_OK)
-        if user.point_balance < group.match_point:
+        if user.point_balance < to_group.match_point:
             raise UserPointBalanceNotEnoughException()
 
         # Deduct point
-        user.point_balance = user.point_balance - group.match_point
+        user.point_balance = user.point_balance - to_group.match_point
         user.save(update_fields=["point_balance"])
 
         # Record ConsumptionHistory
         UserPointConsumptionHistory.objects.create(
             user=user,
-            consumed_point=group.match_point,
+            consumed_point=to_group.match_point,
             consumed_reason=UserPointConsumptionHistory.ConsumedReasonChoice.SEND_MATCH_REQUEST,
         )
 
         # Create MatchRequest
-        mr = self.create_match_request(
-            sender_group=user.joined_group, receiver_group=group
-        )
+        mr = self.create_match_request(sender_group=from_group, receiver_group=to_group)
 
         # Send push notification
-        receiver_user = User.active_objects.get(joined_group=group)
+        to_group_user_ids = GroupMember.objects.filter(
+            user__is_active=True, group_id__in=[to_group_id]
+        ).values_list("user_id", flat=True)
         res = onesignal_client.send_notification_to_specific_users(
             title="매칭 요청이 왔어요!",
-            content=f"[{user.joined_group.title}] 그룹으로부터 매칭요청을 받았어요! 수락하면 바로 채팅할 수 있어요 😀",
-            user_ids=[str(receiver_user.id)],
+            content=f"[{from_group.title}] 그룹으로부터 매칭요청을 받았어요! 수락하면 바로 채팅할 수 있어요 😀",
+            user_ids=to_group_user_ids,
         )
-        logger.debug(f"OneSignal response for Match request: {res}")
         # TODO: handle OneSignal response
+        logger.debug(f"OneSignal response for Match request: {res}")
 
         serializer = ReceivedMatchRequestSerializer(instance=mr)
         return Response(data=serializer.data, status=status.HTTP_200_OK)

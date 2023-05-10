@@ -61,6 +61,11 @@ class GroupV2(models.Model):
     member_number = models.IntegerField(blank=True, null=True)
     member_avg_age = models.IntegerField(blank=True, null=True)
 
+    # Match
+    match_point = models.IntegerField(
+        blank=False, null=False, default=1
+    )  # Point for requesting match to this group
+
     # Lifecycle
     created_at = models.DateTimeField(default=now, editable=False)
     is_active = models.BooleanField(default=True)

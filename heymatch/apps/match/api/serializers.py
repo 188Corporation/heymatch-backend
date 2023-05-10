@@ -5,7 +5,8 @@ from heymatch.apps.match.models import MatchRequest
 
 
 class MatchRequestCreateBodySerializer(serializers.Serializer):
-    group_id = serializers.IntegerField()
+    from_group_id = serializers.IntegerField()
+    to_group_id = serializers.IntegerField()
 
 
 class ReceivedMatchRequestSerializer(serializers.ModelSerializer):

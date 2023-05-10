@@ -88,6 +88,11 @@ class MatchRequestGroupIsMineException(BasePermissionDeniedException):
     detail = "Cannot match with your own group."
 
 
+class MatchRequestGroupIsNotMineException(BasePermissionDeniedException):
+    status_code = 473
+    detail = "Provided group_id is not your group."
+
+
 class ReportMyGroupException(BasePermissionDeniedException):
     status_code = 474
     detail = "자기 자신을 신고할 수 없어요! 😵"
