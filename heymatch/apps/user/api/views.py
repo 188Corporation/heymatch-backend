@@ -44,7 +44,7 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
         user_info_serializer = self.get_serializer(
             instance=user, context={"force_original": True}
         )
-        gm_qs = GroupMember.objects.filter(user=request.user)
+        gm_qs = GroupMember.objects.filter(user=request.user, is_active=True)
         gm_serializer = GroupMemberSerializer(gm_qs, many=True)
         app_info_serializer = AppInfoSerializer(instance=app_info)
         data = {
