@@ -17,6 +17,7 @@ from django.db.models import (
     When,
 )
 from django.db.models.functions import Coalesce
+from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
@@ -168,6 +169,9 @@ class GroupV2Filter(FilterSet):
             "female_only": "f",
             "mixed": "x",
         }
+        if not value:
+            return queryset
+
         if value not in query_filter.keys():
             return queryset
 
@@ -289,10 +293,19 @@ class GroupV2GeneralViewSet(viewsets.ModelViewSet):
                     &gender=male_only
                     &page=1
         """
-        filtered_qs = self.filter_queryset(self.get_queryset())
+        qs = self.get_queryset()
+        filtered_qs = self.filter_queryset(queryset=qs)
         paginated_qs = self.paginate_queryset(filtered_qs)
         serializer = V2GroupFilteredListSerializer(paginated_qs, many=True)
         return self.get_paginated_response(data=serializer.data)
+
+    def get_queryset(self) -> QuerySet:
+        qs = self.queryset
+        return qs.exclude(
+            id__in=GroupMember.objects.filter(
+                user=self.request.user, is_active=True
+            ).values_list("group_id", flat=True)
+        )
 
     @swagger_auto_schema(request_body=V2GroupGeneralRequestBodySerializer)
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
