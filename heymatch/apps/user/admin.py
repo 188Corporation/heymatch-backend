@@ -26,7 +26,6 @@ class UserAdmin(SimpleHistoryAdmin):
             _("Personal info"),
             {
                 "fields": (
-                    "is_first_signup",
                     "phone_number",
                     "birthdate",
                     "gender",
@@ -63,6 +62,8 @@ class UserAdmin(SimpleHistoryAdmin):
             _("Permissions"),
             {
                 "fields": (
+                    "has_account",
+                    "is_main_profile_photo_under_verification",
                     "is_active",
                     "is_deleted",
                     "is_staff",
@@ -74,7 +75,6 @@ class UserAdmin(SimpleHistoryAdmin):
     )
     list_display = [
         "id",
-        "is_first_signup",
         "username",
         "phone_number",
         # "age",
@@ -92,6 +92,8 @@ class UserAdmin(SimpleHistoryAdmin):
         "point_balance",
         "free_pass",
         "free_pass_active_until",
+        "has_account",
+        "is_main_profile_photo_under_verification",
         "is_active",
         "is_deleted",
         "stream_token",
@@ -105,7 +107,6 @@ class UserAdmin(SimpleHistoryAdmin):
     ]
     search_fields = [
         "id",
-        "is_first_signup",
         "username",
         "phone_number",
         # "age",
@@ -123,6 +124,8 @@ class UserAdmin(SimpleHistoryAdmin):
         "point_balance",
         "free_pass",
         "free_pass_active_until",
+        "has_account",
+        "is_main_profile_photo_under_verification",
         "is_active",
         "is_deleted",
         "stream_token",
@@ -141,6 +144,7 @@ class UserProfilePhotoAdmin(SimpleHistoryAdmin):
         "image_blurred",
         "thumbnail",
         "thumbnail_blurred",
+        "is_active",
         "order",
     ]
     history_list_display = [*list_display]
@@ -153,6 +157,7 @@ class UserProfilePhotoAdmin(SimpleHistoryAdmin):
         "image_blurred",
         "thumbnail",
         "thumbnail_blurred",
+        "is_active",
         "order",
     ]
 

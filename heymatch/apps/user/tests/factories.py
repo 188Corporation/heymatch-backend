@@ -59,6 +59,8 @@ class ActiveUserFactory(DjangoModelFactory):
     )
 
     # Other
+    has_account = True
+    is_main_profile_photo_under_verification = False
     is_temp_user = False
     is_active = True
 
@@ -113,6 +115,7 @@ class UserProfileImageFactory(DjangoModelFactory):
 
     status = UserProfileImage.StatusChoices.ACCEPTED
     is_main = True
+    is_active = True
 
 
 class InactiveUserFactory(ActiveUserFactory):

@@ -17,18 +17,12 @@ class UserProfileImageSerializer(serializers.ModelSerializer):
             "is_main",
             "status",
             "image",
-            "image_blurred",
             "thumbnail",
-            "thumbnail_blurred",
             "order",
-            "is_active",
         ]
 
 
 class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
-    user_profile_images = UserProfileImageSerializer(
-        "user_profile_images", many=True, read_only=True
-    )
     user_purchases = SimpleUserPurchaseSerializer(read_only=True, many=True)
 
     class Meta:
@@ -36,10 +30,10 @@ class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "stream_token",
-            "is_first_signup",
+            "has_account",
+            "is_main_profile_photo_under_verification",
             "username",
             "phone_number",
-            # "age",
             "gender",
             "birthdate",
             "height_cm",
@@ -52,8 +46,6 @@ class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
             "user_purchases",
             "free_pass",
             "free_pass_active_until",
-            "user_profile_images",
-            # "joined_group",
         ]
 
     def to_representation(self, instance: User):

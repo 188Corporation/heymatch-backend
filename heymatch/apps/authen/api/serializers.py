@@ -27,7 +27,8 @@ class UserDetailByPhoneNumberSerializer(UserDetailsSerializer):
         fields = (
             "id",
             "stream_token",
-            "is_first_signup",
+            "has_account",
+            "is_main_profile_photo_under_verification",
             "username",
             "phone_number",
             # "gender",

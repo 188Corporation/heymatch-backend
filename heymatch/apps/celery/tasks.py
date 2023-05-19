@@ -27,8 +27,10 @@ def verify_main_profile_images():
     logger.debug("==================================================")
 
     logger.debug("[1] Get target profile images to be verified")
-    target_upi_qs = UserProfileImage.active_objects.filter(
-        Q(is_main=True) & Q(status=UserProfileImage.StatusChoices.NOT_VERIFIED)
+    target_upi_qs = UserProfileImage.objects.filter(
+        Q(is_main=True)
+        & Q(status=UserProfileImage.StatusChoices.NOT_VERIFIED)
+        & Q(is_active=False)
     )
     logger.debug(f"[1] Target images to be verified: {target_upi_qs}")
 
@@ -36,9 +38,27 @@ def verify_main_profile_images():
     for upi in target_upi_qs:  # type: UserProfileImage
         faces_num = detect_face_with_haar_cascade_ml(upi.image.url)
         if faces_num == 1:
+            # set accepted as active
             upi.status = UserProfileImage.StatusChoices.ACCEPTED
-            upi.user.is_first_signup = False
-            upi.user.save(update_fields=["is_first_signup"])
+            upi.is_active = True
+
+            # set user flag
+            upi.user.has_account = True
+            upi.user.is_main_profile_photo_under_verification = False
+            upi.user.save(
+                update_fields=[
+                    "has_account",
+                    "is_main_profile_photo_under_verification",
+                ]
+            )
+            # set previous main profile as inactive if any
+            previous = UserProfileImage.objects.filter(
+                Q(is_main=True)
+                & Q(status=UserProfileImage.StatusChoices.ACCEPTED)
+                & Q(is_active=True)
+            )
+            previous.update(is_active=False)
+
             logger.debug(f"UserProfile(id={upi.id}) ACCEPTED!")
 
             # Send notification
@@ -49,6 +69,11 @@ def verify_main_profile_images():
             )
         else:
             upi.status = UserProfileImage.StatusChoices.REJECTED
+            upi.is_active = False
+            # set user flag
+            upi.user.is_main_profile_photo_under_verification = False
+            upi.user.save(update_fields=["is_main_profile_photo_under_verification"])
+
             logger.debug(
                 f"UserProfile(id={upi.id}) REJECTED! (faces num = {faces_num})"
             )

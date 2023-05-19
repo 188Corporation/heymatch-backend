@@ -22,6 +22,7 @@ from .serializers import (
     GroupMemberSerializer,
     TempUserCreateSerializer,
     UserInfoUpdateBodyRequestSerializer,
+    UserProfileImageSerializer,
     UserWithGroupFullInfoSerializer,
 )
 
@@ -44,11 +45,17 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
         user_info_serializer = self.get_serializer(
             instance=user, context={"force_original": True}
         )
+        qs = UserProfileImage.active_objects.filter(
+            user=request.user, status=UserProfileImage.StatusChoices.ACCEPTED
+        )
+        user_profile_image_serializer = UserProfileImageSerializer(qs, many=True)
+
         gm_qs = GroupMember.objects.filter(user=request.user, is_active=True)
         gm_serializer = GroupMemberSerializer(gm_qs, many=True)
         app_info_serializer = AppInfoSerializer(instance=app_info)
         data = {
             **user_info_serializer.data,
+            "user_profile_images": user_profile_image_serializer.data,
             "joined_groups": gm_serializer.data,
             "app_info": app_info_serializer.data,
         }
@@ -61,30 +68,23 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
         )
         serializer.is_valid(raise_exception=True)
 
-        qs = UserProfileImage.active_objects.filter(user=request.user, is_main=True)
-        if len(qs) == 1:
-            orig_main_profile_image = qs[0]
-        else:
-            orig_main_profile_image = None
-
         main_profile_image: InMemoryUploadedFile = serializer.validated_data.pop(
             "main_profile_image", None
         )
         if main_profile_image:
-            if orig_main_profile_image:
-                orig_main_profile_image.image = main_profile_image
-                # should verify again
-                orig_main_profile_image.status = (
-                    UserProfileImage.StatusChoices.NOT_VERIFIED
-                )
-                orig_main_profile_image.save(update_fields=["image", "status"])
-            else:
-                UserProfileImage.active_objects.create(
-                    user=request.user,
-                    image=main_profile_image,
-                    is_main=True,
-                    status=UserProfileImage.StatusChoices.NOT_VERIFIED,
-                )
+            # first create inactive photo
+            # once accepted, will be changed to active
+            UserProfileImage.objects.create(
+                user=request.user,
+                image=main_profile_image,
+                is_main=True,
+                status=UserProfileImage.StatusChoices.NOT_VERIFIED,
+                is_active=False,  # first make it inactive
+            )
+            request.user.is_main_profile_photo_under_verification = True
+            request.user.save(
+                update_fields=["is_main_profile_photo_under_verification"]
+            )
 
         # process other profile image
         qs = UserProfileImage.active_objects.filter(user=request.user, is_main=False)
@@ -111,7 +111,9 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
                 orig_other_profile_image_1.save(update_fields=["image"])
             else:
                 orig_other_profile_image_1 = UserProfileImage.active_objects.create(
-                    user=request.user, image=new_other_profile_image_1
+                    user=request.user,
+                    image=new_other_profile_image_1,
+                    status=UserProfileImage.StatusChoices.ACCEPTED,
                 )
 
         if new_other_profile_image_2:
@@ -120,7 +122,9 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
                 orig_other_profile_image_2.save(update_fields=["image"])
             else:
                 orig_other_profile_image_2 = UserProfileImage.active_objects.create(
-                    user=request.user, image=new_other_profile_image_2
+                    user=request.user,
+                    image=new_other_profile_image_2,
+                    status=UserProfileImage.StatusChoices.ACCEPTED,
                 )
                 orig_other_profile_image_2.below(orig_other_profile_image_1)
 

@@ -12,7 +12,7 @@ from django.contrib.gis.db import models
 from django.core.files.base import ContentFile
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
-from ordered_model.models import OrderedModel
+from ordered_model.models import OrderedModel, OrderedModelManager
 from phonenumber_field.modelfields import PhoneNumberField
 from PIL import Image, ImageFilter, ImageOps
 from simple_history.models import HistoricalRecords
@@ -76,8 +76,7 @@ class User(AbstractUser):
         primary_key=True, blank=False, null=False, editable=False, default=uuid4
     )
     # flag that points whether user is first signup or not
-    # use this flag to decide to show registration form or not
-    is_first_signup = models.BooleanField(default=True)
+    # Front-ent client must update this field when completed registration
     username = models.CharField(
         unique=True,
         blank=False,
@@ -142,6 +141,8 @@ class User(AbstractUser):
     is_temp_user = models.BooleanField(default=False)
 
     # LifeCycle
+    has_account = models.BooleanField(default=False)
+    is_main_profile_photo_under_verification = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
 
     # History
@@ -193,8 +194,9 @@ class UserProfileImage(OrderedModel):
     # ProfileImage Lifecycle
     is_active = models.BooleanField(blank=False, null=False, default=True)
 
-    order_with_respect_to = "user"
+    order_with_respect_to = ("user", "is_active", "is_main")
 
+    objects = OrderedModelManager()
     active_objects = ActiveUserProfileManager()
 
     def save(self, *args, **kwargs):
