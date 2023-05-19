@@ -29,10 +29,8 @@ class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             "id",
-            "stream_token",
-            "has_account",
-            "is_main_profile_photo_under_verification",
             "username",
+            "stream_token",
             "phone_number",
             "gender",
             "birthdate",
@@ -44,6 +42,8 @@ class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
             "verified_company_name",
             "point_balance",
             "user_purchases",
+            "has_account",
+            "is_main_profile_photo_under_verification",
             "free_pass",
             "free_pass_active_until",
         ]
@@ -89,6 +89,7 @@ class UserInfoUpdateBodyRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
+            "username",
             "gender",
             "birthdate",
             "height_cm",

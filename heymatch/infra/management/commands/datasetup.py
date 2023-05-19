@@ -24,6 +24,7 @@ from heymatch.apps.hotplace.tests.factories import (
     RANDOM_HOTPLACE_NAMES,
     HotPlaceFactory,
 )
+from heymatch.apps.match.models import MatchRequest
 from heymatch.apps.payment.models import PointItem
 from heymatch.apps.user.models import AppInfo
 from heymatch.apps.user.tests.factories import (
@@ -145,12 +146,75 @@ class Command(BaseCommand):
             ActiveUserFactory.create(phone_number="+821043509595"),
             ActiveUserFactory.create(phone_number="+821032433994"),
         ]
+        dev_groups = []
         for user in users:
             UserProfileImageFactory.create(
                 user=user,
                 image=ImageField(
                     from_path=f"{pathlib.Path().resolve()}/heymatch/data/{random.choice(profile_image_filepath)}"
                 ),
+            )
+            # create group
+            group = GroupV2Factory.create(mode=GroupV2.GroupMode.SIMPLE)
+            dev_groups.append(group)
+            GroupMemberFactory.create(group=group, user=user, is_user_leader=True)
+
+        # generate MatchRequests
+        sender_groups = GroupV2Factory.create_batch(
+            size=3, mode=GroupV2.GroupMode.SIMPLE
+        )
+        for group in sender_groups:
+            user = ActiveUserFactory.create()
+            UserProfileImageFactory.create(
+                user=user,
+                image=ImageField(
+                    from_path=f"{pathlib.Path().resolve()}/heymatch/data/{random.choice(profile_image_filepath)}"
+                ),
+            )
+            GroupMemberFactory.create(group=group, user=user, is_user_leader=True)
+        receiver_groups = GroupV2Factory.create_batch(
+            size=3, mode=GroupV2.GroupMode.SIMPLE
+        )
+        for group in receiver_groups:
+            user = ActiveUserFactory.create()
+            UserProfileImageFactory.create(
+                user=user,
+                image=ImageField(
+                    from_path=f"{pathlib.Path().resolve()}/heymatch/data/{random.choice(profile_image_filepath)}"
+                ),
+            )
+            GroupMemberFactory.create(group=group, user=user, is_user_leader=True)
+
+        for dev_group in dev_groups:
+            MatchRequest.objects.create(
+                sender_group=sender_groups[0],
+                receiver_group=dev_group,
+                status=MatchRequest.MatchRequestStatusChoices.WAITING,
+            )
+            MatchRequest.objects.create(
+                sender_group=sender_groups[1],
+                receiver_group=dev_group,
+                status=MatchRequest.MatchRequestStatusChoices.ACCEPTED,
+            )
+            MatchRequest.objects.create(
+                sender_group=sender_groups[2],
+                receiver_group=dev_group,
+                status=MatchRequest.MatchRequestStatusChoices.REJECTED,
+            )
+            MatchRequest.objects.create(
+                sender_group=dev_group,
+                receiver_group=receiver_groups[0],
+                status=MatchRequest.MatchRequestStatusChoices.WAITING,
+            )
+            MatchRequest.objects.create(
+                sender_group=dev_group,
+                receiver_group=receiver_groups[1],
+                status=MatchRequest.MatchRequestStatusChoices.ACCEPTED,
+            )
+            MatchRequest.objects.create(
+                sender_group=dev_group,
+                receiver_group=receiver_groups[2],
+                status=MatchRequest.MatchRequestStatusChoices.REJECTED,
             )
 
     def generate_normal_users(self) -> None:

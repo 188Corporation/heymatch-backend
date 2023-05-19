@@ -26,7 +26,7 @@ from .managers import (
 
 MAX_HEIGHT_CM = 210
 MIN_HEIGHT_CM = 125
-MAX_USERNAME_LENGTH = 10
+MAX_USERNAME_LENGTH = 30
 
 
 def generate_random_username():
@@ -79,11 +79,10 @@ class User(AbstractUser):
     # Front-ent client must update this field when completed registration
     username = models.CharField(
         unique=True,
-        blank=False,
-        null=False,
+        blank=True,
+        null=True,
         editable=True,
         max_length=MAX_USERNAME_LENGTH,
-        default=generate_random_username,
     )
     # Required
     phone_number = PhoneNumberField(blank=True, null=True)
@@ -116,16 +115,6 @@ class User(AbstractUser):
     verified_company_name = models.CharField(
         blank=True, null=True, max_length=32, default=None
     )
-
-    # Group related
-    # joined_group = models.ForeignKey(
-    #     "group.Group",
-    #     blank=True,
-    #     null=True,
-    #     on_delete=models.PROTECT,
-    #     related_name="users",
-    # )
-    # is_group_leader = models.BooleanField(blank=False, null=False, default=False)
 
     # Purchase related
     point_balance = models.IntegerField(

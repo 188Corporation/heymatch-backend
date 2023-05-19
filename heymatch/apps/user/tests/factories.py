@@ -2,6 +2,7 @@ from typing import Any, Sequence
 
 from factory import Faker, SubFactory, post_generation
 from factory.django import DjangoModelFactory, ImageField
+from unique_names_generator import get_random_name
 
 from heymatch.apps.user.models import (
     MAX_HEIGHT_CM,
@@ -36,6 +37,9 @@ class ActiveUserFactory(DjangoModelFactory):
         django_get_or_create = ("username",)
 
     id = Faker("uuid4")
+    username = Faker(
+        "random_element", elements=[get_random_name() for i in range(1000)]
+    )
     phone_number = Faker("phone_number", locale="ko_KR")
     birthdate = Faker("date_of_birth")
     gender = Faker(
