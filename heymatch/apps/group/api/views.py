@@ -414,7 +414,12 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
             group.gps_point = Point(x=float(gps[0]), y=float(gps[1]))
             group.gps_address = NAVER_GEO_API.reverse_geocode(long=gps[0], lat=gps[1])
         group.meetup_date = request.data.get("meetup_date", group.meetup_date)
-        group.meetup_address = request.data.get("meetup_address", group.meetup_address)
+        group.meetup_place_title = request.data.get(
+            "meetup_place_title", group.meetup_place_title
+        )
+        group.meetup_place_address = request.data.get(
+            "meetup_place_address", group.meetup_place_address
+        )
         group.member_number = request.data.get("member_number", group.member_number)
         group.member_avg_age = request.data.get("member_avg_age", group.member_avg_age)
         group.save(
@@ -424,7 +429,8 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
                 "gps_point",
                 "gps_address",
                 "meetup_date",
-                "meetup_address",
+                "meetup_place_title",
+                "meetup_place_address",
                 "member_number",
                 "member_avg_age",
             ]
