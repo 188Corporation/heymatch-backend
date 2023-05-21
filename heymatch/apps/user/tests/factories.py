@@ -1,5 +1,6 @@
 from typing import Any, Sequence
 
+from django.db.utils import IntegrityError
 from factory import Faker, SubFactory, post_generation
 from factory.django import DjangoModelFactory, ImageField
 from unique_names_generator import get_random_name
@@ -14,7 +15,6 @@ from heymatch.utils.util import load_company_domain_file, load_school_domain_fil
 
 COMPANY_DOMAIN_FILE = load_company_domain_file()
 SCHOOL_DOMAIN_FILE = load_school_domain_file()
-RANDOM_USERNAME_LIST = list(set(get_random_name() for i in range(1000)))
 
 
 # RANDOM_SCHOOLS = [
@@ -38,7 +38,9 @@ class ActiveUserFactory(DjangoModelFactory):
         django_get_or_create = ("username",)
 
     id = Faker("uuid4")
-    username = Faker("random_element", elements=RANDOM_USERNAME_LIST)
+    username = Faker(
+        "random_element", elements=[get_random_name() for i in range(1000)]
+    )
     phone_number = Faker("phone_number", locale="ko_KR")
     birthdate = Faker("date_of_birth")
     gender = Faker(
@@ -88,7 +90,14 @@ class ActiveUserFactory(DjangoModelFactory):
         """Override the default ``_create`` with our custom call."""
         manager = User.active_objects
         # The default would use ``manager.create(*args, **kwargs)``
-        return manager.create(**kwargs)
+        seed = 0
+        orig_username = kwargs["username"]
+        while True:
+            try:
+                return manager.create(**kwargs)
+            except IntegrityError:
+                kwargs["username"] = f"{orig_username}_{seed}"
+                seed += 1
 
 
 # class ActiveDeveloperUserFactory(ActiveUserFactory):
