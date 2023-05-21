@@ -14,6 +14,7 @@ from heymatch.utils.util import load_company_domain_file, load_school_domain_fil
 
 COMPANY_DOMAIN_FILE = load_company_domain_file()
 SCHOOL_DOMAIN_FILE = load_school_domain_file()
+RANDOM_USERNAME_LIST = list(set(get_random_name() for i in range(1000)))
 
 
 # RANDOM_SCHOOLS = [
@@ -37,9 +38,7 @@ class ActiveUserFactory(DjangoModelFactory):
         django_get_or_create = ("username",)
 
     id = Faker("uuid4")
-    username = Faker(
-        "random_element", elements=[get_random_name() for i in range(1000)]
-    )
+    username = Faker("random_element", elements=RANDOM_USERNAME_LIST)
     phone_number = Faker("phone_number", locale="ko_KR")
     birthdate = Faker("date_of_birth")
     gender = Faker(
