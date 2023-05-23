@@ -89,7 +89,7 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
             )
 
         # process other profile image
-        qs = UserProfileImage.all_objects.filter(user=request.user, is_main=False)
+        qs = UserProfileImage.objects.filter(user=request.user, is_main=False)
         if len(qs) == 2:
             orig_other_profile_image_1 = qs[0]
             orig_other_profile_image_2 = qs[1]
