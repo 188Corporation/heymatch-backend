@@ -27,7 +27,7 @@ def verify_main_profile_images():
     logger.debug("==================================================")
 
     logger.debug("[1] Get target profile images to be verified")
-    target_upi_qs = UserProfileImage.objects.filter(
+    target_upi_qs = UserProfileImage.all_objects.filter(
         Q(is_main=True)
         & Q(status=UserProfileImage.StatusChoices.NOT_VERIFIED)
         & Q(is_active=False)
@@ -52,7 +52,7 @@ def verify_main_profile_images():
                 ]
             )
             # set previous main profile as inactive if any
-            previous = UserProfileImage.objects.filter(
+            previous = UserProfileImage.all_objects.filter(
                 Q(is_main=True)
                 & Q(status=UserProfileImage.StatusChoices.ACCEPTED)
                 & Q(is_active=True)

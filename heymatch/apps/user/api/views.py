@@ -47,7 +47,7 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
         user_info_serializer = self.get_serializer(
             instance=user, context={"force_original": True}
         )
-        qs = UserProfileImage.active_objects.filter(
+        qs = UserProfileImage.objects.filter(
             user=request.user, status=UserProfileImage.StatusChoices.ACCEPTED
         )
         user_profile_image_serializer = UserProfileImageSerializer(qs, many=True)
@@ -76,7 +76,7 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
         if main_profile_image:
             # first create inactive photo
             # once accepted, will be changed to active
-            UserProfileImage.objects.create(
+            UserProfileImage.all_objects.create(
                 user=request.user,
                 image=main_profile_image,
                 is_main=True,
@@ -89,7 +89,7 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
             )
 
         # process other profile image
-        qs = UserProfileImage.active_objects.filter(user=request.user, is_main=False)
+        qs = UserProfileImage.all_objects.filter(user=request.user, is_main=False)
         if len(qs) == 2:
             orig_other_profile_image_1 = qs[0]
             orig_other_profile_image_2 = qs[1]
@@ -112,7 +112,7 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
                 orig_other_profile_image_1.image = new_other_profile_image_1
                 orig_other_profile_image_1.save(update_fields=["image"])
             else:
-                orig_other_profile_image_1 = UserProfileImage.active_objects.create(
+                orig_other_profile_image_1 = UserProfileImage.objects.create(
                     user=request.user,
                     image=new_other_profile_image_1,
                     status=UserProfileImage.StatusChoices.ACCEPTED,
@@ -123,7 +123,7 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
                 orig_other_profile_image_2.image = new_other_profile_image_2
                 orig_other_profile_image_2.save(update_fields=["image"])
             else:
-                orig_other_profile_image_2 = UserProfileImage.active_objects.create(
+                orig_other_profile_image_2 = UserProfileImage.objects.create(
                     user=request.user,
                     image=new_other_profile_image_2,
                     status=UserProfileImage.StatusChoices.ACCEPTED,
