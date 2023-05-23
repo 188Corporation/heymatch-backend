@@ -151,6 +151,14 @@ class AppInfoSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class UsernameUniquenessCheckSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "username",
+        ]
+
+
 class TempUserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

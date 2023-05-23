@@ -54,7 +54,29 @@ class UserRestrictedInfoSerializer(serializers.ModelSerializer):
         ]
 
 
-class GroupMemberSerializer(serializers.ModelSerializer):
+class UserFullInfoSerializer(serializers.ModelSerializer):
+    user_profile_images = UserProfileThumbnailImageSerializer(
+        "user_profile_images", many=True, read_only=True
+    )
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "username",
+            "gender",
+            "birthdate",
+            "height_cm",
+            "male_body_form",
+            "female_body_form",
+            "job_title",
+            "verified_school_name",
+            "verified_company_name",
+            "user_profile_images",
+        ]
+
+
+class RestrictedGroupMemberSerializer(serializers.ModelSerializer):
     user = UserRestrictedInfoSerializer(read_only=True)
 
     class Meta:
@@ -65,8 +87,19 @@ class GroupMemberSerializer(serializers.ModelSerializer):
         ]
 
 
-class V2GroupRetrieveSerializer(serializers.ModelSerializer):
-    group_members = GroupMemberSerializer(
+class FullGroupMemberSerializer(serializers.ModelSerializer):
+    user = UserFullInfoSerializer(read_only=True)
+
+    class Meta:
+        model = GroupMember
+        fields = [
+            "user",
+            "is_user_leader",
+        ]
+
+
+class V2GroupFilteredListSerializer(serializers.ModelSerializer):
+    group_members = RestrictedGroupMemberSerializer(
         many=True, read_only=True, source="group_member_group"
     )
 
@@ -75,7 +108,7 @@ class V2GroupRetrieveSerializer(serializers.ModelSerializer):
         fields = [
             "mode",
             "title",
-            "introduction",
+            # "introduction",
             # "gps_point",
             "meetup_date",
             "meetup_place_title",
@@ -88,8 +121,8 @@ class V2GroupRetrieveSerializer(serializers.ModelSerializer):
         ]
 
 
-class V2GroupFilteredListSerializer(serializers.ModelSerializer):
-    group_members = GroupMemberSerializer(
+class V2GroupRetrieveSerializer(serializers.ModelSerializer):
+    group_members = FullGroupMemberSerializer(
         many=True, read_only=True, source="group_member_group"
     )
 
@@ -98,7 +131,7 @@ class V2GroupFilteredListSerializer(serializers.ModelSerializer):
         fields = [
             "mode",
             "title",
-            # "introduction",
+            "introduction",
             # "gps_point",
             "meetup_date",
             "meetup_place_title",

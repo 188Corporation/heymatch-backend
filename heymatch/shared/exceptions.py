@@ -33,6 +33,11 @@ class UserMainProfileImageNotFound(BasePermissionDeniedException):
     detail = "Should provide main profile image per user"
 
 
+class UsernameAlreadyExistsException(BasePermissionDeniedException):
+    status_code = 454
+    detail = "User with this username already exists"
+
+
 class UserNotJoinedGroupException(BasePermissionDeniedException):
     status_code = 461
     detail = "그룹을 먼저 만들어 주세요! 😎"

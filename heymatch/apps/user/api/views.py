@@ -13,6 +13,7 @@ from rest_framework.response import Response
 
 from heymatch.apps.group.models import GroupMember
 from heymatch.apps.user.models import AppInfo, DeleteScheduledUser, UserProfileImage
+from heymatch.shared.exceptions import UsernameAlreadyExistsException
 from heymatch.shared.permissions import IsUserActive
 
 from .serializers import (
@@ -22,6 +23,7 @@ from .serializers import (
     GroupMemberSerializer,
     TempUserCreateSerializer,
     UserInfoUpdateBodyRequestSerializer,
+    UsernameUniquenessCheckSerializer,
     UserProfileImageSerializer,
     UserWithGroupFullInfoSerializer,
 )
@@ -151,6 +153,19 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
 
         # rest of job will be done by celery-beat scheduler
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+class UsernameUniquenessCheckViewSet(viewsets.ModelViewSet):
+    permission_classes = [
+        IsAuthenticated,
+    ]
+    serializer_class = UsernameUniquenessCheckSerializer
+
+    @swagger_auto_schema(request_body=UsernameUniquenessCheckSerializer)
+    def check(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        if User.objects.filter(username__iexact=request.data["username"]).exists():
+            raise UsernameAlreadyExistsException()
+        return Response(data="This username is good to go!", status=status.HTTP_200_OK)
 
 
 class TempUserCreateViewSet(viewsets.ModelViewSet):
