@@ -13,33 +13,59 @@ from tqdm import tqdm
 from heymatch.apps.celery.tasks import aggregate_recent_24hr_top_ranked_group_address
 from heymatch.apps.group.models import GroupV2
 from heymatch.apps.group.tests.factories import (
-    ActiveGroupFactory,
     GroupMemberFactory,
-    GroupProfileImageFactory,
     GroupV2Factory,
     profile_image_filepath,
-)
-from heymatch.apps.hotplace.tests.factories import (
-    RANDOM_HOTPLACE_INFO,
-    RANDOM_HOTPLACE_NAMES,
-    HotPlaceFactory,
 )
 from heymatch.apps.match.models import MatchRequest
 from heymatch.apps.payment.models import PointItem
 from heymatch.apps.user.models import AppInfo
 from heymatch.apps.user.tests.factories import (
-    ActiveUserFactory,
+    ActiveCollegeFemaleUserFactory,
+    ActiveCollegeMaleUserFactory,
+    ActiveEmployeeFemaleUserFactory,
+    ActiveEmployeeMaleUserFactory,
+    ActiveEtcFemaleUserFactory,
+    ActiveEtcMaleUserFactory,
     UserProfileImageFactory,
 )
-from heymatch.utils.util import generate_rand_geoopt_within_boundary
 
 User = get_user_model()
 # stream = settings.STREAM_CLIENT
+
 
 """
 Note that Custom Commands are only available in LOCAL environment.
 See config/settings/local.py
 """
+
+
+def generate_user():
+    factory = random.choice(
+        [
+            ActiveEmployeeMaleUserFactory,
+            ActiveCollegeMaleUserFactory,
+            ActiveEtcFemaleUserFactory,
+            ActiveEtcMaleUserFactory,
+            ActiveEmployeeFemaleUserFactory,
+            ActiveCollegeFemaleUserFactory,
+        ]
+    )
+    return factory.create()
+
+
+def generate_user_batch(size: int):
+    factory = random.choice(
+        [
+            ActiveEmployeeMaleUserFactory,
+            ActiveCollegeMaleUserFactory,
+            ActiveEtcFemaleUserFactory,
+            ActiveEtcMaleUserFactory,
+            ActiveEmployeeFemaleUserFactory,
+            ActiveCollegeFemaleUserFactory,
+        ]
+    )
+    return factory.create_batch(size=size)
 
 
 class Command(BaseCommand):
@@ -143,8 +169,8 @@ class Command(BaseCommand):
     def generate_developer_users(self) -> None:
         self.stdout.write(self.style.SUCCESS("Setting up data for [Developer]"))
         users = [
-            ActiveUserFactory.create(phone_number="+821043509595"),
-            ActiveUserFactory.create(phone_number="+821032433994"),
+            ActiveEmployeeMaleUserFactory.create(phone_number="+821043509595"),
+            ActiveEmployeeMaleUserFactory.create(phone_number="+821032433994"),
         ]
         dev_groups = []
         for user in users:
@@ -164,7 +190,7 @@ class Command(BaseCommand):
             size=3, mode=GroupV2.GroupMode.SIMPLE
         )
         for group in sender_groups:
-            user = ActiveUserFactory.create()
+            user = generate_user()
             UserProfileImageFactory.create(
                 user=user,
                 image=ImageField(
@@ -176,7 +202,7 @@ class Command(BaseCommand):
             size=3, mode=GroupV2.GroupMode.SIMPLE
         )
         for group in receiver_groups:
-            user = ActiveUserFactory.create()
+            user = generate_user()
             UserProfileImageFactory.create(
                 user=user,
                 image=ImageField(
@@ -219,7 +245,7 @@ class Command(BaseCommand):
 
     def generate_normal_users(self) -> None:
         self.stdout.write(self.style.SUCCESS("Setting up data for [Users]"))
-        users = ActiveUserFactory.create_batch(size=2)
+        users = generate_user_batch(size=2)
         for user in users:
             UserProfileImageFactory.create(
                 user=user,
@@ -256,7 +282,7 @@ class Command(BaseCommand):
         pbar = tqdm(total=SIZE)
         groups = GroupV2Factory.create_batch(size=SIZE, mode=GroupV2.GroupMode.SIMPLE)
         for group in groups:
-            user = ActiveUserFactory.create()
+            user = generate_user()
             UserProfileImageFactory.create(
                 user=user,
                 image=ImageField(
@@ -332,44 +358,44 @@ class Command(BaseCommand):
         )
 
     # DEPRECATED
-    def generate_hotplace_groups(self) -> None:
-        for name in RANDOM_HOTPLACE_NAMES:
-            # create hotplace
-            hotplace = HotPlaceFactory(
-                name=name,
-                zone_center_geoinfo=RANDOM_HOTPLACE_INFO[name]["zone_center_geoinfo"],
-                zone_boundary_geoinfos=RANDOM_HOTPLACE_INFO[name][
-                    "zone_boundary_geoinfos"
-                ],
-                zone_boundary_geoinfos_for_fake_chat=RANDOM_HOTPLACE_INFO[name][
-                    "zone_boundary_geoinfos_for_fake_chat"
-                ],
-            )
-            # create groups for each hotplaces
-            for image_path in profile_image_filepath:
-                geopt = generate_rand_geoopt_within_boundary(
-                    RANDOM_HOTPLACE_INFO[name]["zone_boundary_geoinfos"]
-                )
-                group = ActiveGroupFactory.create(
-                    hotplace=hotplace,
-                    gps_geoinfo=geopt,
-                )
-                # Create group profile image
-                GroupProfileImageFactory.create(
-                    group=group,
-                    image=ImageField(
-                        from_path=f"{pathlib.Path().resolve()}/heymatch/data/{image_path}"
-                    ),
-                )
-                # Create users for each groups
-                # NOTE: For now, only one user is mapped to one group so size is 1
-                ActiveUserFactory.create_batch(
-                    size=1,
-                    joined_group=group,
-                )
-                # Group.objects.register_group_leader_user(group, users[0])
-                # Group.objects.register_normal_users(group, users[1:])
-
-        self.stdout.write(
-            self.style.SUCCESS("Successfully set up data for [Hotplaces/Groups/User]")
-        )
+    # def generate_hotplace_groups(self) -> None:
+    #     for name in RANDOM_HOTPLACE_NAMES:
+    #         # create hotplace
+    #         hotplace = HotPlaceFactory(
+    #             name=name,
+    #             zone_center_geoinfo=RANDOM_HOTPLACE_INFO[name]["zone_center_geoinfo"],
+    #             zone_boundary_geoinfos=RANDOM_HOTPLACE_INFO[name][
+    #                 "zone_boundary_geoinfos"
+    #             ],
+    #             zone_boundary_geoinfos_for_fake_chat=RANDOM_HOTPLACE_INFO[name][
+    #                 "zone_boundary_geoinfos_for_fake_chat"
+    #             ],
+    #         )
+    #         # create groups for each hotplaces
+    #         for image_path in profile_image_filepath:
+    #             geopt = generate_rand_geoopt_within_boundary(
+    #                 RANDOM_HOTPLACE_INFO[name]["zone_boundary_geoinfos"]
+    #             )
+    #             group = ActiveGroupFactory.create(
+    #                 hotplace=hotplace,
+    #                 gps_geoinfo=geopt,
+    #             )
+    #             # Create group profile image
+    #             GroupProfileImageFactory.create(
+    #                 group=group,
+    #                 image=ImageField(
+    #                     from_path=f"{pathlib.Path().resolve()}/heymatch/data/{image_path}"
+    #                 ),
+    #             )
+    #             # Create users for each groups
+    #             # NOTE: For now, only one user is mapped to one group so size is 1
+    #             ActiveUserFactory.create_batch(
+    #                 size=1,
+    #                 joined_group=group,
+    #             )
+    #             # Group.objects.register_group_leader_user(group, users[0])
+    #             # Group.objects.register_normal_users(group, users[1:])
+    #
+    #     self.stdout.write(
+    #         self.style.SUCCESS("Successfully set up data for [Hotplaces/Groups/User]")
+    #     )

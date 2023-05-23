@@ -43,25 +43,7 @@ class ActiveUserFactory(DjangoModelFactory):
     )
     phone_number = Faker("phone_number", locale="ko_KR")
     birthdate = Faker("date_of_birth")
-    gender = Faker(
-        "random_element", elements=[x[0] for x in User.GenderChoices.choices]
-    )
     height_cm = Faker("pyint", min_value=MIN_HEIGHT_CM, max_value=MAX_HEIGHT_CM)
-    male_body_form = Faker(
-        "random_element", elements=[x[0] for x in User.MaleBodyFormChoices.choices]
-    )
-    female_body_form = Faker(
-        "random_element", elements=[x[0] for x in User.FemaleBodyFormChoices.choices]
-    )
-    job_title = Faker(
-        "random_element", elements=[x[0] for x in User.JobChoices.choices]
-    )
-    verified_school_name = Faker(
-        "random_element", elements=["서울대학교", "고려대학교", "연세대학교", "서강대학교", None]
-    )
-    verified_company_name = Faker(
-        "random_element", elements=["Amazon", "스타트업", "삼성전자", None]
-    )
 
     # Other
     has_account = True
@@ -107,6 +89,82 @@ class ActiveUserFactory(DjangoModelFactory):
 #         manager = User.active_objects
 #         # developer should have getstream registered.
 #         return manager.create(**kwargs)
+
+
+class _ActiveMaleUserFactory(ActiveUserFactory):
+    gender = User.GenderChoices.MALE
+    male_body_form = Faker(
+        "random_element", elements=[x[0] for x in User.MaleBodyFormChoices.choices]
+    )
+    female_body_form = None
+
+
+class _ActiveFemaleUserFactory(ActiveUserFactory):
+    gender = User.GenderChoices.MALE
+    male_body_form = None
+    female_body_form = Faker(
+        "random_element", elements=[x[0] for x in User.FemaleBodyFormChoices.choices]
+    )
+
+
+class ActiveCollegeMaleUserFactory(_ActiveMaleUserFactory):
+    job_title = User.JobChoices.COLLEGE_STUDENT
+    verified_school_name = Faker(
+        "random_element", elements=["서울대학교", "고려대학교", "연세대학교", "서강대학교", None]
+    )
+    verified_company_name = None
+
+
+class ActiveEmployeeMaleUserFactory(_ActiveMaleUserFactory):
+    job_title = User.JobChoices.EMPLOYEE
+    verified_school_name = None
+    verified_company_name = Faker(
+        "random_element", elements=["Amazon", "스타트업", "삼성전자", None]
+    )
+
+
+class ActiveEtcMaleUserFactory(_ActiveMaleUserFactory):
+    job_title = Faker(
+        "random_element",
+        elements=[
+            User.JobChoices.BUSINESSMAN,
+            User.JobChoices.ETC,
+            User.JobChoices.PART_TIME,
+            User.JobChoices.SELF_EMPLOYED,
+        ],
+    )
+    verified_school_name = None
+    verified_company_name = None
+
+
+class ActiveCollegeFemaleUserFactory(_ActiveFemaleUserFactory):
+    job_title = User.JobChoices.COLLEGE_STUDENT
+    verified_school_name = Faker(
+        "random_element", elements=["서울대학교", "고려대학교", "연세대학교", "서강대학교", None]
+    )
+    verified_company_name = None
+
+
+class ActiveEmployeeFemaleUserFactory(_ActiveFemaleUserFactory):
+    job_title = User.JobChoices.EMPLOYEE
+    verified_school_name = None
+    verified_company_name = Faker(
+        "random_element", elements=["Amazon", "스타트업", "삼성전자", None]
+    )
+
+
+class ActiveEtcFemaleUserFactory(_ActiveFemaleUserFactory):
+    job_title = Faker(
+        "random_element",
+        elements=[
+            User.JobChoices.BUSINESSMAN,
+            User.JobChoices.ETC,
+            User.JobChoices.PART_TIME,
+            User.JobChoices.SELF_EMPLOYED,
+        ],
+    )
+    verified_school_name = None
+    verified_company_name = None
 
 
 profile_image_filepath = [
