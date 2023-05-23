@@ -106,6 +106,7 @@ class V2GroupFilteredListSerializer(serializers.ModelSerializer):
     class Meta:
         model = GroupV2
         fields = [
+            "id",
             "mode",
             "title",
             # "introduction",
@@ -129,6 +130,7 @@ class V2GroupRetrieveSerializer(serializers.ModelSerializer):
     class Meta:
         model = GroupV2
         fields = [
+            "id",
             "mode",
             "title",
             "introduction",

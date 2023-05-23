@@ -12,7 +12,7 @@ from django.contrib.gis.db import models
 from django.core.files.base import ContentFile
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
-from ordered_model.models import OrderedModel, OrderedModelManager
+from ordered_model.models import OrderedModel
 from phonenumber_field.modelfields import PhoneNumberField
 from PIL import Image, ImageFilter, ImageOps
 from simple_history.models import HistoricalRecords
@@ -185,8 +185,8 @@ class UserProfileImage(OrderedModel):
 
     order_with_respect_to = ("user", "is_active", "is_main")
 
-    objects = OrderedModelManager()
-    active_objects = ActiveUserProfileManager()
+    # objects = OrderedModelManager()
+    objects = ActiveUserProfileManager()
 
     def save(self, *args, **kwargs):
         image = Image.open(self.image)
