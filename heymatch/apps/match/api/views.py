@@ -155,9 +155,12 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         mr = self.create_match_request(sender_group=from_group, receiver_group=to_group)
 
         # Send push notification
-        to_group_user_ids = GroupMember.objects.filter(
-            user__is_active=True, group_id__in=[to_group_id]
-        ).values_list("user_id", flat=True)
+        to_group_user_ids = [
+            str(user_id)
+            for user_id in GroupMember.objects.filter(
+                user__is_active=True, group_id__in=[to_group_id]
+            ).values_list("user_id", flat=True)
+        ]
         res = onesignal_client.send_notification_to_specific_users(
             title="매칭 요청이 왔어요!",
             content=f"[{from_group.title}] 그룹으로부터 매칭요청을 받았어요! 수락하면 바로 채팅할 수 있어요 😀",
