@@ -145,6 +145,12 @@ class DeleteScheduledUserSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class DeleteUserProfilePhotoRequestBodySerializer(serializers.Serializer):
+    to_delete = serializers.StringRelatedField(
+        many=True, default=["other_profile_image_1", "other_profile_image_2"]
+    )
+
+
 class AppInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = AppInfo

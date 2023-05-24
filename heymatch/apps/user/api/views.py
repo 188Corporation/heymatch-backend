@@ -20,6 +20,7 @@ from .serializers import (
     AppInfoSerializer,
     DeleteScheduledUserRequestBodySerializer,
     DeleteScheduledUserSerializer,
+    DeleteUserProfilePhotoRequestBodySerializer,
     GroupMemberSerializer,
     TempUserCreateSerializer,
     UserInfoUpdateBodyRequestSerializer,
@@ -153,6 +154,37 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
 
         # rest of job will be done by celery-beat scheduler
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(request_body=DeleteUserProfilePhotoRequestBodySerializer)
+    def delete_profile_photo(
+        self, request: Request, *args: Any, **kwargs: Any
+    ) -> Response:
+        data = request.data["to_delete"]
+        to_delete = data.split(",")
+        qs = UserProfileImage.objects.filter(user=request.user, is_main=False)
+        if len(qs) == 2:
+            orig_other_profile_image_1 = qs[0]
+            orig_other_profile_image_2 = qs[1]
+        elif len(qs) == 1:
+            orig_other_profile_image_1 = qs[0]
+            orig_other_profile_image_2 = None
+        else:
+            orig_other_profile_image_1 = None
+            orig_other_profile_image_2 = None
+        for target in to_delete:
+            if target == "other_profile_image_1":
+                if orig_other_profile_image_1:
+                    orig_other_profile_image_1.is_active = False
+                    orig_other_profile_image_1.save(update_fields=["is_active"])
+            if target == "other_profile_image_2":
+                if orig_other_profile_image_2:
+                    orig_other_profile_image_2.is_active = False
+                    orig_other_profile_image_2.save(update_fields=["is_active"])
+            else:
+                Response(
+                    data=f"Invalid field - {data}", status=status.HTTP_400_BAD_REQUEST
+                )
+        return Response(status=status.HTTP_200_OK)
 
 
 class UsernameUniquenessCheckViewSet(viewsets.ModelViewSet):
