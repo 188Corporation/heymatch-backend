@@ -5,7 +5,6 @@ from django.conf import settings
 from django.core.exceptions import FieldDoesNotExist
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -13,7 +12,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from heymatch.apps.chat.models import StreamChannel
-from heymatch.apps.group.models import Group, GroupMember, GroupV2
+from heymatch.apps.group.models import GroupMember, GroupV2
 from heymatch.apps.match.models import MatchRequest
 from heymatch.apps.payment.models import UserPointConsumptionHistory
 from heymatch.shared.exceptions import (
@@ -131,13 +130,13 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
             raise MatchRequestAlreadySubmittedException()
 
         # Check #4
-        if user.free_pass and user.free_pass_active_until < timezone.now():
-            mr = self.create_match_request(
-                sender_group=from_group, receiver_group=to_group
-            )
-            # Create MatchRequest
-            serializer = ReceivedMatchRequestSerializer(instance=mr)
-            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        # if user.free_pass and user.free_pass_active_until < timezone.now():
+        #     mr = self.create_match_request(
+        #         sender_group=from_group, receiver_group=to_group
+        #     )
+        #     # Create MatchRequest
+        #     serializer = ReceivedMatchRequestSerializer(instance=mr)
+        #     return Response(data=serializer.data, status=status.HTTP_200_OK)
         if user.point_balance < to_group.match_point:
             raise UserPointBalanceNotEnoughException()
 
@@ -172,7 +171,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
 
     @staticmethod
     def create_match_request(
-        sender_group: Group, receiver_group: Group
+        sender_group: GroupV2, receiver_group: GroupV2
     ) -> MatchRequest:
         return MatchRequest.objects.create(
             sender_group=sender_group,
