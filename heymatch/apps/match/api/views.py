@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core.exceptions import FieldDoesNotExist
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from drf_yasg.utils import swagger_auto_schema
+from drf_yasg.utils import no_body, swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -181,6 +181,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
             receiver_group=receiver_group,
         )
 
+    @swagger_auto_schema(request_body=no_body)
     def accept(self, request: Request, match_request_id: int) -> Response:
         # Check validity
         mr = self.get_match_request_obj(match_request_id=match_request_id)
@@ -263,6 +264,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
             status.HTTP_200_OK,
         )
 
+    @swagger_auto_schema(request_body=no_body)
     def reject(self, request: Request, match_request_id: int) -> Response:
         # Check validity
         mr = self.get_match_request_obj(match_request_id=match_request_id)
@@ -294,6 +296,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         # TODO: handle OneSignal response
         return Response(status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(request_body=no_body)
     def cancel(self, request: Request, match_request_id: int) -> Response:
         # Check validity
         mr = self.get_match_request_obj(match_request_id=match_request_id)
