@@ -150,12 +150,8 @@ class V2GroupRetrieveSerializer(serializers.ModelSerializer):
         ]
 
 
-class V2GroupGeneralRequestBodySerializer(serializers.ModelSerializer):
-    # user_ids = serializers.ListField(child=serializers.UUIDField(), required=False)
-    gps_point = serializers.SerializerMethodField()
-
-    def get_gps_point(self, obj):
-        return f"{obj.gps_point.x},{obj.gps_point.y}"
+class V2GroupCreateUpdateSerializer(serializers.ModelSerializer):
+    gps_point = serializers.CharField(max_length=120, required=True)
 
     class Meta:
         model = GroupV2
@@ -169,8 +165,6 @@ class V2GroupGeneralRequestBodySerializer(serializers.ModelSerializer):
             "meetup_place_address",
             "member_number",
             "member_avg_age",
-            # "meetup_timerange",
-            # "user_ids",
         ]
 
 

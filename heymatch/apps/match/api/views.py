@@ -192,6 +192,14 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         )  # WAITING
 
         # Create Stream channel for both groups
+        result = self.create_stream_channel(user_id=str(request.user.id), mr=mr)
+        return Response(result, status.HTTP_200_OK)
+
+    @staticmethod
+    def create_stream_channel(
+        user_id: str, mr: MatchRequest, send_push_notification=True
+    ):
+        # Create Stream channel for both groups
         receiver_group = mr.receiver_group
         receiver_group_member_qs = GroupMember.objects.filter(
             group=receiver_group, is_active=True
@@ -213,11 +221,19 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
             None,
             data=dict(
                 members=[*receiver_user_ids, *sender_user_ids],
-                created_by_id=str(request.user.id),
+                created_by_id=str(user_id),
             ),
         )
         # Note: query method creates a channel
         res = channel.query()
+
+        # Update MatchRequest
+        mr.status = MatchRequest.MatchRequestStatusChoices.ACCEPTED  # ACCEPTED
+        mr.save(
+            update_fields=[
+                "status",
+            ]
+        )
 
         # Update MatchRequest
         mr.status = MatchRequest.MatchRequestStatusChoices.ACCEPTED  # ACCEPTED
@@ -247,22 +263,19 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
                 group_member=sender_gm,
             )
         # Send push notification
-        res = onesignal_client.send_notification_to_specific_users(
-            title="매칭 성공!!",
-            content=f"[{receiver_group.title}] 그룹이 매칭요청을 수락했어요!! 지금 바로 메세지를 보내봐요 🎉",
-            user_ids=sender_user_ids,
-        )
-        logger.debug(f"OneSignal response for Match Success: {res}")
+        if send_push_notification:
+            res = onesignal_client.send_notification_to_specific_users(
+                title="매칭 성공!!",
+                content=f"[{receiver_group.title}] 그룹이 매칭요청을 수락했어요!! 지금 바로 메세지를 보내봐요 🎉",
+                user_ids=sender_user_ids,
+            )
+            logger.debug(f"OneSignal response for Match Success: {res}")
         # TODO: handle OneSignal response
-
-        return Response(
-            {
-                "stream_chat_id": stream_channel_id,
-                "stream_chat_cid": stream_channel_cid,
-                "stream_chat_type": stream_channel_type,
-            },
-            status.HTTP_200_OK,
-        )
+        return {
+            "stream_chat_id": stream_channel_id,
+            "stream_chat_cid": stream_channel_cid,
+            "stream_chat_type": stream_channel_type,
+        }
 
     @swagger_auto_schema(request_body=no_body)
     def reject(self, request: Request, match_request_id: int) -> Response:

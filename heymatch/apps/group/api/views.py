@@ -75,8 +75,8 @@ from .serializers import (
     ReportGroupRequestBodySerializer,
     ReportGroupSerializer,
     RestrictedGroupProfileByHotplaceSerializer,
+    V2GroupCreateUpdateSerializer,
     V2GroupFilteredListSerializer,
-    V2GroupGeneralRequestBodySerializer,
     V2GroupRetrieveSerializer,
 )
 
@@ -258,7 +258,7 @@ class GroupV2GeneralViewSet(viewsets.ModelViewSet):
     permission_classes = [
         IsAuthenticated,
     ]
-    serializer_class = V2GroupGeneralRequestBodySerializer
+    serializer_class = V2GroupCreateUpdateSerializer
     distance_filter_field = "gps_point"
     filter_backends = [DjangoFilterBackend, DistanceToPointFilter]
     filterset_class = GroupV2Filter
@@ -307,7 +307,7 @@ class GroupV2GeneralViewSet(viewsets.ModelViewSet):
             ).values_list("group_id", flat=True)
         )
 
-    @swagger_auto_schema(request_body=V2GroupGeneralRequestBodySerializer)
+    @swagger_auto_schema(request_body=V2GroupCreateUpdateSerializer)
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -392,7 +392,7 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
         group.save(update_fields=["is_active"])
         return Response(status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(request_body=V2GroupGeneralRequestBodySerializer)
+    @swagger_auto_schema(request_body=V2GroupCreateUpdateSerializer)
     def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         # only leader can update
         qs = GroupMember.objects.filter(

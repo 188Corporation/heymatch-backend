@@ -17,6 +17,7 @@ from heymatch.apps.group.tests.factories import (
     GroupV2Factory,
     profile_image_filepath,
 )
+from heymatch.apps.match.api.views import MatchRequestViewSet
 from heymatch.apps.match.models import MatchRequest
 from heymatch.apps.payment.models import PointItem
 from heymatch.apps.user.models import AppInfo
@@ -182,7 +183,7 @@ class Command(BaseCommand):
             )
             # create group
             group = GroupV2Factory.create(mode=GroupV2.GroupMode.SIMPLE)
-            dev_groups.append(group)
+            dev_groups.append((group, str(user.id)))
             GroupMemberFactory.create(group=group, user=user, is_user_leader=True)
 
         # generate MatchRequests
@@ -211,34 +212,47 @@ class Command(BaseCommand):
             )
             GroupMemberFactory.create(group=group, user=user, is_user_leader=True)
 
-        for dev_group in dev_groups:
+        for group_info in dev_groups:
             MatchRequest.objects.create(
                 sender_group=sender_groups[0],
-                receiver_group=dev_group,
+                receiver_group=group_info[0],
                 status=MatchRequest.MatchRequestStatusChoices.WAITING,
             )
-            MatchRequest.objects.create(
+
+            mr = MatchRequest.objects.create(
                 sender_group=sender_groups[1],
-                receiver_group=dev_group,
+                receiver_group=group_info[0],
                 status=MatchRequest.MatchRequestStatusChoices.ACCEPTED,
             )
+            # accepted MRs should open getstream chat
+            MatchRequestViewSet.create_stream_channel(
+                group_info[1], mr, send_push_notification=False
+            )
+
             MatchRequest.objects.create(
                 sender_group=sender_groups[2],
-                receiver_group=dev_group,
+                receiver_group=group_info[0],
                 status=MatchRequest.MatchRequestStatusChoices.REJECTED,
             )
+
             MatchRequest.objects.create(
-                sender_group=dev_group,
+                sender_group=group_info[0],
                 receiver_group=receiver_groups[0],
                 status=MatchRequest.MatchRequestStatusChoices.WAITING,
             )
-            MatchRequest.objects.create(
-                sender_group=dev_group,
+
+            mr = MatchRequest.objects.create(
+                sender_group=group_info[0],
                 receiver_group=receiver_groups[1],
                 status=MatchRequest.MatchRequestStatusChoices.ACCEPTED,
             )
+            # accepted MRs should open getstream chat
+            MatchRequestViewSet.create_stream_channel(
+                group_info[1], mr, send_push_notification=False
+            )
+
             MatchRequest.objects.create(
-                sender_group=dev_group,
+                sender_group=group_info[0],
                 receiver_group=receiver_groups[2],
                 status=MatchRequest.MatchRequestStatusChoices.REJECTED,
             )
