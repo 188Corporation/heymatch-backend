@@ -4,6 +4,7 @@ from .api.views import (
     TempUserCreateViewSet,
     UsernameUniquenessCheckViewSet,
     UserWithGroupFullInfoViewSet,
+    UserWithGroupProfilePhotoViewSet,
 )
 
 app_name = "user"
@@ -16,7 +17,7 @@ users_my_view = UserWithGroupFullInfoViewSet.as_view(
         "delete": "schedule_delete",
     }
 )
-users_my_profile_photo_view = UserWithGroupFullInfoViewSet.as_view(
+users_my_profile_photo_view = UserWithGroupProfilePhotoViewSet.as_view(
     {
         "delete": "delete_profile_photo",
     }
