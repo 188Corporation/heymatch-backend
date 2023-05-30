@@ -11,7 +11,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from heymatch.apps.chat.models import StreamChannel
-from heymatch.apps.group.api.serializers import FullGroupProfileSerializer
+from heymatch.apps.group.api.serializers import V2GroupRetrieveSerializer
 from heymatch.apps.match.models import MatchRequest
 from heymatch.shared.permissions import IsUserActive
 
@@ -31,7 +31,7 @@ class StreamChatViewSet(viewsets.ModelViewSet):
         IsAuthenticated,
         IsUserActive,
     ]
-    serializer_class = FullGroupProfileSerializer
+    serializer_class = V2GroupRetrieveSerializer
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """
@@ -63,11 +63,11 @@ class StreamChatViewSet(viewsets.ModelViewSet):
         for channel in channels["channels"]:
             fresh_data = {}
             reads = channel["read"]
-            target_user_id = None
             is_last_message_read = True
 
             sc = StreamChannel.objects.filter(
-                cid=channel["channel"]["cid"], group_member__user_id=target_user_id
+                cid=channel["channel"]["cid"],
+                group_member__user_id=str(request.user.id),
             ).first()
             if not sc or not sc.group_member.group:
                 continue
