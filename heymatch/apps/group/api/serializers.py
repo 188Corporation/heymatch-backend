@@ -19,43 +19,41 @@ from heymatch.utils.util import (
 )
 
 
-class UserProfileThumbnailImageSerializer(serializers.ModelSerializer):
+#####################
+# Private Serializers
+#####################
+class _UserProfileByContextSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField(
+        "decide_whether_original_or_blurred_image"
+    )
+    thumbnail = serializers.SerializerMethodField(
+        "decide_whether_original_or_blurred_thumbnail"
+    )
+
     class Meta:
         model = UserProfileImage
         fields = [
             "is_main",
             "status",
-            # "thumbnail",
-            "thumbnail_blurred",
+            "image",
+            "thumbnail",
             "order",
             "is_active",
         ]
 
+    def decide_whether_original_or_blurred_image(self, obj):
+        if self.context.get("force_original_image", False):
+            return obj.image.url
+        return obj.image_blurred.url
 
-class UserRestrictedInfoSerializer(serializers.ModelSerializer):
-    user_profile_images = UserProfileThumbnailImageSerializer(
-        "user_profile_images", many=True, read_only=True
-    )
-
-    class Meta:
-        model = User
-        fields = [
-            "id",
-            # "username",
-            "gender",
-            "birthdate",
-            # "height_cm",
-            # "male_body_form",
-            # "female_body_form",
-            "job_title",
-            "verified_school_name",
-            "verified_company_name",
-            "user_profile_images",
-        ]
+    def decide_whether_original_or_blurred_thumbnail(self, obj):
+        if self.context.get("force_original_image", False):
+            return obj.thumbnail.url
+        return obj.thumbnail_blurred.url
 
 
-class UserFullInfoSerializer(serializers.ModelSerializer):
-    user_profile_images = UserProfileThumbnailImageSerializer(
+class _UserFullFieldSerializer(serializers.ModelSerializer):
+    user_profile_images = _UserProfileByContextSerializer(
         "user_profile_images", many=True, read_only=True
     )
 
@@ -76,8 +74,8 @@ class UserFullInfoSerializer(serializers.ModelSerializer):
         ]
 
 
-class RestrictedGroupMemberSerializer(serializers.ModelSerializer):
-    user = UserRestrictedInfoSerializer(read_only=True)
+class _GroupMemberSerializer(serializers.ModelSerializer):
+    user = _UserFullFieldSerializer(read_only=True)
 
     class Meta:
         model = GroupMember
@@ -87,19 +85,13 @@ class RestrictedGroupMemberSerializer(serializers.ModelSerializer):
         ]
 
 
-class FullGroupMemberSerializer(serializers.ModelSerializer):
-    user = UserFullInfoSerializer(read_only=True)
-
-    class Meta:
-        model = GroupMember
-        fields = [
-            "user",
-            "is_user_leader",
-        ]
+####################
+# Public Serializers
+####################
 
 
-class V2GroupFilteredListSerializer(serializers.ModelSerializer):
-    group_members = RestrictedGroupMemberSerializer(
+class V2GroupLimitedFieldSerializer(serializers.ModelSerializer):
+    group_members = _GroupMemberSerializer(
         many=True, read_only=True, source="group_member_group"
     )
 
@@ -109,12 +101,9 @@ class V2GroupFilteredListSerializer(serializers.ModelSerializer):
             "id",
             "mode",
             "title",
-            # "introduction",
-            # "gps_point",
             "meetup_date",
             "meetup_place_title",
             "meetup_place_address",
-            # "meetup_timerange",
             "member_number",
             "member_avg_age",
             "group_members",
@@ -122,9 +111,9 @@ class V2GroupFilteredListSerializer(serializers.ModelSerializer):
         ]
 
 
-class V2GroupRetrieveSerializer(serializers.ModelSerializer):
+class V2GroupFullFieldSerializer(serializers.ModelSerializer):
     gps_point = serializers.SerializerMethodField()
-    group_members = FullGroupMemberSerializer(
+    group_members = _GroupMemberSerializer(
         many=True, read_only=True, source="group_member_group"
     )
 
@@ -142,7 +131,6 @@ class V2GroupRetrieveSerializer(serializers.ModelSerializer):
             "meetup_date",
             "meetup_place_title",
             "meetup_place_address",
-            # "meetup_timerange",
             "member_number",
             "member_avg_age",
             "group_members",

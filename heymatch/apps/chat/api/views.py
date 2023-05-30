@@ -11,7 +11,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from heymatch.apps.chat.models import StreamChannel
-from heymatch.apps.group.api.serializers import V2GroupRetrieveSerializer
+from heymatch.apps.group.api.serializers import V2GroupFullFieldSerializer
 from heymatch.apps.match.models import MatchRequest
 from heymatch.shared.permissions import IsUserActive
 
@@ -31,7 +31,7 @@ class StreamChatViewSet(viewsets.ModelViewSet):
         IsAuthenticated,
         IsUserActive,
     ]
-    serializer_class = V2GroupRetrieveSerializer
+    serializer_class = V2GroupFullFieldSerializer
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """
@@ -81,7 +81,7 @@ class StreamChatViewSet(viewsets.ModelViewSet):
                     )
             # add group info
             group_serializer = self.get_serializer(
-                instance=sc.group_member.group, context={"force_original": True}
+                instance=sc.group_member.group, context={"force_original_image": True}
             )
             fresh_data["group"] = group_serializer.data
             fresh_data["channel"] = {

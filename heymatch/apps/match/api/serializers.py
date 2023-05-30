@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from heymatch.apps.group.api.serializers import V2GroupRetrieveSerializer
+from heymatch.apps.group.api.serializers import V2GroupFullFieldSerializer
 from heymatch.apps.match.models import MatchRequest
 
 
@@ -10,7 +10,7 @@ class MatchRequestCreateBodySerializer(serializers.Serializer):
 
 
 class ReceivedMatchRequestSerializer(serializers.ModelSerializer):
-    sender_group = V2GroupRetrieveSerializer(
+    sender_group = V2GroupFullFieldSerializer(
         "match_request_sender_group",
         read_only=True,
     )
@@ -26,7 +26,7 @@ class ReceivedMatchRequestSerializer(serializers.ModelSerializer):
 
 
 class SentMatchRequestSerializer(serializers.ModelSerializer):
-    receiver_group = V2GroupRetrieveSerializer(
+    receiver_group = V2GroupFullFieldSerializer(
         "match_request_receiver_group",
         read_only=True,
     )

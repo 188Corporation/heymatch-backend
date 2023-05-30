@@ -76,8 +76,8 @@ from .serializers import (
     ReportGroupSerializer,
     RestrictedGroupProfileByHotplaceSerializer,
     V2GroupCreateUpdateSerializer,
-    V2GroupFilteredListSerializer,
-    V2GroupRetrieveSerializer,
+    V2GroupFullFieldSerializer,
+    V2GroupLimitedFieldSerializer,
 )
 
 # User = get_user_model()
@@ -296,7 +296,7 @@ class GroupV2GeneralViewSet(viewsets.ModelViewSet):
         qs = self.get_queryset()
         filtered_qs = self.filter_queryset(queryset=qs)
         paginated_qs = self.paginate_queryset(filtered_qs)
-        serializer = V2GroupFilteredListSerializer(paginated_qs, many=True)
+        serializer = V2GroupLimitedFieldSerializer(paginated_qs, many=True)
         return self.get_paginated_response(data=serializer.data)
 
     def get_queryset(self) -> QuerySet:
@@ -313,7 +313,7 @@ class GroupV2GeneralViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         group = self.perform_create(serializer)
         return Response(
-            data=V2GroupFilteredListSerializer(instance=group).data,
+            data=V2GroupLimitedFieldSerializer(instance=group).data,
             status=status.HTTP_201_CREATED,
         )
 
@@ -365,7 +365,7 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
     permission_classes = [
         IsAuthenticated,
     ]
-    serializer_class = V2GroupRetrieveSerializer
+    serializer_class = V2GroupFullFieldSerializer
 
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         queryset = GroupV2.objects.all().filter(is_active=True)
