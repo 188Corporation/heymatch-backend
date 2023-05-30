@@ -68,6 +68,7 @@ class StreamChatViewSet(viewsets.ModelViewSet):
             sc = StreamChannel.objects.filter(
                 cid=channel["channel"]["cid"],
                 group_member__user_id=str(request.user.id),
+                is_active=True,
             ).first()
             if not sc or not sc.group_member.group:
                 continue
@@ -102,11 +103,11 @@ class StreamChatViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         # check if Payload's cid is user's or not
-        sc_qs = StreamChannel.objects.filter(
+        all_sc_qs = StreamChannel.objects.filter(
             cid=kwargs["stream_cid"], group_member__user_id=str(request.user.id)
         )  # there can be multiple
 
-        if sc_qs.exists():
+        if all_sc_qs.exists():
             raise PermissionDenied("You are not owner of stream channel.")
 
         # soft-delete channel
@@ -119,7 +120,6 @@ class StreamChatViewSet(viewsets.ModelViewSet):
             raise PermissionDenied(
                 f"Something is wrong. Stream channel must only has two groups joined, but {len(unique_group_ids)}"
             )
-
         group1_id = list(unique_group_ids)[0]
         group2_id = list(unique_group_ids)[1]
 
@@ -129,6 +129,9 @@ class StreamChatViewSet(viewsets.ModelViewSet):
         MatchRequest.active_objects.filter(
             Q(sender_group_id=int(group2_id)) & Q(receiver_group_id=int(group1_id))
         ).update(is_active=False)
+
+        # Deactivate StreamChannel
+        sc_qs.update(is_active=False)
 
         return Response(status=status.HTTP_200_OK)
 
