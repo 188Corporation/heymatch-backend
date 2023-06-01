@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -203,7 +203,7 @@ class UserWithGroupProfilePhotoViewSet(viewsets.ModelViewSet):
 
 class UsernameUniquenessCheckViewSet(viewsets.ModelViewSet):
     permission_classes = [
-        IsAuthenticated,
+        AllowAny,
     ]
     serializer_class = UsernameUniquenessCheckSerializer
 
