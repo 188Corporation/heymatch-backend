@@ -29,8 +29,8 @@ class OneSignalClient:
             "content-type": "application/json",
         }
         payload = {
-            "title": {"en": "HeyMatch", "ko": title},
-            "contents": {"en": "HeyMatch", "ko": content},  # en: is required
+            "title": {"en": title, "ko": title},
+            "contents": {"en": content, "ko": content},  # en: is required
             "include_external_user_ids": user_ids,
             "channel_for_external_user_ids": "push",
             "app_id": self.app_id,
