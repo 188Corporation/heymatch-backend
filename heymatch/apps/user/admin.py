@@ -10,6 +10,7 @@ from .models import (
     DeleteScheduledUser,
     EmailVerificationCode,
     FakeChatUser,
+    UserOnBoarding,
     UserProfileImage,
 )
 
@@ -62,8 +63,6 @@ class UserAdmin(SimpleHistoryAdmin):
             _("Permissions"),
             {
                 "fields": (
-                    "has_account",
-                    "is_main_profile_photo_under_verification",
                     "is_active",
                     "is_deleted",
                     "is_staff",
@@ -92,8 +91,6 @@ class UserAdmin(SimpleHistoryAdmin):
         "point_balance",
         "free_pass",
         "free_pass_active_until",
-        "has_account",
-        "is_main_profile_photo_under_verification",
         "is_active",
         "is_deleted",
         "stream_token",
@@ -124,8 +121,6 @@ class UserAdmin(SimpleHistoryAdmin):
         "point_balance",
         "free_pass",
         "free_pass_active_until",
-        "has_account",
-        "is_main_profile_photo_under_verification",
         "is_active",
         "is_deleted",
         "stream_token",
@@ -181,6 +176,28 @@ class EmailVerificationCodeAdmin(admin.ModelAdmin):
         "code",
         "active_until",
         "is_active",
+    ]
+
+
+@admin.register(UserOnBoarding)
+class UserOnBoardingAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "user",
+        "basic_info_completed",
+        "extra_info_completed",
+        "profile_photo_under_verification",
+        "profile_photo_rejected",
+        "onboarding_completed",
+    ]
+    search_fields = [
+        "id",
+        "user",
+        "basic_info_completed",
+        "extra_info_completed",
+        "profile_photo_under_verification",
+        "profile_photo_rejected",
+        "onboarding_completed",
     ]
 
 

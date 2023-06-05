@@ -9,6 +9,7 @@ from heymatch.apps.user.models import (
     MAX_HEIGHT_CM,
     MIN_HEIGHT_CM,
     User,
+    UserOnBoarding,
     UserProfileImage,
 )
 from heymatch.utils.util import load_company_domain_file, load_school_domain_file
@@ -46,8 +47,6 @@ class ActiveUserFactory(DjangoModelFactory):
     height_cm = Faker("pyint", min_value=MIN_HEIGHT_CM, max_value=MAX_HEIGHT_CM)
 
     # Other
-    has_account = True
-    is_main_profile_photo_under_verification = False
     is_temp_user = False
     is_active = True
 
@@ -76,7 +75,14 @@ class ActiveUserFactory(DjangoModelFactory):
         orig_username = kwargs["username"]
         while True:
             try:
-                return manager.create(**kwargs)
+                instance = manager.create(**kwargs)
+                UserOnBoarding.objects.create(
+                    user=instance,
+                    onboarding_completed=True,
+                    basic_info_completed=True,
+                    extra_info_completed=True,
+                )
+                return instance
             except IntegrityError:
                 kwargs["username"] = f"{orig_username}_{seed}"
                 seed += 1

@@ -10,7 +10,11 @@ from django.utils import timezone
 
 from heymatch.apps.group.models import Group, GroupV2, Recent24HrTopGroupAddress
 from heymatch.apps.match.models import MatchRequest
-from heymatch.apps.user.models import DeleteScheduledUser, UserProfileImage
+from heymatch.apps.user.models import (
+    DeleteScheduledUser,
+    UserOnBoarding,
+    UserProfileImage,
+)
 from heymatch.utils.util import detect_face_with_haar_cascade_ml
 
 User = get_user_model()
@@ -43,12 +47,15 @@ def verify_main_profile_images():
             upi.is_active = True
 
             # set user flag
-            upi.user.has_account = True
-            upi.user.is_main_profile_photo_under_verification = False
-            upi.user.save(
+            uob = UserOnBoarding.objects.get(user=upi.user)
+            uob.onboarding_completed = True
+            uob.profile_photo_under_verification = False
+            uob.profile_photo_rejected = False
+            uob.save(
                 update_fields=[
-                    "has_account",
-                    "is_main_profile_photo_under_verification",
+                    "onboarding_completed",
+                    "profile_photo_under_verification",
+                    "profile_photo_rejected",
                 ]
             )
             # set previous main profile as inactive if any
@@ -71,8 +78,15 @@ def verify_main_profile_images():
             upi.status = UserProfileImage.StatusChoices.REJECTED
             upi.is_active = False
             # set user flag
-            upi.user.is_main_profile_photo_under_verification = False
-            upi.user.save(update_fields=["is_main_profile_photo_under_verification"])
+            uob = UserOnBoarding.objects.get(user=upi.user)
+            uob.profile_photo_under_verification = False
+            uob.profile_photo_rejected = True
+            uob.save(
+                update_fields=[
+                    "profile_photo_under_verification",
+                    "profile_photo_rejected",
+                ]
+            )
 
             logger.debug(
                 f"UserProfile(id={upi.id}) REJECTED! (faces num = {faces_num})"

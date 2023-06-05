@@ -170,8 +170,8 @@ class Command(BaseCommand):
     def generate_developer_users(self) -> None:
         self.stdout.write(self.style.SUCCESS("Setting up data for [Developer]"))
         users = [
-            ActiveEmployeeMaleUserFactory.create(phone_number="+821043509595"),
-            ActiveEmployeeMaleUserFactory.create(phone_number="+821032433994"),
+            # ActiveEmployeeMaleUserFactory.create(phone_number="+821043509595"),
+            # ActiveEmployeeMaleUserFactory.create(phone_number="+821032433994"),
         ]
         dev_groups = []
         for user in users:

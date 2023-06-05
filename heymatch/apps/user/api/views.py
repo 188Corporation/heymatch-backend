@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.shortcuts import get_object_or_404
-from drf_yasg.utils import swagger_auto_schema
+from drf_yasg.utils import no_body, swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -12,7 +12,12 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from heymatch.apps.group.models import GroupMember
-from heymatch.apps.user.models import AppInfo, DeleteScheduledUser, UserProfileImage
+from heymatch.apps.user.models import (
+    AppInfo,
+    DeleteScheduledUser,
+    UserOnBoarding,
+    UserProfileImage,
+)
 from heymatch.shared.exceptions import UsernameAlreadyExistsException
 from heymatch.shared.permissions import IsUserActive
 
@@ -84,10 +89,17 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
                 status=UserProfileImage.StatusChoices.NOT_VERIFIED,
                 is_active=False,  # first make it inactive
             )
-            request.user.is_main_profile_photo_under_verification = True
-            request.user.save(
-                update_fields=["is_main_profile_photo_under_verification"]
-            )
+            uob = UserOnBoarding.objects.get(user=request.user)
+            # if user under onboarding
+            if not uob.onboarding_completed:
+                uob.profile_photo_under_verification = True
+                uob.profile_photo_rejected = False
+                uob.save(
+                    update_fields=[
+                        "profile_photo_under_verification",
+                        "profile_photo_rejected",
+                    ]
+                )
 
         # process other profile image
         qs = UserProfileImage.objects.filter(user=request.user, is_main=False)
@@ -230,3 +242,47 @@ class TempUserCreateViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer) -> None:
         serializer.save(is_temp_user=True)
+
+
+class UserOnboardingViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
+
+    def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        uob = get_object_or_404(UserOnBoarding, user=request.user)
+        if uob.onboarding_completed:
+            return Response(
+                data={"status": "onboarding_completed"}, status=status.HTTP_200_OK
+            )
+        if uob.profile_photo_rejected:
+            return Response(
+                data={"status": "onboarding_profile_rejected"},
+                status=status.HTTP_200_OK,
+            )
+        if uob.profile_photo_under_verification:
+            if uob.extra_info_completed:
+                return Response(
+                    data={
+                        "status": "onboarding_profile_under_verification_extra_info_completed"
+                    },
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(
+                    data={
+                        "status": "onboarding_profile_under_verification_extra_info_incomplete"
+                    },
+                    status=status.HTTP_200_OK,
+                )
+        return Response(
+            data={"status": "onboarding_basic_info_incomplete"},
+            status=status.HTTP_200_OK,
+        )
+
+    @swagger_auto_schema(request_body=no_body)
+    def complete_extra_info(
+        self, request: Request, *args: Any, **kwargs: Any
+    ) -> Response:
+        uob = get_object_or_404(UserOnBoarding, user=request.user)
+        uob.extra_info_completed = True
+        uob.save(update_fields=["extra_info_completed"])
+        return Response(status=status.HTTP_200_OK)

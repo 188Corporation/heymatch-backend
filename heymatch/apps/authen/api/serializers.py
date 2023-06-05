@@ -9,7 +9,11 @@ from phone_verify.serializers import SMSVerificationSerializer
 from phonenumber_field.phonenumber import to_python
 from rest_framework import exceptions, serializers
 
-from heymatch.apps.user.models import DeleteScheduledUser, EmailVerificationCode
+from heymatch.apps.user.models import (
+    DeleteScheduledUser,
+    EmailVerificationCode,
+    UserOnBoarding,
+)
 
 User = get_user_model()
 stream = settings.STREAM_CLIENT
@@ -27,8 +31,6 @@ class UserDetailByPhoneNumberSerializer(UserDetailsSerializer):
         fields = (
             "id",
             "stream_token",
-            "has_account",
-            "is_main_profile_photo_under_verification",
             "username",
             "phone_number",
             # "gender",
@@ -73,6 +75,8 @@ class UserLoginByPhoneNumberSerializer(LoginSerializer):
                 user = User.active_objects.get(phone_number=phone_number)
             except User.DoesNotExist:
                 user = User.active_objects.create(phone_number=phone_number)
+                # create onboarding info
+                UserOnBoarding.objects.create(user=user)
         else:
             msg = 'Must include "phone_number".'
             raise exceptions.ValidationError(detail=msg)

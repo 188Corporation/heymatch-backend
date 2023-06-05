@@ -130,8 +130,6 @@ class User(AbstractUser):
     is_temp_user = models.BooleanField(default=False)
 
     # LifeCycle
-    has_account = models.BooleanField(default=False)
-    is_main_profile_photo_under_verification = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
 
     # History
@@ -362,6 +360,22 @@ class DeleteScheduledUser(models.Model):
         max_length=24,
         choices=DeleteStatusChoices.choices,
         default=DeleteStatusChoices.WAITING,
+    )
+
+
+class UserOnBoarding(models.Model):
+    # info
+    basic_info_completed = models.BooleanField(default=False)
+    extra_info_completed = models.BooleanField(default=False)
+    profile_photo_under_verification = models.BooleanField(default=False)
+    profile_photo_rejected = models.BooleanField(default=False)
+    onboarding_completed = models.BooleanField(default=False)
+
+    user = models.ForeignKey(
+        "user.User",
+        blank=False,
+        null=False,
+        on_delete=models.PROTECT,
     )
 
 

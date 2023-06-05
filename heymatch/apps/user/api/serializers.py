@@ -42,8 +42,6 @@ class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
             "verified_company_name",
             "point_balance",
             "user_purchases",
-            "has_account",
-            "is_main_profile_photo_under_verification",
             "free_pass",
             "free_pass_active_until",
         ]
