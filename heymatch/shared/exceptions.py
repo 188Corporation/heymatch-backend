@@ -69,8 +69,13 @@ class JoinedGroupNotMineException(BasePermissionDeniedException):
 
 
 class UserNotGroupLeaderException(BasePermissionDeniedException):
-    status_code = 466
+    status_code = 467
     detail = "You are not group leader. Only leader can operate this."
+
+
+class GroupProfilePhotoAlreadyPurchasedException(BasePermissionDeniedException):
+    status_code = 467
+    detail = "You already purchased group profile photo, or other group did."
 
 
 class MatchRequestAlreadySubmittedException(BasePermissionDeniedException):

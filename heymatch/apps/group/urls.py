@@ -16,7 +16,7 @@ group_detail_view = GroupV2DetailViewSet.as_view(
     {"get": "retrieve", "delete": "destroy", "put": "update"}
 )
 group_top_address_list_view = GroupsTopAddressViewSet.as_view({"get": "retrieve"})
-
+group_photo_purchase_view = GroupV2DetailViewSet.as_view({"post": "purchase_photo"})
 group_report_view = GroupReportViewSet.as_view({"post": "report"})
 
 urlpatterns = [
@@ -27,6 +27,11 @@ urlpatterns = [
         name="group-top-address-get",
     ),
     path("<int:group_id>/", group_detail_view, name="group-detail"),
+    path(
+        "<int:group_id>/purchase/photo/",
+        group_photo_purchase_view,
+        name="group-purchase-photo",
+    ),
     # path("<int:group_id>/report/", group_report_view, name="group-report"),
 ]
 

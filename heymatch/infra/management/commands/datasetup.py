@@ -11,7 +11,7 @@ from phone_verify.models import SMSVerification
 from tqdm import tqdm
 
 from heymatch.apps.celery.tasks import aggregate_recent_24hr_top_ranked_group_address
-from heymatch.apps.group.models import GroupV2
+from heymatch.apps.group.models import GroupMember, GroupProfilePhotoPurchased, GroupV2
 from heymatch.apps.group.tests.factories import (
     GroupMemberFactory,
     GroupV2Factory,
@@ -171,7 +171,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Setting up data for [Developer]"))
         users = [
             ActiveEmployeeMaleUserFactory.create(phone_number="+821043509595"),
-            # ActiveEmployeeMaleUserFactory.create(phone_number="+821032433994"),
+            ActiveEmployeeMaleUserFactory.create(phone_number="+821032433994"),
         ]
         dev_groups = []
         for user in users:
@@ -213,48 +213,75 @@ class Command(BaseCommand):
             GroupMemberFactory.create(group=group, user=user, is_user_leader=True)
 
         for group_info in dev_groups:
+            # MR1
             MatchRequest.objects.create(
                 sender_group=sender_groups[0],
                 receiver_group=group_info[0],
                 status=MatchRequest.MatchRequestStatusChoices.WAITING,
             )
+            gm = GroupMember.objects.filter(group=sender_groups[0]).first()
+            GroupProfilePhotoPurchased.objects.create(
+                buyer=gm.user, seller=group_info[0]
+            )
 
+            # MR2
             mr = MatchRequest.objects.create(
                 sender_group=sender_groups[1],
                 receiver_group=group_info[0],
                 status=MatchRequest.MatchRequestStatusChoices.ACCEPTED,
             )
+            gm = GroupMember.objects.filter(group=sender_groups[1]).first()
+            GroupProfilePhotoPurchased.objects.create(
+                buyer=gm.user, seller=group_info[0]
+            )
             # accepted MRs should open getstream chat
             MatchRequestViewSet.create_stream_channel(
                 group_info[1], mr, send_push_notification=False
             )
 
+            # MR3
             MatchRequest.objects.create(
                 sender_group=sender_groups[2],
                 receiver_group=group_info[0],
                 status=MatchRequest.MatchRequestStatusChoices.REJECTED,
             )
+            gm = GroupMember.objects.filter(group=sender_groups[2]).first()
+            GroupProfilePhotoPurchased.objects.create(
+                buyer=gm.user, seller=group_info[0]
+            )
 
+            # MR4
             MatchRequest.objects.create(
                 sender_group=group_info[0],
                 receiver_group=receiver_groups[0],
                 status=MatchRequest.MatchRequestStatusChoices.WAITING,
             )
+            GroupProfilePhotoPurchased.objects.create(
+                buyer_id=group_info[1], seller=receiver_groups[0]
+            )
 
+            # MR5
             mr = MatchRequest.objects.create(
                 sender_group=group_info[0],
                 receiver_group=receiver_groups[1],
                 status=MatchRequest.MatchRequestStatusChoices.ACCEPTED,
+            )
+            GroupProfilePhotoPurchased.objects.create(
+                buyer_id=group_info[1], seller=receiver_groups[1]
             )
             # accepted MRs should open getstream chat
             MatchRequestViewSet.create_stream_channel(
                 group_info[1], mr, send_push_notification=False
             )
 
+            # MR6
             MatchRequest.objects.create(
                 sender_group=group_info[0],
                 receiver_group=receiver_groups[2],
                 status=MatchRequest.MatchRequestStatusChoices.REJECTED,
+            )
+            GroupProfilePhotoPurchased.objects.create(
+                buyer_id=group_info[1], seller=receiver_groups[2]
             )
 
     def generate_normal_users(self) -> None:

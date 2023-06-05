@@ -5,6 +5,7 @@ from .models import (
     Group,
     GroupMember,
     GroupProfileImage,
+    GroupProfilePhotoPurchased,
     GroupV2,
     Recent24HrTopGroupAddress,
     ReportedGroupV2,
@@ -104,6 +105,21 @@ class ReportedGroupAdmin(admin.ModelAdmin):
         "reported_by",
         "status",
         "created_at",
+    ]
+
+
+@admin.register(GroupProfilePhotoPurchased)
+class GroupProfilePhotoPurchasedAdmin(SimpleHistoryAdmin):
+    list_display = [
+        "id",
+        "buyer",
+        "seller",
+    ]
+    history_list_display = ["status", *list_display]
+    search_fields = [
+        "id",
+        "buyer",
+        "seller",
     ]
 
 

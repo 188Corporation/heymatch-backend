@@ -65,8 +65,11 @@ class GroupV2(models.Model):
     member_avg_age = models.IntegerField(blank=True, null=True)
 
     # Match
-    match_point = models.IntegerField(
+    photo_point = models.IntegerField(
         blank=False, null=False, default=1
+    )  # Point for requesting match to this group
+    match_point = models.IntegerField(
+        blank=False, null=False, default=2
     )  # Point for requesting match to this group
 
     # Lifecycle
@@ -153,6 +156,26 @@ class ReportedGroupV2(models.Model):
         choices=ReportGroupStatusChoices.choices,
     )
     created_at = models.DateTimeField(default=timezone.now)
+
+
+class GroupProfilePhotoPurchased(models.Model):
+    buyer = models.ForeignKey(
+        "user.User",
+        blank=False,
+        null=False,
+        on_delete=models.PROTECT,
+        related_name="purchased_group_buyer",
+    )
+    seller = models.ForeignKey(
+        "group.GroupV2",
+        blank=False,
+        null=False,
+        on_delete=models.PROTECT,
+        related_name="purchased_group_seller",
+    )
+
+    # History
+    history = HistoricalRecords()
 
 
 ##################

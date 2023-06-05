@@ -30,7 +30,7 @@ from django_filters.rest_framework import (
     RangeFilter,
 )
 from django_google_maps.fields import GeoPt
-from drf_yasg.utils import swagger_auto_schema
+from drf_yasg.utils import no_body, swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import JSONParser, MultiPartParser
@@ -43,6 +43,7 @@ from heymatch.apps.chat.models import StreamChannel
 from heymatch.apps.group.models import (
     Group,
     GroupMember,
+    GroupProfilePhotoPurchased,
     GroupV2,
     Recent24HrTopGroupAddress,
     ReportedGroupV2,
@@ -52,11 +53,13 @@ from heymatch.apps.match.models import MatchRequest
 from heymatch.apps.user.models import User
 from heymatch.shared.exceptions import (
     GroupNotWithinSameHotplaceException,
+    GroupProfilePhotoAlreadyPurchasedException,
     JoinedGroupNotMineException,
     OneGroupPerUserException,
     ReportMyGroupException,
     UserGPSNotWithinHotplaceException,
     UserNotGroupLeaderException,
+    UserPointBalanceNotEnoughException,
 )
 from heymatch.shared.permissions import (
     IsGroupCreationAllowed,
@@ -370,8 +373,23 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         queryset = GroupV2.objects.all().filter(is_active=True)
         group = get_object_or_404(queryset, id=kwargs["group_id"])
-        serializer = self.get_serializer(group)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        # Check whether photo purchased
+        purchase_info = {"profile_photo_purchased": False}
+        gps = GroupProfilePhotoPurchased.objects.filter(
+            seller=group, buyer=request.user
+        )
+        # if one of case exists, send original profile photo
+        if gps.exists():
+            purchase_info["profile_photo_purchased"] = True
+            serializer = self.get_serializer(
+                instance=group, context={"force_original_image": True}
+            )
+        else:
+            serializer = self.get_serializer(instance=group)
+        return Response(
+            data={**serializer.data, **purchase_info}, status=status.HTTP_200_OK
+        )
 
     def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         # only leader can destroy
@@ -437,6 +455,35 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
         )
         serializer = self.get_serializer(group)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(request_body=no_body)
+    def purchase_photo(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        queryset = GroupV2.objects.all().filter(is_active=True)
+        group = get_object_or_404(queryset, id=kwargs["group_id"])
+
+        # if one of case exists, prohibit
+        gps = GroupProfilePhotoPurchased.objects.filter(
+            seller=group, buyer=request.user
+        )
+        if gps.exists():
+            raise GroupProfilePhotoAlreadyPurchasedException()
+
+        # deduct point
+        user = request.user
+        if user.point_balance < group.photo_point:
+            raise UserPointBalanceNotEnoughException()
+
+        user.point_balance = user.point_balance - group.photo_point
+        user.save(update_fields=["point_balance"])
+        GroupProfilePhotoPurchased.objects.create(seller=group, buyer=request.user)
+
+        serializer = self.get_serializer(
+            instance=group, context={"force_original_image": True}
+        )
+        purchase_info = {"profile_photo_purchased": True}
+        return Response(
+            data={**serializer.data, **purchase_info}, status=status.HTTP_200_OK
+        )
 
 
 class GroupsTopAddressViewSet(viewsets.ModelViewSet):

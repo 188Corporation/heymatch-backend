@@ -12,7 +12,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from heymatch.apps.chat.models import StreamChannel
-from heymatch.apps.group.models import GroupMember, GroupV2
+from heymatch.apps.group.models import GroupMember, GroupProfilePhotoPurchased, GroupV2
 from heymatch.apps.match.models import MatchRequest
 from heymatch.apps.payment.models import UserPointConsumptionHistory
 from heymatch.shared.exceptions import (
@@ -154,6 +154,15 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         # Create MatchRequest
         mr = self.create_match_request(sender_group=from_group, receiver_group=to_group)
 
+        # Create GroupProfilePhotoPurchased
+        gp = GroupProfilePhotoPurchased.objects.filter(
+            buyer=request.user, seller=to_group
+        )
+        if not gp.exists():
+            GroupProfilePhotoPurchased.objects.create(
+                buyer=request.user, seller=to_group
+            )
+
         # Send push notification
         to_group_user_ids = [
             str(user_id)
@@ -169,7 +178,9 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         # TODO: handle OneSignal response
         logger.debug(f"OneSignal response for Match request: {res}")
 
-        serializer = ReceivedMatchRequestSerializer(instance=mr)
+        serializer = ReceivedMatchRequestSerializer(
+            instance=mr, context={"force_original_image": True}
+        )
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     @staticmethod

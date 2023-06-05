@@ -184,6 +184,10 @@ class ReportGroupRequestBodySerializer(serializers.ModelSerializer):
         fields = ["reported_reason"]
 
 
+class GroupProfilePhotoPurchaseSerializer(serializers.Serializer):
+    from_group_id = serializers.IntegerField()
+
+
 ##################
 # Deprecated - V1
 ##################
