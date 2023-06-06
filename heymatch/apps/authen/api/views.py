@@ -34,18 +34,26 @@ COMPANY_DOMAIN_FILE = load_company_domain_file()
 SCHOOL_DOMAIN_FILE = load_school_domain_file()
 
 
-class CustomUserRateThrottle(UserRateThrottle):
+class PhoneUserRateThrottle(UserRateThrottle):
     rate = "10/min"
 
 
-class CustomAnonRateThrottle(AnonRateThrottle):
+class PhoneAnonRateThrottle(AnonRateThrottle):
     rate = "10/min"
+
+
+class EmailUserRateThrottle(UserRateThrottle):
+    rate = "30/min"
+
+
+class EmailAnonRateThrottle(AnonRateThrottle):
+    rate = "30/min"
 
 
 class PhoneRegistrationViewSet(viewsets.ViewSet):
     throttle_classes = [
-        CustomUserRateThrottle,
-        CustomAnonRateThrottle,
+        PhoneUserRateThrottle,
+        PhoneAnonRateThrottle,
     ]
     permission_classes = [AllowAny]
     serializer_class = PhoneSerializer
@@ -84,8 +92,8 @@ class PhoneRegistrationViewSet(viewsets.ViewSet):
 
 class EmailVerificationViewSet(viewsets.ViewSet):
     throttle_classes = [
-        CustomUserRateThrottle,
-        CustomAnonRateThrottle,
+        EmailUserRateThrottle,
+        EmailAnonRateThrottle,
     ]
     permission_classes = [IsAuthenticated]
 
