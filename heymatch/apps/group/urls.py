@@ -32,7 +32,7 @@ urlpatterns = [
         group_photo_purchase_view,
         name="group-purchase-photo",
     ),
-    # path("<int:group_id>/report/", group_report_view, name="group-report"),
+    path("<int:group_id>/report/", group_report_view, name="group-report"),
 ]
 
 # ============

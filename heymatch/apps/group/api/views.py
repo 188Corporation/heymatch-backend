@@ -505,6 +505,99 @@ class GroupsTopAddressViewSet(viewsets.ModelViewSet):
         return Response(data=data, status=status.HTTP_200_OK)
 
 
+class GroupReportViewSet(viewsets.ModelViewSet):
+    permission_classes = [
+        IsAuthenticated,
+        IsUserActive,
+    ]
+    serializer_class = ReportGroupSerializer
+
+    @swagger_auto_schema(request_body=ReportGroupRequestBodySerializer)
+    def report(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        user = request.user
+        qs = GroupMember.objects.filter(
+            user=request.user, group_id=kwargs["group_id"], is_active=True
+        )
+        if qs.exists():
+            raise ReportMyGroupException()
+
+        queryset = GroupV2.objects.all()
+        group = get_object_or_404(queryset, id=kwargs["group_id"])
+
+        reported_reason = request.data.get("reported_reason", "")
+
+        rg = ReportedGroupV2.objects.create(
+            reported_group=group,
+            reported_reason=reported_reason,
+            reported_by=user,
+        )
+        serializer = self.get_serializer(rg)
+
+        # Deactivate MatchRequest sent or received by reported group
+        my_group_ids = GroupMember.objects.filter(
+            user=request.user, is_active=True
+        ).values_list("group_id", flat=True)
+        mr_qs = MatchRequest.active_objects.select_related().filter(
+            (Q(sender_group_id=group.id) & Q(receiver_group_id__in=list(my_group_ids)))
+            | (
+                Q(sender_group_id__in=list(my_group_ids))
+                & Q(receiver_group_id=group.id)
+            )
+        )
+        mr_qs.update(is_active=False)
+
+        # Soft-delete chat channel of me + reported group
+        my_scs_cids = set(
+            StreamChannel.objects.filter(
+                group_member__user_id=str(user.id)
+            ).values_list("cid", flat=True)
+        )
+        other_scs_cids = set(
+            StreamChannel.objects.filter(
+                group_member__group_id=str(group.id)
+            ).values_list("cid", flat=True)
+        )
+        to_delete_cids = my_scs_cids & other_scs_cids
+        print(to_delete_cids)
+        sc = StreamChannel.objects.filter(cid__in=list(to_delete_cids))
+        sc.update(is_active=False)
+        if len(list(to_delete_cids)) > 0:
+            stream.delete_channels(cids=list(to_delete_cids))
+
+        # Notify via slack
+        slack_webhook = settings.SLACK_REPORT_GROUP_BOT
+        slack_webhook.send(
+            blocks=[
+                {
+                    "type": "section",
+                    "text": {"type": "mrkdwn", "text": "🚨*그룹 신고가 들어왔어요!*🚨"},
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "Django Admin에서 확인 후 조치를 취해주세요!",
+                    },
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": f"• *Environment*: {str(settings.DJANGO_ENV).upper()} \n "
+                        f"• *신고한 유저 정보* \n "
+                        f"    - id: {str(request.user.id)} \n "
+                        f"    - 휴대폰번호: {str(request.user.phone_number)} \n "
+                        f"• *신고된 그룹 정보*  \n"
+                        f"    - id: {str(group.id)} \n"
+                        f"    - 제목: {str(group.title)} \n"
+                        f"    - 소개: {str(group.introduction)} \n",
+                    },
+                },
+            ]
+        )
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
 ##################
 # Deprecated - V1
 ##################
@@ -668,83 +761,4 @@ class GroupDetailViewSet(viewsets.ModelViewSet):
         group.save(update_fields=["gps_geoinfo", "title", "introduction"])
         serializer = GroupUpdateSerializer(group)
 
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
-
-
-class GroupReportViewSet(viewsets.ModelViewSet):
-    permission_classes = [
-        IsAuthenticated,
-        IsUserActive,
-        IsUserJoinedGroup,
-    ]
-    serializer_class = ReportGroupSerializer
-
-    @swagger_auto_schema(request_body=ReportGroupRequestBodySerializer)
-    def report(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        user = request.user
-        queryset = Group.objects.all()
-        group = get_object_or_404(queryset, id=kwargs["group_id"])
-
-        if user.joined_group.id == group.id:
-            raise ReportMyGroupException()
-
-        reported_reason = request.data.get("reported_reason", "")
-
-        rg = ReportedGroupV2.objects.create(
-            reported_group=group,
-            reported_reason=reported_reason,
-            reported_by=user,
-        )
-        serializer = self.get_serializer(rg)
-
-        # Deactivate MatchRequest sent or received by reported group
-        mr_qs = MatchRequest.active_objects.select_related().filter(
-            (Q(sender_group_id=group.id) & Q(receiver_group_id=user.joined_group.id))
-            | (Q(sender_group_id=user.joined_group.id) & Q(receiver_group_id=group.id))
-        )
-        mr_qs.update(is_active=False)
-
-        # Soft-delete chat channel of me + reported group
-        scs = StreamChannel.objects.filter(participants__users__contains=str(user.id))
-        to_be_deleted_cids = set()
-        for sc in scs:
-            groups = sc.participants["groups"]
-            if str(group.id) not in groups:
-                continue
-            # if found stream chat channel with reported group, delete
-            to_be_deleted_cids.add(sc.cid)
-        if to_be_deleted_cids:
-            stream.delete_channels(cids=list(to_be_deleted_cids))
-
-        # Notify via slack
-        slack_webhook = settings.SLACK_REPORT_GROUP_BOT
-        slack_webhook.send(
-            blocks=[
-                {
-                    "type": "section",
-                    "text": {"type": "mrkdwn", "text": "🚨*그룹 신고가 들어왔어요!*🚨"},
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "Django Admin에서 확인 후 조치를 취해주세요!",
-                    },
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": f"• *Environment*: {str(settings.DJANGO_ENV).upper()} \n "
-                        f"• *신고한 유저 정보* \n "
-                        f"    - id: {str(request.user.id)} \n "
-                        f"    - 휴대폰번호: {str(request.user.phone_number)} \n "
-                        f"• *신고된 그룹 정보*  \n"
-                        f"    - id: {str(group.id)} \n"
-                        f"    - 제목: {str(group.title)} \n"
-                        f"    - 소개: {str(group.introduction)} \n",
-                    },
-                },
-            ]
-        )
         return Response(data=serializer.data, status=status.HTTP_200_OK)
