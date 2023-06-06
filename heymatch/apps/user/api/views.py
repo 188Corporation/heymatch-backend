@@ -249,16 +249,15 @@ class UserOnboardingViewSet(viewsets.ViewSet):
 
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         uob = get_object_or_404(UserOnBoarding, user=request.user)
+        if uob.extra_info_in_progress:
+            return Response(
+                data={"status": "onboarding_extra_info_in_progress"},
+                status=status.HTTP_200_OK,
+            )
         if uob.onboarding_completed:
-            if uob.extra_info_in_progress:
-                return Response(
-                    data={"status": "onboarding_extra_info_in_progress"},
-                    status=status.HTTP_200_OK,
-                )
-            else:
-                return Response(
-                    data={"status": "onboarding_completed"}, status=status.HTTP_200_OK
-                )
+            return Response(
+                data={"status": "onboarding_completed"}, status=status.HTTP_200_OK
+            )
         if uob.profile_photo_rejected:
             return Response(
                 data={"status": "onboarding_profile_rejected"},
