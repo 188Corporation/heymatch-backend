@@ -8,7 +8,12 @@ from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.utils import timezone
 
-from heymatch.apps.group.models import Group, GroupV2, Recent24HrTopGroupAddress
+from heymatch.apps.group.models import (
+    Group,
+    GroupMember,
+    GroupV2,
+    Recent24HrTopGroupAddress,
+)
 from heymatch.apps.match.models import MatchRequest
 from heymatch.apps.user.models import (
     DeleteScheduledUser,
@@ -142,20 +147,24 @@ def delete_scheduled_users():
         user = dsu.user
         logger.debug(f"=== Target user: {user.id} ===")
         logger.debug("[2.1] Deactivate joined_group if any")
+
         # Disable group
-        # joined_group = user.joined_group
-        # if joined_group:
-        #     joined_group.is_active = False
-        #     joined_group.save(update_fields=["is_active"])
+        gms = GroupMember.objects.filter(user=user)
+        group_ids = gms.values_list("group_id", flat=True)
+        groups = GroupV2.objects.filter(id__in=list(group_ids))
+        # TODO: If more users are joined in one group (e.g friend invitation..), should not disable group,
+        #  but instead promot other user to be group leader, and remove schedule-deleted user.
+        gms.update(is_active=False)
+        groups.update(is_active=False)
 
         # Deactivate MatchRequest
         logger.debug("[2.2] Deactivate all MatchRequests")
-        # MatchRequest.active_objects.filter(sender_group=joined_group).update(
-        #     is_active=False
-        # )
-        # MatchRequest.active_objects.filter(receiver_group=joined_group).update(
-        #     is_active=False
-        # )
+        MatchRequest.active_objects.filter(sender_group_id__in=list(group_ids)).update(
+            is_active=False
+        )
+        MatchRequest.active_objects.filter(
+            receiver_group_id__in=list(group_ids)
+        ).update(is_active=False)
 
         # Soft-delete Stream Chat
         logger.debug("[2.3] Deactivate all Stream Chats")
