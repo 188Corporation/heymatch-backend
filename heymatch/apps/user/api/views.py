@@ -250,9 +250,15 @@ class UserOnboardingViewSet(viewsets.ViewSet):
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         uob = get_object_or_404(UserOnBoarding, user=request.user)
         if uob.onboarding_completed:
-            return Response(
-                data={"status": "onboarding_completed"}, status=status.HTTP_200_OK
-            )
+            if uob.extra_info_in_progress:
+                return Response(
+                    data={"status": "onboarding_extra_info_in_progress"},
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(
+                    data={"status": "onboarding_completed"}, status=status.HTTP_200_OK
+                )
         if uob.profile_photo_rejected:
             return Response(
                 data={"status": "onboarding_profile_rejected"},
@@ -279,10 +285,23 @@ class UserOnboardingViewSet(viewsets.ViewSet):
         )
 
     @swagger_auto_schema(request_body=no_body)
+    def in_progress_extra_info(
+        self, request: Request, *args: Any, **kwargs: Any
+    ) -> Response:
+        uob = get_object_or_404(UserOnBoarding, user=request.user)
+        uob.extra_info_in_progress = True
+        uob.save(update_fields=["extra_info_in_progress"])
+        return Response(
+            data={"extra_info_in_progress": uob.extra_info_in_progress},
+            status=status.HTTP_200_OK,
+        )
+
+    @swagger_auto_schema(request_body=no_body)
     def complete_extra_info(
         self, request: Request, *args: Any, **kwargs: Any
     ) -> Response:
         uob = get_object_or_404(UserOnBoarding, user=request.user)
+        uob.extra_info_in_progress = False
         uob.extra_info_completed = True
-        uob.save(update_fields=["extra_info_completed"])
+        uob.save(update_fields=["extra_info_in_progress", "extra_info_completed"])
         return Response(status=status.HTTP_200_OK)

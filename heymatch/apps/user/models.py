@@ -366,6 +366,7 @@ class DeleteScheduledUser(models.Model):
 class UserOnBoarding(models.Model):
     # info
     basic_info_completed = models.BooleanField(default=False)
+    extra_info_in_progress = models.BooleanField(default=False)
     extra_info_completed = models.BooleanField(default=False)
     profile_photo_under_verification = models.BooleanField(default=False)
     profile_photo_rejected = models.BooleanField(default=False)

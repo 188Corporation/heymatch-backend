@@ -24,6 +24,9 @@ users_my_profile_photo_view = UserWithGroupProfilePhotoViewSet.as_view(
     }
 )
 users_my_onboarding_view = UserOnboardingViewSet.as_view({"get": "retrieve"})
+users_my_onboarding_in_progress_extra_info_view = UserOnboardingViewSet.as_view(
+    {"post": "in_progress_extra_info"}
+)
 users_my_onboarding_complete_extra_info_view = UserOnboardingViewSet.as_view(
     {"post": "complete_extra_info"}
 )
@@ -41,6 +44,11 @@ urlpatterns = [
         "my/onboarding/",
         users_my_onboarding_view,
         name="user-my-onboarding",
+    ),
+    path(
+        "my/onboarding/in-progress/extra-info/",
+        users_my_onboarding_in_progress_extra_info_view,
+        name="user-my-onboarding-in-progress-extra-info",
     ),
     path(
         "my/onboarding/complete/extra-info/",
