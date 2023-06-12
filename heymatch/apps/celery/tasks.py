@@ -82,8 +82,6 @@ def verify_main_profile_images():
                 user_ids=[str(upi.user.id)],
             )
         else:
-            upi.status = UserProfileImage.StatusChoices.REJECTED
-            upi.is_active = False
             # set user flag
             uob = UserOnBoarding.objects.get(user=upi.user)
             uob.profile_photo_under_verification = False
@@ -103,7 +101,7 @@ def verify_main_profile_images():
                 content="프로필 사진 심사에 통과하지 못했어요. 새로운 사진을 올려주세요 😢",
                 user_ids=[str(upi.user.id)],
             )
-            upi.save(update_fields=["status", "is_active"])
+            upi.delete()
 
 
 @shared_task(soft_time_limit=120)
