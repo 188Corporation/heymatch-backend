@@ -1,3 +1,4 @@
+import csv
 import decimal
 import json
 import random
@@ -198,3 +199,40 @@ class NaverGeoAPI:
         return (
             f'{info["area1"]["name"]} {info["area2"]["name"]} {info["area3"]["name"]}'
         )
+
+
+def convert_company_csv_to_json():
+    """
+    Save to csv from https://docs.google.com/spreadsheets/d/1kuIXttVdSS4vw0bMDNhJSdTGUnsh3i0QWagKCzL8bdc/edit#gid=0
+    """
+    f = open("company.csv", "r")
+    rdr = csv.reader(f)
+    db = {}
+    next(rdr)
+    # process csv
+    for line in rdr:
+        if len(line[4]) == 0:
+            continue
+
+        company_name = line[1]
+        company_name_alt = line[0]
+
+        if len(company_name) == 0 and len(company_name_alt) == 0:
+            continue
+
+        company_emails = str(line[4]).replace(" ", "").split(",")
+        company_name_final = (
+            company_name_alt if len(company_name) == 0 else company_name
+        )
+        for email in company_emails:
+            if email in db:
+                db[email].append(company_name_final)
+            else:
+                db[email] = [company_name_final]
+        f.close()
+
+        # save to json
+        with open("data.json", "w", encoding="utf-8") as f:
+            json.dump(db, f, indent="\t", ensure_ascii=False)
+
+        f.close()
