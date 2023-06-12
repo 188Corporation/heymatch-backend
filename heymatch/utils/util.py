@@ -232,7 +232,7 @@ def convert_company_csv_to_json():
         f.close()
 
         # save to json
-        with open("data.json", "w", encoding="utf-8") as f:
+        with open("company.json", "w", encoding="utf-8") as f:
             json.dump(db, f, indent="\t", ensure_ascii=False)
 
         f.close()
