@@ -205,7 +205,7 @@ def convert_company_csv_to_json():
     """
     Save to csv from https://docs.google.com/spreadsheets/d/1kuIXttVdSS4vw0bMDNhJSdTGUnsh3i0QWagKCzL8bdc/edit#gid=0
     """
-    f = open("company.csv", "r")
+    f = open("../../tests/company.csv", "r")
     rdr = csv.reader(f)
     db = {}
     next(rdr)
@@ -226,13 +226,14 @@ def convert_company_csv_to_json():
         )
         for email in company_emails:
             if email in db:
-                db[email].append(company_name_final)
+                if company_name_final not in db[email]:
+                    db[email].append(company_name_final)
             else:
                 db[email] = [company_name_final]
-        f.close()
+    f.close()
 
-        # save to json
-        with open("company.json", "w", encoding="utf-8") as f:
-            json.dump(db, f, indent="\t", ensure_ascii=False)
+    # save to json
+    with open("company.json", "w", encoding="utf-8") as f:
+        json.dump(db, f, indent="\t", ensure_ascii=False)
 
-        f.close()
+    f.close()
