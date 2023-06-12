@@ -49,7 +49,8 @@ def verify_main_profile_images():
         if faces_num == 1:
             # delete previous
             previous = UserProfileImage.all_objects.filter(
-                Q(is_main=True)
+                Q(user=upi.user)
+                & Q(is_main=True)
                 & Q(status=UserProfileImage.StatusChoices.ACCEPTED)
                 & Q(is_active=True)
             )
