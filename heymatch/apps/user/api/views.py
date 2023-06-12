@@ -200,12 +200,14 @@ class UserWithGroupProfilePhotoViewSet(viewsets.ModelViewSet):
         for target in to_delete:
             if target == "other_profile_image_1":
                 if orig_other_profile_image_1:
-                    orig_other_profile_image_1.is_active = False
-                    orig_other_profile_image_1.save(update_fields=["is_active"])
+                    orig_other_profile_image_1.delete()
+                    # orig_other_profile_image_1.is_active = False
+                    # orig_other_profile_image_1.save(update_fields=["is_active"])
             elif target == "other_profile_image_2":
                 if orig_other_profile_image_2:
-                    orig_other_profile_image_2.is_active = False
-                    orig_other_profile_image_2.save(update_fields=["is_active"])
+                    orig_other_profile_image_2.delete()
+                    # orig_other_profile_image_2.is_active = False
+                    # orig_other_profile_image_2.save(update_fields=["is_active"])
             else:
                 return Response(
                     data=f"Invalid field - {data}", status=status.HTTP_400_BAD_REQUEST

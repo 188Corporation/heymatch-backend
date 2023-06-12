@@ -47,9 +47,18 @@ def verify_main_profile_images():
     for upi in target_upi_qs:  # type: UserProfileImage
         faces_num = detect_face_with_haar_cascade_ml(upi.image.url)
         if faces_num == 1:
+            # delete previous
+            previous = UserProfileImage.all_objects.filter(
+                Q(is_main=True)
+                & Q(status=UserProfileImage.StatusChoices.ACCEPTED)
+                & Q(is_active=True)
+            )
+            previous.delete()
+
             # set accepted as active
             upi.status = UserProfileImage.StatusChoices.ACCEPTED
             upi.is_active = True
+            upi.save(update_fields=["status", "is_active"])
 
             # set user flag
             uob = UserOnBoarding.objects.get(user=upi.user)
@@ -63,13 +72,6 @@ def verify_main_profile_images():
                     "profile_photo_rejected",
                 ]
             )
-            # set previous main profile as inactive if any
-            previous = UserProfileImage.all_objects.filter(
-                Q(is_main=True)
-                & Q(status=UserProfileImage.StatusChoices.ACCEPTED)
-                & Q(is_active=True)
-            )
-            previous.update(is_active=False)
 
             logger.debug(f"UserProfile(id={upi.id}) ACCEPTED!")
 
@@ -98,10 +100,10 @@ def verify_main_profile_images():
             )
             onesignal_client.send_notification_to_specific_users(
                 title="프로필 사진 심사 거절",
-                content="새로운 메인 프로필 사진을 올려주세요",
+                content="프로필 사진 심사에 통과하지 못했어요. 새로운 사진을 올려주세요 😢",
                 user_ids=[str(upi.user.id)],
             )
-        upi.save(update_fields=["status", "is_active"])
+            upi.save(update_fields=["status", "is_active"])
 
 
 @shared_task(soft_time_limit=120)
