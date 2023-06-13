@@ -54,6 +54,7 @@ def verify_main_profile_images():
                 & Q(status=UserProfileImage.StatusChoices.ACCEPTED)
                 & Q(is_active=True)
             )
+            print(previous)
             previous.delete()
 
             # set accepted as active

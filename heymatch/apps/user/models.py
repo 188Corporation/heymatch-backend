@@ -187,7 +187,7 @@ class UserProfileImage(OrderedModel):
     objects = ActiveUserProfileManager()
 
     def save(self, *args, **kwargs):
-        image = Image.open(self.image)
+        image = Image.open(self.image).convert("RGB")
         image = ImageOps.exif_transpose(image)  # fix ios image rotation bug
 
         # crop
