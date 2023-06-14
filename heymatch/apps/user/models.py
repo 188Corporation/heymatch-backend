@@ -177,6 +177,9 @@ class UserProfileImage(OrderedModel):
 
     # History
     history = HistoricalRecords()
+    expected_verification_datetime = models.DateTimeField(
+        default=timezone.now() + timezone.timedelta(seconds=random.randrange(60, 90))
+    )
 
     # ProfileImage Lifecycle
     is_active = models.BooleanField(blank=False, null=False, default=True)

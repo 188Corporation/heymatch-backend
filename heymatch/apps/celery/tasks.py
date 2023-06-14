@@ -40,6 +40,7 @@ def verify_main_profile_images():
         Q(is_main=True)
         & Q(status=UserProfileImage.StatusChoices.NOT_VERIFIED)
         & Q(is_active=False)
+        & Q(expected_verification_datetime__lt=timezone.now())
     )
     logger.debug(f"[1] Target images to be verified: {target_upi_qs}")
 
@@ -54,7 +55,6 @@ def verify_main_profile_images():
                 & Q(status=UserProfileImage.StatusChoices.ACCEPTED)
                 & Q(is_active=True)
             )
-            print(previous)
             previous.delete()
 
             # set accepted as active
