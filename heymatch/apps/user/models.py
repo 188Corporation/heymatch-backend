@@ -150,6 +150,10 @@ def upload_to(instance, filename):
     )
 
 
+def auto_expected_verification_datetime():
+    return timezone.now() + timezone.timedelta(seconds=random.randrange(60, 90))
+
+
 class UserProfileImage(OrderedModel):
     class StatusChoices(models.TextChoices):
         NOT_VERIFIED = "n"
@@ -178,7 +182,7 @@ class UserProfileImage(OrderedModel):
     # History
     history = HistoricalRecords()
     expected_verification_datetime = models.DateTimeField(
-        default=timezone.now() + timezone.timedelta(seconds=random.randrange(60, 90))
+        default=auto_expected_verification_datetime
     )
 
     # ProfileImage Lifecycle
