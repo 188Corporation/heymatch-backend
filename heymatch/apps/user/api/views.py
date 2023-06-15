@@ -91,15 +91,14 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
             )
             uob = UserOnBoarding.objects.get(user=request.user)
             # if user under onboarding
-            if not uob.onboarding_completed:
-                uob.profile_photo_under_verification = True
-                uob.profile_photo_rejected = False
-                uob.save(
-                    update_fields=[
-                        "profile_photo_under_verification",
-                        "profile_photo_rejected",
-                    ]
-                )
+            uob.profile_photo_under_verification = True
+            uob.profile_photo_rejected = False
+            uob.save(
+                update_fields=[
+                    "profile_photo_under_verification",
+                    "profile_photo_rejected",
+                ]
+            )
 
         # process other profile image
         qs = UserProfileImage.objects.filter(user=request.user, is_main=False)
