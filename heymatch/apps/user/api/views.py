@@ -257,6 +257,14 @@ class UserOnboardingViewSet(viewsets.ViewSet):
                 status=status.HTTP_200_OK,
             )
         if uob.onboarding_completed:
+            if uob.profile_photo_under_verification:
+                return Response(
+                    data={
+                        "status": "onboarding_completed",
+                        "extra": "profile_under_verification",
+                    },
+                    status=status.HTTP_200_OK,
+                )
             return Response(
                 data={"status": "onboarding_completed"}, status=status.HTTP_200_OK
             )
