@@ -299,15 +299,13 @@ class GroupV2GeneralViewSet(viewsets.ModelViewSet):
         qs = self.get_queryset()
         filtered_qs = self.filter_queryset(queryset=qs)
         paginated_qs = self.paginate_queryset(filtered_qs)
-        purchased_group_profile_ids = GroupProfilePhotoPurchased.objects.filter(
+        purchased_group_ids = GroupProfilePhotoPurchased.objects.filter(
             buyer=request.user
         ).values_list("seller_id")
         serializer = V2GroupLimitedFieldSerializer(
             paginated_qs,
             many=True,
-            context={
-                "user_purchased_group_profile_ids": list(purchased_group_profile_ids)
-            },
+            context={"user_purchased_group_profile_ids": list(purchased_group_ids)},
         )
         return self.get_paginated_response(data=serializer.data)
 

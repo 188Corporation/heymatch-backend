@@ -45,7 +45,12 @@ class _UserProfileByContextSerializer(serializers.ModelSerializer):
         if self.context.get("force_original_image", False):
             return obj.image.url
         if self.context.get("user_purchased_group_profile_ids", None):
-            if obj.id in self.context["user_purchased_group_profile_ids"]:
+            group_ids = GroupMember.objects.filter(user=obj.user).values_list(
+                "group_id"
+            )
+            if set(group_ids).intersection(
+                set(self.context["user_purchased_group_profile_ids"])
+            ):
                 return obj.image.url
         return obj.image_blurred.url
 
@@ -53,7 +58,12 @@ class _UserProfileByContextSerializer(serializers.ModelSerializer):
         if self.context.get("force_original_image", False):
             return obj.thumbnail.url
         if self.context.get("user_purchased_group_profile_ids", None):
-            if obj.id in self.context["user_purchased_group_profile_ids"]:
+            group_ids = GroupMember.objects.filter(user=obj.user).values_list(
+                "group_id"
+            )
+            if set(group_ids).intersection(
+                set(self.context["user_purchased_group_profile_ids"])
+            ):
                 return obj.thumbnail.url
         return obj.thumbnail_blurred.url
 
