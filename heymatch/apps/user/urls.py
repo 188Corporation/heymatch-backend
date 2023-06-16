@@ -10,7 +10,6 @@ from .api.views import (
 
 app_name = "user"
 
-# user_device_register_view = FCMDeviceAuthorizedViewSet.as_view({"post": "create"})
 users_my_view = UserWithGroupFullInfoViewSet.as_view(
     {
         "get": "retrieve",
@@ -57,5 +56,4 @@ urlpatterns = [
     ),
     path("temp-user/", users_temp_user_view, name="temp-user"),
     path("check-username/", users_unique_name_view, name="user-my-check-username"),
-    # path("device/register/", user_device_register_view, name="user_device_register"),
 ]

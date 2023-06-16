@@ -184,29 +184,27 @@ class UserWithGroupProfilePhotoViewSet(viewsets.ModelViewSet):
             to_delete = str(data).split(",")
         except AttributeError:
             return Response(data="Invalid field", status=status.HTTP_400_BAD_REQUEST)
-        qs = UserProfileImage.objects.filter(user=request.user, is_main=False)
+        qs = UserProfileImage.objects.filter(
+            user=request.user, is_main=False, is_active=True
+        )
 
-        if len(qs) == 2:
-            orig_other_profile_image_1 = qs[0]
-            orig_other_profile_image_2 = qs[1]
-        elif len(qs) == 1:
-            orig_other_profile_image_1 = qs[0]
-            orig_other_profile_image_2 = None
-        else:
-            orig_other_profile_image_1 = None
-            orig_other_profile_image_2 = None
+        orig_other_profile_image_1 = None
+        orig_other_profile_image_2 = None
+        for q in qs:
+            if q.order == 0:
+                orig_other_profile_image_1 = q
+            if q.order == 1:
+                orig_other_profile_image_2 = q
+            else:
+                break
 
         for target in to_delete:
             if target == "other_profile_image_1":
                 if orig_other_profile_image_1:
                     orig_other_profile_image_1.delete()
-                    # orig_other_profile_image_1.is_active = False
-                    # orig_other_profile_image_1.save(update_fields=["is_active"])
             elif target == "other_profile_image_2":
                 if orig_other_profile_image_2:
                     orig_other_profile_image_2.delete()
-                    # orig_other_profile_image_2.is_active = False
-                    # orig_other_profile_image_2.save(update_fields=["is_active"])
             else:
                 return Response(
                     data=f"Invalid field - {data}", status=status.HTTP_400_BAD_REQUEST
