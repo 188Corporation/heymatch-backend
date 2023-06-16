@@ -44,11 +44,17 @@ class _UserProfileByContextSerializer(serializers.ModelSerializer):
     def decide_whether_original_or_blurred_image(self, obj):
         if self.context.get("force_original_image", False):
             return obj.image.url
+        if self.context.get("user_purchased_group_profile_ids", None):
+            if obj.id in self.context["user_purchased_group_profile_ids"]:
+                return obj.image.url
         return obj.image_blurred.url
 
     def decide_whether_original_or_blurred_thumbnail(self, obj):
         if self.context.get("force_original_image", False):
             return obj.thumbnail.url
+        if self.context.get("user_purchased_group_profile_ids", None):
+            if obj.id in self.context["user_purchased_group_profile_ids"]:
+                return obj.thumbnail.url
         return obj.thumbnail_blurred.url
 
 
