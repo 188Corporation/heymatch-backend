@@ -295,7 +295,7 @@ class UserProfileImage(OrderedModel):
 
     def process_thumbnail_blurred(self, image, filetype: str = "JPEG"):
         image.thumbnail((350, 350), Image.Resampling.LANCZOS)
-        image = image.filter(ImageFilter.BoxBlur(5))
+        image = image.filter(ImageFilter.BoxBlur(8))
         # Save thumbnail to in-memory file as StringIO
         temp_image = BytesIO()
         image.save(temp_image, filetype)
