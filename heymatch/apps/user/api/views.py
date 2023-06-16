@@ -122,7 +122,14 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
         if new_other_profile_image_1:
             if orig_other_profile_image_1:
                 orig_other_profile_image_1.image = new_other_profile_image_1
-                orig_other_profile_image_1.save(update_fields=["image"])
+                orig_other_profile_image_1.save(
+                    update_fields=[
+                        "image",
+                        "image_blurred",
+                        "thumbnail",
+                        "thumbnail_blurred",
+                    ]
+                )
             else:
                 orig_other_profile_image_1 = UserProfileImage.objects.create(
                     user=request.user,
@@ -133,7 +140,14 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
         if new_other_profile_image_2:
             if orig_other_profile_image_2:
                 orig_other_profile_image_2.image = new_other_profile_image_2
-                orig_other_profile_image_2.save(update_fields=["image"])
+                orig_other_profile_image_2.save(
+                    update_fields=[
+                        "image",
+                        "image_blurred",
+                        "thumbnail",
+                        "thumbnail_blurred",
+                    ]
+                )
             else:
                 orig_other_profile_image_2 = UserProfileImage.objects.create(
                     user=request.user,
