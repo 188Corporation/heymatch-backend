@@ -371,12 +371,24 @@ class DeleteScheduledUser(models.Model):
 
 
 class UserOnBoarding(models.Model):
+    class RejectedReasonChoices(models.TextChoices):
+        NO_FACE_FOUND = "no_face_found"
+        MORE_THAN_ONE_FACE = "more_than_one_face"
+        UNKNOWN = "unknown"
+
     # info
     basic_info_completed = models.BooleanField(default=False)
     extra_info_in_progress = models.BooleanField(default=False)
     extra_info_completed = models.BooleanField(default=False)
     profile_photo_under_verification = models.BooleanField(default=False)
     profile_photo_rejected = models.BooleanField(default=False)
+    profile_photo_rejected_reason = models.CharField(
+        blank=True,
+        null=True,
+        max_length=25,
+        choices=RejectedReasonChoices.choices,
+        default=None,
+    )
     onboarding_completed = models.BooleanField(default=False)
 
     user = models.ForeignKey(

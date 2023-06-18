@@ -67,11 +67,13 @@ def verify_main_profile_images():
             uob.onboarding_completed = True
             uob.profile_photo_under_verification = False
             uob.profile_photo_rejected = False
+            uob.profile_photo_rejected_reason = None
             uob.save(
                 update_fields=[
                     "onboarding_completed",
                     "profile_photo_under_verification",
                     "profile_photo_rejected",
+                    "profile_photo_rejected_reason",
                 ]
             )
 
@@ -83,15 +85,37 @@ def verify_main_profile_images():
                 content="메인 프로필 사진 심사 통과 하셨습니다! 이제 헤이매치를 이용해봐요 😀",
                 user_ids=[str(upi.user.id)],
             )
+
+            onesignal_client.send_notification_to_specific_users(
+                title="프로필 사진 심사 거절",
+                content="프로필 사진 심사에 통과하지 못했어요. 새로운 사진을 올려주세요 😢",
+                user_ids=[str(upi.user.id)],
+            )
         else:
             # set user flag
             uob = UserOnBoarding.objects.get(user=upi.user)
             uob.profile_photo_under_verification = False
             uob.profile_photo_rejected = True
+
+            # give user a reason in onboarding endpoint
+            if faces_num == 0:
+                uob.profile_photo_rejected_reason = (
+                    UserOnBoarding.RejectedReasonChoices.NO_FACE_FOUND
+                )
+            elif faces_num > 1:
+                uob.profile_photo_rejected_reason = (
+                    UserOnBoarding.RejectedReasonChoices.MORE_THAN_ONE_FACE
+                )
+            else:
+                uob.profile_photo_rejected_reason = (
+                    UserOnBoarding.RejectedReasonChoices.UNKNOWN
+                )
+
             uob.save(
                 update_fields=[
                     "profile_photo_under_verification",
                     "profile_photo_rejected",
+                    "profile_photo_rejected_reason",
                 ]
             )
 

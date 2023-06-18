@@ -189,6 +189,7 @@ class UserOnBoardingAdmin(admin.ModelAdmin):
         "extra_info_in_progress",
         "profile_photo_under_verification",
         "profile_photo_rejected",
+        "profile_photo_rejected_reason",
         "onboarding_completed",
     ]
     search_fields = [
@@ -199,6 +200,7 @@ class UserOnBoardingAdmin(admin.ModelAdmin):
         "extra_info_in_progress",
         "profile_photo_under_verification",
         "profile_photo_rejected",
+        "profile_photo_rejected_reason",
         "onboarding_completed",
     ]
 

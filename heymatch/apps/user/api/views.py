@@ -281,7 +281,10 @@ class UserOnboardingViewSet(viewsets.ViewSet):
             )
         if uob.profile_photo_rejected:
             return Response(
-                data={"status": "onboarding_profile_rejected"},
+                data={
+                    "status": "onboarding_profile_rejected",
+                    "rejected_reason": uob.profile_photo_rejected_reason,
+                },
                 status=status.HTTP_200_OK,
             )
         if uob.profile_photo_under_verification:
