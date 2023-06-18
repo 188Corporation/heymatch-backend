@@ -110,6 +110,12 @@ class EmailVerificationViewSet(viewsets.ViewSet):
         # Create one
         evc = serializer.save(user=request.user)
 
+        # Everything is good.
+        # Update user.verified_company_name or verified_school_name
+        found, names = self.determine_school_company_name_by_email(evc)
+        if not found:
+            raise EmailVerificationDomainNotFoundException()
+
         # Send mail
         subject = "[헤이매치] 이메일 인증 코드입니다"
         html_message = render_to_string(
@@ -125,11 +131,6 @@ class EmailVerificationViewSet(viewsets.ViewSet):
             html_message=html_message,
             fail_silently=False,
         )
-        # Everything is good.
-        # Update user.verified_company_name or verified_school_name
-        found, names = self.determine_school_company_name_by_email(evc)
-        if not found:
-            raise EmailVerificationDomainNotFoundException()
 
         return Response(
             data={
