@@ -15,10 +15,15 @@ from heymatch.apps.group.models import GroupMember
 from heymatch.apps.user.models import (
     AppInfo,
     DeleteScheduledUser,
+    UserInvitation,
     UserOnBoarding,
     UserProfileImage,
 )
-from heymatch.shared.exceptions import UsernameAlreadyExistsException
+from heymatch.shared.exceptions import (
+    UserInvitationCodeAlreadyAcceptedException,
+    UserInvitationCodeNotExistException,
+    UsernameAlreadyExistsException,
+)
 from heymatch.shared.permissions import IsUserActive
 
 from .serializers import (
@@ -36,6 +41,7 @@ from .serializers import (
 
 User = get_user_model()
 stream = settings.STREAM_CLIENT
+onesignal_client = settings.ONE_SIGNAL_CLIENT
 
 
 class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
@@ -237,6 +243,41 @@ class UsernameUniquenessCheckViewSet(viewsets.ModelViewSet):
         if User.objects.filter(username__iexact=request.data["username"]).exists():
             raise UsernameAlreadyExistsException()
         return Response(data="This username is good to go!", status=status.HTTP_200_OK)
+
+
+class UserInvitationCodeViewSet(viewsets.ViewSet):
+    permission_classes = [
+        IsAuthenticated,
+    ]
+
+    def accept(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        BONUS_POINT = 5
+        invitation_code = kwargs["invitation_code"]
+        qs = User.objects.filter(invitation_code=invitation_code)
+        if not qs.exists():
+            raise UserInvitationCodeNotExistException()
+        sent = qs.first()
+        received = request.user
+        if UserInvitation.objects.filter(sent=sent, received=received).exists():
+            raise UserInvitationCodeAlreadyAcceptedException()
+        UserInvitation.objects.create(sent=sent, received=received)
+        # add point to each
+        sent.point_balance = sent.point_balance + BONUS_POINT
+        sent.save(update_fields=["point_balance"])
+        onesignal_client.send_notification_to_specific_users(
+            title=f"[{str(received.username)}]님께서 초대를 수락했어요!",
+            content=f"보너스 캔디 {BONUS_POINT}개를 얻으셨어요!!😵",
+            user_ids=[str(sent.id)],
+        )
+
+        received.point_balance = received.point_balance + BONUS_POINT
+        received.save(update_fields=["point_balance"])
+        onesignal_client.send_notification_to_specific_users(
+            title=f"[{str(sent.username)}]님의 초대를 수락했어요!",
+            content=f"보너스 캔디 {BONUS_POINT}개를 얻으셨어요!!😵",
+            user_ids=[str(received.id)],
+        )
+        return Response(status=status.HTTP_200_OK)
 
 
 class TempUserCreateViewSet(viewsets.ModelViewSet):

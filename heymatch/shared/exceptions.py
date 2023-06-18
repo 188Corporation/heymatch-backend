@@ -38,6 +38,16 @@ class UsernameAlreadyExistsException(BasePermissionDeniedException):
     detail = "User with this username already exists"
 
 
+class UserInvitationCodeAlreadyAcceptedException(BasePermissionDeniedException):
+    status_code = 455
+    detail = "User invitation code already accepted"
+
+
+class UserInvitationCodeNotExistException(BasePermissionDeniedException):
+    status_code = 456
+    detail = "User invitation code does not exist."
+
+
 class UserNotJoinedGroupException(BasePermissionDeniedException):
     status_code = 461
     detail = "그룹을 먼저 만들어 주세요! 😎"

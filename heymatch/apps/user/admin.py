@@ -10,6 +10,7 @@ from .models import (
     DeleteScheduledUser,
     EmailVerificationCode,
     FakeChatUser,
+    UserInvitation,
     UserOnBoarding,
     UserProfileImage,
 )
@@ -225,6 +226,20 @@ class DeleteScheduledUserAdmin(admin.ModelAdmin):
         "delete_schedule_at",
         "delete_reason",
         "status",
+    ]
+
+
+@admin.register(UserInvitation)
+class UserInvitationAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "sent",
+        "received",
+    ]
+    search_fields = [
+        "id",
+        "sent",
+        "received",
     ]
 
 

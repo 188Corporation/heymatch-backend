@@ -2,6 +2,7 @@ from django.urls import path
 
 from .api.views import (
     TempUserCreateViewSet,
+    UserInvitationCodeViewSet,
     UsernameUniquenessCheckViewSet,
     UserOnboardingViewSet,
     UserWithGroupFullInfoViewSet,
@@ -30,6 +31,7 @@ users_my_onboarding_complete_extra_info_view = UserOnboardingViewSet.as_view(
     {"post": "complete_extra_info"}
 )
 users_unique_name_view = UsernameUniquenessCheckViewSet.as_view({"post": "check"})
+users_invitation_code_view = UserInvitationCodeViewSet.as_view({"post": "accept"})
 users_temp_user_view = TempUserCreateViewSet.as_view({"post": "create"})
 
 urlpatterns = [
@@ -56,4 +58,9 @@ urlpatterns = [
     ),
     path("temp-user/", users_temp_user_view, name="temp-user"),
     path("check-username/", users_unique_name_view, name="user-my-check-username"),
+    path(
+        "invitation/<str:invitation_code>/accept/",
+        users_invitation_code_view,
+        name="user-my-invitation-accept",
+    ),
 ]

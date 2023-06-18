@@ -406,6 +406,23 @@ class UserOnBoarding(models.Model):
     )
 
 
+class UserInvitation(models.Model):
+    sent = models.ForeignKey(
+        "user.User",
+        blank=False,
+        null=False,
+        on_delete=models.PROTECT,
+        related_name="user_invitation_sent_user",
+    )
+    received = models.ForeignKey(
+        "user.User",
+        blank=False,
+        null=False,
+        on_delete=models.PROTECT,
+        related_name="user_invitation_received_user",
+    )
+
+
 class FakeChatUser(models.Model):
     user = models.ForeignKey(
         "user.User",
