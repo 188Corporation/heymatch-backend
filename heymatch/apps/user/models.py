@@ -265,7 +265,7 @@ class UserProfileImage(OrderedModel):
         Blurs image and save
         :return:
         """
-        image = image.filter(ImageFilter.BoxBlur(20))
+        image = image.filter(ImageFilter.BoxBlur(30))
         temp_image = BytesIO()
         image.save(temp_image, filetype)
         temp_image.seek(0)
