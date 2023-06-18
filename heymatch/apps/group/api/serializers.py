@@ -107,8 +107,8 @@ class _GroupMemberSerializer(serializers.ModelSerializer):
 
 
 class V2GroupLimitedFieldSerializer(serializers.ModelSerializer):
-    image_purchased = serializers.SerializerMethodField(
-        "decide_whether_image_purchased"
+    profile_photo_purchased = serializers.SerializerMethodField(
+        "decide_whether_profile_photo_purchased"
     )
     group_members = _GroupMemberSerializer(
         many=True, read_only=True, source="group_member_group"
@@ -125,12 +125,12 @@ class V2GroupLimitedFieldSerializer(serializers.ModelSerializer):
             "meetup_place_address",
             "member_number",
             "member_avg_age",
-            "image_purchased",
+            "profile_photo_purchased",
             "group_members",
             "created_at",
         ]
 
-    def decide_whether_image_purchased(self, obj):
+    def decide_whether_profile_photo_purchased(self, obj):
         if self.context.get("force_original_image", False):
             return True
         if self.context.get("user_purchased_group_profile_ids", None):
@@ -141,9 +141,6 @@ class V2GroupLimitedFieldSerializer(serializers.ModelSerializer):
 
 class V2GroupFullFieldSerializer(serializers.ModelSerializer):
     gps_point = serializers.SerializerMethodField()
-    image_purchased = serializers.SerializerMethodField(
-        "decide_whether_image_purchased"
-    )
     group_members = _GroupMemberSerializer(
         many=True, read_only=True, source="group_member_group"
     )
@@ -164,18 +161,9 @@ class V2GroupFullFieldSerializer(serializers.ModelSerializer):
             "meetup_place_address",
             "member_number",
             "member_avg_age",
-            "image_purchased",
             "group_members",
             "created_at",
         ]
-
-    def decide_whether_image_purchased(self, obj):
-        if self.context.get("force_original_image", False):
-            return True
-        if self.context.get("user_purchased_group_profile_ids", None):
-            if obj.id in self.context["user_purchased_group_profile_ids"]:
-                return True
-        return False
 
 
 class V2GroupCreateUpdateSerializer(serializers.ModelSerializer):
