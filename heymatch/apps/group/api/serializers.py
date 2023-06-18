@@ -46,7 +46,7 @@ class _UserProfileByContextSerializer(serializers.ModelSerializer):
             return obj.image.url
         if self.context.get("user_purchased_group_profile_ids", None):
             group_ids = GroupMember.objects.filter(user=obj.user).values_list(
-                "group_id"
+                "group_id", flat=True
             )
             if set(group_ids).intersection(
                 set(self.context["user_purchased_group_profile_ids"])
@@ -59,7 +59,7 @@ class _UserProfileByContextSerializer(serializers.ModelSerializer):
             return obj.thumbnail.url
         if self.context.get("user_purchased_group_profile_ids", None):
             group_ids = GroupMember.objects.filter(user=obj.user).values_list(
-                "group_id"
+                "group_id", flat=True
             )
             if set(group_ids).intersection(
                 set(self.context["user_purchased_group_profile_ids"])
@@ -107,6 +107,9 @@ class _GroupMemberSerializer(serializers.ModelSerializer):
 
 
 class V2GroupLimitedFieldSerializer(serializers.ModelSerializer):
+    image_purchased = serializers.SerializerMethodField(
+        "decide_whether_image_purchased"
+    )
     group_members = _GroupMemberSerializer(
         many=True, read_only=True, source="group_member_group"
     )
@@ -122,13 +125,25 @@ class V2GroupLimitedFieldSerializer(serializers.ModelSerializer):
             "meetup_place_address",
             "member_number",
             "member_avg_age",
+            "image_purchased",
             "group_members",
             "created_at",
         ]
 
+    def decide_whether_image_purchased(self, obj):
+        if self.context.get("force_original_image", False):
+            return True
+        if self.context.get("user_purchased_group_profile_ids", None):
+            if obj.id in self.context["user_purchased_group_profile_ids"]:
+                return True
+        return False
+
 
 class V2GroupFullFieldSerializer(serializers.ModelSerializer):
     gps_point = serializers.SerializerMethodField()
+    image_purchased = serializers.SerializerMethodField(
+        "decide_whether_image_purchased"
+    )
     group_members = _GroupMemberSerializer(
         many=True, read_only=True, source="group_member_group"
     )
@@ -149,9 +164,18 @@ class V2GroupFullFieldSerializer(serializers.ModelSerializer):
             "meetup_place_address",
             "member_number",
             "member_avg_age",
+            "image_purchased",
             "group_members",
             "created_at",
         ]
+
+    def decide_whether_image_purchased(self, obj):
+        if self.context.get("force_original_image", False):
+            return True
+        if self.context.get("user_purchased_group_profile_ids", None):
+            if obj.id in self.context["user_purchased_group_profile_ids"]:
+                return True
+        return False
 
 
 class V2GroupCreateUpdateSerializer(serializers.ModelSerializer):

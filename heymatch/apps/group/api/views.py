@@ -301,7 +301,7 @@ class GroupV2GeneralViewSet(viewsets.ModelViewSet):
         paginated_qs = self.paginate_queryset(filtered_qs)
         purchased_group_ids = GroupProfilePhotoPurchased.objects.filter(
             buyer=request.user
-        ).values_list("seller_id")
+        ).values_list("seller_id", flat=True)
         serializer = V2GroupLimitedFieldSerializer(
             paginated_qs,
             many=True,
