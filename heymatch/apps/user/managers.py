@@ -1,3 +1,6 @@
+import random
+import string
+
 from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
 from django.db import models
@@ -6,6 +9,12 @@ from django.db.models.query import QuerySet
 from ordered_model.models import OrderedModelManager
 
 stream = settings.STREAM_CLIENT
+
+
+def auto_generate_user_invitation_code():
+    return "".join(
+        random.choice(string.ascii_uppercase + string.digits) for _ in range(5)
+    )
 
 
 class UserManager(BaseUserManager):
@@ -61,6 +70,12 @@ class ActiveUserManager(UserManager):
     #     return int(avg) if avg else None
 
     def create(self, **kwargs):
+        code = auto_generate_user_invitation_code()
+        while self.filter(invitation_code=code).exists():
+            code = auto_generate_user_invitation_code()
+
+        kwargs["invitation_code"] = code
+
         user = self.model(**kwargs)
         # Register Stream token
         token = stream.create_token(user_id=str(user.id))
@@ -77,6 +92,11 @@ class ActiveUserManager(UserManager):
         """
         For datasetup command
         """
+        code = auto_generate_user_invitation_code()
+        while self.filter(invitation_code=code).exists():
+            code = auto_generate_user_invitation_code()
+
+        kwargs["invitation_code"] = code
         user = self.model(**kwargs)
         user.stream_token = "fake-stream-token"
         user.save(using=self._db)

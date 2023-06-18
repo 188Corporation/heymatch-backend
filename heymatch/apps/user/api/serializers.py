@@ -44,6 +44,7 @@ class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
             "user_purchases",
             "free_pass",
             "free_pass_active_until",
+            "invitation_code",
         ]
 
     def to_representation(self, instance: User):

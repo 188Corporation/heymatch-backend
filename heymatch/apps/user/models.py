@@ -84,6 +84,13 @@ class User(AbstractUser):
         editable=True,
         max_length=MAX_USERNAME_LENGTH,
     )
+    invitation_code = models.CharField(
+        unique=True,
+        blank=False,
+        null=False,
+        editable=False,
+        max_length=5,
+    )
     # Required
     phone_number = PhoneNumberField(blank=True, null=True)
     gender = models.CharField(

@@ -37,6 +37,7 @@ class UserAdmin(SimpleHistoryAdmin):
                     "verified_school_name",
                     "verified_company_name",
                     "is_temp_user",
+                    "invitation_code",
                 )
             },
         ),
@@ -95,6 +96,7 @@ class UserAdmin(SimpleHistoryAdmin):
         "is_deleted",
         "stream_token",
         "is_temp_user",
+        "invitation_code",
     ]
     history_list_display = [
         "status",
@@ -125,6 +127,7 @@ class UserAdmin(SimpleHistoryAdmin):
         "is_deleted",
         "stream_token",
         "is_temp_user",
+        "invitation_code",
     ]
 
 
