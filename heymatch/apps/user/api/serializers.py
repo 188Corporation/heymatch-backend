@@ -45,6 +45,7 @@ class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
             "free_pass",
             "free_pass_active_until",
             "invitation_code",
+            "block_my_school_or_company_users",
         ]
 
     def to_representation(self, instance: User):
@@ -84,6 +85,9 @@ class UserInfoUpdateBodyRequestSerializer(serializers.ModelSerializer):
     other_profile_image_2 = serializers.ImageField(
         required=False, allow_empty_file=False, use_url=False
     )
+    block_my_school_or_company_users = serializers.BooleanField(
+        required=False, default=False
+    )
 
     class Meta:
         model = User
@@ -98,6 +102,7 @@ class UserInfoUpdateBodyRequestSerializer(serializers.ModelSerializer):
             "main_profile_image",
             "other_profile_image_1",
             "other_profile_image_2",
+            "block_my_school_or_company_users",
         ]
 
 

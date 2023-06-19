@@ -170,6 +170,12 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
                 update_fields=["verified_school_name", "verified_company_name"]
             )
 
+        if "block_my_school_or_company_users" in serializer.validated_data.keys():
+            request.user.block_my_school_or_company_users = serializer.validated_data[
+                "block_my_school_or_company_users"
+            ]
+            request.user.save(update_fields=["block_my_school_or_company_users"])
+
         serializer.save()
         return Response(status=status.HTTP_200_OK)
 

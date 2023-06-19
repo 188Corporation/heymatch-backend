@@ -38,7 +38,7 @@ class UserAdmin(SimpleHistoryAdmin):
                     "verified_school_name",
                     "verified_company_name",
                     "is_temp_user",
-                    "invitation_code",
+                    "block_my_school_or_company_users",
                 )
             },
         ),
@@ -98,6 +98,7 @@ class UserAdmin(SimpleHistoryAdmin):
         "stream_token",
         "is_temp_user",
         "invitation_code",
+        "block_my_school_or_company_users",
     ]
     history_list_display = [
         "status",
@@ -129,6 +130,7 @@ class UserAdmin(SimpleHistoryAdmin):
         "stream_token",
         "is_temp_user",
         "invitation_code",
+        "block_my_school_or_company_users",
     ]
 
 
