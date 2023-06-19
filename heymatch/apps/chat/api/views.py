@@ -63,11 +63,15 @@ class StreamChatViewSet(viewsets.ModelViewSet):
             reads = channel["read"]
             is_last_message_read = True
 
-            sc = StreamChannel.objects.filter(
-                cid=channel["channel"]["cid"],
-                group_member__user_id=str(request.user.id),
-                is_active=True,
-            ).first()
+            sc = (
+                StreamChannel.objects.filter(
+                    cid=channel["channel"]["cid"],
+                    is_active=True,
+                )
+                .exclude(group_member__user_id=str(request.user.id))
+                .first()
+            )
+
             if not sc or not sc.group_member.group:
                 continue
 
