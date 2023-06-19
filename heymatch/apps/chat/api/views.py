@@ -13,7 +13,6 @@ from rest_framework.response import Response
 from heymatch.apps.chat.models import StreamChannel
 from heymatch.apps.group.api.serializers import V2GroupFullFieldSerializer
 from heymatch.apps.match.models import MatchRequest
-from heymatch.shared.permissions import IsUserActive
 
 User = get_user_model()
 stream = settings.STREAM_CLIENT
@@ -29,7 +28,6 @@ class StreamChatViewSet(viewsets.ModelViewSet):
 
     permission_classes = [
         IsAuthenticated,
-        IsUserActive,
     ]
     serializer_class = V2GroupFullFieldSerializer
 
@@ -107,7 +105,7 @@ class StreamChatViewSet(viewsets.ModelViewSet):
             cid=kwargs["stream_cid"], group_member__user_id=str(request.user.id)
         )  # there can be multiple
 
-        if all_sc_qs.exists():
+        if not all_sc_qs.exists():
             raise PermissionDenied("You are not owner of stream channel.")
 
         # soft-delete channel
