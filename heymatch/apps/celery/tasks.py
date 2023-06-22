@@ -1,8 +1,9 @@
 import datetime
-import logging
 from collections import Counter
 
-from celery import shared_task
+from celery import Celery, shared_task
+from celery.utils.log import get_task_logger
+from celery_singleton import Singleton
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models import Q
@@ -22,14 +23,15 @@ from heymatch.apps.user.models import (
 )
 from heymatch.utils.util import detect_face_with_haar_cascade_ml
 
+app = Celery("heymatch")
 User = get_user_model()
 stream = settings.STREAM_CLIENT
 onesignal_client = settings.ONE_SIGNAL_CLIENT
 
-logger = logging.getLogger(__name__)
+logger = get_task_logger(__name__)
 
 
-@shared_task(soft_time_limit=60)
+@app.task(base=Singleton)
 def verify_main_profile_images():
     logger.debug("==================================================")
     logger.debug("=== 'verify_main_profile_images' task started! ===")

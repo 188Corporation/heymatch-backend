@@ -9,6 +9,7 @@ django-celery-beat==2.4.0  # https://github.com/celery/django-celery-beat
 flower==1.0.0  # https://github.com/mher/flower
 phonenumbers==8.12.47  # https://pypi.org/project/django-phonenumber-field/
 geopy==2.2.0  # https://pypi.org/project/geopy/
+celery-singleton==0.3.1  # https://github.com/steinitzu/celery-singleton
 
 # Django
 # ------------------------------------------------------------------------------

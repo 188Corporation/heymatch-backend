@@ -310,7 +310,7 @@ CELERY_BEAT_SCHEDULE = {
     # Verify main UserProfileImages
     "verify-main-profile-images": {
         "task": "heymatch.apps.celery.tasks.verify_main_profile_images",
-        "schedule": timedelta(seconds=10),  # execute every 10 secs
+        "schedule": timedelta(seconds=30),  # execute every 30 secs
         "args": (),
     },
     # Process DeleteScheduledUsers
@@ -333,6 +333,7 @@ CELERY_BEAT_SCHEDULE = {
     #     "args": (),
     # },
 }
+CELERY_ACKS_LATE = False  # tasks won't restart in case of incorrect worker stop
 
 # django-allauth
 # ------------------------------------------------------------------------------

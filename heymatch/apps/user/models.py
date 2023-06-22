@@ -160,7 +160,7 @@ def upload_to(instance, filename):
 
 
 def auto_expected_verification_datetime():
-    return timezone.now() + timezone.timedelta(seconds=random.randrange(60, 90))
+    return timezone.now() + timezone.timedelta(seconds=random.randrange(40, 50))
 
 
 class UserProfileImage(OrderedModel):
