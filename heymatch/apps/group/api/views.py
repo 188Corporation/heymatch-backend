@@ -403,6 +403,15 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
         queryset = GroupV2.objects.all().filter(is_active=True)
         group = get_object_or_404(queryset, id=kwargs["group_id"])
 
+        # Check if my group
+        if GroupMember.objects.filter(user=request.user, group=group).exists():
+            serializer = self.get_serializer(
+                instance=group, context={"force_original_image": True}
+            )
+            purchase_info = {"profile_photo_purchased": True}
+            return Response(
+                data={**serializer.data, **purchase_info}, status=status.HTTP_200_OK
+            )
         # Check whether photo purchased
         purchase_info = {"profile_photo_purchased": False}
         gps = GroupProfilePhotoPurchased.objects.filter(
