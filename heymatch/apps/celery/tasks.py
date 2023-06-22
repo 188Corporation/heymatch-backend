@@ -87,12 +87,6 @@ def verify_main_profile_images():
                 content="메인 프로필 사진 심사 통과 하셨습니다! 이제 헤이매치를 이용해봐요 😀",
                 user_ids=[str(upi.user.id)],
             )
-
-            onesignal_client.send_notification_to_specific_users(
-                title="프로필 사진 심사 거절",
-                content="프로필 사진 심사에 통과하지 못했어요. 새로운 사진을 올려주세요 😢",
-                user_ids=[str(upi.user.id)],
-            )
         else:
             # set user flag
             uob = UserOnBoarding.objects.get(user=upi.user)
