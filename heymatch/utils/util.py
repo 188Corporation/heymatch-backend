@@ -125,7 +125,7 @@ def url_to_image(url: str):
     return image
 
 
-def detect_face_with_haar_cascade_ml(s3_url: str):
+def detect_face_with_haar_cascade_ml(s3_url: str) -> int:
     face_cascade = cv2.CascadeClassifier(
         cv2.data.haarcascades + "haarcascade_frontalface_alt2.xml"
     )

@@ -298,7 +298,6 @@ class GroupV2GeneralViewSet(viewsets.ModelViewSet):
         """
         qs = self.get_queryset()
         filtered_qs = self.filter_queryset(queryset=qs)
-        print(filtered_qs)
         paginated_qs = self.paginate_queryset(filtered_qs)
         purchased_group_ids = GroupProfilePhotoPurchased.objects.filter(
             buyer=request.user
@@ -588,7 +587,6 @@ class GroupReportViewSet(viewsets.ModelViewSet):
             ).values_list("cid", flat=True)
         )
         to_delete_cids = my_scs_cids & other_scs_cids
-        print(to_delete_cids)
         sc = StreamChannel.objects.filter(cid__in=list(to_delete_cids))
         sc.update(is_active=False)
         if len(list(to_delete_cids)) > 0:
