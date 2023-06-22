@@ -63,6 +63,7 @@ class User(AbstractUser):
     class JobChoices(models.TextChoices):
         COLLEGE_STUDENT = "college_student"
         EMPLOYEE = "employee"
+        PRACTITIONER = "practitioner"  # 의사, 약사, 변호사, 군인...
         SELF_EMPLOYED = "self_employed"
         PART_TIME = "part_time"
         BUSINESSMAN = "businessman"

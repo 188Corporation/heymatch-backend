@@ -129,6 +129,12 @@ class ActiveEmployeeMaleUserFactory(_ActiveMaleUserFactory):
     )
 
 
+class ActivePractitionerMaleUserFactory(_ActiveMaleUserFactory):
+    job_title = User.JobChoices.PRACTITIONER
+    verified_school_name = None
+    verified_company_name = Faker("random_element", elements=["의사", "회계사", "변호사", "약사"])
+
+
 class ActiveEtcMaleUserFactory(_ActiveMaleUserFactory):
     job_title = Faker(
         "random_element",
@@ -157,6 +163,12 @@ class ActiveEmployeeFemaleUserFactory(_ActiveFemaleUserFactory):
     verified_company_name = Faker(
         "random_element", elements=["Amazon", "스타트업", "삼성전자", None]
     )
+
+
+class ActivePractitionerFemaleUserFactory(_ActiveFemaleUserFactory):
+    job_title = User.JobChoices.PRACTITIONER
+    verified_school_name = None
+    verified_company_name = Faker("random_element", elements=["의사", "회계사", "변호사", "약사"])
 
 
 class ActiveEtcFemaleUserFactory(_ActiveFemaleUserFactory):

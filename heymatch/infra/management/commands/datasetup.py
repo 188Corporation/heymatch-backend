@@ -28,6 +28,8 @@ from heymatch.apps.user.tests.factories import (
     ActiveEmployeeMaleUserFactory,
     ActiveEtcFemaleUserFactory,
     ActiveEtcMaleUserFactory,
+    ActivePractitionerFemaleUserFactory,
+    ActivePractitionerMaleUserFactory,
     UserProfileImageFactory,
 )
 
@@ -50,6 +52,8 @@ def generate_user():
             ActiveEtcMaleUserFactory,
             ActiveEmployeeFemaleUserFactory,
             ActiveCollegeFemaleUserFactory,
+            ActivePractitionerFemaleUserFactory,
+            ActivePractitionerMaleUserFactory,
         ]
     )
     return factory.create()
@@ -64,6 +68,8 @@ def generate_user_batch(size: int):
             ActiveEtcMaleUserFactory,
             ActiveEmployeeFemaleUserFactory,
             ActiveCollegeFemaleUserFactory,
+            ActivePractitionerFemaleUserFactory,
+            ActivePractitionerMaleUserFactory,
         ]
     )
     return factory.create_batch(size=size)
