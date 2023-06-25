@@ -166,81 +166,81 @@ class GroupV2Filter(FilterSet):
     #     )
     #     return queryset
 
-    def filter_gender_type_in_group(self, queryset, field_name, value):
-        query_filter = {
-            "male_only": "m",
-            "female_only": "f",
-            "mixed": "x",
-        }
-        if not value:
-            return queryset
-
-        if value not in query_filter.keys():
-            return queryset
-
-        # Filter male_only, female_only
-        if query_filter[value] in ["m", "f"]:
-            groupmember = (
-                GroupMember.objects.annotate(
-                    gender=Subquery(
-                        User.objects.filter(id=OuterRef("user_id")).values("gender")[:1]
-                    )
-                )
-                .select_related("group")
-                .values("group_id")
-                .distinct()
-            )
-            gm_queryset = (
-                groupmember.annotate(num_members=Count("user_id", distinct=True))
-                .annotate(
-                    num_target_members=Sum(
-                        Case(
-                            When(Q(gender=query_filter[value]), then=1),
-                            default=0,
-                            output_field=IntegerField(),
-                        ),
-                    )
-                )
-                .filter(num_members=F("num_target_members"))
-            )
-
-        # Filter mixed
-        else:
-            gm_queryset = (
-                GroupMember.objects.annotate(
-                    gender=Subquery(
-                        User.objects.filter(id=OuterRef("user_id")).values("gender")[:1]
-                    )
-                )
-                .values("group_id")
-                .annotate(
-                    num_users=Count("user_id", distinct=True),
-                    num_male_members=Count(
-                        Case(
-                            When(Q(gender="m"), then=1),
-                            output_field=IntegerField(),
-                        ),
-                        distinct=True,
-                    ),
-                    num_female_members=Count(
-                        Case(
-                            When(Q(gender="f"), then=1),
-                            output_field=IntegerField(),
-                        ),
-                        distinct=True,
-                    ),
-                )
-                .filter(
-                    num_users__gt=1,
-                    num_male_members__gt=0,
-                    num_female_members__gt=0,
-                )
-            )
-
-        queryset = queryset.filter(
-            id__in=list(gm_queryset.values_list("group_id", flat=True))
-        )
-        return queryset
+    # def filter_gender_type_in_group(self, queryset, field_name, value):
+    #     query_filter = {
+    #         "male_only": "m",
+    #         "female_only": "f",
+    #         "mixed": "x",
+    #     }
+    #     if not value:
+    #         return queryset
+    #
+    #     if value not in query_filter.keys():
+    #         return queryset
+    #
+    #     # Filter male_only, female_only
+    #     if query_filter[value] in ["m", "f"]:
+    #         groupmember = (
+    #             GroupMember.objects.annotate(
+    #                 gender=Subquery(
+    #                     User.objects.filter(id=OuterRef("user_id")).values("gender")[:1]
+    #                 )
+    #             )
+    #             .select_related("group")
+    #             .values("group_id")
+    #             .distinct()
+    #         )
+    #         gm_queryset = (
+    #             groupmember.annotate(num_members=Count("user_id", distinct=True))
+    #             .annotate(
+    #                 num_target_members=Sum(
+    #                     Case(
+    #                         When(Q(gender=query_filter[value]), then=1),
+    #                         default=0,
+    #                         output_field=IntegerField(),
+    #                     ),
+    #                 )
+    #             )
+    #             .filter(num_members=F("num_target_members"))
+    #         )
+    #
+    #     # Filter mixed
+    #     else:
+    #         gm_queryset = (
+    #             GroupMember.objects.annotate(
+    #                 gender=Subquery(
+    #                     User.objects.filter(id=OuterRef("user_id")).values("gender")[:1]
+    #                 )
+    #             )
+    #             .values("group_id")
+    #             .annotate(
+    #                 num_users=Count("user_id", distinct=True),
+    #                 num_male_members=Count(
+    #                     Case(
+    #                         When(Q(gender="m"), then=1),
+    #                         output_field=IntegerField(),
+    #                     ),
+    #                     distinct=True,
+    #                 ),
+    #                 num_female_members=Count(
+    #                     Case(
+    #                         When(Q(gender="f"), then=1),
+    #                         output_field=IntegerField(),
+    #                     ),
+    #                     distinct=True,
+    #                 ),
+    #             )
+    #             .filter(
+    #                 num_users__gt=1,
+    #                 num_male_members__gt=0,
+    #                 num_female_members__gt=0,
+    #             )
+    #         )
+    #
+    #     queryset = queryset.filter(
+    #         id__in=list(gm_queryset.values_list("group_id", flat=True))
+    #     )
+    #     return queryset
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -311,6 +311,9 @@ class GroupV2GeneralViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self) -> QuerySet:
         qs = self.queryset
+        # 0) Exclude same gender groups
+        qs = self.filter_other_gender_groups(qs)
+
         # 1) Exclude my group
         q = Q(user=self.request.user) & Q(is_active=True)
 
@@ -342,6 +345,36 @@ class GroupV2GeneralViewSet(viewsets.ModelViewSet):
         return qs.exclude(
             id__in=GroupMember.objects.filter(q).values_list("group_id", flat=True)
         )
+
+    def filter_other_gender_groups(self, queryset):
+        other_gender = "m" if self.request.user.gender == "f" else "f"
+        groupmember = (
+            GroupMember.objects.annotate(
+                gender=Subquery(
+                    User.objects.filter(id=OuterRef("user_id")).values("gender")[:1]
+                )
+            )
+            .select_related("group")
+            .values("group_id")
+            .distinct()
+        )
+        gm_queryset = (
+            groupmember.annotate(num_members=Count("user_id", distinct=True))
+            .annotate(
+                num_target_members=Sum(
+                    Case(
+                        When(Q(gender=other_gender), then=1),
+                        default=0,
+                        output_field=IntegerField(),
+                    ),
+                )
+            )
+            .filter(num_members=F("num_target_members"))
+        )
+        queryset = queryset.filter(
+            id__in=list(gm_queryset.values_list("group_id", flat=True))
+        )
+        return queryset
 
     @swagger_auto_schema(request_body=V2GroupCreateUpdateSerializer)
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
