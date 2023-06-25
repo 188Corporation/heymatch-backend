@@ -311,15 +311,16 @@ class GroupV2GeneralViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self) -> QuerySet:
         qs = self.queryset
-        # 차단 그룹 QuerySet
-        # 1) 나의 block_my_school_or_company_users=True일때
+        # 1) Exclude my group
+        q = Q(user=self.request.user) & Q(is_active=True)
+
+        # 2) Exclude blocked school/company
+        #   a) 나의 block_my_school_or_company_users=True일때
         #    - 내꺼랑 똑같은 사람은 exclude하기
-        # 2) 나의 block_my_school_or_company_users=False일때
+        #   b) 나의 block_my_school_or_company_users=False일때
         #    - GroupMember중에 block_my_school_or_company_users=True면서 내꺼랑 똑같은 사람 exclude하기
         my_school_name = self.request.user.verified_school_name
         my_company_name = self.request.user.verified_company_name
-
-        q = Q(user=self.request.user) & Q(is_active=True)
         block_q = Q(user__block_my_school_or_company_users=True)
         school_q = Q(user__verified_school_name=my_school_name)
         company_q = Q(user__verified_company_name=my_company_name)
@@ -334,6 +335,9 @@ class GroupV2GeneralViewSet(viewsets.ModelViewSet):
                 q |= school_q
             if my_company_name:
                 q |= company_q
+
+        # 3) Exclude Matched (chat) groups
+        # TODO: future job
 
         return qs.exclude(
             id__in=GroupMember.objects.filter(q).values_list("group_id", flat=True)
