@@ -106,7 +106,7 @@ class _ActiveMaleUserFactory(ActiveUserFactory):
 
 
 class _ActiveFemaleUserFactory(ActiveUserFactory):
-    gender = User.GenderChoices.MALE
+    gender = User.GenderChoices.FEMALE
     male_body_form = None
     female_body_form = Faker(
         "random_element", elements=[x[0] for x in User.FemaleBodyFormChoices.choices]
