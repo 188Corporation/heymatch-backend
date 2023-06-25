@@ -48,12 +48,12 @@ def generate_user():
         [
             ActiveEmployeeMaleUserFactory,
             ActiveCollegeMaleUserFactory,
-            ActiveEtcFemaleUserFactory,
             ActiveEtcMaleUserFactory,
+            ActivePractitionerMaleUserFactory,
+            ActiveEtcFemaleUserFactory,
             ActiveEmployeeFemaleUserFactory,
             ActiveCollegeFemaleUserFactory,
             ActivePractitionerFemaleUserFactory,
-            ActivePractitionerMaleUserFactory,
         ]
     )
     return factory.create()
@@ -64,12 +64,12 @@ def generate_user_batch(size: int):
         [
             ActiveEmployeeMaleUserFactory,
             ActiveCollegeMaleUserFactory,
-            ActiveEtcFemaleUserFactory,
             ActiveEtcMaleUserFactory,
+            ActivePractitionerMaleUserFactory,
+            ActiveEtcFemaleUserFactory,
             ActiveEmployeeFemaleUserFactory,
             ActiveCollegeFemaleUserFactory,
             ActivePractitionerFemaleUserFactory,
-            ActivePractitionerMaleUserFactory,
         ]
     )
     return factory.create_batch(size=size)
