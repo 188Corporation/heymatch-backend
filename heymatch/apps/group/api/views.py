@@ -478,9 +478,16 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
         if not gm.is_user_leader:
             raise UserNotGroupLeaderException()
 
+        # Inactivate GroupMember
         gm.is_active = False
         gm.save(update_fields=["is_active"])
         group = gm.group
+        # Inactivate MatchRequest
+        qs = MatchRequest.active_objects.filter(
+            Q(sender_group=group) | Q(receiver_group=group)
+        )
+        qs.update(is_active=False)
+        # Inactivate Group
         group.is_active = False
         group.save(update_fields=["is_active"])
         return Response(status=status.HTTP_200_OK)
