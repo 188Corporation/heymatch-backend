@@ -8,6 +8,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.utils import timezone
+from face_lib import face_lib
 
 from config.celery_app import app
 from heymatch.apps.group.models import (
@@ -22,11 +23,12 @@ from heymatch.apps.user.models import (
     UserOnBoarding,
     UserProfileImage,
 )
-from heymatch.utils.util import detect_face_with_haar_cascade_ml
+from heymatch.utils.util import url_to_image
 
 User = get_user_model()
 stream = settings.STREAM_CLIENT
 onesignal_client = settings.ONE_SIGNAL_CLIENT
+FL = face_lib()
 
 logger = get_task_logger(__name__)
 
@@ -48,7 +50,9 @@ def verify_main_profile_images():
 
     # Create the haar cascade
     for upi in target_upi_qs:  # type: UserProfileImage
-        faces_num = detect_face_with_haar_cascade_ml(upi.image.url)
+        image = url_to_image(upi.image.url)
+        faces_num, _ = FL.faces_locations(image)  # return list of RGB faces image
+        # faces_num = detect_face_with_haar_cascade_ml(upi.image.url)
         if faces_num == 1:
             # delete previous
             previous = UserProfileImage.all_objects.filter(

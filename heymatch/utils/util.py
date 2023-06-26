@@ -157,7 +157,7 @@ def detect_face_with_haar_cascade_ml(s3_url: str) -> int:
 
     faces = face_cascade.detectMultiScale(
         gray,
-        scaleFactor=1.2,
+        scaleFactor=1.05,
         minNeighbors=3,
         minSize=(10, 10),
         flags=cv2.CASCADE_SCALE_IMAGE,
