@@ -47,6 +47,9 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("is_staff", True)
         return self._create_user(phone_number, password, username, **extra_fields)
 
+    def __str__(self):
+        return str(self.id)
+
 
 class ActiveUserManager(UserManager):
     """
@@ -101,6 +104,9 @@ class ActiveUserManager(UserManager):
         user.stream_token = "fake-stream-token"
         user.save(using=self._db)
         return user
+
+    def __str__(self):
+        return str(self.id)
 
 
 class ActiveUserProfileManager(OrderedModelManager):
