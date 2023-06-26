@@ -15,7 +15,8 @@ from heymatch.apps.group.models import GroupMember, GroupProfilePhotoPurchased, 
 from heymatch.apps.group.tests.factories import (
     GroupMemberFactory,
     GroupV2Factory,
-    profile_image_filepath,
+    female_profile_image_filepath,
+    male_profile_image_filepath,
 )
 from heymatch.apps.match.api.views import MatchRequestViewSet
 from heymatch.apps.match.models import MatchRequest
@@ -181,12 +182,22 @@ class Command(BaseCommand):
         ]
         dev_groups = []
         for user in users:
-            UserProfileImageFactory.create(
-                user=user,
-                image=ImageField(
-                    from_path=f"{pathlib.Path().resolve()}/heymatch/data/{random.choice(profile_image_filepath)}"
-                ),
-            )
+            if user.gender == "m":
+                UserProfileImageFactory.create(
+                    user=user,
+                    image=ImageField(
+                        from_path=f"{pathlib.Path().resolve()}/heymatch/data/profile/"
+                        f"{random.choice(male_profile_image_filepath)}"
+                    ),
+                )
+            else:
+                UserProfileImageFactory.create(
+                    user=user,
+                    image=ImageField(
+                        from_path=f"{pathlib.Path().resolve()}/heymatch/data/profile/"
+                        f"{random.choice(female_profile_image_filepath)}"
+                    ),
+                )
             # create group
             group = GroupV2Factory.create(mode=GroupV2.GroupMode.SIMPLE)
             dev_groups.append((group, str(user.id)))
@@ -198,24 +209,44 @@ class Command(BaseCommand):
         )
         for group in sender_groups:
             user = generate_user()
-            UserProfileImageFactory.create(
-                user=user,
-                image=ImageField(
-                    from_path=f"{pathlib.Path().resolve()}/heymatch/data/{random.choice(profile_image_filepath)}"
-                ),
-            )
+            if user.gender == "m":
+                UserProfileImageFactory.create(
+                    user=user,
+                    image=ImageField(
+                        from_path=f"{pathlib.Path().resolve()}/heymatch/data/profile/"
+                        f"{random.choice(male_profile_image_filepath)}"
+                    ),
+                )
+            else:
+                UserProfileImageFactory.create(
+                    user=user,
+                    image=ImageField(
+                        from_path=f"{pathlib.Path().resolve()}/heymatch/data/profile/"
+                        f"{random.choice(female_profile_image_filepath)}"
+                    ),
+                )
             GroupMemberFactory.create(group=group, user=user, is_user_leader=True)
         receiver_groups = GroupV2Factory.create_batch(
             size=3, mode=GroupV2.GroupMode.SIMPLE
         )
         for group in receiver_groups:
             user = generate_user()
-            UserProfileImageFactory.create(
-                user=user,
-                image=ImageField(
-                    from_path=f"{pathlib.Path().resolve()}/heymatch/data/{random.choice(profile_image_filepath)}"
-                ),
-            )
+            if user.gender == "m":
+                UserProfileImageFactory.create(
+                    user=user,
+                    image=ImageField(
+                        from_path=f"{pathlib.Path().resolve()}/heymatch/data/profile/"
+                        f"{random.choice(male_profile_image_filepath)}"
+                    ),
+                )
+            else:
+                UserProfileImageFactory.create(
+                    user=user,
+                    image=ImageField(
+                        from_path=f"{pathlib.Path().resolve()}/heymatch/data/profile/"
+                        f"{random.choice(female_profile_image_filepath)}"
+                    ),
+                )
             GroupMemberFactory.create(group=group, user=user, is_user_leader=True)
 
         for group_info in dev_groups:
@@ -294,12 +325,22 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Setting up data for [Users]"))
         users = generate_user_batch(size=2)
         for user in users:
-            UserProfileImageFactory.create(
-                user=user,
-                image=ImageField(
-                    from_path=f"{pathlib.Path().resolve()}/heymatch/data/{random.choice(profile_image_filepath)}"
-                ),
-            )
+            if user.gender == "m":
+                UserProfileImageFactory.create(
+                    user=user,
+                    image=ImageField(
+                        from_path=f"{pathlib.Path().resolve()}/heymatch/data/profile/"
+                        f"{random.choice(male_profile_image_filepath)}"
+                    ),
+                )
+            else:
+                UserProfileImageFactory.create(
+                    user=user,
+                    image=ImageField(
+                        from_path=f"{pathlib.Path().resolve()}/heymatch/data/profile/"
+                        f"{random.choice(female_profile_image_filepath)}"
+                    ),
+                )
 
     def generate_groups(self) -> None:
         # Invite Groups
@@ -330,12 +371,22 @@ class Command(BaseCommand):
         groups = GroupV2Factory.create_batch(size=SIZE, mode=GroupV2.GroupMode.SIMPLE)
         for group in groups:
             user = generate_user()
-            UserProfileImageFactory.create(
-                user=user,
-                image=ImageField(
-                    from_path=f"{pathlib.Path().resolve()}/heymatch/data/{random.choice(profile_image_filepath)}"
-                ),
-            )
+            if user.gender == "m":
+                UserProfileImageFactory.create(
+                    user=user,
+                    image=ImageField(
+                        from_path=f"{pathlib.Path().resolve()}/heymatch/data/profile/"
+                        f"{random.choice(male_profile_image_filepath)}"
+                    ),
+                )
+            else:
+                UserProfileImageFactory.create(
+                    user=user,
+                    image=ImageField(
+                        from_path=f"{pathlib.Path().resolve()}/heymatch/data/profile/"
+                        f"{random.choice(female_profile_image_filepath)}"
+                    ),
+                )
             GroupMemberFactory.create(group=group, user=user, is_user_leader=True)
             pbar.update(1)
         pbar.close()

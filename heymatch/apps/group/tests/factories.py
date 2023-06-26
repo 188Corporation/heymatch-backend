@@ -130,12 +130,31 @@ class InactiveGroupFactory(DjangoModelFactory):
     is_active = False
 
 
-profile_image_filepath = [
+male_profile_image_filepath = [
     "male_profile_1.jpeg",
     "male_profile_2.jpeg",
+    "male_profile_3.jpeg",
+    "male_profile_4.jpeg",
+    "male_profile_5.jpeg",
+    "male_profile_6.jpeg",
+    "male_profile_7.jpeg",
+    "male_profile_8.jpeg",
+    "male_profile_9.jpeg",
+    "male_profile_10.jpeg",
+]
+
+female_profile_image_filepath = [
     "female_profile_1.jpeg",
     "female_profile_2.jpeg",
     "female_profile_3.jpeg",
+    "female_profile_4.jpeg",
+    "female_profile_5.jpeg",
+    "female_profile_6.jpeg",
+    "female_profile_7.jpeg",
+    "female_profile_8.jpeg",
+    "female_profile_9.jpeg",
+    "female_profile_10.jpeg",
+    "female_profile_11.jpeg",
 ]
 
 
