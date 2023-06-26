@@ -259,22 +259,21 @@ class StreamChatWebHookViewSet(viewsets.ViewSet):
 
         if request.data["type"] == "message.new":
             sender_user_id = request.data["user"]["id"]
-            receiver_user_id = None
+            receiver_user_ids = []
             for member in request.data["members"]:
-                if member["user_id"] != sender_user_id:
-                    receiver_user_id = member["user_id"]
-                    break
+                if (member["user_id"] != sender_user_id) and member["user"]["online"]:
+                    receiver_user_ids.append(member["user_id"])
 
-            if not receiver_user_id:
+            if not receiver_user_ids:
                 return Response(
                     data="Could not find webhook message receiver user id",
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
             res = onesignal_client.send_notification_to_specific_users(
-                title="새로운 매세지가 왔어요!",
-                content="새로운 메세지가 왔어요! ",
-                user_ids=[receiver_user_id],
+                title=f"[{sender_user_id}]님으로 부터 새로운 매세지가 왔어요!",
+                content=f"[{sender_user_id}]님으로 부터 새로운 메세지가 왔어요! ",
+                user_ids=receiver_user_ids,
             )
             logger.debug(f"OneSignal response for Stream Webhook message: {res}")
         else:
