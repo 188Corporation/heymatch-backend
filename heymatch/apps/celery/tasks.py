@@ -8,7 +8,6 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.utils import timezone
-from face_lib import face_lib
 
 from config.celery_app import app
 from heymatch.apps.group.models import (
@@ -23,12 +22,11 @@ from heymatch.apps.user.models import (
     UserOnBoarding,
     UserProfileImage,
 )
-from heymatch.utils.util import url_to_image
+from heymatch.utils.util import detect_faces_with_aws_rekognition
 
 User = get_user_model()
 stream = settings.STREAM_CLIENT
 onesignal_client = settings.ONE_SIGNAL_CLIENT
-FL = face_lib()
 
 logger = get_task_logger(__name__)
 
@@ -48,12 +46,9 @@ def verify_main_profile_images():
     )
     logger.debug(f"[1] Target images to be verified: {target_upi_qs}")
 
-    # Create the haar cascade
     for upi in target_upi_qs:  # type: UserProfileImage
-        image = url_to_image(upi.image.url)
-        faces_num, _ = FL.faces_locations(image)  # return list of RGB faces image
-        # faces_num = detect_face_with_haar_cascade_ml(upi.image.url)
-        if faces_num == 1:
+        result, reason = detect_faces_with_aws_rekognition(upi.image.url)
+        if result is True:
             # delete previous
             previous = UserProfileImage.all_objects.filter(
                 Q(user=upi.user)
@@ -96,20 +91,7 @@ def verify_main_profile_images():
             uob = UserOnBoarding.objects.get(user=upi.user)
             uob.profile_photo_under_verification = False
             uob.profile_photo_rejected = True
-
-            # give user a reason in onboarding endpoint
-            if faces_num == 0:
-                uob.profile_photo_rejected_reason = (
-                    UserOnBoarding.RejectedReasonChoices.NO_FACE_FOUND
-                )
-            elif faces_num > 1:
-                uob.profile_photo_rejected_reason = (
-                    UserOnBoarding.RejectedReasonChoices.MORE_THAN_ONE_FACE
-                )
-            else:
-                uob.profile_photo_rejected_reason = (
-                    UserOnBoarding.RejectedReasonChoices.UNKNOWN
-                )
+            uob.profile_photo_rejected_reason = reason
 
             uob.save(
                 update_fields=[
@@ -118,10 +100,7 @@ def verify_main_profile_images():
                     "profile_photo_rejected_reason",
                 ]
             )
-
-            logger.debug(
-                f"UserProfile(id={upi.id}) REJECTED! (faces num = {faces_num})"
-            )
+            logger.debug(f"UserProfile(id={upi.id}) REJECTED!")
             onesignal_client.send_notification_to_specific_users(
                 title="프로필 사진 심사 거절",
                 content="프로필 사진 심사에 통과하지 못했어요. 새로운 사진을 올려주세요 😢",

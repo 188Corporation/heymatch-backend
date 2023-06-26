@@ -7,6 +7,7 @@ from datetime import datetime
 from random import randint, uniform
 from typing import Sequence
 
+import boto3
 import cv2
 import numpy as np
 import requests
@@ -17,6 +18,8 @@ from factory import random as f_random
 from factory.fuzzy import BaseFuzzyAttribute
 from psycopg2._range import Range
 from shapely.geometry import Point, Polygon
+
+client = boto3.client("rekognition")
 
 
 class FuzzyPointGangnam(BaseFuzzyAttribute):
@@ -163,6 +166,32 @@ def detect_face_with_haar_cascade_ml(s3_url: str) -> int:
         flags=cv2.CASCADE_SCALE_IMAGE,
     )
     return len(faces)
+
+
+def detect_faces_with_aws_rekognition(s3_image_url: str):
+    image = url_to_image(s3_image_url)
+    res = client.detect_faces(Image={"Bytes": image})
+    good_results = []
+    small_size_results = []
+    for face in res["FaceDetails"]:
+        if face["Confidence"] < 99:
+            continue
+        if face["BoundingBox"]["Width"] < 0.05:
+            small_size_results.append(face)
+            continue
+        good_results.append(face)
+
+    if len(good_results) == 0:
+        if len(small_size_results) == 0:
+            return False, "얼굴이 나온 사진을 업로드 해주세요!"
+        elif len(small_size_results) == 1:
+            return False, "얼굴이 너무 작아요!"
+        else:
+            return "단체 사진은 올릴 수 없어요!"
+    elif len(good_results) == 1:
+        return True, ""
+    else:
+        return False, "단체 사진은 올릴 수 없어요!"
 
 
 def load_company_domain_file():
