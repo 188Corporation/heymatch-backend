@@ -91,6 +91,8 @@ COPY --chown=django:django . ${APP_HOME}
 
 # make django owner of the WORKDIR directory as well.
 RUN chown django:django ${APP_HOME}
+# make django owner of python package for face libray permission issue
+RUN chown -R django:django /usr/local/lib/python3.11/site-packages
 
 USER django
 
