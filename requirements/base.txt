@@ -30,7 +30,7 @@ django-storages==1.12.3 # https://django-storages.readthedocs.io/en/latest/
 django-ordered-model==3.6 # https://github.com/django-ordered-model/django-ordered-model
 factory-boy==3.2.1  # https://github.com/FactoryBoy/factory_boy
 Shapely==1.8.5  # https://pypi.org/project/Shapely/
-numpy==1.23.4   # https://numpy.org/install/
+numpy==1.24.2   # https://numpy.org/install/
 dj-inmemorystorage==2.1.0   # https://pypi.org/project/dj-inmemorystorage/
 django-extensions==3.1.5  # https://github.com/django-extensions/django-extensions
 django-fernet-fields==0.6  # https://django-fernet-fields.readthedocs.io/en/latest/
