@@ -1,1967 +1,1970 @@
 {
-	"samsung.com": [
-		"삼성전자",
-		"삼성생명",
-		"삼성디스플레이",
-		"삼성화재",
-		"삼성중공업",
-		"삼성물산",
-		"삼성SDI",
-		"삼성전기",
-		"삼성엔지니어링",
-		"삼성SDS",
-		"호텔신라",
-		"에스원",
-		"삼성웰스토리",
-		"삼성전자서비스",
-		"세메스",
-		"삼성전자로지텍",
-		"제일기획",
-		"삼성증권",
-		"삼성카드",
-		"삼성바이오로직스",
-		"삼성바이오에피스",
-		"삼성자산운용"
-	],
-	"kepco.co.kr": [
-		"한국전력공사"
-	],
-	"hyundai.com": [
-		"현대자동차"
-	],
-	"hyundai-motor.com": [
-		"현대자동차"
-	],
-	"hmc.co.kr": [
-		"현대자동차"
-	],
-	"kia.com": [
-		"기아자동차"
-	],
-	"lge.com": [
-		"lg전자"
-	],
-	"sk.com": [
-		"sk에너지",
-		"sk하이닉스",
-		"sk네트웍스",
-		"SK텔레콤",
-		"sk지오센트릭",
-		"SK에코플랜트",
-		"SK인천석유화학",
-		"SK트레이딩인터내셔널",
-		"SK가스",
-		"SK브로드밴드",
-		"SK엔무브",
-		"SK(주)",
-		"SK이노베이션",
-		"SK플래닛",
-		"SKC",
-		"SK마리타임",
-		"부산도시가스",
-		"SK케미칼",
-		"SK실트론",
-		"SK E&S",
-		"SK쉴더스",
-		"SK렌터카",
-		"충청에너지서비스",
-		"SK텔링크",
-		"SK매직",
-		"SK엔펄스",
-		"SK네트웍스서비스"
-	],
-	"gscaltex.com": [
-		"gs칼텍스"
-	],
-	"lgdisplay.com": [
-		"엘지디스플레이"
-	],
-	"posco.com": [
-		"포스코",
-		"포스코홀딩스"
-	],
-	"kogas.or.kr": [
-		"한국가스공사"
-	],
-	"hhi.co.kr": [
-		"현대중공업",
-		"현대미포조선"
-	],
-	"lh.or.kr": [
-		"한국토지주택공사"
-	],
-	"mobis.co.kr": [
-		"현대모비스"
-	],
-	"s-oil.com": [
-		"에쓰오일"
-	],
-	"lgchem.com": [
-		"lg화학",
-		"LG화학"
-	],
-	"kt.com": [
-		"KT",
-		"KT에스테이트",
-		"KT 엔지니어링",
-		"KT텔레캅"
-	],
-	"poscointl.com": [
-		"포스코인터내셔널"
-	],
-	"lotteshopping.com": [
-		"롯데쇼핑",
-		"롯데역사"
-	],
-	"lotte.net": [
-		"롯데쇼핑",
-		"롯데케미칼",
-		"호텔롯데",
-		"롯데건설",
-		"롯데하이마트(주)",
-		"코리아세븐",
-		"롯데글로벌로지스",
-		"롯데손해보험",
-		"롯데칠성음료",
-		"롯데제과",
-		"롯데푸드",
-		"롯데렌탈",
-		"롯데알미늄(주)",
-		"롯데GRS",
-		"롯데역사",
-		"롯데정보통신",
-		"롯데상사",
-		"CS유통",
-		"부산롯데호텔",
-		"롯데지주"
-	],
-	"hanwha.com": [
-		"한화생명",
-		"한화손해보험",
-		"(주)한화",
-		"한화에어로스페이스",
-		"한화임팩트",
-		"한화호텔&리조트",
-		"한화시스템",
-		"한화디펜스",
-		"한화글로벌에셋",
-		"한화에너지(주)",
-		"한화솔루션",
-		"한화갤러리아"
-	],
-	"hi.co.kr": [
-		"현대해상"
-	],
-	"hyundai-steel.com": [
-		"현대제철"
-	],
-	"dbins.co.kr": [
-		"동부화재"
-	],
-	"dsme.co.kr": [
-		"대우조선해양",
-		"대우조선해양건설"
-	],
-	"nonghyup.com": [
-		"NH농협생명",
-		"농협손해보험",
-		"농협경제지주",
-		"농협은행",
-		"농협중앙회"
-	],
-	"kyobo.com": [
-		"교보생명"
-	],
-	"oilbank.co.kr": [
-		"현대오일뱅크"
-	],
-	"gmdat.com": [
-		"한국지엠"
-	],
-	"gm.com": [
-		"한국지엠"
-	],
-	"glovis.net": [
-		"현대글로비스"
-	],
-	"koreanair.com": [
-		"대한항공"
-	],
-	"emart.com": [
-		"이마트"
-	],
-	"kbinsure.co.kr": [
-		"KB손해보험"
-	],
-	"lguplus.co.kr": [
-		"lg유플러스"
-	],
-	"hdec.co.kr": [
-		"현대건설"
-	],
-	"khnp.co.kr": [
-		"한국수력원자력"
-	],
-	"daewooenc.com": [
-		"대우건설"
-	],
-	"gsconst.co.kr": [
-		"GS건설"
-	],
-	"ex.co.kr": [
-		"한국도로공사"
-	],
-	"lottechem.com": [
-		"롯데케미칼"
-	],
-	"hpc.co.kr": [
-		"롯데케미칼"
-	],
-	"koreanre.co.kr": [
-		"코리안리"
-	],
-	"hanwha-total.com": [
-		"한화토탈에너지스"
-	],
-	"daelim.co.kr": [
-		"DL",
-		"(주)대림"
-	],
-	"hyosung.com": [
-		"효성",
-		"진흥기업",
-		"효성ITX"
-	],
-	"hyundai-wia.com": [
-		"현대위아"
-	],
-	"hanjin.com": [
-		"한진해운"
-	],
-	"homeplus.co.kr": [
-		"홈플러스"
-	],
-	"meritz.co.kr": [
-		"메리츠화재",
-		"메리츠증권"
-	],
-	"lsnikko.com": [
-		"LS MnM"
-	],
-	"poscoenc.com": [
-		"포스코건설"
-	],
-	"gsretail.com": [
-		"GS리테일"
-	],
-	"hec.co.kr": [
-		"현대엔지니어링"
-	],
-	"heungkuklife.co.kr": [
-		"흥국생명"
-	],
-	"lginnotek.com": [
-		"LG이노텍"
-	],
-	"hmm21.com": [
-		"HMM"
-	],
-	"shinhan.com": [
-		"신한생명",
-		"신한투자증권",
-		"신한은행",
-		"제주은행",
-		"신한자산운용"
-	],
-	"korail.com": [
-		"한국철도공사"
-	],
-	"flyasiana.com": [
-		"아시아나항공"
-	],
-	"doosan.com": [
-		"두산에너빌리티",
-		"(주)두산",
-		"두산건설",
-		"HSD엔진"
-	],
-	"renaultkoreaM.com": [
-		"르노코리아자동차"
-	],
-	"kosep.co.kr": [
-		"한국남동발전"
-	],
-	"yncc.co.kr": [
-		"여천NCC"
-	],
-	"orangelife.co.kr": [
-		"오렌지라이프생명"
-	],
-	"myangel.co.kr": [
-		"동양생명"
-	],
-	"cj.net": [
-		"CJ제일제당",
-		"CJ대한통운",
-		"CJ프레시웨이",
-		"CJ E&M",
-		"CJ푸드빌",
-		"CJ올리브네트웍스",
-		"CJ CGV"
-	],
-	"hshi.co.kr": [
-		"현대삼호중공업"
-	],
-	"dongkuk.com": [
-		"동국제강",
-		"DK유아이엘"
-	],
-	"kospo.co.kr": [
-		"한국남부발전"
-	],
-	"bgf.co.kr": [
-		"BGF"
-	],
-	"insurance.co.kr": [
-		"흥국화재"
-	],
-	"개인메일": [
-		"흥국화재",
-		"백제약품"
-	],
-	"iwest.co.kr": [
-		"한국서부발전"
-	],
-	"miraeasset.com": [
-		"미래에셋생명보험",
-		"미래에셋증권"
-	],
-	"koreainc.co.kr": [
-		"고려아연"
-	],
-	"ewp.co.kr": [
-		"한국동서발전"
-	],
-	"dnocorp.com": [
-		"디앤오"
-	],
-	"komipo.co.kr": [
-		"한국중부발전"
-	],
-	"ekr.or.kr": [
-		"한국농어촌공사"
-	],
-	"himart.co.kr": [
-		"롯데하이마트(주)"
-	],
-	"kdblife.co.kr": [
-		"KDB생명보험"
-	],
-	"e1.co.kr": [
-		"E1"
-	],
-	"amorepacific.com": [
-		"아모레퍼시픽"
-	],
-	"lxintl.co.kr": [
-		"LX인터내셔널"
-	],
-	"kwater.or.kr": [
-		"한국수자원공사"
-	],
-	"hyundaicorp.com": [
-		"현대코퍼레이션"
-	],
-	"hyundai-di.com": [
-		"현대두산인프라코어"
-	],
-	"powertech.co.kr": [
-		"현대파워텍"
-	],
-	"smotor.com": [
-		"쌍용자동차"
-	],
-	"kolon.com": [
-		"코오롱인더스트리",
-		"코오롱글로벌",
-		"코오롱글로텍",
-		"코오롱패션",
-		"코오롱베니트"
-	],
-	"hankookn.com": [
-		"한국타이어"
-	],
-	"hdc-dvp.com": [
-		"HDC현대산업개발"
-	],
-	"hanwha.co.kr": [
-		"한화케미칼",
-		"(주)한화"
-	],
-	"costcokr.com": [
-		"코스트코코리아"
-	],
-	"kkpc.com": [
-		"금호석유화학"
-	],
-	"halla.com": [
-		"에이치엘만도(주)",
-		"HL D&I 한라"
-	],
-	"hyundai-rotem.co.kr": [
-		"현대로템"
-	],
-	"kccworld.co.kr": [
-		"KCC"
-	],
-	"lgcare.co.kr": [
-		"LG생활건강"
-	],
-	"lscns.com": [
-		"LS전선"
-	],
-	"koreaaero.com": [
-		"한국항공우주"
-	],
-	"samchully.co.kr": [
-		"삼천리",
-		"에스파워"
-	],
-	"ktng.com": [
-		"KT&G"
-	],
-	"lotteins.co.kr": [
-		"롯데손해보험"
-	],
-	"imarketkorea.com": [
-		"아이마켓코리아"
-	],
-	"daelimcorp.co.kr": [
-		"(주)대림"
-	],
-	"i-sh.co.kr": [
-		"서울주택도시공사"
-	],
-	"gh.or.kr": [
-		"경기도시공사"
-	],
-	"gico.or.kr": [
-		"경기도시공사"
-	],
-	"abllife.co.kr": [
-		"ABL생명"
-	],
-	"lghausys.com": [
-		"LX하우시스"
-	],
-	"hanonsystems.co.kr": [
-		"한온시스템"
-	],
-	"eukor.com": [
-		"유코카캐리어스"
-	],
-	"hyundai-transys.com": [
-		"현대트랜시스"
-	],
-	"lgcns.com": [
-		"LG CNS"
-	],
-	"lotteliquor.com": [
-		"롯데칠성음료"
-	],
-	"oci.co.kr": [
-		"OCI"
-	],
-	"coway.co.kr": [
-		"코웨이"
-	],
-	"hyundaicosmo.com": [
-		"현대코스모"
-	],
-	"navercorp.com": [
-		"네이버",
-		"네이버클라우드"
-	],
-	"idblife.com": [
-		"DB생명보험"
-	],
-	"kshipbuilding.com": [
-		"K조선"
-	],
-	"eland.co.kr": [
-		"이랜드리테일",
-		"이랜드월드",
-		"홈플러스",
-		"이랜드파크"
-	],
-	"hhic-holdings.com": [
-		"한진중공업홀딩스"
-	],
-	"poongsan.co.kr": [
-		"풍산"
-	],
-	"kdhc.co.kr": [
-		"한국지역난방공사"
-	],
-	"metlife.com": [
-		"메트라이프생명"
-	],
-	"gscorop.com": [
-		"GS글로벌"
-	],
-	"poscoenergy.com": [
-		"포스코에너지"
-	],
-	"kblife.co.kr": [
-		"KB라이프생명"
-	],
-	"lignex1.com": [
-		"LIG넥스원"
-	],
-	"sgic.co.kr": [
-		"서울보증보험"
-	],
-	"airport.kr": [
-		"인천국제공항공사"
-	],
-	"ottogi.co.kr": [
-		"오뚜기"
-	],
-	"seah.co.kr": [
-		"세아베스틸",
-		"세아창원특수강"
-	],
-	"taekwang.co.kr": [
-		"태광산업"
-	],
-	"panoceon.com": [
-		"팬오션"
-	],
-	"ls-electric.com": [
-		"LS ELECTRIC"
-	],
-	"lsis.com": [
-		"LS ELECTRIC"
-	],
-	"lsis.biz": [
-		"LS ELECTRIC"
-	],
-	"kpic.co.kr": [
-		"대한유화"
-	],
-	"isungdong.com": [
-		"HSG성동조선"
-	],
-	"hite.com": [
-		"하이트진로"
-	],
-	"hitejinro.com": [
-		"하이트진로"
-	],
-	"daesang.com": [
-		"대상(주)",
-		"대상"
-	],
-	"hanssem.com": [
-		"한샘"
-	],
-	"kbfg.com": [
-		"KB생명보험",
-		"KB증권",
-		"국민은행"
-	],
-	"kefico.co.kr": [
-		"현대케피코"
-	],
-	"dongbu.com": [
-		"KG스틸",
-		"DB메탈"
-	],
-	"hanjin.co.kr": [
-		"한진"
-	],
-	"seoulgas.co.kr": [
-		"서울도시가스"
-	],
-	"kumhoenc.com": [
-		"금호건설"
-	],
-	"fubonhyundai.com": [
-		"푸본현대생명"
-	],
-	"y-k.co.kr": [
-		"유한킴벌리"
-	],
-	"booyoung.co.kr": [
-		"부영주택"
-	],
-	"shinsegae.com": [
-		"신세계",
-		"신세계건설",
-		"신세계푸드",
-		"지마켓",
-		"SCK컴퍼니"
-	],
-	"hyundaimall.com": [
-		"현대그린푸드"
-	],
-	"nexentire.co.kr": [
-		"넥센타이어"
-	],
-	"hiplaza.co.kr": [
-		"하이프라자"
-	],
-	"lgfashion.co.kr": [
-		"LF"
-	],
-	"lfcorp.com": [
-		"LF"
-	],
-	"seahsteel.co.kr": [
-		"세아제강"
-	],
-	"ssyc.co.kr": [
-		"쌍용씨앤이"
-	],
-	"dongwon.com": [
-		"동원F&B",
-		"동원로엑스",
-		"동원시스템즈"
-	],
-	"skshipping.com": [
-		"SK마리타임"
-	],
-	"kyungshin.co.kr": [
-		"경신"
-	],
-	"stx.co.kr": [
-		"STX"
-	],
-	"onestx.com": [
-		"STX",
-		"STX중공업",
-		"STX엔진",
-		"STX건설"
-	],
-	"taihan.com": [
-		"대한전선"
-	],
-	"ourhome.co.kr": [
-		"아워홈"
-	],
-	"hanshinc.com": [
-		"한신공영"
-	],
-	"hldni.com": [
-		"HL D&I 한라"
-	],
-	"hdel.co.kr": [
-		"현대엘리베이터"
-	],
-	"taekwang.com": [
-		"티케이지태광"
-	],
-	"knoc.co.kr": [
-		"한국석유공사"
-	],
-	"maeil.com": [
-		"매일유업"
-	],
-	"swhitech.com": [
-		"성우하이텍"
-	],
-	"dcg.co.kr": [
-		"코원에너지서비스"
-	],
-	"yura.co.kr": [
-		"유라코퍼레이션"
-	],
-	"thehyundai.com": [
-		"현대백화점",
-		"현대홈쇼핑",
-		"현대L&C",
-		"한섬",
-		"한무쇼핑"
-	],
-	"lxpantos.com": [
-		"LX판토스"
-	],
-	"mggenins.com": [
-		"MG손해보험"
-	],
-	"seoulmetro.co.kr": [
-		"서울교통공사"
-	],
-	"lghv.net": [
-		"LG헬로비전"
-	],
-	"kps.co.kr": [
-		"한전KPS"
-	],
-	"samyang.com": [
-		"삼양사"
-	],
-	"dgbfn.com": [
-		"DGB생명",
-		"대구은행",
-		"DGB금융지주"
-	],
-	"hyundai-autoever.com": [
-		"현대오토에버"
-	],
-	"youngone.com": [
-		"영원무역"
-	],
-	"ts.co.kr": [
-		"대한제당"
-	],
-	"krcon.co.kr": [
-		"계룡건설산업"
-	],
-	"yuhan.co.kr": [
-		"유한양행"
-	],
-	"semes.com": [
-		"세메스"
-	],
-	"hanmi.co.kr": [
-		"한미약품"
-	],
-	"ypzinc.co.kr": [
-		"영풍"
-	],
-	"ccbk.co.kr": [
-		"코카콜라음료"
-	],
-	"lgcare.com": [
-		"코카콜라음료"
-	],
-	"estra-automotive.com": [
-		"에스트라오토모티브시스템"
-	],
-	"seoyoneh.com": [
-		"서연이화"
-	],
-	"ih.co.kr": [
-		"인천도시공사"
-	],
-	"idtc.co.kr": [
-		"인천도시공사"
-	],
-	"iudc.co.kr": [
-		"인천도시공사"
-	],
-	"skens.com": [
-		"부산도시가스",
-		"SK E&S"
-	],
-	"hanil.com": [
-		"한일홀딩스"
-	],
-	"humaxdigital.com": [
-		"휴맥스"
-	],
-	"ihoban.co.kr": [
-		"호반건설"
-	],
-	"isu.co.kr": [
-		"이수화학",
-		"이수건설"
-	],
-	"seohee.co.kr": [
-		"서희건설"
-	],
-	"ystns.co.kr": [
-		"서희건설",
-		"유성티엔에스"
-	],
-	"hansoll.com": [
-		"한솔섬유"
-	],
-	"hycorp.co.kr": [
-		"(주)한양"
-	],
-	"iddp.co.kr": [
-		"동두천드림파워"
-	],
-	"taeyoung.com": [
-		"태영건설"
-	],
-	"lotteal.co.kr": [
-		"롯데알미늄(주)"
-	],
-	"lsmtron.com": [
-		"LS엠트론"
-	],
-	"smalipgf.co.kr": [
-		"SPC삼립"
-	],
-	"seahbesteel.co.kr": [
-		"세아창원특수강"
-	],
-	"kccworld.net": [
-		"KCC건설"
-	],
-	"poscoen.com": [
-		"포스코엔지니어링"
-	],
-	"acriche.com": [
-		"서울반도체"
-	],
-	"socled.com": [
-		"서울반도체"
-	],
-	"ssyenc.com": [
-		"쌍용건설"
-	],
-	"huvis.com": [
-		"휴비스"
-	],
-	"kgc.co.kr": [
-		"한국인삼공사"
-	],
-	"sinokor.co.kr": [
-		"장금상선"
-	],
-	"gccorp.com": [
-		"녹십자"
-	],
-	"greencross.com": [
-		"녹십자"
-	],
-	"polymirae.com": [
-		"폴리미래"
-	],
-	"sikorea.co.kr": [
-		"신세계인터내셔날"
-	],
-	"netmarble.com": [
-		"넷마블"
-	],
-	"korea.com": [
-		"대성에너지"
-	],
-	"farmsco.com": [
-		"팜스코"
-	],
-	"kakaocorp.com": [
-		"카카오"
-	],
-	"emarateveryday.co.kr": [
-		"이마트에브리데이"
-	],
-	"idaehan.com": [
-		"대한제강"
-	],
-	"kpb.co.kr": [
-		"금호피앤비화학"
-	],
-	"ssts.co.kr": [
-		"신성통상"
-	],
-	"nexon.co.kr": [
-		"넥슨코리아"
-	],
-	"khmis.co.kr": [
-		"KH에너지"
-	],
-	"bando.co.kr": [
-		"반도홀딩스"
-	],
-	"ibki.co.kr": [
-		"IBK연금보험"
-	],
-	"poscoict.co.kr": [
-		"포스코디엑스"
-	],
-	"poscoict.com": [
-		"포스코디엑스"
-	],
-	"heung-a.co.kr": [
-		"흥아해운"
-	],
-	"daesung.co.kr": [
-		"대성산업"
-	],
-	"daewoong.co.kr": [
-		"대웅제약"
-	],
-	"ebay.com": [
-		"지마켓"
-	],
-	"bing.co.kr": [
-		"빙그레"
-	],
-	"halim.com": [
-		"하림"
-	],
-	"harimholdings.com": [
-		"하림지주"
-	],
-	"poscocnc.com": [
-		"포스코스틸리온"
-	],
-	"poscos.co.kr": [
-		"포스코스틸리온"
-	],
-	"etecenc.com": [
-		"이테크건설"
-	],
-	"ht.co.kr": [
-		"해태제과식품"
-	],
-	"isdongseo.co.kr": [
-		"아이에스동서"
-	],
-	"istarbucks.co.kr": [
-		"SCK컴퍼니"
-	],
-	"dwku.com": [
-		"대원강업"
-	],
-	"sbs.co.kr": [
-		"SBS"
-	],
-	"polaris-shipping.com": [
-		"폴라리스쉬핑"
-	],
-	"pocheonpower.com": [
-		"포천파워"
-	],
-	"pulmuone.com": [
-		"풀무원식품"
-	],
-	"dbcons.co.kr": [
-		"대방건설"
-	],
-	"chinhung.co.kr": [
-		"진흥기업"
-	],
-	"daeryuens.co.kr": [
-		"대륜E&S"
-	],
-	"orionworld.com": [
-		"오리온"
-	],
-	"kukdo.com": [
-		"국도화학"
-	],
-	"livart.co.kr": [
-		"현대리바트"
-	],
-	"hsdengine.com": [
-		"HSD엔진"
-	],
-	"lsnetworks.com": [
-		"LS네트웍스"
-	],
-	"smrt.co.kr": [
-		"서울특별시도시철도공사"
-	],
-	"bngsteel.com": [
-		"현대비앤지스틸"
-	],
-	"iljin.co.kr": [
-		"일진전기"
-	],
-	"kisco.co.kr": [
-		"KISCO홀딩스"
-	],
-	"hanafn.com": [
-		"하나생명",
-		"하나증권",
-		"하나은행"
-	],
-	"myeco.co.kr": [
-		"에코플라스틱"
-	],
-	"bmc.busan.kr": [
-		"부산도시공사"
-	],
-	"kleannara.com": [
-		"깨끗한나라"
-	],
-	"gsenr.com": [
-		"GS E&R"
-	],
-	"panpacific.co.kr": [
-		"태평양물산"
-	],
-	"jbcitygas.com": [
-		"제이비"
-	],
-	"dbhitek.com": [
-		"동부하이텍"
-	],
-	"tkchemi.co.kr": [
-		"TK케미칼"
-	],
-	"kepco-enc.com": [
-		"한국전력기술"
-	],
-	"sscem.com": [
-		"성신양회"
-	],
-	"dongbu.co.kr": [
-		"동부건설"
-	],
-	"deutschmotors.com": [
-		"도이치모터스"
-	],
-	"wtjb.net": [
-		"웅진씽크빅"
-	],
-	"dwml.co.kr": [
-		"동원산업"
-	],
-	"ltmetal.co.kr": [
-		"엘티메탈"
-	],
-	"stxengine.co.kr": [
-		"STX엔진"
-	],
-	"gspower.co.kr": [
-		"GS파워"
-	],
-	"jeilfeed.co.kr": [
-		"제일사료"
-	],
-	"sw.co.kr": [
-		"신원"
-	],
-	"skylife.co.kr": [
-		"KT Skylife"
-	],
-	"moorim.co.kr": [
-		"무림P&P",
-		"무림페이퍼"
-	],
-	"jdcenter.com": [
-		"제주국제자유도시개발센터"
-	],
-	"handscorp.co.kr": [
-		"핸드코퍼레이션"
-	],
-	"gseps.com": [
-		"GS EPS"
-	],
-	"lsautomotive.com": [
-		"신대성전기"
-	],
-	"dsec.co.kr": [
-		"신대성전기"
-	],
-	"ncsoft.com": [
-		"엔씨소프트"
-	],
-	"icgas.co.kr": [
-		"인천도시가스"
-	],
-	"jejuair.net": [
-		"제주항공"
-	],
-	"polyol.co.kr": [
-		"KPX케미칼"
-	],
-	"dlcon.co.kr": [
-		"디엘건설"
-	],
-	"daehanship.com": [
-		"대한조선"
-	],
-	"seahsp.co.kr": [
-		"세아특수강"
-	],
-	"hwashin.co.kr": [
-		"화신"
-	],
-	"sj.co.kr": [
-		"선진"
-	],
-	"dreample.kr": [
-		"드림플"
-	],
-	"sl.co.kr": [
-		"에스엘"
-	],
-	"ckdpharm.com": [
-		"종근당"
-	],
-	"ckd-holdings.com": [
-		"종근당홀딩스"
-	],
-	"brassone.com": [
-		"대창"
-	],
-	"farmhannong.com": [
-		"팜한농"
-	],
-	"h-lineshipping.com": [
-		"에이치라인해운"
-	],
-	"huchems.com": [
-		"TKG휴켐스"
-	],
-	"megamart.com": [
-		"메가마트"
-	],
-	"jeonjupaper.com": [
-		"전주원파워"
-	],
-	"myunghwa.com": [
-		"명화공업"
-	],
-	"lg.com": [
-		"(주)LG"
-	],
-	"lg.co.kr": [
-		"(주)LG"
-	],
-	"ekdp.com": [
-		"광동제약"
-	],
-	"dwlogistics.co.kr": [
-		"대우로지스틱스"
-	],
-	"donga.co.kr": [
-		"동아에스티",
-		"동아쏘시오홀딩스"
-	],
-	"sampyo.co.kr": [
-		"삼표산업",
-		"삼표시멘트"
-	],
-	"eugenes.co.kr": [
-		"유진기업"
-	],
-	"gastopia.co.kr": [
-		"DIG에어가스"
-	],
-	"sebang.com": [
-		"세방"
-	],
-	"kne.co.kr": [
-		"경남기업"
-	],
-	"hygas.co.kr": [
-		"해양도시가스",
-		"미래엔서해에너지"
-	],
-	"cncity.co.kr": [
-		"씨엔씨티에너지"
-	],
-	"kobiotech.com": [
-		"엑서지21"
-	],
-	"songwon.com": [
-		"송원산업"
-	],
-	"adt.co.kr": [
-		"SK쉴더스"
-	],
-	"duco.or.kr": [
-		"대구도시개발공사"
-	],
-	"hankooktire.com": [
-		"한국앤컴퍼니"
-	],
-	"daemyung.com": [
-		"소노인터내셔널"
-	],
-	"smilegate.com": [
-		"스마일게이트엔터테인먼트"
-	],
-	"soulbrain.co.kr": [
-		"솔브레인홀딩스"
-	],
-	"celltrion.com": [
-		"셀트리온"
-	],
-	"celltrionhc.com": [
-		"셀트리온헬스케어"
-	],
-	"hsnetw.com": [
-		"화승네트웍스"
-	],
-	"dongbang.co.kr": [
-		"동방"
-	],
-	"kr.panasonic.com": [
-		"파나소닉디바이스세일즈코리아"
-	],
-	"hansol.com": [
-		"한솔테크닉스",
-		"한솔로지스틱스",
-		"한솔제지",
-		"한솔케미칼"
-	],
-	"unid.co.kr": [
-		"유니드"
-	],
-	"lxmma.com": [
-		"LX MMA"
-	],
-	"lgmma.com": [
-		"LX MMA"
-	],
-	"@etland.co.kr": [
-		"에스와이에스리테일"
-	],
-	"poscopns.com": [
-		"포스코P&S"
-	],
-	"hdesi.co.kr": [
-		"현대스틸산업"
-	],
-	"kiswire.com": [
-		"고려제강"
-	],
-	"kolmar.co.kr": [
-		"한국콜마"
-	],
-	"7luck.com": [
-		"그랜드코리아레저"
-	],
-	"blackyak.kr": [
-		"블랙야크"
-	],
-	"yakjin.com": [
-		"약진통상"
-	],
-	"kmni.co.kr": [
-		"케이엠앤아이"
-	],
-	"korealines.co.kr": [
-		"대한해운"
-	],
-	"gsneotek.co.kr": [
-		"GS네오텍"
-	],
-	"sfasemicon.com": [
-		"SFA반도체"
-	],
-	"daebo21.co.kr": [
-		"대보건설"
-	],
-	"hyundaiwelding.com": [
-		"현대종합금속"
-	],
-	"chosunhotel.co.kr": [
-		"신세계조선호텔"
-	],
-	"interflex.co.kr": [
-		"인터플렉스"
-	],
-	"e-jeil.co.kr": [
-		"제일건설"
-	],
-	"seojin.com": [
-		"서진산업"
-	],
-	"samdongkorea.com": [
-		"삼동"
-	],
-	"hwasung.com": [
-		"화성산업"
-	],
-	"ltsambo.co.kr": [
-		"LT삼보"
-	],
-	"gsentec.com": [
-		"GS엔텍"
-	],
-	"shindongah.co.kr": [
-		"신동아건설"
-	],
-	"compuzone.co.kr": [
-		"컴퓨존"
-	],
-	"chosunref.co.kr": [
-		"조선내화"
-	],
-	"daesang.co.kr": [
-		"대상"
-	],
-	"inno-n.com": [
-		"HK이노엔"
-	],
-	"sjku.co.kr": [
-		"세종공업"
-	],
-	"jinair.com": [
-		"진에어"
-	],
-	"komsco.com": [
-		"한국조폐공사"
-	],
-	"aekyung.kr": [
-		"애경산업",
-		"애경케미칼",
-		"AK에스앤디"
-	],
-	"ildong.com": [
-		"일동홀딩스"
-	],
-	"wonik.com": [
-		"원익홀딩스"
-	],
-	"wonik.co.kr": [
-		"원익홀딩스"
-	],
-	"samwha.com": [
-		"삼화페인트공업"
-	],
-	"spi.co.kr": [
-		"삼화페인트공업"
-	],
-	"dansuk.co.kr": [
-		"단석산업"
-	],
-	"kdn.com": [
-		"한전KDN"
-	],
-	"hanafn.co": [
-		"하나손해보험"
-	],
-	"gmb.co.kr": [
-		"GMB코리아"
-	],
-	"sajo.co.kr": [
-		"사조동아원",
-		"사조대림",
-		"사조산업"
-	],
-	"kodoco.com": [
-		"사조동아원"
-	],
-	"sambu.co.kr": [
-		"삼부토건"
-	],
-	"paradise.biz": [
-		"파라다이스"
-	],
-	"hisntd.com": [
-		"SNT다이내믹스"
-	],
-	"bgdc.co.kr": [
-		"경상북도개발공사"
-	],
-	"yojin.co.kr": [
-		"요진건설산업"
-	],
-	"dayou.co.kr": [
-		"대유에이텍"
-	],
-	"homecc.com": [
-		"KCC글라스"
-	],
-	"taewoometal.co.kr": [
-		"태우"
-	],
-	"dlive.kr": [
-		"딜라이브"
-	],
-	"youlchon.com": [
-		"율촌화학"
-	],
-	"hlcompany.com": [
-		"HL클레무브"
-	],
-	"jw-group.co.kr": [
-		"JW중외제약"
-	],
-	"cwp.co.kr": [
-		"JW중외제약"
-	],
-	"seohan.com": [
-		"서한산업"
-	],
-	"daewoncable.co.kr": [
-		"대원전선"
-	],
-	"dwcable.com": [
-		"대원전선"
-	],
-	"crown.co.kr": [
-		"크라운해태홀딩스"
-	],
-	"hspmtech.com": [
-		"희성피엠텍"
-	],
-	"airport.co.kr": [
-		"한국공항공사"
-	],
-	"daejooheavy.com": [
-		"대주중공업"
-	],
-	"dongwha.com": [
-		"동화기업"
-	],
-	"prsb.co.kr": [
-		"푸른상호저축은행"
-	],
-	"busanpa.com": [
-		"부산항만공사"
-	],
-	"innocean.com": [
-		"이노션"
-	],
-	"noroo.co.kr": [
-		"노루페인트"
-	],
-	"noroo.com": [
-		"노루페인트"
-	],
-	"polychem.co.kr": [
-		"금호폴리켐"
-	],
-	"nobland.com": [
-		"노브랜드"
-	],
-	"asiacement.co.kr": [
-		"아세아시멘트"
-	],
-	"hyungji.com": [
-		"패션그룹형지"
-	],
-	"com2us.com": [
-		"컴투스"
-	],
-	"com2usholdings.com": [
-		"컴투스홀딩스"
-	],
-	"gamevil.com": [
-		"컴투스홀딩스"
-	],
-	"kibosteel.co.kr": [
-		"기보스틸"
-	],
-	"aju.co.kr": [
-		"아주산업"
-	],
-	"hyundai-ss.com": [
-		"현대종합특수강"
-	],
-	"hyundai-specialsteel.com": [
-		"현대종합특수강"
-	],
-	"nsmall.com": [
-		"NS쇼핑"
-	],
-	"nsseshop.com": [
-		"NS쇼핑"
-	],
-	"farmstory.co.kr": [
-		"팜스토리"
-	],
-	"gmcc.co.kr": [
-		"광주광역시도시공사"
-	],
-	"boryung.co.kr": [
-		"보령"
-	],
-	"shym.co.kr": [
-		"신영"
-	],
-	"shinanbox.com": [
-		"신안피앤씨"
-	],
-	"dtrkorea.co.kr": [
-		"디엔오토모티브"
-	],
-	"simmtech.co.kr": [
-		"심텍홀딩스"
-	],
-	"dmc.co.kr": [
-		"DL모터스"
-	],
-	"hanapw.com": [
-		"평택에너지서비스"
-	],
-	"ptes.co.kr": [
-		"평택에너지서비스"
-	],
-	"namsung.co.kr": [
-		"남성해운"
-	],
-	"interpark.com": [
-		"그래디언트"
-	],
-	"kumhobus.com": [
-		"금호고속"
-	],
-	"airbusan.com": [
-		"에어부산"
-	],
-	"wm.co.kr": [
-		"우미건설"
-	],
-	"carrier.co.kr": [
-		"오텍캐리어"
-	],
-	"seoulfeed.com": [
-		"한국축산의희망서울사료"
-	],
-	"cosmax.com": [
-		"코스맥스"
-	],
-	"asiapaper.co.kr": [
-		"아세아제지"
-	],
-	"hobanenc.co.kr": [
-		"호반산업"
-	],
-	"fnfcorp.com": [
-		"F&F"
-	],
-	"ns-oil.co.kr": [
-		"남선석유"
-	],
-	"etevers.com": [
-		"에티버스"
-	],
-	"hanatour.com": [
-		"하나투어"
-	],
-	"yes24.com": [
-		"YES24"
-	],
-	"handok.com": [
-		"한독"
-	],
-	"husteel.com": [
-		"휴스틸"
-	],
-	"tym.world": [
-		"TYM"
-	],
-	"taeyangmetal.com": [
-		"태양금속공업"
-	],
-	"nvhkorea.com": [
-		"NVH코리아"
-	],
-	"kinfa.or.kr": [
-		"국민행복기금",
-		"서민금융진흥원"
-	],
-	"bhi.co.kr": [
-		"BHI"
-	],
-	"kumkangkind.com": [
-		"금강공업"
-	],
-	"skcsolmics.com": [
-		"SK엔펄스"
-	],
-	"namsun.co.kr": [
-		"남선알미늄"
-	],
-	"dkis.co.kr": [
-		"동국산업"
-	],
-	"tccsteel.com": [
-		"TCC스틸"
-	],
-	"krindus.co.kr": [
-		"KR산업"
-	],
-	"fila.co.kr": [
-		"휠라홀딩스"
-	],
-	"fila.com": [
-		"휠라홀딩스"
-	],
-	"cammsys.net": [
-		"캠시스"
-	],
-	"dseltec.co.kr": [
-		"DH오토웨어"
-	],
-	"finetec.co.kr": [
-		"동성화인텍"
-	],
-	"hlgroup.co.kr": [
-		"디젠"
-	],
-	"ksbj.co.kr": [
-		"금성백조주택"
-	],
-	"tongyang.co.kr": [
-		"동양"
-	],
-	"kakaoent.com": [
-		"카카오엔터테인먼트"
-	],
-	"chosun.com": [
-		"조선일보"
-	],
-	"dicorp.co.kr": [
-		"디아이씨"
-	],
-	"ondutyfree.com": [
-		"동화면세점"
-	],
-	"roche.com": [
-		"한국로슈"
-	],
-	"copperlee.co.kr": [
-		"능원금속공업"
-	],
-	"e-dgpower.co.kr": [
-		"대구그린파워"
-	],
-	"phhc.co.kr": [
-		"평화산업"
-	],
-	"sap.com": [
-		"SAP코리아"
-	],
-	"rinnai.co.kr": [
-		"린나이코리아"
-	],
-	"yongsan.biz": [
-		"용산"
-	],
-	"gsk.com": [
-		"GSK코리아"
-	],
-	"approtium.com": [
-		"어프로티움"
-	],
-	"kyungbang.co.kr": [
-		"경방"
-	],
-	"astrazeneca.com": [
-		"한국아스트라제네카"
-	],
-	"scplant.com": [
-		"성창E&C"
-	],
-	"booyoung.cokr": [
-		"부영"
-	],
-	"arex.or.kr": [
-		"공항철도"
-	],
-	"annextele.com": [
-		"에넥스텔레콤"
-	],
-	"namkwang.co.kr": [
-		"남광토건"
-	],
-	"bayer.com": [
-		"바이엘코리아"
-	],
-	"s-energy.com": [
-		"에스에너지"
-	],
-	"kunwha.net": [
-		"건화"
-	],
-	"daemyoung.com": [
-		"대명건설"
-	],
-	"sgc.co.kr": [
-		"SGC에너지"
-	],
-	"kci.co.kr": [
-		"한국컴퓨터지주"
-	],
-	"esamilcns.com": [
-		"삼일씨엔에스"
-	],
-	"koscom.co.kr": [
-		"코스콤"
-	],
-	"donga.com": [
-		"동아일보"
-	],
-	"han-sung.co.kr": [
-		"한성기업"
-	],
-	"humetro.busan.kr": [
-		"부산교통공사"
-	],
-	"estarjet.com": [
-		"이스타항공"
-	],
-	"hojeon.co.kr": [
-		"호전실업"
-	],
-	"hwst.co.kr": [
-		"해원에스티"
-	],
-	"daesunship.co.kr": [
-		"대선조선"
-	],
-	"itaekyung.com": [
-		"농심태경"
-	],
-	"iljin.com": [
-		"일진베어링"
-	],
-	"google.com": [
-		"구글코리아"
-	],
-	"netflix.com": [
-		"넷플릭스코리아"
-	],
-	"bmw.co.kr": [
-		"BMW코리아"
-	],
-	"starbucks.co.kr": [
-		"스타벅스코리아"
-	],
-	"apple.com": [
-		"애플코리아"
-	],
-	"?": [
-		"디즈니코리아"
-	],
-	"pfizer.com": [
-		"한국화이자"
-	],
-	"nike.com": [
-		"나이키코리아"
-	],
-	"microsoft.com": [
-		"한국마이크로소프트"
-	],
-	"chanel.com": [
-		"샤넬코리아"
-	],
-	"lgensol.com": [
-		"LG에너지솔루션"
-	],
-	"kiwoom.com": [
-		"키움증권"
-	],
-	"koreainvesment.com": [
-		"한국투자증권"
-	],
-	"nhqv.com": [
-		"NH투자증권"
-	],
-	"daishin.com": [
-		"대신증권"
-	],
-	"bnkfn.co.kr": [
-		"BNK투자증권"
-	],
-	"eugenefn.com": [
-		"유진투자증권"
-	],
-	"ebestsec.co.kr": [
-		"이베스트투자증권"
-	],
-	"hi-ib.com": [
-		"하이투자증권"
-	],
-	"hygood.co.kr": [
-		"한양증권"
-	],
-	"bookook.co.kr": [
-		"부국증권"
-	],
-	"heungkuksec.co.kr": [
-		"흥국증권"
-	],
-	"daolfn.com": [
-		"다올투자증권"
-	],
-	"kakaobank.com": [
-		"카카오뱅크"
-	],
-	"citi.com": [
-		"한국씨티은행"
-	],
-	"wooribank.com": [
-		"우리은행"
-	],
-	"ibk.co.kr": [
-		"IBK기업은행"
-	],
-	"kdb.co.kr": [
-		"산업은행"
-	],
-	"sc.com": [
-		"SC제일은행"
-	],
-	"bnkfg.co.kr": [
-		"BNK부산은행"
-	],
-	"busanbank.co.kr": [
-		"BNK부산은행"
-	],
-	"suhyup.co.kr": [
-		"수협은행"
-	],
-	"knbank.co.kr": [
-		"경남은행"
-	],
-	"toss.im": [
-		"비바리퍼블리카"
-	],
-	"tossbank.com": [
-		"토스뱅크"
-	],
-	"jbbank.co.kr": [
-		"전북은행"
-	],
-	"kbanknow.com": [
-		"케이뱅크"
-	],
-	"bok.or.kr": [
-		"한국은행"
-	],
-	"koreaexim.go.kr": [
-		"한국수출입은행"
-	],
-	"fss.or.kr": [
-		"금융감독원"
-	],
-	"kita.or.kr": [
-		"무역협회"
-	],
-	"sangsanginib.com": [
-		"상상인증권"
-	],
-	"leading.co.kr": [
-		"리딩투자증권"
-	],
-	"kasset.co.kr": [
-		"코리아에셋투자증권"
-	],
-	"sbisb.co.kr": [
-		"SBI저축은행"
-	],
-	"aprofg.com": [
-		"OK저축은행"
-	],
-	"shinahn.com": [
-		"신한카드"
-	],
-	"hlb-ls.com": [
-		"에이치엘비생명과학"
-	],
-	"mghat.com": [
-		"무궁화신탁"
-	],
-	"lgchem.co.kr": [
-		"LG화학"
-	],
-	"cbs.co.kr": [
-		"CBS"
-	],
-	"kosaf.go.kr": [
-		"한국장학재단"
-	],
-	"pwsc.co.kr": [
-		"태웅로직스"
-	],
-	"21csb.com": [
-		"21세기조선"
-	],
-	"bnkfg.com": [
-		"BNK금융지주"
-	],
-	"kfcc.co.kr": [
-		"새마을금고중앙회"
-	],
-	"sema.or.kr": [
-		"과학기술인공제회"
-	],
-	"lgls.co.kr": [
-		"LG생명과학"
-	],
-	"lgls.com": [
-		"LG생명과학"
-	],
-	"sportslg.com": [
-		"LG스포츠"
-	],
-	"kra.co.kr": [
-		"한국마사회"
-	],
-	"dunamu.com": [
-		"두나무"
-	],
-	"amazon.com": [
-		"아마존코리아"
-	],
-	"krx.co.kr": [
-		"한국거래소"
-	],
-	"ksd.or.kr": [
-		"한국예탁결제원"
-	],
-	"ksure.or.kr": [
-		"한국무역보험공사"
-	],
-	"kdic.or.kr": [
-		"한국예금보험공사",
-		"예금보험공사"
-	],
-	"kftc.or.kr": [
-		"금융결제원"
-	],
-	"fsec.or.kr": [
-		"금융보안원"
-	],
-	"kofia.or.kr": [
-		"금융투자협회"
-	],
-	"khgc.co.kr": [
-		"주택도시보증공사"
-	],
-	"kic.go.kr": [
-		"한국투자공사"
-	],
-	"kodit.co.kr": [
-		"신용보증기금"
-	],
-	"kibo.or.kr": [
-		"기술보증기금"
-	],
-	"kamco.or.kr": [
-		"한국자산관리공사"
-	],
-	"korea.kr": [
-		"공무원",
-		"대한석탄공사"
-	],
-	"shbnppam.com": [
-		"신한자산운용"
-	],
-	"igisam.com": [
-		"이지스자산운용"
-	],
-	"police.go.kr": [
-		"경찰청"
-	],
-	"kocoal.co.kr": [
-		"대한석탄공사"
-	],
-	"nps.or.kr": [
-		"국민연금공단"
-	],
-	"knto.or.kr": [
-		"한국관광공사"
-	],
-	"bccard.com": [
-		"비씨카드"
-	],
-	"geps.or.kr": [
-		"공무원연금공단"
-	],
-	"mplus.or.kr": [
-		"군인공제회"
-	],
-	"mmaacnc.or.kr": [
-		"군인공제회"
-	],
-	"army.mil.kr": [
-		"직업군인"
-	]
+  "samsung.com": [
+    "삼성전자",
+    "삼성생명",
+    "삼성디스플레이",
+    "삼성화재",
+    "삼성중공업",
+    "삼성물산",
+    "삼성SDI",
+    "삼성전기",
+    "삼성엔지니어링",
+    "삼성SDS",
+    "호텔신라",
+    "에스원",
+    "삼성웰스토리",
+    "삼성전자서비스",
+    "세메스",
+    "삼성전자로지텍",
+    "제일기획",
+    "삼성증권",
+    "삼성카드",
+    "삼성바이오로직스",
+    "삼성바이오에피스",
+    "삼성자산운용"
+  ],
+  "kepco.co.kr": [
+    "한국전력공사"
+  ],
+  "hyundai.com": [
+    "현대자동차"
+  ],
+  "hyundai-motor.com": [
+    "현대자동차"
+  ],
+  "hmc.co.kr": [
+    "현대자동차"
+  ],
+  "kia.com": [
+    "기아자동차"
+  ],
+  "lge.com": [
+    "lg전자"
+  ],
+  "sk.com": [
+    "sk에너지",
+    "sk하이닉스",
+    "sk네트웍스",
+    "SK텔레콤",
+    "sk지오센트릭",
+    "SK에코플랜트",
+    "SK인천석유화학",
+    "SK트레이딩인터내셔널",
+    "SK가스",
+    "SK브로드밴드",
+    "SK엔무브",
+    "SK(주)",
+    "SK이노베이션",
+    "SK플래닛",
+    "SKC",
+    "SK마리타임",
+    "부산도시가스",
+    "SK케미칼",
+    "SK실트론",
+    "SK E&S",
+    "SK쉴더스",
+    "SK렌터카",
+    "충청에너지서비스",
+    "SK텔링크",
+    "SK매직",
+    "SK엔펄스",
+    "SK네트웍스서비스"
+  ],
+  "gscaltex.com": [
+    "gs칼텍스"
+  ],
+  "lgdisplay.com": [
+    "엘지디스플레이"
+  ],
+  "posco.com": [
+    "포스코",
+    "포스코홀딩스"
+  ],
+  "kogas.or.kr": [
+    "한국가스공사"
+  ],
+  "hhi.co.kr": [
+    "현대중공업",
+    "현대미포조선"
+  ],
+  "lh.or.kr": [
+    "한국토지주택공사"
+  ],
+  "mobis.co.kr": [
+    "현대모비스"
+  ],
+  "s-oil.com": [
+    "에쓰오일"
+  ],
+  "lgchem.com": [
+    "lg화학",
+    "LG화학"
+  ],
+  "kt.com": [
+    "KT",
+    "KT에스테이트",
+    "KT 엔지니어링",
+    "KT텔레캅"
+  ],
+  "poscointl.com": [
+    "포스코인터내셔널"
+  ],
+  "lotteshopping.com": [
+    "롯데쇼핑",
+    "롯데역사"
+  ],
+  "lotte.net": [
+    "롯데쇼핑",
+    "롯데케미칼",
+    "호텔롯데",
+    "롯데건설",
+    "롯데하이마트(주)",
+    "코리아세븐",
+    "롯데글로벌로지스",
+    "롯데손해보험",
+    "롯데칠성음료",
+    "롯데제과",
+    "롯데푸드",
+    "롯데렌탈",
+    "롯데알미늄(주)",
+    "롯데GRS",
+    "롯데역사",
+    "롯데정보통신",
+    "롯데상사",
+    "CS유통",
+    "부산롯데호텔",
+    "롯데지주"
+  ],
+  "hanwha.com": [
+    "한화생명",
+    "한화손해보험",
+    "(주)한화",
+    "한화에어로스페이스",
+    "한화임팩트",
+    "한화호텔&리조트",
+    "한화시스템",
+    "한화디펜스",
+    "한화글로벌에셋",
+    "한화에너지(주)",
+    "한화솔루션",
+    "한화갤러리아"
+  ],
+  "hi.co.kr": [
+    "현대해상"
+  ],
+  "hyundai-steel.com": [
+    "현대제철"
+  ],
+  "dbins.co.kr": [
+    "동부화재"
+  ],
+  "dsme.co.kr": [
+    "대우조선해양",
+    "대우조선해양건설"
+  ],
+  "nonghyup.com": [
+    "NH농협생명",
+    "농협손해보험",
+    "농협경제지주",
+    "농협은행",
+    "농협중앙회"
+  ],
+  "kyobo.com": [
+    "교보생명"
+  ],
+  "oilbank.co.kr": [
+    "현대오일뱅크"
+  ],
+  "gmdat.com": [
+    "한국지엠"
+  ],
+  "gm.com": [
+    "한국지엠"
+  ],
+  "glovis.net": [
+    "현대글로비스"
+  ],
+  "koreanair.com": [
+    "대한항공"
+  ],
+  "emart.com": [
+    "이마트"
+  ],
+  "kbinsure.co.kr": [
+    "KB손해보험"
+  ],
+  "lguplus.co.kr": [
+    "lg유플러스"
+  ],
+  "hdec.co.kr": [
+    "현대건설"
+  ],
+  "khnp.co.kr": [
+    "한국수력원자력"
+  ],
+  "daewooenc.com": [
+    "대우건설"
+  ],
+  "gsconst.co.kr": [
+    "GS건설"
+  ],
+  "ex.co.kr": [
+    "한국도로공사"
+  ],
+  "lottechem.com": [
+    "롯데케미칼"
+  ],
+  "hpc.co.kr": [
+    "롯데케미칼"
+  ],
+  "koreanre.co.kr": [
+    "코리안리"
+  ],
+  "hanwha-total.com": [
+    "한화토탈에너지스"
+  ],
+  "daelim.co.kr": [
+    "DL",
+    "(주)대림"
+  ],
+  "hyosung.com": [
+    "효성",
+    "진흥기업",
+    "효성ITX"
+  ],
+  "hyundai-wia.com": [
+    "현대위아"
+  ],
+  "hanjin.com": [
+    "한진해운"
+  ],
+  "homeplus.co.kr": [
+    "홈플러스"
+  ],
+  "meritz.co.kr": [
+    "메리츠화재",
+    "메리츠증권"
+  ],
+  "lsnikko.com": [
+    "LS MnM"
+  ],
+  "poscoenc.com": [
+    "포스코건설"
+  ],
+  "gsretail.com": [
+    "GS리테일"
+  ],
+  "hec.co.kr": [
+    "현대엔지니어링"
+  ],
+  "heungkuklife.co.kr": [
+    "흥국생명"
+  ],
+  "lginnotek.com": [
+    "LG이노텍"
+  ],
+  "hmm21.com": [
+    "HMM"
+  ],
+  "shinhan.com": [
+    "신한생명",
+    "신한투자증권",
+    "신한은행",
+    "제주은행",
+    "신한자산운용"
+  ],
+  "korail.com": [
+    "한국철도공사"
+  ],
+  "flyasiana.com": [
+    "아시아나항공"
+  ],
+  "doosan.com": [
+    "두산에너빌리티",
+    "(주)두산",
+    "두산건설",
+    "HSD엔진"
+  ],
+  "renaultkoreaM.com": [
+    "르노코리아자동차"
+  ],
+  "kosep.co.kr": [
+    "한국남동발전"
+  ],
+  "yncc.co.kr": [
+    "여천NCC"
+  ],
+  "orangelife.co.kr": [
+    "오렌지라이프생명"
+  ],
+  "myangel.co.kr": [
+    "동양생명"
+  ],
+  "cj.net": [
+    "CJ제일제당",
+    "CJ대한통운",
+    "CJ프레시웨이",
+    "CJ E&M",
+    "CJ푸드빌",
+    "CJ올리브네트웍스",
+    "CJ CGV"
+  ],
+  "hshi.co.kr": [
+    "현대삼호중공업"
+  ],
+  "dongkuk.com": [
+    "동국제강",
+    "DK유아이엘"
+  ],
+  "kospo.co.kr": [
+    "한국남부발전"
+  ],
+  "bgf.co.kr": [
+    "BGF"
+  ],
+  "insurance.co.kr": [
+    "흥국화재"
+  ],
+  "개인메일": [
+    "흥국화재",
+    "백제약품"
+  ],
+  "iwest.co.kr": [
+    "한국서부발전"
+  ],
+  "miraeasset.com": [
+    "미래에셋생명보험",
+    "미래에셋증권"
+  ],
+  "koreainc.co.kr": [
+    "고려아연"
+  ],
+  "ewp.co.kr": [
+    "한국동서발전"
+  ],
+  "dnocorp.com": [
+    "디앤오"
+  ],
+  "komipo.co.kr": [
+    "한국중부발전"
+  ],
+  "ekr.or.kr": [
+    "한국농어촌공사"
+  ],
+  "himart.co.kr": [
+    "롯데하이마트(주)"
+  ],
+  "kdblife.co.kr": [
+    "KDB생명보험"
+  ],
+  "e1.co.kr": [
+    "E1"
+  ],
+  "amorepacific.com": [
+    "아모레퍼시픽"
+  ],
+  "lxintl.co.kr": [
+    "LX인터내셔널"
+  ],
+  "kwater.or.kr": [
+    "한국수자원공사"
+  ],
+  "hyundaicorp.com": [
+    "현대코퍼레이션"
+  ],
+  "hyundai-di.com": [
+    "현대두산인프라코어"
+  ],
+  "powertech.co.kr": [
+    "현대파워텍"
+  ],
+  "smotor.com": [
+    "쌍용자동차"
+  ],
+  "kolon.com": [
+    "코오롱인더스트리",
+    "코오롱글로벌",
+    "코오롱글로텍",
+    "코오롱패션",
+    "코오롱베니트"
+  ],
+  "hankookn.com": [
+    "한국타이어"
+  ],
+  "hdc-dvp.com": [
+    "HDC현대산업개발"
+  ],
+  "hanwha.co.kr": [
+    "한화케미칼",
+    "(주)한화"
+  ],
+  "costcokr.com": [
+    "코스트코코리아"
+  ],
+  "kkpc.com": [
+    "금호석유화학"
+  ],
+  "kr.kpmg.com": [
+    "삼정KPMG"
+  ],
+  "halla.com": [
+    "에이치엘만도(주)",
+    "HL D&I 한라"
+  ],
+  "hyundai-rotem.co.kr": [
+    "현대로템"
+  ],
+  "kccworld.co.kr": [
+    "KCC"
+  ],
+  "lgcare.co.kr": [
+    "LG생활건강"
+  ],
+  "lscns.com": [
+    "LS전선"
+  ],
+  "koreaaero.com": [
+    "한국항공우주"
+  ],
+  "samchully.co.kr": [
+    "삼천리",
+    "에스파워"
+  ],
+  "ktng.com": [
+    "KT&G"
+  ],
+  "lotteins.co.kr": [
+    "롯데손해보험"
+  ],
+  "imarketkorea.com": [
+    "아이마켓코리아"
+  ],
+  "daelimcorp.co.kr": [
+    "(주)대림"
+  ],
+  "i-sh.co.kr": [
+    "서울주택도시공사"
+  ],
+  "gh.or.kr": [
+    "경기도시공사"
+  ],
+  "gico.or.kr": [
+    "경기도시공사"
+  ],
+  "abllife.co.kr": [
+    "ABL생명"
+  ],
+  "lghausys.com": [
+    "LX하우시스"
+  ],
+  "hanonsystems.co.kr": [
+    "한온시스템"
+  ],
+  "eukor.com": [
+    "유코카캐리어스"
+  ],
+  "hyundai-transys.com": [
+    "현대트랜시스"
+  ],
+  "lgcns.com": [
+    "LG CNS"
+  ],
+  "lotteliquor.com": [
+    "롯데칠성음료"
+  ],
+  "oci.co.kr": [
+    "OCI"
+  ],
+  "coway.co.kr": [
+    "코웨이"
+  ],
+  "hyundaicosmo.com": [
+    "현대코스모"
+  ],
+  "navercorp.com": [
+    "네이버",
+    "네이버클라우드"
+  ],
+  "idblife.com": [
+    "DB생명보험"
+  ],
+  "kshipbuilding.com": [
+    "K조선"
+  ],
+  "eland.co.kr": [
+    "이랜드리테일",
+    "이랜드월드",
+    "홈플러스",
+    "이랜드파크"
+  ],
+  "hhic-holdings.com": [
+    "한진중공업홀딩스"
+  ],
+  "poongsan.co.kr": [
+    "풍산"
+  ],
+  "kdhc.co.kr": [
+    "한국지역난방공사"
+  ],
+  "metlife.com": [
+    "메트라이프생명"
+  ],
+  "gscorop.com": [
+    "GS글로벌"
+  ],
+  "poscoenergy.com": [
+    "포스코에너지"
+  ],
+  "kblife.co.kr": [
+    "KB라이프생명"
+  ],
+  "lignex1.com": [
+    "LIG넥스원"
+  ],
+  "sgic.co.kr": [
+    "서울보증보험"
+  ],
+  "airport.kr": [
+    "인천국제공항공사"
+  ],
+  "ottogi.co.kr": [
+    "오뚜기"
+  ],
+  "seah.co.kr": [
+    "세아베스틸",
+    "세아창원특수강"
+  ],
+  "taekwang.co.kr": [
+    "태광산업"
+  ],
+  "panoceon.com": [
+    "팬오션"
+  ],
+  "ls-electric.com": [
+    "LS ELECTRIC"
+  ],
+  "lsis.com": [
+    "LS ELECTRIC"
+  ],
+  "lsis.biz": [
+    "LS ELECTRIC"
+  ],
+  "kpic.co.kr": [
+    "대한유화"
+  ],
+  "isungdong.com": [
+    "HSG성동조선"
+  ],
+  "hite.com": [
+    "하이트진로"
+  ],
+  "hitejinro.com": [
+    "하이트진로"
+  ],
+  "daesang.com": [
+    "대상(주)",
+    "대상"
+  ],
+  "hanssem.com": [
+    "한샘"
+  ],
+  "kbfg.com": [
+    "KB생명보험",
+    "KB증권",
+    "국민은행"
+  ],
+  "kefico.co.kr": [
+    "현대케피코"
+  ],
+  "dongbu.com": [
+    "KG스틸",
+    "DB메탈"
+  ],
+  "hanjin.co.kr": [
+    "한진"
+  ],
+  "seoulgas.co.kr": [
+    "서울도시가스"
+  ],
+  "kumhoenc.com": [
+    "금호건설"
+  ],
+  "fubonhyundai.com": [
+    "푸본현대생명"
+  ],
+  "y-k.co.kr": [
+    "유한킴벌리"
+  ],
+  "booyoung.co.kr": [
+    "부영주택"
+  ],
+  "shinsegae.com": [
+    "신세계",
+    "신세계건설",
+    "신세계푸드",
+    "지마켓",
+    "SCK컴퍼니"
+  ],
+  "hyundaimall.com": [
+    "현대그린푸드"
+  ],
+  "nexentire.co.kr": [
+    "넥센타이어"
+  ],
+  "hiplaza.co.kr": [
+    "하이프라자"
+  ],
+  "lgfashion.co.kr": [
+    "LF"
+  ],
+  "lfcorp.com": [
+    "LF"
+  ],
+  "seahsteel.co.kr": [
+    "세아제강"
+  ],
+  "ssyc.co.kr": [
+    "쌍용씨앤이"
+  ],
+  "dongwon.com": [
+    "동원F&B",
+    "동원로엑스",
+    "동원시스템즈"
+  ],
+  "skshipping.com": [
+    "SK마리타임"
+  ],
+  "kyungshin.co.kr": [
+    "경신"
+  ],
+  "stx.co.kr": [
+    "STX"
+  ],
+  "onestx.com": [
+    "STX",
+    "STX중공업",
+    "STX엔진",
+    "STX건설"
+  ],
+  "taihan.com": [
+    "대한전선"
+  ],
+  "ourhome.co.kr": [
+    "아워홈"
+  ],
+  "hanshinc.com": [
+    "한신공영"
+  ],
+  "hldni.com": [
+    "HL D&I 한라"
+  ],
+  "hdel.co.kr": [
+    "현대엘리베이터"
+  ],
+  "taekwang.com": [
+    "티케이지태광"
+  ],
+  "knoc.co.kr": [
+    "한국석유공사"
+  ],
+  "maeil.com": [
+    "매일유업"
+  ],
+  "swhitech.com": [
+    "성우하이텍"
+  ],
+  "dcg.co.kr": [
+    "코원에너지서비스"
+  ],
+  "yura.co.kr": [
+    "유라코퍼레이션"
+  ],
+  "thehyundai.com": [
+    "현대백화점",
+    "현대홈쇼핑",
+    "현대L&C",
+    "한섬",
+    "한무쇼핑"
+  ],
+  "lxpantos.com": [
+    "LX판토스"
+  ],
+  "mggenins.com": [
+    "MG손해보험"
+  ],
+  "seoulmetro.co.kr": [
+    "서울교통공사"
+  ],
+  "lghv.net": [
+    "LG헬로비전"
+  ],
+  "kps.co.kr": [
+    "한전KPS"
+  ],
+  "samyang.com": [
+    "삼양사"
+  ],
+  "dgbfn.com": [
+    "DGB생명",
+    "대구은행",
+    "DGB금융지주"
+  ],
+  "hyundai-autoever.com": [
+    "현대오토에버"
+  ],
+  "youngone.com": [
+    "영원무역"
+  ],
+  "ts.co.kr": [
+    "대한제당"
+  ],
+  "krcon.co.kr": [
+    "계룡건설산업"
+  ],
+  "yuhan.co.kr": [
+    "유한양행"
+  ],
+  "semes.com": [
+    "세메스"
+  ],
+  "hanmi.co.kr": [
+    "한미약품"
+  ],
+  "ypzinc.co.kr": [
+    "영풍"
+  ],
+  "ccbk.co.kr": [
+    "코카콜라음료"
+  ],
+  "lgcare.com": [
+    "코카콜라음료"
+  ],
+  "estra-automotive.com": [
+    "에스트라오토모티브시스템"
+  ],
+  "seoyoneh.com": [
+    "서연이화"
+  ],
+  "ih.co.kr": [
+    "인천도시공사"
+  ],
+  "idtc.co.kr": [
+    "인천도시공사"
+  ],
+  "iudc.co.kr": [
+    "인천도시공사"
+  ],
+  "skens.com": [
+    "부산도시가스",
+    "SK E&S"
+  ],
+  "hanil.com": [
+    "한일홀딩스"
+  ],
+  "humaxdigital.com": [
+    "휴맥스"
+  ],
+  "ihoban.co.kr": [
+    "호반건설"
+  ],
+  "isu.co.kr": [
+    "이수화학",
+    "이수건설"
+  ],
+  "seohee.co.kr": [
+    "서희건설"
+  ],
+  "ystns.co.kr": [
+    "서희건설",
+    "유성티엔에스"
+  ],
+  "hansoll.com": [
+    "한솔섬유"
+  ],
+  "hycorp.co.kr": [
+    "(주)한양"
+  ],
+  "iddp.co.kr": [
+    "동두천드림파워"
+  ],
+  "taeyoung.com": [
+    "태영건설"
+  ],
+  "lotteal.co.kr": [
+    "롯데알미늄(주)"
+  ],
+  "lsmtron.com": [
+    "LS엠트론"
+  ],
+  "smalipgf.co.kr": [
+    "SPC삼립"
+  ],
+  "seahbesteel.co.kr": [
+    "세아창원특수강"
+  ],
+  "kccworld.net": [
+    "KCC건설"
+  ],
+  "poscoen.com": [
+    "포스코엔지니어링"
+  ],
+  "acriche.com": [
+    "서울반도체"
+  ],
+  "socled.com": [
+    "서울반도체"
+  ],
+  "ssyenc.com": [
+    "쌍용건설"
+  ],
+  "huvis.com": [
+    "휴비스"
+  ],
+  "kgc.co.kr": [
+    "한국인삼공사"
+  ],
+  "sinokor.co.kr": [
+    "장금상선"
+  ],
+  "gccorp.com": [
+    "녹십자"
+  ],
+  "greencross.com": [
+    "녹십자"
+  ],
+  "polymirae.com": [
+    "폴리미래"
+  ],
+  "sikorea.co.kr": [
+    "신세계인터내셔날"
+  ],
+  "netmarble.com": [
+    "넷마블"
+  ],
+  "korea.com": [
+    "대성에너지"
+  ],
+  "farmsco.com": [
+    "팜스코"
+  ],
+  "kakaocorp.com": [
+    "카카오"
+  ],
+  "emarateveryday.co.kr": [
+    "이마트에브리데이"
+  ],
+  "idaehan.com": [
+    "대한제강"
+  ],
+  "kpb.co.kr": [
+    "금호피앤비화학"
+  ],
+  "ssts.co.kr": [
+    "신성통상"
+  ],
+  "nexon.co.kr": [
+    "넥슨코리아"
+  ],
+  "khmis.co.kr": [
+    "KH에너지"
+  ],
+  "bando.co.kr": [
+    "반도홀딩스"
+  ],
+  "ibki.co.kr": [
+    "IBK연금보험"
+  ],
+  "poscoict.co.kr": [
+    "포스코디엑스"
+  ],
+  "poscoict.com": [
+    "포스코디엑스"
+  ],
+  "heung-a.co.kr": [
+    "흥아해운"
+  ],
+  "daesung.co.kr": [
+    "대성산업"
+  ],
+  "daewoong.co.kr": [
+    "대웅제약"
+  ],
+  "ebay.com": [
+    "지마켓"
+  ],
+  "bing.co.kr": [
+    "빙그레"
+  ],
+  "halim.com": [
+    "하림"
+  ],
+  "harimholdings.com": [
+    "하림지주"
+  ],
+  "poscocnc.com": [
+    "포스코스틸리온"
+  ],
+  "poscos.co.kr": [
+    "포스코스틸리온"
+  ],
+  "etecenc.com": [
+    "이테크건설"
+  ],
+  "ht.co.kr": [
+    "해태제과식품"
+  ],
+  "isdongseo.co.kr": [
+    "아이에스동서"
+  ],
+  "istarbucks.co.kr": [
+    "SCK컴퍼니"
+  ],
+  "dwku.com": [
+    "대원강업"
+  ],
+  "sbs.co.kr": [
+    "SBS"
+  ],
+  "polaris-shipping.com": [
+    "폴라리스쉬핑"
+  ],
+  "pocheonpower.com": [
+    "포천파워"
+  ],
+  "pulmuone.com": [
+    "풀무원식품"
+  ],
+  "dbcons.co.kr": [
+    "대방건설"
+  ],
+  "chinhung.co.kr": [
+    "진흥기업"
+  ],
+  "daeryuens.co.kr": [
+    "대륜E&S"
+  ],
+  "orionworld.com": [
+    "오리온"
+  ],
+  "kukdo.com": [
+    "국도화학"
+  ],
+  "livart.co.kr": [
+    "현대리바트"
+  ],
+  "hsdengine.com": [
+    "HSD엔진"
+  ],
+  "lsnetworks.com": [
+    "LS네트웍스"
+  ],
+  "smrt.co.kr": [
+    "서울특별시도시철도공사"
+  ],
+  "bngsteel.com": [
+    "현대비앤지스틸"
+  ],
+  "iljin.co.kr": [
+    "일진전기"
+  ],
+  "kisco.co.kr": [
+    "KISCO홀딩스"
+  ],
+  "hanafn.com": [
+    "하나생명",
+    "하나증권",
+    "하나은행"
+  ],
+  "myeco.co.kr": [
+    "에코플라스틱"
+  ],
+  "bmc.busan.kr": [
+    "부산도시공사"
+  ],
+  "kleannara.com": [
+    "깨끗한나라"
+  ],
+  "gsenr.com": [
+    "GS E&R"
+  ],
+  "panpacific.co.kr": [
+    "태평양물산"
+  ],
+  "jbcitygas.com": [
+    "제이비"
+  ],
+  "dbhitek.com": [
+    "동부하이텍"
+  ],
+  "tkchemi.co.kr": [
+    "TK케미칼"
+  ],
+  "kepco-enc.com": [
+    "한국전력기술"
+  ],
+  "sscem.com": [
+    "성신양회"
+  ],
+  "dongbu.co.kr": [
+    "동부건설"
+  ],
+  "deutschmotors.com": [
+    "도이치모터스"
+  ],
+  "wtjb.net": [
+    "웅진씽크빅"
+  ],
+  "dwml.co.kr": [
+    "동원산업"
+  ],
+  "ltmetal.co.kr": [
+    "엘티메탈"
+  ],
+  "stxengine.co.kr": [
+    "STX엔진"
+  ],
+  "gspower.co.kr": [
+    "GS파워"
+  ],
+  "jeilfeed.co.kr": [
+    "제일사료"
+  ],
+  "sw.co.kr": [
+    "신원"
+  ],
+  "skylife.co.kr": [
+    "KT Skylife"
+  ],
+  "moorim.co.kr": [
+    "무림P&P",
+    "무림페이퍼"
+  ],
+  "jdcenter.com": [
+    "제주국제자유도시개발센터"
+  ],
+  "handscorp.co.kr": [
+    "핸드코퍼레이션"
+  ],
+  "gseps.com": [
+    "GS EPS"
+  ],
+  "lsautomotive.com": [
+    "신대성전기"
+  ],
+  "dsec.co.kr": [
+    "신대성전기"
+  ],
+  "ncsoft.com": [
+    "엔씨소프트"
+  ],
+  "icgas.co.kr": [
+    "인천도시가스"
+  ],
+  "jejuair.net": [
+    "제주항공"
+  ],
+  "polyol.co.kr": [
+    "KPX케미칼"
+  ],
+  "dlcon.co.kr": [
+    "디엘건설"
+  ],
+  "daehanship.com": [
+    "대한조선"
+  ],
+  "seahsp.co.kr": [
+    "세아특수강"
+  ],
+  "hwashin.co.kr": [
+    "화신"
+  ],
+  "sj.co.kr": [
+    "선진"
+  ],
+  "dreample.kr": [
+    "드림플"
+  ],
+  "sl.co.kr": [
+    "에스엘"
+  ],
+  "ckdpharm.com": [
+    "종근당"
+  ],
+  "ckd-holdings.com": [
+    "종근당홀딩스"
+  ],
+  "brassone.com": [
+    "대창"
+  ],
+  "farmhannong.com": [
+    "팜한농"
+  ],
+  "h-lineshipping.com": [
+    "에이치라인해운"
+  ],
+  "huchems.com": [
+    "TKG휴켐스"
+  ],
+  "megamart.com": [
+    "메가마트"
+  ],
+  "jeonjupaper.com": [
+    "전주원파워"
+  ],
+  "myunghwa.com": [
+    "명화공업"
+  ],
+  "lg.com": [
+    "(주)LG"
+  ],
+  "lg.co.kr": [
+    "(주)LG"
+  ],
+  "ekdp.com": [
+    "광동제약"
+  ],
+  "dwlogistics.co.kr": [
+    "대우로지스틱스"
+  ],
+  "donga.co.kr": [
+    "동아에스티",
+    "동아쏘시오홀딩스"
+  ],
+  "sampyo.co.kr": [
+    "삼표산업",
+    "삼표시멘트"
+  ],
+  "eugenes.co.kr": [
+    "유진기업"
+  ],
+  "gastopia.co.kr": [
+    "DIG에어가스"
+  ],
+  "sebang.com": [
+    "세방"
+  ],
+  "kne.co.kr": [
+    "경남기업"
+  ],
+  "hygas.co.kr": [
+    "해양도시가스",
+    "미래엔서해에너지"
+  ],
+  "cncity.co.kr": [
+    "씨엔씨티에너지"
+  ],
+  "kobiotech.com": [
+    "엑서지21"
+  ],
+  "songwon.com": [
+    "송원산업"
+  ],
+  "adt.co.kr": [
+    "SK쉴더스"
+  ],
+  "duco.or.kr": [
+    "대구도시개발공사"
+  ],
+  "hankooktire.com": [
+    "한국앤컴퍼니"
+  ],
+  "daemyung.com": [
+    "소노인터내셔널"
+  ],
+  "smilegate.com": [
+    "스마일게이트엔터테인먼트"
+  ],
+  "soulbrain.co.kr": [
+    "솔브레인홀딩스"
+  ],
+  "celltrion.com": [
+    "셀트리온"
+  ],
+  "celltrionhc.com": [
+    "셀트리온헬스케어"
+  ],
+  "hsnetw.com": [
+    "화승네트웍스"
+  ],
+  "dongbang.co.kr": [
+    "동방"
+  ],
+  "kr.panasonic.com": [
+    "파나소닉디바이스세일즈코리아"
+  ],
+  "hansol.com": [
+    "한솔테크닉스",
+    "한솔로지스틱스",
+    "한솔제지",
+    "한솔케미칼"
+  ],
+  "unid.co.kr": [
+    "유니드"
+  ],
+  "lxmma.com": [
+    "LX MMA"
+  ],
+  "lgmma.com": [
+    "LX MMA"
+  ],
+  "@etland.co.kr": [
+    "에스와이에스리테일"
+  ],
+  "poscopns.com": [
+    "포스코P&S"
+  ],
+  "hdesi.co.kr": [
+    "현대스틸산업"
+  ],
+  "kiswire.com": [
+    "고려제강"
+  ],
+  "kolmar.co.kr": [
+    "한국콜마"
+  ],
+  "7luck.com": [
+    "그랜드코리아레저"
+  ],
+  "blackyak.kr": [
+    "블랙야크"
+  ],
+  "yakjin.com": [
+    "약진통상"
+  ],
+  "kmni.co.kr": [
+    "케이엠앤아이"
+  ],
+  "korealines.co.kr": [
+    "대한해운"
+  ],
+  "gsneotek.co.kr": [
+    "GS네오텍"
+  ],
+  "sfasemicon.com": [
+    "SFA반도체"
+  ],
+  "daebo21.co.kr": [
+    "대보건설"
+  ],
+  "hyundaiwelding.com": [
+    "현대종합금속"
+  ],
+  "chosunhotel.co.kr": [
+    "신세계조선호텔"
+  ],
+  "interflex.co.kr": [
+    "인터플렉스"
+  ],
+  "e-jeil.co.kr": [
+    "제일건설"
+  ],
+  "seojin.com": [
+    "서진산업"
+  ],
+  "samdongkorea.com": [
+    "삼동"
+  ],
+  "hwasung.com": [
+    "화성산업"
+  ],
+  "ltsambo.co.kr": [
+    "LT삼보"
+  ],
+  "gsentec.com": [
+    "GS엔텍"
+  ],
+  "shindongah.co.kr": [
+    "신동아건설"
+  ],
+  "compuzone.co.kr": [
+    "컴퓨존"
+  ],
+  "chosunref.co.kr": [
+    "조선내화"
+  ],
+  "daesang.co.kr": [
+    "대상"
+  ],
+  "inno-n.com": [
+    "HK이노엔"
+  ],
+  "sjku.co.kr": [
+    "세종공업"
+  ],
+  "jinair.com": [
+    "진에어"
+  ],
+  "komsco.com": [
+    "한국조폐공사"
+  ],
+  "aekyung.kr": [
+    "애경산업",
+    "애경케미칼",
+    "AK에스앤디"
+  ],
+  "ildong.com": [
+    "일동홀딩스"
+  ],
+  "wonik.com": [
+    "원익홀딩스"
+  ],
+  "wonik.co.kr": [
+    "원익홀딩스"
+  ],
+  "samwha.com": [
+    "삼화페인트공업"
+  ],
+  "spi.co.kr": [
+    "삼화페인트공업"
+  ],
+  "dansuk.co.kr": [
+    "단석산업"
+  ],
+  "kdn.com": [
+    "한전KDN"
+  ],
+  "hanafn.co": [
+    "하나손해보험"
+  ],
+  "gmb.co.kr": [
+    "GMB코리아"
+  ],
+  "sajo.co.kr": [
+    "사조동아원",
+    "사조대림",
+    "사조산업"
+  ],
+  "kodoco.com": [
+    "사조동아원"
+  ],
+  "sambu.co.kr": [
+    "삼부토건"
+  ],
+  "paradise.biz": [
+    "파라다이스"
+  ],
+  "hisntd.com": [
+    "SNT다이내믹스"
+  ],
+  "bgdc.co.kr": [
+    "경상북도개발공사"
+  ],
+  "yojin.co.kr": [
+    "요진건설산업"
+  ],
+  "dayou.co.kr": [
+    "대유에이텍"
+  ],
+  "homecc.com": [
+    "KCC글라스"
+  ],
+  "taewoometal.co.kr": [
+    "태우"
+  ],
+  "dlive.kr": [
+    "딜라이브"
+  ],
+  "youlchon.com": [
+    "율촌화학"
+  ],
+  "hlcompany.com": [
+    "HL클레무브"
+  ],
+  "jw-group.co.kr": [
+    "JW중외제약"
+  ],
+  "cwp.co.kr": [
+    "JW중외제약"
+  ],
+  "seohan.com": [
+    "서한산업"
+  ],
+  "daewoncable.co.kr": [
+    "대원전선"
+  ],
+  "dwcable.com": [
+    "대원전선"
+  ],
+  "crown.co.kr": [
+    "크라운해태홀딩스"
+  ],
+  "hspmtech.com": [
+    "희성피엠텍"
+  ],
+  "airport.co.kr": [
+    "한국공항공사"
+  ],
+  "daejooheavy.com": [
+    "대주중공업"
+  ],
+  "dongwha.com": [
+    "동화기업"
+  ],
+  "prsb.co.kr": [
+    "푸른상호저축은행"
+  ],
+  "busanpa.com": [
+    "부산항만공사"
+  ],
+  "innocean.com": [
+    "이노션"
+  ],
+  "noroo.co.kr": [
+    "노루페인트"
+  ],
+  "noroo.com": [
+    "노루페인트"
+  ],
+  "polychem.co.kr": [
+    "금호폴리켐"
+  ],
+  "nobland.com": [
+    "노브랜드"
+  ],
+  "asiacement.co.kr": [
+    "아세아시멘트"
+  ],
+  "hyungji.com": [
+    "패션그룹형지"
+  ],
+  "com2us.com": [
+    "컴투스"
+  ],
+  "com2usholdings.com": [
+    "컴투스홀딩스"
+  ],
+  "gamevil.com": [
+    "컴투스홀딩스"
+  ],
+  "kibosteel.co.kr": [
+    "기보스틸"
+  ],
+  "aju.co.kr": [
+    "아주산업"
+  ],
+  "hyundai-ss.com": [
+    "현대종합특수강"
+  ],
+  "hyundai-specialsteel.com": [
+    "현대종합특수강"
+  ],
+  "nsmall.com": [
+    "NS쇼핑"
+  ],
+  "nsseshop.com": [
+    "NS쇼핑"
+  ],
+  "farmstory.co.kr": [
+    "팜스토리"
+  ],
+  "gmcc.co.kr": [
+    "광주광역시도시공사"
+  ],
+  "boryung.co.kr": [
+    "보령"
+  ],
+  "shym.co.kr": [
+    "신영"
+  ],
+  "shinanbox.com": [
+    "신안피앤씨"
+  ],
+  "dtrkorea.co.kr": [
+    "디엔오토모티브"
+  ],
+  "simmtech.co.kr": [
+    "심텍홀딩스"
+  ],
+  "dmc.co.kr": [
+    "DL모터스"
+  ],
+  "hanapw.com": [
+    "평택에너지서비스"
+  ],
+  "ptes.co.kr": [
+    "평택에너지서비스"
+  ],
+  "namsung.co.kr": [
+    "남성해운"
+  ],
+  "interpark.com": [
+    "그래디언트"
+  ],
+  "kumhobus.com": [
+    "금호고속"
+  ],
+  "airbusan.com": [
+    "에어부산"
+  ],
+  "wm.co.kr": [
+    "우미건설"
+  ],
+  "carrier.co.kr": [
+    "오텍캐리어"
+  ],
+  "seoulfeed.com": [
+    "한국축산의희망서울사료"
+  ],
+  "cosmax.com": [
+    "코스맥스"
+  ],
+  "asiapaper.co.kr": [
+    "아세아제지"
+  ],
+  "hobanenc.co.kr": [
+    "호반산업"
+  ],
+  "fnfcorp.com": [
+    "F&F"
+  ],
+  "ns-oil.co.kr": [
+    "남선석유"
+  ],
+  "etevers.com": [
+    "에티버스"
+  ],
+  "hanatour.com": [
+    "하나투어"
+  ],
+  "yes24.com": [
+    "YES24"
+  ],
+  "handok.com": [
+    "한독"
+  ],
+  "husteel.com": [
+    "휴스틸"
+  ],
+  "tym.world": [
+    "TYM"
+  ],
+  "taeyangmetal.com": [
+    "태양금속공업"
+  ],
+  "nvhkorea.com": [
+    "NVH코리아"
+  ],
+  "kinfa.or.kr": [
+    "국민행복기금",
+    "서민금융진흥원"
+  ],
+  "bhi.co.kr": [
+    "BHI"
+  ],
+  "kumkangkind.com": [
+    "금강공업"
+  ],
+  "skcsolmics.com": [
+    "SK엔펄스"
+  ],
+  "namsun.co.kr": [
+    "남선알미늄"
+  ],
+  "dkis.co.kr": [
+    "동국산업"
+  ],
+  "tccsteel.com": [
+    "TCC스틸"
+  ],
+  "krindus.co.kr": [
+    "KR산업"
+  ],
+  "fila.co.kr": [
+    "휠라홀딩스"
+  ],
+  "fila.com": [
+    "휠라홀딩스"
+  ],
+  "cammsys.net": [
+    "캠시스"
+  ],
+  "dseltec.co.kr": [
+    "DH오토웨어"
+  ],
+  "finetec.co.kr": [
+    "동성화인텍"
+  ],
+  "hlgroup.co.kr": [
+    "디젠"
+  ],
+  "ksbj.co.kr": [
+    "금성백조주택"
+  ],
+  "tongyang.co.kr": [
+    "동양"
+  ],
+  "kakaoent.com": [
+    "카카오엔터테인먼트"
+  ],
+  "chosun.com": [
+    "조선일보"
+  ],
+  "dicorp.co.kr": [
+    "디아이씨"
+  ],
+  "ondutyfree.com": [
+    "동화면세점"
+  ],
+  "roche.com": [
+    "한국로슈"
+  ],
+  "copperlee.co.kr": [
+    "능원금속공업"
+  ],
+  "e-dgpower.co.kr": [
+    "대구그린파워"
+  ],
+  "phhc.co.kr": [
+    "평화산업"
+  ],
+  "sap.com": [
+    "SAP코리아"
+  ],
+  "rinnai.co.kr": [
+    "린나이코리아"
+  ],
+  "yongsan.biz": [
+    "용산"
+  ],
+  "gsk.com": [
+    "GSK코리아"
+  ],
+  "approtium.com": [
+    "어프로티움"
+  ],
+  "kyungbang.co.kr": [
+    "경방"
+  ],
+  "astrazeneca.com": [
+    "한국아스트라제네카"
+  ],
+  "scplant.com": [
+    "성창E&C"
+  ],
+  "booyoung.cokr": [
+    "부영"
+  ],
+  "arex.or.kr": [
+    "공항철도"
+  ],
+  "annextele.com": [
+    "에넥스텔레콤"
+  ],
+  "namkwang.co.kr": [
+    "남광토건"
+  ],
+  "bayer.com": [
+    "바이엘코리아"
+  ],
+  "s-energy.com": [
+    "에스에너지"
+  ],
+  "kunwha.net": [
+    "건화"
+  ],
+  "daemyoung.com": [
+    "대명건설"
+  ],
+  "sgc.co.kr": [
+    "SGC에너지"
+  ],
+  "kci.co.kr": [
+    "한국컴퓨터지주"
+  ],
+  "esamilcns.com": [
+    "삼일씨엔에스"
+  ],
+  "koscom.co.kr": [
+    "코스콤"
+  ],
+  "donga.com": [
+    "동아일보"
+  ],
+  "han-sung.co.kr": [
+    "한성기업"
+  ],
+  "humetro.busan.kr": [
+    "부산교통공사"
+  ],
+  "estarjet.com": [
+    "이스타항공"
+  ],
+  "hojeon.co.kr": [
+    "호전실업"
+  ],
+  "hwst.co.kr": [
+    "해원에스티"
+  ],
+  "daesunship.co.kr": [
+    "대선조선"
+  ],
+  "itaekyung.com": [
+    "농심태경"
+  ],
+  "iljin.com": [
+    "일진베어링"
+  ],
+  "google.com": [
+    "구글코리아"
+  ],
+  "netflix.com": [
+    "넷플릭스코리아"
+  ],
+  "bmw.co.kr": [
+    "BMW코리아"
+  ],
+  "starbucks.co.kr": [
+    "스타벅스코리아"
+  ],
+  "apple.com": [
+    "애플코리아"
+  ],
+  "?": [
+    "디즈니코리아"
+  ],
+  "pfizer.com": [
+    "한국화이자"
+  ],
+  "nike.com": [
+    "나이키코리아"
+  ],
+  "microsoft.com": [
+    "한국마이크로소프트"
+  ],
+  "chanel.com": [
+    "샤넬코리아"
+  ],
+  "lgensol.com": [
+    "LG에너지솔루션"
+  ],
+  "kiwoom.com": [
+    "키움증권"
+  ],
+  "koreainvesment.com": [
+    "한국투자증권"
+  ],
+  "nhqv.com": [
+    "NH투자증권"
+  ],
+  "daishin.com": [
+    "대신증권"
+  ],
+  "bnkfn.co.kr": [
+    "BNK투자증권"
+  ],
+  "eugenefn.com": [
+    "유진투자증권"
+  ],
+  "ebestsec.co.kr": [
+    "이베스트투자증권"
+  ],
+  "hi-ib.com": [
+    "하이투자증권"
+  ],
+  "hygood.co.kr": [
+    "한양증권"
+  ],
+  "bookook.co.kr": [
+    "부국증권"
+  ],
+  "heungkuksec.co.kr": [
+    "흥국증권"
+  ],
+  "daolfn.com": [
+    "다올투자증권"
+  ],
+  "kakaobank.com": [
+    "카카오뱅크"
+  ],
+  "citi.com": [
+    "한국씨티은행"
+  ],
+  "wooribank.com": [
+    "우리은행"
+  ],
+  "ibk.co.kr": [
+    "IBK기업은행"
+  ],
+  "kdb.co.kr": [
+    "산업은행"
+  ],
+  "sc.com": [
+    "SC제일은행"
+  ],
+  "bnkfg.co.kr": [
+    "BNK부산은행"
+  ],
+  "busanbank.co.kr": [
+    "BNK부산은행"
+  ],
+  "suhyup.co.kr": [
+    "수협은행"
+  ],
+  "knbank.co.kr": [
+    "경남은행"
+  ],
+  "toss.im": [
+    "비바리퍼블리카"
+  ],
+  "tossbank.com": [
+    "토스뱅크"
+  ],
+  "jbbank.co.kr": [
+    "전북은행"
+  ],
+  "kbanknow.com": [
+    "케이뱅크"
+  ],
+  "bok.or.kr": [
+    "한국은행"
+  ],
+  "koreaexim.go.kr": [
+    "한국수출입은행"
+  ],
+  "fss.or.kr": [
+    "금융감독원"
+  ],
+  "kita.or.kr": [
+    "무역협회"
+  ],
+  "sangsanginib.com": [
+    "상상인증권"
+  ],
+  "leading.co.kr": [
+    "리딩투자증권"
+  ],
+  "kasset.co.kr": [
+    "코리아에셋투자증권"
+  ],
+  "sbisb.co.kr": [
+    "SBI저축은행"
+  ],
+  "aprofg.com": [
+    "OK저축은행"
+  ],
+  "shinahn.com": [
+    "신한카드"
+  ],
+  "hlb-ls.com": [
+    "에이치엘비생명과학"
+  ],
+  "mghat.com": [
+    "무궁화신탁"
+  ],
+  "lgchem.co.kr": [
+    "LG화학"
+  ],
+  "cbs.co.kr": [
+    "CBS"
+  ],
+  "kosaf.go.kr": [
+    "한국장학재단"
+  ],
+  "pwsc.co.kr": [
+    "태웅로직스"
+  ],
+  "21csb.com": [
+    "21세기조선"
+  ],
+  "bnkfg.com": [
+    "BNK금융지주"
+  ],
+  "kfcc.co.kr": [
+    "새마을금고중앙회"
+  ],
+  "sema.or.kr": [
+    "과학기술인공제회"
+  ],
+  "lgls.co.kr": [
+    "LG생명과학"
+  ],
+  "lgls.com": [
+    "LG생명과학"
+  ],
+  "sportslg.com": [
+    "LG스포츠"
+  ],
+  "kra.co.kr": [
+    "한국마사회"
+  ],
+  "dunamu.com": [
+    "두나무"
+  ],
+  "amazon.com": [
+    "아마존코리아"
+  ],
+  "krx.co.kr": [
+    "한국거래소"
+  ],
+  "ksd.or.kr": [
+    "한국예탁결제원"
+  ],
+  "ksure.or.kr": [
+    "한국무역보험공사"
+  ],
+  "kdic.or.kr": [
+    "한국예금보험공사",
+    "예금보험공사"
+  ],
+  "kftc.or.kr": [
+    "금융결제원"
+  ],
+  "fsec.or.kr": [
+    "금융보안원"
+  ],
+  "kofia.or.kr": [
+    "금융투자협회"
+  ],
+  "khgc.co.kr": [
+    "주택도시보증공사"
+  ],
+  "kic.go.kr": [
+    "한국투자공사"
+  ],
+  "kodit.co.kr": [
+    "신용보증기금"
+  ],
+  "kibo.or.kr": [
+    "기술보증기금"
+  ],
+  "kamco.or.kr": [
+    "한국자산관리공사"
+  ],
+  "korea.kr": [
+    "공무원",
+    "대한석탄공사"
+  ],
+  "shbnppam.com": [
+    "신한자산운용"
+  ],
+  "igisam.com": [
+    "이지스자산운용"
+  ],
+  "police.go.kr": [
+    "경찰청"
+  ],
+  "kocoal.co.kr": [
+    "대한석탄공사"
+  ],
+  "nps.or.kr": [
+    "국민연금공단"
+  ],
+  "knto.or.kr": [
+    "한국관광공사"
+  ],
+  "bccard.com": [
+    "비씨카드"
+  ],
+  "geps.or.kr": [
+    "공무원연금공단"
+  ],
+  "mplus.or.kr": [
+    "군인공제회"
+  ],
+  "mmaacnc.or.kr": [
+    "군인공제회"
+  ],
+  "army.mil.kr": [
+    "직업군인"
+  ]
 }
