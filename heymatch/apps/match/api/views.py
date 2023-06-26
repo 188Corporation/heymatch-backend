@@ -23,7 +23,6 @@ from heymatch.shared.exceptions import (
     MatchRequestNotFoundException,
     UserPointBalanceNotEnoughException,
 )
-from heymatch.shared.permissions import IsUserActive
 
 from .serializers import (
     MatchRequestCreateBodySerializer,
@@ -40,7 +39,7 @@ logger = logging.getLogger(__name__)
 class MatchRequestViewSet(viewsets.ModelViewSet):
     permission_classes = [
         IsAuthenticated,
-        IsUserActive,
+        # IsUserActive,
     ]
 
     serializer_class = ReceivedMatchRequestSerializer
@@ -78,10 +77,10 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
 
         # Serialize
         mr_sent_serializer = SentMatchRequestSerializer(
-            mr_sent_qs, many=True, context={"force_original": True}
+            mr_sent_qs, many=True, context={"force_original_image": True}
         )
         mr_received_serializer = self.get_serializer(
-            mr_received_qs, many=True, context={"force_original": True}
+            mr_received_qs, many=True, context={"force_original_image": True}
         )
         data = {
             "sent": mr_sent_serializer.data,
@@ -104,7 +103,6 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         user = request.user
 
         # Permission class checks #1
-        # TODO: request param에서 user의 group id도 받아서 처리하기. 어떤 그룹을 선택해서 할건지 알아야하니깐 (추후)
         if GroupMember.objects.filter(
             user=user, is_active=True, group_id__in=[to_group_id]
         ).exists():
@@ -177,7 +175,6 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
             content=f"[{from_group.title}] 그룹으로부터 매칭요청을 받았어요! 수락하면 바로 채팅할 수 있어요 😀",
             user_ids=to_group_user_ids,
         )
-        # TODO: handle OneSignal response
         logger.debug(f"OneSignal response for Match request: {res}")
 
         serializer = ReceivedMatchRequestSerializer(
@@ -283,7 +280,6 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
                 user_ids=sender_user_ids,
             )
             logger.debug(f"OneSignal response for Match Success: {res}")
-        # TODO: handle OneSignal response
         return {
             "stream_chat_id": stream_channel_id,
             "stream_chat_cid": stream_channel_cid,
@@ -301,7 +297,8 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         )  # WAITING
 
         mr.status = MatchRequest.MatchRequestStatusChoices.REJECTED  # REJECTED
-        mr.save(update_fields=["status"])
+        mr.is_active = False
+        mr.save(update_fields=["status", "is_active"])
 
         receiver_group = mr.receiver_group
         sender_group = mr.sender_group
@@ -319,7 +316,6 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
             user_ids=sender_user_ids,
         )
         logger.debug(f"OneSignal response for Match deny: {res}")
-        # TODO: handle OneSignal response
         return Response(status=status.HTTP_200_OK)
 
     @swagger_auto_schema(request_body=no_body)
@@ -333,7 +329,8 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         )  # WAITING
 
         mr.status = MatchRequest.MatchRequestStatusChoices.CANCELED  # CANCELED
-        mr.save(update_fields=["status"])
+        mr.is_active = False
+        mr.save(update_fields=["status", "is_active"])
         return Response(status=status.HTTP_200_OK)
 
     @staticmethod

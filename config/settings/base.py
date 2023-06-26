@@ -2,7 +2,6 @@
 Base settings to build other settings files upon.
 """
 import datetime
-from datetime import timedelta
 from pathlib import Path
 
 import environ
@@ -303,14 +302,14 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_TIME_LIMIT = 5 * 60
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#task-soft-time-limit
 # TODO: set to whatever value is adequate in your circumstances
-CELERY_TASK_SOFT_TIME_LIMIT = 60
+CELERY_TASK_SOFT_TIME_LIMIT = 3 * 60
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#beat-scheduler
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 CELERY_BEAT_SCHEDULE = {
     # Verify main UserProfileImages
     "verify-main-profile-images": {
         "task": "heymatch.apps.celery.tasks.verify_main_profile_images",
-        "schedule": timedelta(seconds=30),  # execute every 30 secs
+        "schedule": crontab(minute="*/1"),  # execute every 1 minute
         "args": (),
     },
     # Process DeleteScheduledUsers
