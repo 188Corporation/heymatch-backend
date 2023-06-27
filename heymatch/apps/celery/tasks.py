@@ -9,7 +9,6 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.utils import timezone
-from face_lib import face_lib
 
 from config.celery_app import app
 from heymatch.apps.group.models import (
@@ -29,7 +28,6 @@ from heymatch.utils.util import url_to_image
 User = get_user_model()
 stream = settings.STREAM_CLIENT
 onesignal_client = settings.ONE_SIGNAL_CLIENT
-FL = face_lib()
 
 logger = get_task_logger(__name__)
 
