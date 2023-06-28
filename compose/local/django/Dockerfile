@@ -46,7 +46,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   # GeoDjango dependencies
   binutils libproj-dev gdal-bin postgis \
   # dlib for face_recognition
-  cmake \
+  cmake libboost-all-dev \
   # cleaning up unused files
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
