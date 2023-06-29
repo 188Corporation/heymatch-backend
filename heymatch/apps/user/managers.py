@@ -109,7 +109,10 @@ class ActiveUserManager(UserManager):
         return user
 
     def __str__(self):
-        return str(self.id)
+        if self.id:
+            return str(self.id)
+        else:
+            "blank"
 
 
 class ActiveUserProfileManager(OrderedModelManager):
