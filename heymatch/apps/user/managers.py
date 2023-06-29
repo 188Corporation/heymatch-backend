@@ -48,7 +48,10 @@ class UserManager(BaseUserManager):
         return self._create_user(phone_number, password, username, **extra_fields)
 
     def __str__(self):
-        return str(self.id)
+        if self.id:
+            return str(self.id)
+        else:
+            "blank"
 
 
 class ActiveUserManager(UserManager):
