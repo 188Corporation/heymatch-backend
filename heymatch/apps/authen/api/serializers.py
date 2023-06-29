@@ -74,7 +74,10 @@ class UserLoginByPhoneNumberSerializer(LoginSerializer):
             try:
                 user = User.active_objects.get(phone_number=phone_number)
             except User.DoesNotExist:
-                user = User.active_objects.create(phone_number=phone_number)
+                username = self.get_temp_username()
+                user = User.active_objects.create(
+                    phone_number=phone_number, username=username
+                )
                 # create onboarding info
                 UserOnBoarding.objects.create(user=user)
         else:
@@ -104,6 +107,18 @@ class UserLoginByPhoneNumberSerializer(LoginSerializer):
 
         attrs["user"] = user
         return attrs
+
+    @staticmethod
+    def get_temp_username():
+        orig = "temp_username_for_signup"
+        num = 0
+        while True:
+            temp = f"{orig}_{num}"
+            try:
+                User.objects.get(username=temp)
+            except User.DoesNotExist:
+                return temp
+            num += 1
 
 
 class EmailVerificationSendCodeSerializer(serializers.ModelSerializer):
