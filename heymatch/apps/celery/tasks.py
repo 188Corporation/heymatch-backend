@@ -1,7 +1,6 @@
 import datetime
 from collections import Counter
 
-import face_recognition
 from celery import shared_task
 from celery.utils.log import get_task_logger
 from celery_singleton import Singleton
@@ -52,8 +51,7 @@ def verify_main_profile_images():
     # Create the haar cascade
     for upi in target_upi_qs:  # type: UserProfileImage
         image = url_to_image(upi.image.url)
-        faces_num = len(face_recognition.face_locations(image))
-        # faces_num, _ = FL.faces_locations(image)  # return list of RGB faces image
+        faces_num, _ = FL.faces_locations(image)  # return list of RGB faces image
         # faces_num = detect_face_with_haar_cascade_ml(upi.image.url)
         if faces_num == 1:
             # delete previous
