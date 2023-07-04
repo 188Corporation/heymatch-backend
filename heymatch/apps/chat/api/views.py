@@ -270,9 +270,10 @@ class StreamChatWebHookViewSet(viewsets.ViewSet):
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
+            sender = User.objects.get(id=sender_user_id)
             res = onesignal_client.send_notification_to_specific_users(
-                title=f"[{sender_user_id}]님으로 부터 새로운 매세지가 왔어요!",
-                content=f"[{sender_user_id}]님으로 부터 새로운 메세지가 왔어요! ",
+                title=f"[{sender.username}]님으로 부터 새로운 매세지가 왔어요!",
+                content=f"[{sender.username}]님으로 부터 새로운 메세지가 왔어요! ",
                 user_ids=receiver_user_ids,
             )
             logger.debug(f"OneSignal response for Stream Webhook message: {res}")
