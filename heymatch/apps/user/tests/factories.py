@@ -79,8 +79,6 @@ class ActiveUserFactory(DjangoModelFactory):
                 UserOnBoarding.objects.create(
                     user=instance,
                     onboarding_completed=True,
-                    basic_info_completed=True,
-                    extra_info_completed=True,
                 )
                 return instance
             except IntegrityError:

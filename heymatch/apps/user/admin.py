@@ -190,9 +190,6 @@ class UserOnBoardingAdmin(admin.ModelAdmin):
     list_display = [
         "id",
         "user",
-        "basic_info_completed",
-        "extra_info_completed",
-        "extra_info_in_progress",
         "profile_photo_under_verification",
         "profile_photo_rejected",
         "profile_photo_rejected_reason",
@@ -201,9 +198,6 @@ class UserOnBoardingAdmin(admin.ModelAdmin):
     search_fields = [
         "id",
         "user",
-        "basic_info_completed",
-        "extra_info_completed",
-        "extra_info_in_progress",
         "profile_photo_under_verification",
         "profile_photo_rejected",
         "profile_photo_rejected_reason",

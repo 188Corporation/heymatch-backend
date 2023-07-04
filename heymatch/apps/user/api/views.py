@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.shortcuts import get_object_or_404
-from drf_yasg.utils import no_body, swagger_auto_schema
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -309,12 +309,8 @@ class UserOnboardingViewSet(viewsets.ViewSet):
 
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         uob = get_object_or_404(UserOnBoarding, user=request.user)
-        if uob.extra_info_in_progress:
-            return Response(
-                data={"status": "onboarding_extra_info_in_progress"},
-                status=status.HTTP_200_OK,
-            )
         if uob.onboarding_completed:
+            # After first-signup process
             if uob.profile_photo_under_verification:
                 return Response(
                     data={
@@ -324,7 +320,10 @@ class UserOnboardingViewSet(viewsets.ViewSet):
                     status=status.HTTP_200_OK,
                 )
             return Response(
-                data={"status": "onboarding_completed"}, status=status.HTTP_200_OK
+                data={
+                    "status": "onboarding_completed",
+                },
+                status=status.HTTP_200_OK,
             )
         if uob.profile_photo_rejected:
             return Response(
@@ -335,43 +334,37 @@ class UserOnboardingViewSet(viewsets.ViewSet):
                 status=status.HTTP_200_OK,
             )
         if uob.profile_photo_under_verification:
-            if uob.extra_info_completed:
-                return Response(
-                    data={
-                        "status": "onboarding_profile_under_verification_extra_info_completed"
-                    },
-                    status=status.HTTP_200_OK,
-                )
-            else:
-                return Response(
-                    data={
-                        "status": "onboarding_profile_under_verification_extra_info_incomplete"
-                    },
-                    status=status.HTTP_200_OK,
-                )
+            return Response(
+                data={
+                    "status": "onboarding_profile_under_verification",
+                },
+                status=status.HTTP_200_OK,
+            )
         return Response(
-            data={"status": "onboarding_basic_info_incomplete"},
+            data={
+                "status": "onboarding_incomplete",
+            },
             status=status.HTTP_200_OK,
         )
 
-    @swagger_auto_schema(request_body=no_body)
-    def in_progress_extra_info(
-        self, request: Request, *args: Any, **kwargs: Any
-    ) -> Response:
-        uob = get_object_or_404(UserOnBoarding, user=request.user)
-        uob.extra_info_in_progress = True
-        uob.save(update_fields=["extra_info_in_progress"])
-        return Response(
-            data={"extra_info_in_progress": uob.extra_info_in_progress},
-            status=status.HTTP_200_OK,
-        )
+    # @swagger_auto_schema(request_body=no_body)
+    # def in_progress_extra_info(
+    #     self, request: Request, *args: Any, **kwargs: Any
+    # ) -> Response:
+    #     uob = get_object_or_404(UserOnBoarding, user=request.user)
+    #     uob.extra_info_in_progress = True
+    #     uob.save(update_fields=["extra_info_in_progress"])
+    #     return Response(
+    #         data={"extra_info_in_progress": uob.extra_info_in_progress},
+    #         status=status.HTTP_200_OK,
+    #     )
 
-    @swagger_auto_schema(request_body=no_body)
-    def complete_extra_info(
-        self, request: Request, *args: Any, **kwargs: Any
-    ) -> Response:
-        uob = get_object_or_404(UserOnBoarding, user=request.user)
-        uob.extra_info_in_progress = False
-        uob.extra_info_completed = True
-        uob.save(update_fields=["extra_info_in_progress", "extra_info_completed"])
-        return Response(status=status.HTTP_200_OK)
+    # @swagger_auto_schema(request_body=no_body)
+    # def complete_extra_info(
+    #     self, request: Request, *args: Any, **kwargs: Any
+    # ) -> Response:
+    #     uob = get_object_or_404(UserOnBoarding, user=request.user)
+    #     uob.extra_info_in_progress = False
+    #     uob.extra_info_completed = True
+    #     uob.save(update_fields=["extra_info_in_progress", "extra_info_completed"])
+    #     return Response(status=status.HTTP_200_OK)
