@@ -195,6 +195,16 @@ def detect_faces_with_aws_rekognition(s3_image_url: str):
         return False, "단체 사진은 올릴 수 없어요!"
 
 
+def load_company_domain_file():
+    f = open(f"{settings.APPS_DIR}/data/domains/company.json")
+    return json.load(f)
+
+
+def load_school_domain_file():
+    f = open(f"{settings.APPS_DIR}/data/domains/school.json")
+    return json.load(f)
+
+
 def load_company_domain_json():
     company_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSuyG7ft8IsuRzGqWYqDC963W2-nG_fKkKDn_Xp7cGwoFpFgYPKx46jhIobyEn3cpIoi62PNJx-V7oT/pub?gid=0&single=true&output=csv"  # noqa: E501
     df = pd.read_csv(company_url, on_bad_lines="skip")
