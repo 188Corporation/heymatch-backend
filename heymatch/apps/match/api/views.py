@@ -296,8 +296,7 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         )  # WAITING
 
         mr.status = MatchRequest.MatchRequestStatusChoices.REJECTED  # REJECTED
-        mr.is_active = False
-        mr.save(update_fields=["status", "is_active"])
+        mr.save(update_fields=["status"])
 
         receiver_group = mr.receiver_group
         sender_group = mr.sender_group
