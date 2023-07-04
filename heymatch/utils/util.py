@@ -10,6 +10,7 @@ from typing import Sequence
 import boto3
 import cv2
 import numpy as np
+import pandas as pd
 import requests
 from django.conf import settings
 from django.contrib.gis.geos import Point as GisPoint
@@ -194,14 +195,43 @@ def detect_faces_with_aws_rekognition(s3_image_url: str):
         return False, "단체 사진은 올릴 수 없어요!"
 
 
-def load_company_domain_file():
-    f = open(f"{settings.APPS_DIR}/data/domains/company.json")
-    return json.load(f)
+def load_company_domain_json():
+    company_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSuyG7ft8IsuRzGqWYqDC963W2-nG_fKkKDn_Xp7cGwoFpFgYPKx46jhIobyEn3cpIoi62PNJx-V7oT/pub?gid=0&single=true&output=csv"  # noqa: E501
+    df = pd.read_csv(company_url, on_bad_lines="skip")
+    db = {}
+    for idx, line in df.iterrows():
+        company_name = line["회사명 출력"]
+        company_name_alt = line["회사명"]
+        email = line["이메일"]
+
+        if not email or type(email) is float:
+            continue
+
+        if not company_name and not company_name_alt:
+            continue
+
+        company_emails = email.replace(" ", "").split(",")
+        company_name_final = company_name_alt if not company_name else company_name
+        for email in company_emails:
+            if email in db:
+                if company_name_final not in db[email]:
+                    db[email].append(company_name_final)
+            else:
+                db[email] = [company_name_final]
+    return db
 
 
-def load_school_domain_file():
-    f = open(f"{settings.APPS_DIR}/data/domains/school.json")
-    return json.load(f)
+def load_school_domain_json():
+    school_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSuyG7ft8IsuRzGqWYqDC963W2-nG_fKkKDn_Xp7cGwoFpFgYPKx46jhIobyEn3cpIoi62PNJx-V7oT/pub?gid=903166839&single=true&output=csv"  # noqa: E501
+    df = pd.read_csv(school_url)
+    db = {}
+    for idx, line in df.iterrows():
+        school_name = line["학교명"]
+        email = line["이메일"]
+        if not email or type(email) is float:
+            continue
+        db[email] = school_name
+    return db
 
 
 class NaverGeoAPI:

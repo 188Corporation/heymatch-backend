@@ -23,7 +23,7 @@ from heymatch.shared.exceptions import (
     EmailVerificationDomainNotFoundException,
     EmailVerificationSelectedNameNotFoundException,
 )
-from heymatch.utils.util import load_company_domain_file, load_school_domain_file
+from heymatch.utils.util import load_company_domain_json, load_school_domain_json
 
 from .serializers import (
     EmailVerificationAuthCodeSerializer,
@@ -189,14 +189,14 @@ class EmailVerificationViewSet(viewsets.ViewSet):
         email = evc.email
         email_domain = email.split("@")[1]
         if evc.type == EmailVerificationCode.VerificationType.SCHOOL:
-            SCHOOL_DOMAIN_FILE = load_school_domain_file()
-            if email_domain in SCHOOL_DOMAIN_FILE:
-                return True, SCHOOL_DOMAIN_FILE[email_domain]
+            school_dict = load_school_domain_json()
+            if email_domain in school_dict:
+                return True, school_dict[email_domain]
             else:
                 return False, None
         # handle company
         elif evc.type == EmailVerificationCode.VerificationType.COMPANY:
-            COMPANY_DOMAIN_FILE = load_company_domain_file()
-            if email_domain in COMPANY_DOMAIN_FILE:
-                return True, COMPANY_DOMAIN_FILE[email_domain]
+            company_dict = load_company_domain_json()
+            if email_domain in company_dict:
+                return True, company_dict[email_domain]
         return False, None

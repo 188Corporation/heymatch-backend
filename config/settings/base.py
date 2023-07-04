@@ -324,11 +324,11 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(minute=0, hour=3),  # execute 3 a.m
         "args": (),
     },
-    "update-school-company-database": {
-        "task": "heymatch.apps.celery.tasks.update_school_company_database",
-        "schedule": crontab(minute=0, hour="*/1"),  # execute every hour
-        "args": (),
-    }
+    # "update-school-company-database": {
+    #     "task": "heymatch.apps.celery.tasks.update_school_company_database",
+    #     "schedule": crontab(minute=0, hour="*/1"),  # execute every hour
+    #     "args": (),
+    # }
     # NOTE: We do not delete groups anymore
     # Disable groups, matches, chat at the end of the day
     # "end-of-the-day": {

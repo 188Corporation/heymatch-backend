@@ -1,8 +1,6 @@
 import datetime
-import json
 from collections import Counter
 
-import pandas as pd
 from celery import shared_task
 from celery.utils.log import get_task_logger
 from celery_singleton import Singleton
@@ -194,59 +192,6 @@ def delete_scheduled_users():
         logger.debug("[2.5] Mark DeleteScheduledUser as `completed`")
         dsu.status = DeleteScheduledUser.DeleteStatusChoices.COMPLETED
         dsu.save(update_fields=["status"])
-
-
-@shared_task(soft_time_limit=120)
-def update_school_company_database():
-    company_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSuyG7ft8IsuRzGqWYqDC963W2-nG_fKkKDn_Xp7cGwoFpFgYPKx46jhIobyEn3cpIoi62PNJx-V7oT/pub?gid=0&single=true&output=csv"  # noqa: E501
-    school_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSuyG7ft8IsuRzGqWYqDC963W2-nG_fKkKDn_Xp7cGwoFpFgYPKx46jhIobyEn3cpIoi62PNJx-V7oT/pub?gid=903166839&single=true&output=csv"  # noqa: E501
-
-    ################
-    # Update Company
-    ################
-    df = pd.read_csv(company_url, on_bad_lines="skip")
-    db = {}
-    for idx, line in df.iterrows():
-        company_name = line["회사명 출력"]
-        company_name_alt = line["회사명"]
-        email = line["이메일"]
-
-        if not email or type(email) is float:
-            continue
-
-        if not company_name and not company_name_alt:
-            continue
-
-        company_emails = email.replace(" ", "").split(",")
-        company_name_final = company_name_alt if not company_name else company_name
-        for email in company_emails:
-            if email in db:
-                if company_name_final not in db[email]:
-                    db[email].append(company_name_final)
-            else:
-                db[email] = [company_name_final]
-
-    # save to json
-    with open(
-        f"{settings.APPS_DIR}/data/domains/company.json", "w", encoding="utf-8"
-    ) as f:
-        json.dump(db, f, indent="\t", ensure_ascii=False)
-
-    ################
-    # Update School
-    ################
-    df = pd.read_csv(school_url)
-    db = {}
-    for idx, line in df.iterrows():
-        school_name = line["학교명"]
-        email = line["이메일"]
-        if not email or type(email) is float:
-            continue
-        db[email] = school_name
-
-    # save to json
-    with open("../heymatch/data/domains/school.json", "w", encoding="utf-8") as f:
-        json.dump(db, f, indent="\t", ensure_ascii=False)
 
 
 # ================================================
