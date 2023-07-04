@@ -205,16 +205,19 @@ class UserProfileImage(OrderedModel):
     def save(self, *args, **kwargs):
         image = Image.open(self.image).convert("RGB")
         image = ImageOps.exif_transpose(image)  # fix ios image rotation bug
+        blurred_image = image.filter(ImageFilter.BoxBlur(20))
 
         # crop
         image_4x3 = self.crop_by_4x3(image)
         image_1x1 = self.crop_by_1x1(image)
+        image_blurred_4x3 = self.crop_by_4x3(blurred_image)
+        image_blurred_1x1 = self.crop_by_1x1(blurred_image)
 
         # process
         self.process_image(image_4x3)
-        self.process_image_blurred(image_4x3)
+        self.process_image_blurred(image_blurred_4x3)
         self.process_thumbnail(image_1x1)
-        self.process_thumbnail_blurred(image_1x1)
+        self.process_thumbnail_blurred(image_blurred_1x1)
         super(UserProfileImage, self).save(*args, **kwargs)
 
     def check_file_type(self):
@@ -274,7 +277,6 @@ class UserProfileImage(OrderedModel):
         Blurs image and save
         :return:
         """
-        image = image.filter(ImageFilter.BoxBlur(30))
         temp_image = BytesIO()
         image.save(temp_image, filetype)
         temp_image.seek(0)
@@ -304,7 +306,6 @@ class UserProfileImage(OrderedModel):
 
     def process_thumbnail_blurred(self, image, filetype: str = "JPEG"):
         image.thumbnail((350, 350), Image.Resampling.LANCZOS)
-        image = image.filter(ImageFilter.BoxBlur(8))
         # Save thumbnail to in-memory file as StringIO
         temp_image = BytesIO()
         image.save(temp_image, filetype)

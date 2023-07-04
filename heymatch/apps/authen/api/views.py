@@ -30,9 +30,6 @@ from .serializers import (
     EmailVerificationSendCodeSerializer,
 )
 
-COMPANY_DOMAIN_FILE = load_company_domain_file()
-SCHOOL_DOMAIN_FILE = load_school_domain_file()
-
 
 class PhoneUserRateThrottle(UserRateThrottle):
     rate = "10/min"
@@ -192,13 +189,14 @@ class EmailVerificationViewSet(viewsets.ViewSet):
         email = evc.email
         email_domain = email.split("@")[1]
         if evc.type == EmailVerificationCode.VerificationType.SCHOOL:
+            SCHOOL_DOMAIN_FILE = load_school_domain_file()
             if email_domain in SCHOOL_DOMAIN_FILE:
                 return True, SCHOOL_DOMAIN_FILE[email_domain]
             else:
                 return False, None
-
         # handle company
-        if evc.type == EmailVerificationCode.VerificationType.COMPANY:
+        elif evc.type == EmailVerificationCode.VerificationType.COMPANY:
+            COMPANY_DOMAIN_FILE = load_company_domain_file()
             if email_domain in COMPANY_DOMAIN_FILE:
                 return True, COMPANY_DOMAIN_FILE[email_domain]
         return False, None
