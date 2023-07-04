@@ -205,7 +205,7 @@ class UserProfileImage(OrderedModel):
     def save(self, *args, **kwargs):
         image = Image.open(self.image).convert("RGB")
         image = ImageOps.exif_transpose(image)  # fix ios image rotation bug
-        blurred_image = image.filter(ImageFilter.BoxBlur(20))
+        blurred_image = image.filter(ImageFilter.BoxBlur(15))
 
         # crop
         image_4x3 = self.crop_by_4x3(image)
