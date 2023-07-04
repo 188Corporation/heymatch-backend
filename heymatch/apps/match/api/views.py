@@ -201,6 +201,21 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
             target_status=MatchRequest.MatchRequestStatusChoices.WAITING,
         )  # WAITING
 
+        # Update MatchRequest
+        mr.status = MatchRequest.MatchRequestStatusChoices.ACCEPTED  # ACCEPTED
+        mr.save(
+            update_fields=[
+                "status",
+            ]
+        )
+        # Unlock photo
+        group = mr.sender_group
+        gps = GroupProfilePhotoPurchased.objects.filter(
+            seller=group, buyer=request.user
+        )
+        if not gps.exists():
+            GroupProfilePhotoPurchased.objects.create(seller=group, buyer=request.user)
+
         # Create Stream channel for both groups
         result = self.create_stream_channel(user_id=str(request.user.id), mr=mr)
         return Response(result, status.HTTP_200_OK)
@@ -236,22 +251,6 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
         )
         # Note: query method creates a channel
         res = channel.query()
-
-        # Update MatchRequest
-        mr.status = MatchRequest.MatchRequestStatusChoices.ACCEPTED  # ACCEPTED
-        mr.save(
-            update_fields=[
-                "status",
-            ]
-        )
-
-        # Update MatchRequest
-        mr.status = MatchRequest.MatchRequestStatusChoices.ACCEPTED  # ACCEPTED
-        mr.save(
-            update_fields=[
-                "status",
-            ]
-        )
 
         # Save StreamChannel
         stream_channel_id = res["channel"]["id"]
