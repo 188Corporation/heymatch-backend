@@ -2,6 +2,7 @@
 Base settings to build other settings files upon.
 """
 import datetime
+from datetime import timedelta
 from pathlib import Path
 
 import environ
@@ -309,7 +310,7 @@ CELERY_BEAT_SCHEDULE = {
     # Verify main UserProfileImages
     "verify-main-profile-images": {
         "task": "heymatch.apps.celery.tasks.verify_main_profile_images",
-        "schedule": crontab(minute="*/1"),  # execute every 1 minute
+        "schedule": timedelta(seconds=30),  # execute every 1 minute
         "args": (),
     },
     # Process DeleteScheduledUsers
