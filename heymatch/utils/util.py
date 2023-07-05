@@ -129,6 +129,12 @@ def url_to_image(url: str):
     return image
 
 
+def url_to_np_image(url: str):
+    resp = urllib.request.urlopen(url)
+    image = np.asarray(bytearray(resp.read()), dtype="uint8")
+    return image
+
+
 def detect_face_with_haar_cascade_ml(s3_url: str) -> int:
     face_cascade = cv2.CascadeClassifier(
         cv2.data.haarcascades + "haarcascade_frontalface_alt2.xml"
@@ -170,7 +176,7 @@ def detect_face_with_haar_cascade_ml(s3_url: str) -> int:
 
 
 def detect_faces_with_aws_rekognition(s3_image_url: str):
-    image = url_to_image(s3_image_url)
+    image = url_to_np_image(s3_image_url)
     res = client.detect_faces(Image={"Bytes": image})
     good_results = []
     small_size_results = []
