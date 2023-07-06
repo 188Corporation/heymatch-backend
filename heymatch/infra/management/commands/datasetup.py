@@ -13,6 +13,8 @@ from tqdm import tqdm
 from heymatch.apps.celery.tasks import aggregate_recent_24hr_top_ranked_group_address
 from heymatch.apps.group.models import GroupMember, GroupProfilePhotoPurchased, GroupV2
 from heymatch.apps.group.tests.factories import (
+    FEMALE_REAL_CHOICES,
+    MALE_REAL_CHOICES,
     GroupMemberFactory,
     GroupV2Factory,
     female_profile_image_filepath,
@@ -130,8 +132,12 @@ class Command(BaseCommand):
             self.generate_normal_users()
 
         # -------------- Hotplace, Group, Users setup -------------- #
-        if migrate_all or input("Create Groups? [y/N]") == "y":
+        if migrate_all or input("Create Random Groups? [y/N]") == "y":
             self.generate_groups()
+
+        # -------------- Hotplace, Group, Users setup -------------- #
+        if migrate_all or input("Create Real Groups? [y/N]") == "y":
+            self.generate_real_groups()
 
         # -------------- Payment setup -------------- #
         if migrate_all or input("Create Payments? [y/N]") == "y":
@@ -390,6 +396,44 @@ class Command(BaseCommand):
             GroupMemberFactory.create(group=group, user=user, is_user_leader=True)
             pbar.update(1)
         pbar.close()
+
+    def generate_real_groups(self) -> None:
+        self.stdout.write(self.style.SUCCESS("Setting up data for [Groups.REAL]"))
+        # Create Female Groups
+        for i in range(1, 12):
+            group = GroupV2Factory.create(**(FEMALE_REAL_CHOICES[i - 1]))
+            user_factory = random.choice(
+                [
+                    ActiveEmployeeFemaleUserFactory,
+                    ActivePractitionerFemaleUserFactory,
+                ]
+            )
+            user = user_factory.create()
+            UserProfileImageFactory.create(
+                user=user,
+                image=ImageField(
+                    from_path=f"{pathlib.Path().resolve()}/heymatch/data/profile/female_profile_{i}.jpeg"
+                ),
+            )
+            GroupMemberFactory.create(group=group, user=user, is_user_leader=True)
+
+        # Create Male Groups
+        for i in range(1, 11):
+            group = GroupV2Factory.create(**(MALE_REAL_CHOICES[i - 1]))
+            user_factory = random.choice(
+                [
+                    ActiveEmployeeMaleUserFactory,
+                    ActivePractitionerMaleUserFactory,
+                ]
+            )
+            user = user_factory.create()
+            UserProfileImageFactory.create(
+                user=user,
+                image=ImageField(
+                    from_path=f"{pathlib.Path().resolve()}/heymatch/data/profile/male_profile_{i}.jpeg"
+                ),
+            )
+            GroupMemberFactory.create(group=group, user=user, is_user_leader=True)
 
     def generate_payment_items(self) -> None:
         self.stdout.write(self.style.SUCCESS("Setting up data for [Payments]"))

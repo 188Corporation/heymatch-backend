@@ -123,7 +123,8 @@ class ActiveEmployeeMaleUserFactory(_ActiveMaleUserFactory):
     job_title = User.JobChoices.EMPLOYEE
     verified_school_name = None
     verified_company_name = Faker(
-        "random_element", elements=["Amazon", "스타트업", "삼성전자", None]
+        "random_element",
+        elements=["현대자동차", "LG 디스플레이", "구글코리아", "아마존코리아", "스타트업", "삼성전자", None],
     )
 
 
@@ -159,7 +160,7 @@ class ActiveEmployeeFemaleUserFactory(_ActiveFemaleUserFactory):
     job_title = User.JobChoices.EMPLOYEE
     verified_school_name = None
     verified_company_name = Faker(
-        "random_element", elements=["Amazon", "스타트업", "삼성전자", None]
+        "random_element", elements=["대한항공", "LG 디스플레이", "아모레퍼시픽", "스타트업", "삼성전자", None]
     )
 
 
