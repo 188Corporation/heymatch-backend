@@ -1,3 +1,4 @@
+import datetime
 from typing import Any, Sequence
 
 from django.db.utils import IntegrityError
@@ -100,13 +101,13 @@ class _ActiveMaleUserFactory(ActiveUserFactory):
     birthdate = Faker(
         "random_element",
         elements=[
-            "1993-03-01",
-            "1992-03-01",
-            "1995-03-01",
-            "1994-03-01",
-            "1991-03-01",
-            "1996-03-01",
-            "1990-03-01",
+            datetime.datetime(1993, 3, 1),
+            datetime.datetime(1990, 3, 1),
+            datetime.datetime(1992, 3, 1),
+            datetime.datetime(1995, 3, 1),
+            datetime.datetime(1994, 3, 1),
+            datetime.datetime(1991, 3, 1),
+            datetime.datetime(1996, 3, 1),
         ],
     )
     height_cm = Faker("random_element", elements=[178, 179, 180, 183, 185, 186])
@@ -119,13 +120,13 @@ class _ActiveFemaleUserFactory(ActiveUserFactory):
     birthdate = Faker(
         "random_element",
         elements=[
-            "1995-03-01",
-            "1994-03-01",
-            "1996-03-01",
-            "1997-03-01",
-            "1998-03-01",
-            "1992-03-01",
-            "1991-03-01",
+            datetime.datetime(1995, 3, 1),
+            datetime.datetime(1994, 3, 1),
+            datetime.datetime(1996, 3, 1),
+            datetime.datetime(1997, 3, 1),
+            datetime.datetime(1998, 3, 1),
+            datetime.datetime(1992, 3, 1),
+            datetime.datetime(1991, 3, 1),
         ],
     )
     height_cm = Faker("random_element", elements=[164, 165, 166, 167, 168, 170])
