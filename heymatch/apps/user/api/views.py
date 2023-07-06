@@ -163,7 +163,7 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
                 orig_other_profile_image_2.below(orig_other_profile_image_1)
 
         # user should verify again when changing job title
-        if "job_title" in serializer.validated_data.keys():
+        if "job_title" in serializer.validated_data.get("job_title", None):
             request.user.verified_school_name = None
             request.user.verified_company_name = None
             request.user.save(
