@@ -97,6 +97,18 @@ class ActiveUserFactory(DjangoModelFactory):
 
 class _ActiveMaleUserFactory(ActiveUserFactory):
     gender = User.GenderChoices.MALE
+    birthdate = Faker(
+        "random_element",
+        elements=[
+            "1993-03-01",
+            "1992-03-01",
+            "1995-03-01",
+            "1994-03-01",
+            "1991-03-01",
+            "1996-03-01",
+            "1990-03-01",
+        ],
+    )
     height_cm = Faker("random_element", elements=[178, 179, 180, 183, 185, 186])
     male_body_form = Faker("random_element", elements=["thin", "normal"])
     female_body_form = None
@@ -104,6 +116,18 @@ class _ActiveMaleUserFactory(ActiveUserFactory):
 
 class _ActiveFemaleUserFactory(ActiveUserFactory):
     gender = User.GenderChoices.FEMALE
+    birthdate = Faker(
+        "random_element",
+        elements=[
+            "1995-03-01",
+            "1994-03-01",
+            "1996-03-01",
+            "1997-03-01",
+            "1998-03-01",
+            "1992-03-01",
+            "1991-03-01",
+        ],
+    )
     height_cm = Faker("random_element", elements=[164, 165, 166, 167, 168, 170])
     male_body_form = None
     female_body_form = Faker("random_element", elements=["thin", "slender"])
