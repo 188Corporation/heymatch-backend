@@ -97,17 +97,19 @@ class ActiveUserFactory(DjangoModelFactory):
 
 class _ActiveMaleUserFactory(ActiveUserFactory):
     gender = User.GenderChoices.MALE
+    height_cm = Faker("random_element", elements=[178, 179, 180, 183, 185, 186])
     male_body_form = Faker(
-        "random_element", elements=[x[0] for x in User.MaleBodyFormChoices.choices]
+        "random_element", elements=[x[0] for x in ["thin", "normal"]]
     )
     female_body_form = None
 
 
 class _ActiveFemaleUserFactory(ActiveUserFactory):
     gender = User.GenderChoices.FEMALE
+    height_cm = Faker("random_element", elements=[164, 165, 166, 167, 168, 170])
     male_body_form = None
     female_body_form = Faker(
-        "random_element", elements=[x[0] for x in User.FemaleBodyFormChoices.choices]
+        "random_element", elements=[x[0] for x in ["thin", "slender"]]
     )
 
 
