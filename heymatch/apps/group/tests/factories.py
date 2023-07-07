@@ -125,7 +125,7 @@ MALE_REAL_CHOICES = [
         "member_avg_age": 30,
     },
     {
-        "title": "진짜 야근 죽이고 싶당..",
+        "title": "야근하기 싫당..",
         "introduction": "야근 그만 하고 싶다.. 날씨도 너무 덥다 재밌게 놀고 싶다",
         "member_number": 3,
         "member_avg_age": 29,
