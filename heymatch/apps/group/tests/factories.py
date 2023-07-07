@@ -200,7 +200,7 @@ class GroupV2Factory(DjangoModelFactory):
     member_avg_age = Faker("pyint", min_value=22, max_value=35)
     created_at = FuzzyDateTime(
         start_dt=datetime.datetime.now(tz=datetime.timezone.utc)
-        - datetime.timedelta(days=10),
+        - datetime.timedelta(hours=20),
         end_dt=datetime.datetime.now(tz=datetime.timezone.utc),
     )
 
