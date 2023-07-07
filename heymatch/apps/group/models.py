@@ -66,10 +66,10 @@ class GroupV2(models.Model):
 
     # Match
     photo_point = models.IntegerField(
-        blank=False, null=False, default=1
+        blank=False, null=False, default=settings.POINT_NEEDED_FOR_PHOTO
     )  # Point for requesting match to this group
     match_point = models.IntegerField(
-        blank=False, null=False, default=2
+        blank=False, null=False, default=settings.POINT_NEEDED_FOR_MATCH
     )  # Point for requesting match to this group
 
     # Lifecycle

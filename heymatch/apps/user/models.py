@@ -126,7 +126,7 @@ class User(AbstractUser):
 
     # Purchase related
     point_balance = models.IntegerField(
-        blank=False, null=False, default=settings.USER_INITIAL_POINT
+        blank=False, null=False, default=settings.WELCOME_BONUS_POINT
     )
     free_pass = models.BooleanField(default=False)
     free_pass_active_until = models.DateTimeField(
