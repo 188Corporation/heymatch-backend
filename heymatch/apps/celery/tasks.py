@@ -129,7 +129,7 @@ def aggregate_recent_24hr_top_ranked_group_address():
             "gps_address", flat=True
         )
     )
-    if len(last_24_group_addresses) > 5:
+    if len(last_24_group_addresses) > 0:
         top_10_counter = dict(Counter(last_24_group_addresses).most_common(10))
         Recent24HrTopGroupAddress.objects.create(result=top_10_counter)
 
