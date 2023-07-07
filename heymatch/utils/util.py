@@ -246,7 +246,10 @@ def load_school_domain_json():
         email = line["이메일"]
         if not email or type(email) is float:
             continue
-        db[email] = school_name
+        if email in db:
+            db[email].append(school_name)
+        else:
+            db[email] = [school_name]
     return db
 
 
