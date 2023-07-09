@@ -194,9 +194,9 @@ def detect_faces_with_aws_rekognition(s3_image_url: str):
         elif len(small_size_results) == 1:
             return False, "얼굴이 너무 작아요!"
         else:
-            return "단체 사진은 올릴 수 없어요!"
+            return False, "단체 사진은 올릴 수 없어요!"
     elif len(good_results) == 1:
-        return True, ""
+        return True, None
     else:
         return False, "단체 사진은 올릴 수 없어요!"
 
