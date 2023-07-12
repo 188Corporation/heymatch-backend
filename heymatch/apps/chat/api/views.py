@@ -261,7 +261,9 @@ class StreamChatWebHookViewSet(viewsets.ViewSet):
             sender_user_id = request.data["user"]["id"]
             receiver_user_ids = []
             for member in request.data["members"]:
-                if (member["user_id"] != sender_user_id) and member["user"]["online"]:
+                if (member["user_id"] != sender_user_id) and not member["user"][
+                    "online"
+                ]:
                     receiver_user_ids.append(member["user_id"])
 
             if not receiver_user_ids:
