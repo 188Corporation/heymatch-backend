@@ -84,8 +84,13 @@ class UserNotGroupLeaderException(BasePermissionDeniedException):
 
 
 class GroupProfilePhotoAlreadyPurchasedException(BasePermissionDeniedException):
-    status_code = 467
+    status_code = 468
     detail = "You already purchased group profile photo, or other group did."
+
+
+class MatchRequestNotMatchedException(BasePermissionDeniedException):
+    status_code = 469
+    detail = "You do not have any MatchRequest with the group"
 
 
 class MatchRequestAlreadySubmittedException(BasePermissionDeniedException):

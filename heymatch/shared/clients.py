@@ -18,7 +18,11 @@ class OneSignalClient:
         self.is_local = is_local
 
     def send_notification_to_specific_users(
-        self, title: str, content: str, user_ids: List[str]
+        self,
+        title: str,
+        content: str,
+        user_ids: List[str],
+        custom_data: dict or None = None,
     ) -> dict:
         if self.is_local:
             return self.local_response()
@@ -34,6 +38,7 @@ class OneSignalClient:
             "include_external_user_ids": user_ids,
             "channel_for_external_user_ids": "push",
             "app_id": self.app_id,
+            "custom_data": custom_data,
         }
         res = requests.post(self.endpoint, json=payload, headers=headers)
         return res.json()

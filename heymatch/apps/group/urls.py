@@ -5,6 +5,7 @@ from heymatch.apps.group.api.views import (
     GroupsTopAddressViewSet,
     GroupV2DetailViewSet,
     GroupV2GeneralViewSet,
+    GroupV2MatchRequestViewSet,
 )
 
 app_name = "group"
@@ -17,6 +18,7 @@ group_detail_view = GroupV2DetailViewSet.as_view(
 )
 group_top_address_list_view = GroupsTopAddressViewSet.as_view({"get": "retrieve"})
 group_photo_purchase_view = GroupV2DetailViewSet.as_view({"post": "purchase_photo"})
+group_match_request_view = GroupV2MatchRequestViewSet.as_view({"get": "retrieve"})
 group_report_view = GroupReportViewSet.as_view({"post": "report"})
 
 urlpatterns = [
@@ -31,6 +33,11 @@ urlpatterns = [
         "<int:group_id>/purchase/photo/",
         group_photo_purchase_view,
         name="group-purchase-photo",
+    ),
+    path(
+        "<int:group_id>/match-request/",
+        group_match_request_view,
+        name="group-match-request",
     ),
     path("<int:group_id>/report/", group_report_view, name="group-report"),
 ]

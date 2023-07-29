@@ -55,10 +55,12 @@ from heymatch.shared.exceptions import (
     GroupNotWithinSameHotplaceException,
     GroupProfilePhotoAlreadyPurchasedException,
     JoinedGroupNotMineException,
+    MatchRequestNotMatchedException,
     OneGroupPerUserException,
     ReportMyGroupException,
     UserGPSNotWithinHotplaceException,
     UserNotGroupLeaderException,
+    UserNotJoinedGroupException,
     UserPointBalanceNotEnoughException,
 )
 from heymatch.shared.permissions import (
@@ -584,6 +586,38 @@ class GroupsTopAddressViewSet(viewsets.ModelViewSet):
             k: v
             for k, v in sorted(data["result"].items(), key=lambda x: x[1], reverse=True)
         }
+        return Response(data=data, status=status.HTTP_200_OK)
+
+
+class GroupV2MatchRequestViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+
+    def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        queryset = GroupV2.objects.all().filter(is_active=True)
+        group = get_object_or_404(queryset, id=kwargs["group_id"])
+
+        # If I do not have group
+        qs = GroupMember.objects.filter(user=request.user, is_active=True)
+        if not qs.exists():
+            raise UserNotJoinedGroupException()
+        gm = qs.first()
+        my_group = gm.group
+
+        # If not my match-request
+        qs = MatchRequest.active_objects.filter(
+            Q(sender_group=my_group, receiver_group=group)
+            | Q(sender_group=group, receiver_group=my_group)
+        )
+        if not qs.exists():
+            raise MatchRequestNotMatchedException()
+
+        mr = qs.first()
+        data = {
+            "id": group.id,
+            "status": mr.status,
+            "type": "SENT" if mr.sender_group == my_group else "RECEIVED",
+        }
+
         return Response(data=data, status=status.HTTP_200_OK)
 
 
