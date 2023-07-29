@@ -175,8 +175,10 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
             content=f"[{from_group.title}] 그룹으로부터 매칭요청을 받았어요! 수락하면 바로 채팅할 수 있어요 😀",
             user_ids=to_group_user_ids,
             data={
-                "route_to": "MatchRequestPage",
-                "extra": {"match_request_id": "test"},
+                "route_to": "GroupDetailScreen",
+                "data": {
+                    "group_id": from_group.id,
+                },
             },
         )
         logger.debug(f"OneSignal response for Match request: {res}")
@@ -282,8 +284,10 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
                 content=f"[{receiver_group.title}] 그룹이 매칭요청을 수락했어요!! 지금 바로 메세지를 보내봐요 🎉",
                 user_ids=sender_user_ids,
                 data={
-                    "route_to": "MatchRequestPage",
-                    "extra": {"match_request_id": "test"},
+                    "route_to": "GroupDetailScreen",
+                    "data": {
+                        "group_id": receiver_group.id,
+                    },
                 },
             )
             logger.debug(f"OneSignal response for Match Success: {res}")
@@ -321,8 +325,10 @@ class MatchRequestViewSet(viewsets.ModelViewSet):
             content=f"[{receiver_group.title}] 그룹이 매칭요청을 거절했어요..😥 다른 그룹을 찾아봐요!",
             user_ids=sender_user_ids,
             data={
-                "route_to": "MatchRequestPage",
-                "extra": {"match_request_id": "test"},
+                "route_to": "GroupDetailScreen",
+                "data": {
+                    "group_id": receiver_group.id,
+                },
             },
         )
         logger.debug(f"OneSignal response for Match deny: {res}")

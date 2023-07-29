@@ -274,11 +274,65 @@ class StreamChatWebHookViewSet(viewsets.ViewSet):
                 )
 
             sender = User.objects.get(id=sender_user_id)
+            channel = stream.query_channels(
+                filter_conditions={
+                    "members": {"$in": [str(request.user.id), str(sender.id)]},
+                },
+                sort={"last_message_at": -1},
+                limit=1,
+            )
+            channel = channel["channels"][0]
+            # parse raw data
+            serializer_data = []
+            fresh_data = {}
+            reads = channel["read"]
+            is_last_message_read = True
+
+            sc = (
+                StreamChannel.objects.filter(
+                    cid=channel["channel"]["cid"],
+                    is_active=True,
+                )
+                .exclude(group_member__user_id=str(request.user.id))
+                .first()
+            )
+
+            # check unread or read
+            for read in reads:
+                if read["user"]["id"] == str(request.user.id):
+                    is_last_message_read = (
+                        False if read["unread_messages"] > 0 else True
+                    )
+            # add group info
+            group_serializer = V2GroupFullFieldSerializer(
+                instance=sc.group_member.group, context={"force_original_image": True}
+            )
+            fresh_data["group"] = group_serializer.data
+            fresh_data["channel"] = {
+                "cid": channel["channel"]["cid"],
+                "last_message": {
+                    "content": channel["messages"][-1]["text"],
+                    "sent_at": channel["messages"][-1]["created_at"],
+                    "is_read": is_last_message_read,
+                }
+                if len(channel["messages"]) > 0
+                else None,
+            }
+            # serialize
+            if len(channel["messages"]) == 0:
+                serializer_data.insert(0, fresh_data)
+            else:
+                serializer_data.append(fresh_data)
+
+            # Get group name
             res = onesignal_client.send_notification_to_specific_users(
-                title=f"[{sender.username}]님으로 부터 새로운 매세지가 왔어요!",
-                content=f"[{sender.username}]님으로 부터 새로운 메세지가 왔어요! ",
+                title=f"[{sc.group_member.group.title}]으로 부터 새로운 매세지가 왔어요!",
+                content=f"[{sc.group_member.group.title}]으로 부터 새로운 메세지가 왔어요! ",
                 user_ids=receiver_user_ids,
-                data={"route_to": "ChatPage", "extra": {"channel_id": "test"}},
+                data={
+                    "route_to": "ChatDetailScreen",
+                    "data": serializer_data,
+                },
             )
             logger.debug(f"OneSignal response for Stream Webhook message: {res}")
         else:
