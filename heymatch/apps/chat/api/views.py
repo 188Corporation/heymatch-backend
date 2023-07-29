@@ -278,7 +278,7 @@ class StreamChatWebHookViewSet(viewsets.ViewSet):
                 title=f"[{sender.username}]님으로 부터 새로운 매세지가 왔어요!",
                 content=f"[{sender.username}]님으로 부터 새로운 메세지가 왔어요! ",
                 user_ids=receiver_user_ids,
-                custom_data={"route_to": "ChatPage", "extra": {"channel_id": "test"}},
+                data={"route_to": "ChatPage", "extra": {"channel_id": "test"}},
             )
             logger.debug(f"OneSignal response for Stream Webhook message: {res}")
         else:
