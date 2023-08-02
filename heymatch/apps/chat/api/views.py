@@ -287,14 +287,11 @@ class StreamChatWebHookViewSet(viewsets.ViewSet):
                 "cid": channel["channel"]["cid"],
             }
 
-            sc = (
-                StreamChannel.objects.filter(
-                    cid=channel["channel"]["cid"],
-                    is_active=True,
-                )
-                .exclude(group_member__user_id__in=receiver_user_ids)
-                .first()
-            )
+            sc = StreamChannel.objects.filter(
+                cid=channel["channel"]["cid"],
+                is_active=True,
+                group_member__user_id=sender_user_id,
+            ).first()
 
             # Get group name
             res = onesignal_client.send_notification_to_specific_users(
