@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from rest_framework import status, viewsets
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -140,7 +140,9 @@ class StreamChatViewSet(viewsets.ModelViewSet):
 
 
 class StreamChatWebHookViewSet(viewsets.ViewSet):
-    permission_classes = [AllowAny]
+    permission_classes = [
+        IsAuthenticated,
+    ]
 
     def hook(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """
