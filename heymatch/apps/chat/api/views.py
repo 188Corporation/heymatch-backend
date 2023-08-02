@@ -282,11 +282,9 @@ class StreamChatWebHookViewSet(viewsets.ViewSet):
                 limit=1,
             )
             channel = channel["channels"][0]
-            # parse raw data
-            serializer_data = []
-            fresh_data = {}
-            reads = channel["read"]
-            is_last_message_read = True
+            serializer_data = {
+                "cid": channel["channel"]["cid"],
+            }
 
             sc = (
                 StreamChannel.objects.filter(
@@ -296,33 +294,6 @@ class StreamChatWebHookViewSet(viewsets.ViewSet):
                 .exclude(group_member__user_id=str(request.user.id))
                 .first()
             )
-
-            # check unread or read
-            for read in reads:
-                if read["user"]["id"] == str(request.user.id):
-                    is_last_message_read = (
-                        False if read["unread_messages"] > 0 else True
-                    )
-            # add group info
-            group_serializer = V2GroupFullFieldSerializer(
-                instance=sc.group_member.group, context={"force_original_image": True}
-            )
-            fresh_data["group"] = group_serializer.data
-            fresh_data["channel"] = {
-                "cid": channel["channel"]["cid"],
-                "last_message": {
-                    "content": channel["messages"][-1]["text"],
-                    "sent_at": channel["messages"][-1]["created_at"],
-                    "is_read": is_last_message_read,
-                }
-                if len(channel["messages"]) > 0
-                else None,
-            }
-            # serialize
-            if len(channel["messages"]) == 0:
-                serializer_data.insert(0, fresh_data)
-            else:
-                serializer_data.append(fresh_data)
 
             # Get group name
             res = onesignal_client.send_notification_to_specific_users(
