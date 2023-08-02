@@ -273,10 +273,11 @@ class StreamChatWebHookViewSet(viewsets.ViewSet):
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
-            sender = User.objects.get(id=sender_user_id)
+            members = receiver_user_ids
+            members.append(str(sender_user_id))
             channel = stream.query_channels(
                 filter_conditions={
-                    "members": {"$in": [str(sender.id)].extend(receiver_user_ids)},
+                    "members": {"$in": members},
                 },
                 sort={"last_message_at": -1},
                 limit=1,
