@@ -273,7 +273,7 @@ class StreamChatWebHookViewSet(viewsets.ViewSet):
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
-            members = receiver_user_ids
+            members = receiver_user_ids[:]
             members.append(str(sender_user_id))
             channel = stream.query_channels(
                 filter_conditions={
