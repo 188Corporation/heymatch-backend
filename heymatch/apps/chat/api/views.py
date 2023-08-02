@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from rest_framework import status, viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -140,9 +140,7 @@ class StreamChatViewSet(viewsets.ModelViewSet):
 
 
 class StreamChatWebHookViewSet(viewsets.ViewSet):
-    permission_classes = [
-        IsAuthenticated,
-    ]
+    permission_classes = [AllowAny]
 
     def hook(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """
@@ -278,7 +276,7 @@ class StreamChatWebHookViewSet(viewsets.ViewSet):
             sender = User.objects.get(id=sender_user_id)
             channel = stream.query_channels(
                 filter_conditions={
-                    "members": {"$in": [str(request.user.id), str(sender.id)]},
+                    "members": {"$in": [str(sender.id)].extend(receiver_user_ids)},
                 },
                 sort={"last_message_at": -1},
                 limit=1,
@@ -293,7 +291,7 @@ class StreamChatWebHookViewSet(viewsets.ViewSet):
                     cid=channel["channel"]["cid"],
                     is_active=True,
                 )
-                .exclude(group_member__user_id=str(request.user.id))
+                .exclude(group_member__user_id__in=receiver_user_ids)
                 .first()
             )
 
