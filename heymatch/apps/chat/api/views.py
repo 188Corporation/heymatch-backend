@@ -58,7 +58,7 @@ class StreamChatViewSet(viewsets.ModelViewSet):
             limit=30,
         )
         # parse raw data
-        serializer_data = []
+        serializer_data = {"total_unread_messages": 0, "channels": []}
         for channel in channels["channels"]:
             fresh_data = {}
             reads = channel["read"]
@@ -78,6 +78,7 @@ class StreamChatViewSet(viewsets.ModelViewSet):
 
             # check unread or read
             for read in reads:
+                serializer_data["total_unread_messages"] += read["unread_messages"]
                 if read["user"]["id"] == str(request.user.id):
                     is_last_message_read = (
                         False if read["unread_messages"] > 0 else True
@@ -99,9 +100,9 @@ class StreamChatViewSet(viewsets.ModelViewSet):
             }
             # serialize
             if len(channel["messages"]) == 0:
-                serializer_data.insert(0, fresh_data)
+                serializer_data["channels"].insert(0, fresh_data)
             else:
-                serializer_data.append(fresh_data)
+                serializer_data["channels"].append(fresh_data)
         return Response(data=serializer_data, status=status.HTTP_200_OK)
 
     def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
