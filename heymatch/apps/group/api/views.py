@@ -50,6 +50,7 @@ from heymatch.apps.group.models import (
 )
 from heymatch.apps.hotplace.models import HotPlace
 from heymatch.apps.match.models import MatchRequest
+from heymatch.apps.payment.models import UserPointConsumptionHistory
 from heymatch.apps.user.models import User
 from heymatch.shared.exceptions import (
     GroupNotWithinSameHotplaceException,
@@ -560,6 +561,13 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
         user.point_balance = user.point_balance - group.photo_point
         user.save(update_fields=["point_balance"])
         GroupProfilePhotoPurchased.objects.create(seller=group, buyer=request.user)
+
+        # Record ConsumptionHistory
+        UserPointConsumptionHistory.objects.create(
+            user=user,
+            consumed_point=group.photo_point,
+            consumed_reason=UserPointConsumptionHistory.ConsumedReasonChoice.OPENED_PROFILE_PHOTO,
+        )
 
         serializer = self.get_serializer(
             instance=group, context={"force_original_image": True}

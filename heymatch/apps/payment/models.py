@@ -136,6 +136,7 @@ class UserPurchase(models.Model):
 class UserPointConsumptionHistory(models.Model):
     class ConsumedReasonChoice(models.TextChoices):
         SEND_MATCH_REQUEST = "SEND_MATCH_REQUEST"
+        OPENED_PROFILE_PHOTO = "OPENED_PROFILE_PHOTO"
 
     user = models.ForeignKey(
         User,
