@@ -13,10 +13,12 @@ from config.celery_app import app
 from heymatch.apps.group.models import (
     Group,
     GroupMember,
+    GroupProfilePhotoPurchased,
     GroupV2,
     Recent24HrTopGroupAddress,
 )
 from heymatch.apps.match.models import MatchRequest
+from heymatch.apps.payment.models import UserPurchase
 from heymatch.apps.user.models import (
     DeleteScheduledUser,
     UserOnBoarding,
@@ -132,6 +134,218 @@ def aggregate_recent_24hr_top_ranked_group_address():
     if len(last_24_group_addresses) > 0:
         top_10_counter = dict(Counter(last_24_group_addresses).most_common(10))
         Recent24HrTopGroupAddress.objects.create(result=top_10_counter)
+
+
+@shared_task(soft_time_limit=120)
+def aggregate_business_report():
+    slack_webhook = settings.SLACK_BUSINESS_REPORT_BOT
+
+    last_24hrs = timezone.now() - datetime.timedelta(days=1)
+
+    # User related
+    users_all = User.objects.all()
+    male_users_all = users_all.filter(gender=User.GenderChoices.MALE)
+    female_users_all = users_all.filter(gender=User.GenderChoices.FEMALE)
+    users_today = users_all.filter(created_at__gte=last_24hrs)
+    male_users_today = users_today.filter(gender=User.GenderChoices.MALE)
+    female_users_today = users_today.filter(gender=User.GenderChoices.FEMALE)
+
+    # Group
+    groups_all = GroupV2.objects.all().prefetch_related(
+        "group_member_group",
+        "group_member_group__user",
+    )
+    male_groups_all = groups_all.filter(
+        group_member_group__user__gender=User.GenderChoices.MALE
+    )
+    female_groups_all = groups_all.filter(
+        group_member_group__user__gender=User.GenderChoices.FEMALE
+    )
+    groups_today = groups_all.filter(created_at__gte=last_24hrs)
+    male_groups_today = male_groups_all.filter(created_at__gte=last_24hrs)
+    female_groups_today = female_groups_all.filter(created_at__gte=last_24hrs)
+
+    # Photo purchased related
+    photo_purchased_all = GroupProfilePhotoPurchased.objects.all()
+    photo_purchased_by_male_all = photo_purchased_all.filter(
+        buyer__gender=User.GenderChoices.MALE
+    )
+    photo_purchased_by_female_all = photo_purchased_all.filter(
+        buyer__gender=User.GenderChoices.FEMALE
+    )
+    photo_purchased_today = photo_purchased_all.filter(created_at__gte=last_24hrs)
+    photo_purchased_by_male_today = photo_purchased_today.filter(
+        buyer__gender=User.GenderChoices.MALE
+    )
+    photo_purchased_by_female_today = photo_purchased_today.filter(
+        buyer__gender=User.GenderChoices.FEMALE
+    )
+
+    # MatchRequest
+    match_request_all = MatchRequest.objects.all()
+    match_request_all_by_male = match_request_all.filter(
+        sender_group__in=male_groups_all
+    )
+    match_request_all_by_female = match_request_all.filter(
+        sender_group__in=female_groups_all
+    )
+    match_request_today = match_request_all.filter(created_at__gte=last_24hrs)
+    match_request_today_by_male = match_request_today.filter(
+        sender_group__in=male_groups_all
+    )
+    match_request_today_by_female = match_request_today.filter(
+        sender_group__in=female_groups_all
+    )
+
+    # Candy
+    candy_spent_all = (
+        photo_purchased_all.count() * settings.POINT_NEEDED_FOR_PHOTO
+        + match_request_all.count() * settings.POINT_NEEDED_FOR_MATCH
+    )
+    candy_spent_by_male_all = (
+        photo_purchased_by_male_all.count() * settings.POINT_NEEDED_FOR_PHOTO
+        + match_request_all_by_male.count() * settings.POINT_NEEDED_FOR_MATCH
+    )
+    candy_spent_by_female_all = (
+        photo_purchased_by_female_all.count() * settings.POINT_NEEDED_FOR_PHOTO
+        + match_request_all_by_female.count() * settings.POINT_NEEDED_FOR_MATCH
+    )
+    candy_spent_today = (
+        photo_purchased_today.count() * settings.POINT_NEEDED_FOR_PHOTO
+        + match_request_today.count() * settings.POINT_NEEDED_FOR_MATCH
+    )
+    candy_spent_by_male_today = (
+        photo_purchased_by_male_today.count() * settings.POINT_NEEDED_FOR_PHOTO
+        + match_request_today_by_male.count() * settings.POINT_NEEDED_FOR_MATCH
+    )
+    candy_spent_by_female_today = (
+        photo_purchased_by_female_today.count() * settings.POINT_NEEDED_FOR_PHOTO
+        + match_request_today_by_female.count() * settings.POINT_NEEDED_FOR_MATCH
+    )
+
+    # Payment
+    payment_all = UserPurchase.objects.all().filter(purchase_processed=True)
+    krw_all = sum_up_payments(payment_all)
+
+    payment_all_by_male = payment_all.filter(user__gender=User.GenderChoices.MALE)
+    male_krw_all = sum_up_payments(payment_all_by_male)
+    payment_all_by_female = payment_all.filter(user__gender=User.GenderChoices.FEMALE)
+    female_krw_all = sum_up_payments(payment_all_by_female)
+    payment_today = payment_all.filter(purchased_at=last_24hrs)
+    krw_today = sum_up_payments(payment_today)
+    payment_today_by_male = payment_today.filter(user__gender=User.GenderChoices.MALE)
+    male_krw_today = sum_up_payments(payment_today_by_male)
+    payment_today_by_female = payment_today.filter(
+        user__gender=User.GenderChoices.FEMALE
+    )
+    female_krw_today = sum_up_payments(payment_today_by_female)
+
+    # Top Hotplaces
+    top_hotplaces = Recent24HrTopGroupAddress.objects.filter(
+        aggregated_at__gte=last_24hrs
+    ).first()
+
+    slack_webhook.send(
+        blocks=[
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "안녕하세요! 👋 \n 오늘의 헤이매치 사용 현황 리포트 드립니다!",
+                },
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": f"*👶 신규 유저수*: \n "
+                    f"  - 오늘: {users_today.count()}명 "
+                    f"(남성-{male_users_today.count()}명 / 여성-{female_users_today.count()}명) \n "
+                    f"  - 전체: {users_all.count()}명 "
+                    f"(남성-{male_users_all.count()}명 / 여성-{female_users_all.count()}명) \n ",
+                },
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*👯‍그룹 생성 개수 (Today/Total)*: \n "
+                    f"  - 오늘: {groups_today.count()}개 "
+                    f"(남성-{male_groups_today.count()}개 / 여성-{female_groups_today.count()}개) \n "
+                    f"  - 전체: {groups_all.count()}개 "
+                    f"(남성-{male_groups_all.count()}개 / 여성-{female_groups_all.count()}개) \n ",
+                },
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*📸 사진 열람 개수 (Today/Total)*: \n "
+                    f"  - 오늘: {photo_purchased_today.count()}개 "
+                    f"(남성-{photo_purchased_by_male_today.count()}개 "
+                    f"/ 여성-{photo_purchased_by_female_today.count()}개) \n "
+                    f"  - 전체: {photo_purchased_all.count()}개 "
+                    f"(남성-{photo_purchased_by_male_all.count()}개 "
+                    f"/ 여성-{photo_purchased_by_female_all.count()}개) \n ",
+                },
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*📬 매칭 요청 개수 (Today/Total)*: \n "
+                    f"  - 오늘: {match_request_today.count()}개 "
+                    f"(남성-{match_request_today_by_male.count()}개 "
+                    f"/ 여성-{match_request_today_by_female.count()}개) \n "
+                    f"  - 전체: {match_request_all.count()}개 "
+                    f"(남성-{match_request_all_by_male.count()}개 "
+                    f"/ 여성-{match_request_all_by_female.count()}개) \n ",
+                },
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*🍬 사용 캔디 개수 (Today/Total)*: \n "
+                    f"  - 오늘: {candy_spent_today}개 "
+                    f"(남성-{candy_spent_by_male_today}개 "
+                    f"/ 여성-{candy_spent_by_female_today}개) \n "
+                    f"  - 전체: {candy_spent_all}개 "
+                    f"(남성-{candy_spent_by_male_all}개 "
+                    f"/ 여성-{candy_spent_by_female_all}개) \n ",
+                },
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*💰 결제 대금 (Today/Total)*: \n "
+                    f"  - 오늘: {krw_today}원 (남성-{male_krw_today}원 / 여성-{female_krw_today}원) \n "
+                    f"  - 전체: {krw_all}원 (남성-{male_krw_all}원 / 여성-{female_krw_all}원) \n ",
+                },
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*🔥 Top 핫플레이스 (Today/Total)*: \n "
+                    f"  - {top_hotplaces.result if top_hotplaces else '수집중..'}",
+                },
+            },
+            {"type": "divider"},
+            {
+                "type": "context",
+                "elements": [{"type": "mrkdwn", "text": "👀 오늘도 수고하셨습니다 :)"}],
+            },
+        ]
+    )
+
+
+def sum_up_payments(payments):
+    krw = 0
+    for payment in payments:
+        krw += payment.point_time.price_in_krw
+    return krw
 
 
 @shared_task(soft_time_limit=60)

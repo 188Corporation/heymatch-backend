@@ -175,6 +175,7 @@ class GroupProfilePhotoPurchased(models.Model):
     )
 
     # History
+    created_at = models.DateTimeField(default=timezone.now)
     history = HistoricalRecords()
 
 

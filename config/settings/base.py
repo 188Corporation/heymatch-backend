@@ -325,6 +325,11 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(minute=0, hour=3),  # execute 3 a.m
         "args": (),
     },
+    "aggregate-business-report": {
+        "task": "heymatch.apps.celery.tasks.aggregate_business_report",
+        "schedule": crontab(minute=0, hour=7),  # execute 7 a.m
+        "args": (),
+    }
     # "update-school-company-database": {
     #     "task": "heymatch.apps.celery.tasks.update_school_company_database",
     #     "schedule": crontab(minute=0, hour="*/1"),  # execute every hour
@@ -525,6 +530,9 @@ DJANGO_ADMIN_PASSWORD = env("DJANGO_ADMIN_PASSWORD")
 SLACK_REPORT_GROUP_BOT = WebhookClient(
     url=env("SLACK_REPORT_GROUP_BOT_WEBHOOK_URL"),
 )  # report-group
+SLACK_BUSINESS_REPORT_BOT = WebhookClient(
+    url=env("SLACK_BUSINESS_REPORT_BOT_WEBHOOK_URL"),
+)  # to-the-mars
 
 # Naver API
 NAVER_CLIENT_ID = env("NAVER_API_CLIENT_ID")

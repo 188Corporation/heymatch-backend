@@ -62,6 +62,7 @@ ONE_SIGNAL_REST_API_KEY=fake-one-signal-rest-api-key
 # Slack
 # ------------------------------------------------------------------------------
 SLACK_REPORT_GROUP_BOT_WEBHOOK_URL=https://hooks.slack.com/services/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
+SLACK_BUSINESS_REPORT_BOT_WEBHOOK_URL=https://hooks.slack.com/services/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
 
 # NAVER API
 NAVER_API_CLIENT_ID=i49dk0ywd7

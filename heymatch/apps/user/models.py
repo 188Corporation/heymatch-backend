@@ -139,6 +139,7 @@ class User(AbstractUser):
     is_temp_user = models.BooleanField(default=False)
 
     # LifeCycle
+    created_at = models.DateTimeField(default=timezone.now)
     is_deleted = models.BooleanField(default=False)
 
     # History
@@ -189,6 +190,7 @@ class UserProfileImage(OrderedModel):
     thumbnail_blurred = models.ImageField(upload_to=upload_to)
 
     # History
+    created_at = models.DateTimeField(default=timezone.now)
     history = HistoricalRecords()
     expected_verification_datetime = models.DateTimeField(
         default=auto_expected_verification_datetime
