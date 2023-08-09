@@ -269,7 +269,7 @@ def aggregate_business_report():
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*👯‍그룹 생성 개수 (Today/Total)*: \n "
+                    "text": "*👯‍그룹 생성 개수*: \n "
                     f"  - 오늘: {groups_today.count()}개 "
                     f"(남성-{male_groups_today.count()}개 / 여성-{female_groups_today.count()}개) \n "
                     f"  - 전체: {groups_all.count()}개 "
@@ -280,7 +280,7 @@ def aggregate_business_report():
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*📸 사진 열람 개수 (Today/Total)*: \n "
+                    "text": "*📸 사진 열람 개수*: \n "
                     f"  - 오늘: {photo_purchased_today.count()}개 "
                     f"(남성-{photo_purchased_by_male_today.count()}개 "
                     f"/ 여성-{photo_purchased_by_female_today.count()}개) \n "
@@ -293,7 +293,7 @@ def aggregate_business_report():
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*📬 매칭 요청 개수 (Today/Total)*: \n "
+                    "text": "*📬 매칭 요청 개수*: \n "
                     f"  - 오늘: {match_request_today.count()}개 "
                     f"(남성-{match_request_today_by_male.count()}개 "
                     f"/ 여성-{match_request_today_by_female.count()}개) \n "
@@ -306,7 +306,7 @@ def aggregate_business_report():
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*🍬 사용 캔디 개수 (Today/Total)*: \n "
+                    "text": "*🍬 사용 캔디 개수*: \n "
                     f"  - 오늘: {candy_spent_today}개 "
                     f"(남성-{candy_spent_by_male_today}개 "
                     f"/ 여성-{candy_spent_by_female_today}개) \n "
@@ -319,7 +319,7 @@ def aggregate_business_report():
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*💰 결제 대금 (Today/Total)*: \n "
+                    "text": "*💰 결제 대금*: \n "
                     f"  - 오늘: {krw_today}원 (남성-{male_krw_today}원 / 여성-{female_krw_today}원) \n "
                     f"  - 전체: {krw_all}원 (남성-{male_krw_all}원 / 여성-{female_krw_all}원) \n ",
                 },
@@ -328,7 +328,7 @@ def aggregate_business_report():
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*🔥 Top 핫플레이스 (Today/Total)*: \n "
+                    "text": "*🔥 Top 핫플레이스*: \n "
                     f"  - {top_hotplaces.result if top_hotplaces else '수집중..'}",
                 },
             },
