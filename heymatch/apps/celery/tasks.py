@@ -241,9 +241,7 @@ def aggregate_business_report():
     female_krw_today = sum_up_payments(payment_today_by_female)
 
     # Top Hotplaces
-    top_hotplaces = Recent24HrTopGroupAddress.objects.filter(
-        aggregated_at__gte=last_24hrs
-    ).first()
+    top_hotplaces = Recent24HrTopGroupAddress.objects.all().first()
 
     slack_webhook.send(
         blocks=[
