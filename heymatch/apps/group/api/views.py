@@ -27,7 +27,6 @@ from django_filters.rest_framework import (
     DjangoFilterBackend,
     FilterSet,
     NumberFilter,
-    RangeFilter,
 )
 from django_google_maps.fields import GeoPt
 from drf_yasg.utils import no_body, swagger_auto_schema
@@ -93,9 +92,10 @@ NAVER_GEO_API = NaverGeoAPI()
 
 class GroupV2Filter(FilterSet):
     meetup_date = DateFromToRangeFilter(field_name="meetup_date")
-    height = RangeFilter(method="filter_avg_heights_in_group")
-    gender = CharFilter(method="filter_gender_type_in_group")
+    # height = RangeFilter(method="filter_avg_heights_in_group")
+    # gender = CharFilter(method="filter_gender_type_in_group")
     member_num = NumberFilter(method="filter_member_number_in_group")
+    order_by = CharFilter(method="filter_sort_by_in_group")
 
     class Meta:
         model = GroupV2
@@ -143,6 +143,11 @@ class GroupV2Filter(FilterSet):
         if value < 5:
             return queryset.filter(member_number=value)
         return queryset.filter(member_number__gte=value)
+
+    def filter_sort_by_in_group(self, queryset, field_name, value):
+        if value and value == "meetup_date":
+            return queryset.order_by("-meetup_date")
+        return queryset.order_by("-created_at")
 
     # def filter_member_number_in_group(self, queryset, field_name, value):
     #     if not value:
@@ -259,7 +264,6 @@ class GroupV2GeneralViewSet(viewsets.ModelViewSet):
             "group_member_group__user",
             "group_member_group__user__user_profile_images",
         )
-        .order_by("-created_at")
     )
     permission_classes = [
         IsAuthenticated,
