@@ -344,7 +344,7 @@ def aggregate_business_report():
 def sum_up_payments(payments):
     krw = 0
     for payment in payments:
-        krw += payment.point_time.price_in_krw
+        krw += payment.point_item.price_in_krw
     return krw
 
 
