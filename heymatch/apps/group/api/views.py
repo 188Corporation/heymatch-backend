@@ -145,9 +145,12 @@ class GroupV2Filter(FilterSet):
         return queryset.filter(member_number__gte=value)
 
     def filter_sort_by_in_group(self, queryset, field_name, value):
-        if value and value == "meetup_date":
+        if not value:
+            return queryset.order_by("-created_at")
+        if value == "meetup_date":
             return queryset.order_by("-meetup_date")
-        return queryset.order_by("-created_at")
+        if value == "created_at":
+            return queryset.order_by("-created_at")
 
     # def filter_member_number_in_group(self, queryset, field_name, value):
     #     if not value:
