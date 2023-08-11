@@ -1,3 +1,4 @@
+import itertools
 import logging
 from typing import Any
 
@@ -109,32 +110,33 @@ class StreamChatViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         # check if Payload's cid is user's or not
-        all_sc_qs = StreamChannel.objects.filter(
-            cid=kwargs["stream_cid"], group_member__user_id=str(request.user.id)
+        sc_qs = StreamChannel.objects.filter(
+            cid=kwargs["stream_cid"],
+            is_active=True,
         )  # there can be multiple
 
-        if not all_sc_qs.exists():
-            raise PermissionDenied("You are not owner of stream channel.")
+        if not sc_qs.exists():
+            raise PermissionDenied("There is no such stream channel.")
 
         # soft-delete channel
         stream.delete_channels(cids=[kwargs["stream_cid"]])
 
         # Deactivate MatchRequest
-        sc_qs = StreamChannel.objects.filter(cid=kwargs["stream_cid"])
         unique_group_ids = set([sc.group_member.group.id for sc in sc_qs])
-        if len(unique_group_ids) != 2:
-            raise PermissionDenied(
-                f"Something is wrong. Stream channel must only has two groups joined, but {len(unique_group_ids)}"
-            )
-        group1_id = list(unique_group_ids)[0]
-        group2_id = list(unique_group_ids)[1]
+        # if len(unique_group_ids) != 2:
+        #     raise PermissionDenied(
+        #         f"Something is wrong. Stream channel must only has two groups joined, but {len(unique_group_ids)}"
+        #     )
 
-        MatchRequest.active_objects.filter(
-            Q(sender_group_id=int(group1_id)) & Q(receiver_group_id=int(group2_id))
-        ).update(is_active=False)
-        MatchRequest.active_objects.filter(
-            Q(sender_group_id=int(group2_id)) & Q(receiver_group_id=int(group1_id))
-        ).update(is_active=False)
+        # Get all combinations, update MRs false for all cases
+        combinations = itertools.combinations(unique_group_ids, 2)
+        for combi in combinations:
+            MatchRequest.active_objects.filter(
+                Q(sender_group_id=int(combi[0])) & Q(receiver_group_id=int(combi[1]))
+            ).update(is_active=False)
+            MatchRequest.active_objects.filter(
+                Q(sender_group_id=int(combi[1])) & Q(receiver_group_id=int(combi[0]))
+            ).update(is_active=False)
 
         # Deactivate StreamChannel
         sc_qs.update(is_active=False)

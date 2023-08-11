@@ -38,7 +38,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_gis.filters import DistanceToPointFilter
 
-from heymatch.apps.chat.models import StreamChannel
 from heymatch.apps.group.models import (
     Group,
     GroupMember,
@@ -146,7 +145,7 @@ class GroupV2Filter(FilterSet):
 
     def filter_sort_by_in_group(self, queryset, field_name, value):
         if not value:
-            return queryset.order_by("-created_at")
+            return queryset
         if value == "meetup_date":
             return queryset.order_by("-meetup_date")
         if value == "created_at":
@@ -665,34 +664,34 @@ class GroupReportViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(rg)
 
         # Deactivate MatchRequest sent or received by reported group
-        my_group_ids = GroupMember.objects.filter(
-            user=request.user, is_active=True
-        ).values_list("group_id", flat=True)
-        mr_qs = MatchRequest.active_objects.select_related().filter(
-            (Q(sender_group_id=group.id) & Q(receiver_group_id__in=list(my_group_ids)))
-            | (
-                Q(sender_group_id__in=list(my_group_ids))
-                & Q(receiver_group_id=group.id)
-            )
-        )
-        mr_qs.update(is_active=False)
+        # my_group_ids = GroupMember.objects.filter(
+        #     user=request.user, is_active=True
+        # ).values_list("group_id", flat=True)
+        # mr_qs = MatchRequest.active_objects.select_related().filter(
+        #     (Q(sender_group_id=group.id) & Q(receiver_group_id__in=list(my_group_ids)))
+        #     | (
+        #         Q(sender_group_id__in=list(my_group_ids))
+        #         & Q(receiver_group_id=group.id)
+        #     )
+        # )
+        # mr_qs.update(is_active=False)
 
         # Soft-delete chat channel of me + reported group
-        my_scs_cids = set(
-            StreamChannel.objects.filter(
-                group_member__user_id=str(user.id)
-            ).values_list("cid", flat=True)
-        )
-        other_scs_cids = set(
-            StreamChannel.objects.filter(
-                group_member__group_id=str(group.id)
-            ).values_list("cid", flat=True)
-        )
-        to_delete_cids = my_scs_cids & other_scs_cids
-        sc = StreamChannel.objects.filter(cid__in=list(to_delete_cids))
-        sc.update(is_active=False)
-        if len(list(to_delete_cids)) > 0:
-            stream.delete_channels(cids=list(to_delete_cids))
+        # my_scs_cids = set(
+        #     StreamChannel.objects.filter(
+        #         group_member__user_id=str(user.id)
+        #     ).values_list("cid", flat=True)
+        # )
+        # other_scs_cids = set(
+        #     StreamChannel.objects.filter(
+        #         group_member__group_id=str(group.id)
+        #     ).values_list("cid", flat=True)
+        # )
+        # to_delete_cids = my_scs_cids & other_scs_cids
+        # sc = StreamChannel.objects.filter(cid__in=list(to_delete_cids))
+        # sc.update(is_active=False)
+        # if len(list(to_delete_cids)) > 0:
+        #     stream.delete_channels(cids=list(to_delete_cids))
 
         # Notify via slack
         slack_webhook = settings.SLACK_REPORT_GROUP_BOT
