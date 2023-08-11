@@ -71,7 +71,7 @@ class StreamChatViewSet(viewsets.ModelViewSet):
                     is_active=True,
                 )
                 .exclude(group_member__user_id=str(request.user.id))
-                .first()
+                .last()
             )
 
             if not sc or not sc.group_member.group:
