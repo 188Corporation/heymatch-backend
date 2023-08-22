@@ -50,6 +50,7 @@ class ActiveUserFactory(DjangoModelFactory):
     # Other
     is_temp_user = False
     is_active = True
+    has_finished_guide = True
 
     @post_generation
     def password(self, create: bool, extracted: Sequence[Any], **kwargs):

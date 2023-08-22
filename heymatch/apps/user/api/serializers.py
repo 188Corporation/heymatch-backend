@@ -46,6 +46,7 @@ class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
             "free_pass_active_until",
             "invitation_code",
             "block_my_school_or_company_users",
+            "has_finished_guide",
         ]
 
     def to_representation(self, instance: User):
@@ -103,6 +104,7 @@ class UserInfoUpdateBodyRequestSerializer(serializers.ModelSerializer):
             "other_profile_image_1",
             "other_profile_image_2",
             "block_my_school_or_company_users",
+            "has_finished_guide",
         ]
 
 

@@ -145,6 +145,9 @@ class User(AbstractUser):
     # History
     history = HistoricalRecords()
 
+    # Guideline
+    has_finished_guide = models.BooleanField(default=False)
+
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["phone_number"]
 

@@ -39,6 +39,7 @@ class UserAdmin(SimpleHistoryAdmin):
                     "verified_company_name",
                     "is_temp_user",
                     "block_my_school_or_company_users",
+                    "has_finished_guide",
                 )
             },
         ),
@@ -99,6 +100,7 @@ class UserAdmin(SimpleHistoryAdmin):
         "is_temp_user",
         "invitation_code",
         "block_my_school_or_company_users",
+        "has_finished_guide",
     ]
     history_list_display = [
         "status",
@@ -131,6 +133,7 @@ class UserAdmin(SimpleHistoryAdmin):
         "is_temp_user",
         "invitation_code",
         "block_my_school_or_company_users",
+        "has_finished_guide",
     ]
 
 
