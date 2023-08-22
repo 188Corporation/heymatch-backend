@@ -148,7 +148,7 @@ class GroupV2Filter(FilterSet):
         if not value:
             return queryset
         if value == "meetup_date":
-            return queryset.order_by("-meetup_date")
+            return queryset.order_by("meetup_date")
         if value == "created_at":
             return queryset.order_by("-created_at")
 
