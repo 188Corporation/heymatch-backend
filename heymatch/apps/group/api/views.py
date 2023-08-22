@@ -349,12 +349,21 @@ class GroupV2GeneralViewSet(viewsets.ModelViewSet):
             if my_company_name:
                 q |= company_q
 
+        blocked_group_ids = list(
+            GroupMember.objects.filter(q).values_list("group_id", flat=True)
+        )
+
         # 3) Exclude Matched (chat) groups
         # TODO: future job
 
-        return qs.exclude(
-            id__in=GroupMember.objects.filter(q).values_list("group_id", flat=True)
+        # 4) Exclude reported by me groups
+        reported_group_ids = list(
+            ReportedGroupV2.objects.filter(reported_by=self.request.user).values_list(
+                "reported_group_id", flat=True
+            )
         )
+
+        return qs.exclude(id__in=reported_group_ids + blocked_group_ids)
 
     def filter_other_gender_groups(self, queryset):
         other_gender = "m" if self.request.user.gender == "f" else "f"
