@@ -1,4 +1,5 @@
 import datetime
+from itertools import combinations
 
 from factory import SubFactory
 from factory.django import DjangoModelFactory, ImageField
@@ -176,6 +177,13 @@ GPS_ADDR_CHOICES = [
     "서울특별시 용산구 한남동",
 ]
 
+group_who_we_are_values = [item[0] for item in GroupV2.GroupWhoWeAreTag.choices]
+group_want_to_meet_values = [item[0] for item in GroupV2.GroupWantToMeetTag.choices]
+GROUP_WHO_WE_ARE_TAGS = [item for item in combinations(group_who_we_are_values, r=5)]
+GROUP_WANT_TO_MEET_TAGS = [
+    item for item in combinations(group_want_to_meet_values, r=5)
+]
+
 
 class GroupV2Factory(DjangoModelFactory):
     class Meta:
@@ -198,6 +206,9 @@ class GroupV2Factory(DjangoModelFactory):
     # gps_geoinfo = FuzzyGeoPt(precision=5)
     member_number = Faker("pyint", min_value=2, max_value=6)
     member_avg_age = Faker("pyint", min_value=22, max_value=35)
+    # Tags
+    about_our_group_tags = Faker("random_element", elements=GROUP_WHO_WE_ARE_TAGS)
+    meeting_we_want_tags = Faker("random_element", elements=GROUP_WANT_TO_MEET_TAGS)
     created_at = FuzzyDateTime(
         start_dt=datetime.datetime.now(tz=datetime.timezone.utc)
         - datetime.timedelta(hours=20),

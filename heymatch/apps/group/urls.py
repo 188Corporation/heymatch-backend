@@ -6,6 +6,7 @@ from heymatch.apps.group.api.views import (
     GroupV2DetailViewSet,
     GroupV2GeneralViewSet,
     GroupV2MatchRequestViewSet,
+    GroupV2TagsViewSet,
 )
 
 app_name = "group"
@@ -13,6 +14,7 @@ app_name = "group"
 group_list_create_view = GroupV2GeneralViewSet.as_view(
     {"get": "list", "post": "create"}
 )
+group_tags_list_view = GroupV2TagsViewSet.as_view({"get": "list"})
 group_detail_view = GroupV2DetailViewSet.as_view(
     {"get": "retrieve", "delete": "destroy", "put": "update"}
 )
@@ -23,6 +25,11 @@ group_report_view = GroupReportViewSet.as_view({"post": "report"})
 
 urlpatterns = [
     path("", group_list_create_view, name="group-list-create"),
+    path(
+        "tags/",
+        group_tags_list_view,
+        name="group-tags-list",
+    ),
     path(
         "top-ranked-address/",
         group_top_address_list_view,

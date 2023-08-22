@@ -30,6 +30,8 @@ class GroupV2Admin(SimpleHistoryAdmin):
         "match_point",
         # "member_avg_height",
         # "member_gender_type",
+        "about_our_group_tags",
+        "meeting_we_want_tags",
         "created_at",
         "is_active",
     ]
@@ -50,6 +52,8 @@ class GroupV2Admin(SimpleHistoryAdmin):
         "match_point",
         # "member_avg_height",
         # "member_gender_type",
+        "about_our_group_tags",
+        "meeting_we_want_tags",
         "created_at",
         "is_active",
     ]
