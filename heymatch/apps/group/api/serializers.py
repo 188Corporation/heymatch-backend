@@ -114,10 +114,10 @@ class V2GroupLimitedFieldSerializer(serializers.ModelSerializer):
         many=True, read_only=True, source="group_member_group"
     )
     about_our_group_tags = serializers.SerializerMethodField(
-        "convert_about_our_group_tags_value_to_display",
+        "convert_about_our_group_tags_value_to_label",
     )
     meeting_we_want_tags = serializers.SerializerMethodField(
-        "convert_meeting_we_want_tags_tags_value_to_display",
+        "convert_meeting_we_want_tags_tags_value_to_label",
     )
 
     class Meta:
@@ -146,22 +146,22 @@ class V2GroupLimitedFieldSerializer(serializers.ModelSerializer):
                 return True
         return False
 
-    def convert_about_our_group_tags_value_to_display(self, obj):
+    def convert_about_our_group_tags_value_to_label(self, obj):
         refer = {}
         for tag in GroupV2.GroupWhoWeAreTag.choices:
             split = tag[1].split(",")
-            refer[tag[0]] = {"value": tag[0], "display": split[0], "color": split[1]}
+            refer[tag[0]] = {"value": tag[0], "label": split[0], "color": split[1]}
         result = []
         for tag in obj.about_our_group_tags:
             if tag in refer:
                 result.append(refer[tag])
         return result
 
-    def convert_meeting_we_want_tags_tags_value_to_display(self, obj):
+    def convert_meeting_we_want_tags_tags_value_to_label(self, obj):
         refer = {}
         for tag in GroupV2.GroupWantToMeetTag.choices:
             split = tag[1].split(",")
-            refer[tag[0]] = {"value": tag[0], "display": split[0], "color": split[1]}
+            refer[tag[0]] = {"value": tag[0], "label": split[0], "color": split[1]}
         result = []
         for tag in obj.meeting_we_want_tags:
             if tag in refer:
@@ -175,10 +175,10 @@ class V2GroupFullFieldSerializer(serializers.ModelSerializer):
         many=True, read_only=True, source="group_member_group"
     )
     about_our_group_tags = serializers.SerializerMethodField(
-        "convert_about_our_group_tags_value_to_display",
+        "convert_about_our_group_tags_value_to_label",
     )
     meeting_we_want_tags = serializers.SerializerMethodField(
-        "convert_meeting_we_want_tags_tags_value_to_display",
+        "convert_meeting_we_want_tags_tags_value_to_label",
     )
 
     def get_gps_point(self, obj):
@@ -203,22 +203,22 @@ class V2GroupFullFieldSerializer(serializers.ModelSerializer):
             "created_at",
         ]
 
-    def convert_about_our_group_tags_value_to_display(self, obj):
+    def convert_about_our_group_tags_value_to_label(self, obj):
         refer = {}
         for tag in GroupV2.GroupWhoWeAreTag.choices:
             split = tag[1].split(",")
-            refer[tag[0]] = {"value": tag[0], "display": split[0], "color": split[1]}
+            refer[tag[0]] = {"value": tag[0], "label": split[0], "color": split[1]}
         result = []
         for tag in obj.about_our_group_tags:
             if tag in refer:
                 result.append(refer[tag])
         return result
 
-    def convert_meeting_we_want_tags_tags_value_to_display(self, obj):
+    def convert_meeting_we_want_tags_tags_value_to_label(self, obj):
         refer = {}
         for tag in GroupV2.GroupWantToMeetTag.choices:
             split = tag[1].split(",")
-            refer[tag[0]] = {"value": tag[0], "display": split[0], "color": split[1]}
+            refer[tag[0]] = {"value": tag[0], "label": split[0], "color": split[1]}
         result = []
         for tag in obj.meeting_we_want_tags:
             if tag in refer:
