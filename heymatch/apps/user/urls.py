@@ -5,6 +5,7 @@ from .api.views import (
     UserInvitationCodeViewSet,
     UsernameUniquenessCheckViewSet,
     UserOnboardingViewSet,
+    UsersAdmobSSVViewSet,
     UserWithGroupFullInfoViewSet,
     UserWithGroupProfilePhotoViewSet,
 )
@@ -33,6 +34,7 @@ users_my_onboarding_complete_extra_info_view = UserOnboardingViewSet.as_view(
 users_unique_name_view = UsernameUniquenessCheckViewSet.as_view({"post": "check"})
 users_invitation_code_view = UserInvitationCodeViewSet.as_view({"post": "accept"})
 users_temp_user_view = TempUserCreateViewSet.as_view({"post": "create"})
+users_admob_ssv_view = UsersAdmobSSVViewSet.as_view({"get": "retrieve"})
 
 urlpatterns = [
     path("my/", users_my_view, name="user-my-detail"),
@@ -63,4 +65,6 @@ urlpatterns = [
         users_invitation_code_view,
         name="user-my-invitation-accept",
     ),
+    # Google Admob SSV
+    path("admob-ssv/", users_admob_ssv_view, name="user-admob-ssv"),
 ]

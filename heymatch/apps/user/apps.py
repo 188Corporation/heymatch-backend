@@ -8,6 +8,6 @@ class UserAppConfig(AppConfig):
 
     def ready(self):
         try:
-            import heymatch.apps.users.signals  # noqa F401
+            import heymatch.apps.user.signals  # noqa F401
         except ImportError:
             pass

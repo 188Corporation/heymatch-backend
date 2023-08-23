@@ -641,7 +641,7 @@ class GroupsTopAddressViewSet(viewsets.ModelViewSet):
         return Response(data=data, status=status.HTTP_200_OK)
 
 
-class GroupV2MatchRequestViewSet(viewsets.ModelViewSet):
+class GroupV2MatchRequestViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
 
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:

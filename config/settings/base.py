@@ -538,6 +538,11 @@ SLACK_BUSINESS_REPORT_BOT = WebhookClient(
 NAVER_CLIENT_ID = env("NAVER_API_CLIENT_ID")
 NAVER_CLIENT_SECRET = env("NAVER_API_CLIENT_SECRET")
 
+# Google Admob
+ADMOB_SSV_KEY_SERVER_URL = ("https://www.gstatic.com/admob/reward/verifier-keys.json",)
+ADMOB_SSV_KEYS_CACHE_TIMEOUT = timedelta(days=1)
+ADMOB_SSV_KEYS_CACHE_KEY = "admob_ssv.public_keys"
+
 # Purchase Related
 WELCOME_BONUS_POINT = 30
 POINT_NEEDED_FOR_PHOTO = 1
