@@ -160,7 +160,7 @@ class GroupV2Filter(FilterSet):
                 .annotate(days_diff=F("meetup_date") - today)
                 .order_by("-days_diff")
             )
-            return list(future_meetups) + list(past_meetups)
+            return future_meetups.union(past_meetups)
         if value == "created_at":
             return queryset.order_by("-created_at")
 
