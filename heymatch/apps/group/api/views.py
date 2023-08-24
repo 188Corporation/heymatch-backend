@@ -19,6 +19,7 @@ from django.db.models import (
 from django.db.models.functions import Coalesce
 from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django_filters.rest_framework import (
@@ -148,7 +149,14 @@ class GroupV2Filter(FilterSet):
         if not value:
             return queryset
         if value == "meetup_date":
-            return queryset.order_by("meetup_date")
+            current_datetime = timezone.now()
+            past_meetups = queryset.filter(meetup_date__lt=current_datetime).order_by(
+                "-meetup_date"
+            )
+            upcoming_meetups = queryset.filter(
+                meetup_date__gte=current_datetime
+            ).order_by("meetup_date")
+            return upcoming_meetups.union(past_meetups)
         if value == "created_at":
             return queryset.order_by("-created_at")
 
