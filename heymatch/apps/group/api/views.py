@@ -156,7 +156,7 @@ class GroupV2Filter(FilterSet):
             upcoming_meetups = queryset.filter(
                 meetup_date__gte=current_datetime
             ).order_by("meetup_date")
-            return upcoming_meetups + past_meetups
+            return upcoming_meetups.union(past_meetups)
         if value == "created_at":
             return queryset.order_by("-created_at")
 
