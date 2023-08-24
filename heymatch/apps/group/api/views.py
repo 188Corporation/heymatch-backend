@@ -149,14 +149,18 @@ class GroupV2Filter(FilterSet):
         if not value:
             return queryset
         if value == "meetup_date":
-            current_datetime = timezone.now()
-            past_meetups = queryset.filter(meetup_date__lt=current_datetime).order_by(
-                "-meetup_date"
+            today = timezone.now().date()
+            future_meetups = (
+                GroupV2.objects.filter(meetup_date__gte=today)
+                .annotate(days_diff=F("meetup_date") - today)
+                .order_by("days_diff")
             )
-            upcoming_meetups = queryset.filter(
-                meetup_date__gte=current_datetime
-            ).order_by("meetup_date")
-            return upcoming_meetups.union(past_meetups)
+            past_meetups = (
+                GroupV2.objects.filter(meetup_date__lt=today)
+                .annotate(days_diff=F("meetup_date") - today)
+                .order_by("-days_diff")
+            )
+            return list(future_meetups) + list(past_meetups)
         if value == "created_at":
             return queryset.order_by("-created_at")
 
