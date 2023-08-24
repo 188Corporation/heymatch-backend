@@ -1,4 +1,3 @@
-from itertools import chain
 from typing import Any
 
 from django.conf import settings
@@ -161,7 +160,7 @@ class GroupV2Filter(FilterSet):
                 .annotate(days_diff=F("meetup_date") - today)
                 .order_by("-days_diff")
             )
-            return chain(future_meetups, past_meetups)
+            return future_meetups.union(past_meetups, all=True)
         if value == "created_at":
             return queryset.order_by("-created_at")
 
