@@ -149,7 +149,7 @@ class V2GroupLimitedFieldSerializer(serializers.ModelSerializer):
     def convert_about_our_group_tags_value_to_label(self, obj):
         refer = {}
         for tag in GroupV2.GroupWhoWeAreTag.choices:
-            split = tag[1].split(",")
+            split = tag[1].split("/")
             refer[tag[0]] = {"value": tag[0], "label": split[0], "color": split[1]}
         result = []
         for tag in obj.about_our_group_tags:
@@ -160,7 +160,7 @@ class V2GroupLimitedFieldSerializer(serializers.ModelSerializer):
     def convert_meeting_we_want_tags_tags_value_to_label(self, obj):
         refer = {}
         for tag in GroupV2.GroupWantToMeetTag.choices:
-            split = tag[1].split(",")
+            split = tag[1].split("/")
             refer[tag[0]] = {"value": tag[0], "label": split[0], "color": split[1]}
         result = []
         for tag in obj.meeting_we_want_tags:
@@ -206,7 +206,7 @@ class V2GroupFullFieldSerializer(serializers.ModelSerializer):
     def convert_about_our_group_tags_value_to_label(self, obj):
         refer = {}
         for tag in GroupV2.GroupWhoWeAreTag.choices:
-            split = tag[1].split(",")
+            split = tag[1].split("/")
             refer[tag[0]] = {"value": tag[0], "label": split[0], "color": split[1]}
         result = []
         for tag in obj.about_our_group_tags:
@@ -217,7 +217,7 @@ class V2GroupFullFieldSerializer(serializers.ModelSerializer):
     def convert_meeting_we_want_tags_tags_value_to_label(self, obj):
         refer = {}
         for tag in GroupV2.GroupWantToMeetTag.choices:
-            split = tag[1].split(",")
+            split = tag[1].split("/")
             refer[tag[0]] = {"value": tag[0], "label": split[0], "color": split[1]}
         result = []
         for tag in obj.meeting_we_want_tags:

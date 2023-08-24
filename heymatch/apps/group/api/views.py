@@ -457,14 +457,14 @@ class GroupV2TagsViewSet(viewsets.ViewSet):
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         about_group_tags = []
         for tag in GroupV2.GroupWhoWeAreTag.choices:
-            split = tag[1].split(",")
+            split = tag[1].split("/")
             about_group_tags.append(
                 {"value": tag[0], "label": split[0], "color": split[1]}
             )
 
         desired_meeting_tags = []
         for tag in GroupV2.GroupWantToMeetTag.choices:
-            split = tag[1].split(",")
+            split = tag[1].split("/")
             desired_meeting_tags.append(
                 {"value": tag[0], "label": split[0], "color": split[1]}
             )
