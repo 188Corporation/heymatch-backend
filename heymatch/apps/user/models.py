@@ -325,7 +325,7 @@ class UserProfileImage(OrderedModel):
 
 
 def email_verification_code_valid_until():
-    return timezone.now() + timezone.timedelta(minutes=3)
+    return timezone.now() + timezone.timedelta(minutes=5)
 
 
 def auto_generate_email_verification_code():

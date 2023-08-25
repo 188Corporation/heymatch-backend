@@ -108,7 +108,6 @@ class EmailVerificationViewSet(viewsets.ViewSet):
         evc = serializer.save(user=request.user)
 
         # Everything is good.
-        # Update user.verified_company_name or verified_school_name
         found, names = self.determine_school_company_name_by_email(evc)
         if not found:
             raise EmailVerificationDomainNotFoundException()
@@ -171,11 +170,11 @@ class EmailVerificationViewSet(viewsets.ViewSet):
         user = request.user
         if evc.type == EmailVerificationCode.VerificationType.SCHOOL:
             user.job_title = User.JobChoices.COLLEGE_STUDENT
-            user.verified_school_name = selected_name
+            user.verified_school_name = str(selected_name)
             user.save(update_fields=["job_title", "verified_school_name"])
         elif evc.type == EmailVerificationCode.VerificationType.COMPANY:
             user.job_title = User.JobChoices.EMPLOYEE
-            user.verified_company_name = selected_name
+            user.verified_company_name = str(selected_name)
             user.save(update_fields=["job_title", "verified_company_name"])
 
         # inactivate code
