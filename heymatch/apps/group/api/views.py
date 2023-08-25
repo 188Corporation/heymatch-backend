@@ -151,12 +151,12 @@ class GroupV2Filter(FilterSet):
         if value == "meetup_date":
             today = timezone.now().date()
             future_meetups = (
-                GroupV2.objects.filter(meetup_date__gte=today)
+                queryset.filter(meetup_date__gte=today)
                 .annotate(days_diff=F("meetup_date") - today)
                 .order_by("days_diff")
             )
             past_meetups = (
-                GroupV2.objects.filter(meetup_date__lt=today)
+                queryset.filter(meetup_date__lt=today)
                 .annotate(days_diff=F("meetup_date") - today)
                 .order_by("-days_diff")
             )
