@@ -39,6 +39,8 @@ class OneSignalClient:
             "channel_for_external_user_ids": "push",
             "app_id": self.app_id,
             "data": data,
+            "ios_badgeType": "Increase",
+            "ios_badgeCount": 1,
         }
         res = requests.post(self.endpoint, json=payload, headers=headers)
         return res.json()
