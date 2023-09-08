@@ -148,6 +148,9 @@ class User(AbstractUser):
     # Guideline
     has_finished_guide = models.BooleanField(default=False)
 
+    # Reward Ads
+    num_of_available_ads = models.IntegerField(default=5)
+
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["phone_number"]
 

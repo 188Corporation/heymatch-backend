@@ -88,6 +88,11 @@ class GroupProfilePhotoAlreadyPurchasedException(BasePermissionDeniedException):
     detail = "You already purchased group profile photo, or other group did."
 
 
+class GroupProfilePhotoPurchaseByAdsReachedException(BasePermissionDeniedException):
+    status_code = 468
+    detail = "You already reached the max. num of group profile photo purchase by ads. Wait for one day."
+
+
 class MatchRequestNotMatchedException(BasePermissionDeniedException):
     status_code = 469
     detail = "You do not have any MatchRequest with the group"

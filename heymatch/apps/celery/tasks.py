@@ -137,6 +137,22 @@ def aggregate_recent_24hr_top_ranked_group_address():
 
 
 @shared_task(soft_time_limit=120)
+def fill_up_available_ads_point_for_all_users():
+    """
+    Fill up avail. num of ads point for all users for every day
+    """
+    logger.debug(
+        "======================================================================="
+    )
+    logger.debug("=== 'fill_up_available_ads_point_for_all_users' task started! ===")
+    logger.debug(
+        "======================================================================="
+    )
+    users = User.active_objects.all()
+    users.update(num_of_available_ads=5)
+
+
+@shared_task(soft_time_limit=120)
 def aggregate_business_report():
     slack_webhook = settings.SLACK_BUSINESS_REPORT_BOT
 

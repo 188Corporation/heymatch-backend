@@ -20,6 +20,9 @@ group_detail_view = GroupV2DetailViewSet.as_view(
 )
 group_top_address_list_view = GroupsTopAddressViewSet.as_view({"get": "retrieve"})
 group_photo_purchase_view = GroupV2DetailViewSet.as_view({"post": "purchase_photo"})
+group_photo_purchase_by_ads_view = GroupV2DetailViewSet.as_view(
+    {"post": "purchase_photo_by_ads"}
+)
 group_match_request_view = GroupV2MatchRequestViewSet.as_view({"get": "retrieve"})
 group_report_view = GroupReportViewSet.as_view({"post": "report"})
 
@@ -39,6 +42,11 @@ urlpatterns = [
     path(
         "<int:group_id>/purchase/photo/",
         group_photo_purchase_view,
+        name="group-purchase-photo",
+    ),
+    path(
+        "<int:group_id>/purchase/photo/reward-ads",
+        group_photo_purchase_by_ads_view,
         name="group-purchase-photo",
     ),
     path(

@@ -55,6 +55,7 @@ from heymatch.apps.user.models import User
 from heymatch.shared.exceptions import (
     GroupNotWithinSameHotplaceException,
     GroupProfilePhotoAlreadyPurchasedException,
+    GroupProfilePhotoPurchaseByAdsReachedException,
     JoinedGroupNotMineException,
     MatchRequestNotMatchedException,
     OneGroupPerUserException,
@@ -616,13 +617,61 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
 
         user.point_balance = user.point_balance - group.photo_point
         user.save(update_fields=["point_balance"])
-        GroupProfilePhotoPurchased.objects.create(seller=group, buyer=request.user)
+        GroupProfilePhotoPurchased.objects.create(
+            seller=group,
+            buyer=request.user,
+            method=GroupProfilePhotoPurchased.PurchaseMethodChoices.POINT,
+        )
 
         # Record ConsumptionHistory
         UserPointConsumptionHistory.objects.create(
             user=user,
             consumed_point=group.photo_point,
             consumed_reason=UserPointConsumptionHistory.ConsumedReasonChoice.OPENED_PROFILE_PHOTO,
+        )
+
+        serializer = self.get_serializer(
+            instance=group, context={"force_original_image": True}
+        )
+        purchase_info = {"profile_photo_purchased": True}
+        return Response(
+            data={**serializer.data, **purchase_info}, status=status.HTTP_200_OK
+        )
+
+    @swagger_auto_schema(request_body=no_body)
+    def purchase_photo_by_ads(
+        self, request: Request, *args: Any, **kwargs: Any
+    ) -> Response:
+        queryset = GroupV2.objects.all().filter(is_active=True)
+        group = get_object_or_404(queryset, id=kwargs["group_id"])
+
+        # if one of case exists, prohibit
+        gps = GroupProfilePhotoPurchased.objects.filter(
+            seller=group, buyer=request.user
+        )
+        if gps.exists():
+            raise GroupProfilePhotoAlreadyPurchasedException()
+
+        # if max ads per day reached, prohibit
+        user = request.user
+        if user.num_of_available_ads < 1:
+            raise GroupProfilePhotoPurchaseByAdsReachedException()
+
+        user.num_of_available_ads = user.num_of_available_ads - 1
+        user.save(update_fields=["num_of_available_ads"])
+
+        # purchase by Ads
+        GroupProfilePhotoPurchased.objects.create(
+            seller=group,
+            buyer=request.user,
+            method=GroupProfilePhotoPurchased.PurchaseMethodChoices.ADVERTISEMENT,
+        )
+
+        # Record ConsumptionHistory
+        UserPointConsumptionHistory.objects.create(
+            user=user,
+            consumed_point=group.photo_point,
+            consumed_reason=UserPointConsumptionHistory.ConsumedReasonChoice.OPENED_PROFILE_PHOTO_BY_ADS,
         )
 
         serializer = self.get_serializer(

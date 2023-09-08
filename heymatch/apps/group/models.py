@@ -218,6 +218,10 @@ class ReportedGroupV2(models.Model):
 
 
 class GroupProfilePhotoPurchased(models.Model):
+    class PurchaseMethodChoices(models.IntegerChoices):
+        POINT = 0
+        ADVERTISEMENT = 1
+
     buyer = models.ForeignKey(
         "user.User",
         blank=False,
@@ -231,6 +235,12 @@ class GroupProfilePhotoPurchased(models.Model):
         null=False,
         on_delete=models.PROTECT,
         related_name="purchased_group_seller",
+    )
+    method = models.IntegerField(
+        blank=False,
+        null=False,
+        default=PurchaseMethodChoices.POINT,
+        choices=PurchaseMethodChoices.choices,
     )
 
     # History

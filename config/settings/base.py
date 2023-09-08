@@ -329,6 +329,11 @@ CELERY_BEAT_SCHEDULE = {
         "task": "heymatch.apps.celery.tasks.aggregate_business_report",
         "schedule": crontab(minute=0, hour=7),  # execute 7 a.m
         "args": (),
+    },
+    "fill-up-available-ads-point-for-all-users": {
+        "task": "heymatch.apps.celery.tasks.fill_up_available_ads_point_for_all_users",
+        "schedule": crontab(minute=0, hour=1),  # execute 1 a.m
+        "args": (),
     }
     # "update-school-company-database": {
     #     "task": "heymatch.apps.celery.tasks.update_school_company_database",

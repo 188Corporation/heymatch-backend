@@ -118,12 +118,14 @@ class GroupProfilePhotoPurchasedAdmin(SimpleHistoryAdmin):
         "id",
         "buyer",
         "seller",
+        "method",
     ]
     history_list_display = ["status", *list_display]
     search_fields = [
         "id",
         "buyer",
         "seller",
+        "method",
     ]
 
 
