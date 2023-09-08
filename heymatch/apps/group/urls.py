@@ -45,7 +45,7 @@ urlpatterns = [
         name="group-purchase-photo",
     ),
     path(
-        "<int:group_id>/purchase/photo/reward-ads",
+        "<int:group_id>/purchase/photo/reward-ads/",
         group_photo_purchase_by_ads_view,
         name="group-purchase-photo",
     ),
