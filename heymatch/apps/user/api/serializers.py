@@ -47,6 +47,7 @@ class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
             "invitation_code",
             "block_my_school_or_company_users",
             "has_finished_guide",
+            "num_of_available_ads",
         ]
 
     def to_representation(self, instance: User):
