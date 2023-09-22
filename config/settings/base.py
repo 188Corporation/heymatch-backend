@@ -325,11 +325,6 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(minute=0, hour=3),  # execute 3 a.m
         "args": (),
     },
-    "aggregate-business-report": {
-        "task": "heymatch.apps.celery.tasks.aggregate_business_report",
-        "schedule": crontab(minute=0, hour=7),  # execute 7 a.m
-        "args": (),
-    },
     "fill-up-available-ads-point-for-all-users": {
         "task": "heymatch.apps.celery.tasks.fill_up_available_ads_point_for_all_users",
         "schedule": crontab(minute=0, hour=1),  # execute 1 a.m
