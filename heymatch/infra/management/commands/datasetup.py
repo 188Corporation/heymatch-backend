@@ -439,39 +439,41 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Setting up data for [Payments]"))
         # Point Items
         PointItem.objects.create(
-            name="캔디 5개",
+            name="캔디 13개",
             product_id="com.co188.heymatch.point_item1",
-            price_in_krw=4400,
-            default_point=5,
+            price_in_krw=6600,
+            default_point=13,
         )
         PointItem.objects.create(
-            name="캔디 10개+1개",
+            name="캔디 34개",
             product_id="com.co188.heymatch.point_item2",
-            price_in_krw=9900,
-            default_point=10,
-            bonus_point=2,
+            price_in_krw=15000,
+            default_point=34,
         )
         PointItem.objects.create(
-            name="캔디 15개+5개",
+            name="캔디 76개",
             product_id="com.co188.heymatch.point_item3",
-            price_in_krw=14000,
-            default_point=15,
-            bonus_point=5,
+            price_in_krw=29000,
+            default_point=76,
             best_deal_check=True,
         )
         PointItem.objects.create(
-            name="캔디 30개+15개",
+            name="캔디 103개",
             product_id="com.co188.heymatch.point_item4",
-            price_in_krw=22000,
-            default_point=25,
-            bonus_point=15,
+            price_in_krw=33000,
+            default_point=103,
         )
         PointItem.objects.create(
-            name="캔디 50개+35개",
+            name="캔디 169개",
             product_id="com.co188.heymatch.point_item5",
-            price_in_krw=39000,
-            default_point=50,
-            bonus_point=30,
+            price_in_krw=44000,
+            default_point=169,
+        )
+        PointItem.objects.create(
+            name="캔디 495개",
+            product_id="com.co188.heymatch.point_item6",
+            price_in_krw=99000,
+            default_point=495,
         )
         # Freepass Items
         # FreePassItem.objects.create(
