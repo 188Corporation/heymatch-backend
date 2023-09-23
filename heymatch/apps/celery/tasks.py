@@ -149,7 +149,7 @@ def fill_up_available_ads_point_for_all_users():
         "======================================================================="
     )
     users = User.active_objects.all()
-    users.update(num_of_available_ads=5)
+    users.update(num_of_available_ads=3)
 
 
 @shared_task(soft_time_limit=120)
