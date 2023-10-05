@@ -439,38 +439,38 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Setting up data for [Payments]"))
         # Point Items
         PointItem.objects.create(
-            name="캔디 13개",
+            name="캔디 13개 (할인율 0%)",
             product_id="com.co188.heymatch.point_item1",
             price_in_krw=6600,
             default_point=13,
         )
         PointItem.objects.create(
-            name="캔디 34개",
+            name="캔디 34개 (할인율 12%)",
             product_id="com.co188.heymatch.point_item2",
             price_in_krw=15000,
             default_point=34,
         )
         PointItem.objects.create(
-            name="캔디 76개",
+            name="캔디 76개 (할인율 24%)",
             product_id="com.co188.heymatch.point_item3",
             price_in_krw=29000,
             default_point=76,
             best_deal_check=True,
         )
         PointItem.objects.create(
-            name="캔디 103개",
+            name="캔디 103개 (할인율 36%)",
             product_id="com.co188.heymatch.point_item4",
             price_in_krw=33000,
             default_point=103,
         )
         PointItem.objects.create(
-            name="캔디 169개",
+            name="캔디 169개 (할인율 48%)",
             product_id="com.co188.heymatch.point_item5",
             price_in_krw=44000,
             default_point=169,
         )
         PointItem.objects.create(
-            name="캔디 495개",
+            name="캔디 495개 (할인율 60%)",
             product_id="com.co188.heymatch.point_item6",
             price_in_krw=99000,
             default_point=495,
