@@ -44,7 +44,7 @@ class GroupV2(models.Model):
         NOT_SURE = "not_sure"
 
     class GroupWhoWeAreTag(models.TextChoices):
-        A_LOT_OF_CUTENESS = ("A_LOT_OF_CUTENESS", "😘애교가 많아요/rgba(217,217,217,1.0)")
+        A_LOT_OF_CUTENESS = ("A_LOT_OF_CUTENESS", "😘 애교가 많아요/rgba(255,255,255,1.0)")
         A_LOT_OF_PLAYFULNESS = (
             "A_LOT_OF_PLAYFULNESS",
             "😝 장난기가 많아요/rgba(255,255,255,1.0)",
