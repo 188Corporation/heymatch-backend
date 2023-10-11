@@ -70,7 +70,7 @@ class GroupNotWithinSameHotplaceException(BasePermissionDeniedException):
 
 class UserPointBalanceNotEnoughException(BasePermissionDeniedException):
     status_code = 465
-    detail = "젤리가 부족해요.. 충전해주세요! 🍬"
+    detail = "캔디가 부족해요.. 충전해주세요! 🍬"
 
 
 class JoinedGroupNotMineException(BasePermissionDeniedException):
