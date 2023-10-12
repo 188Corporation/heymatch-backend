@@ -726,7 +726,7 @@ class GroupV2MatchRequestViewSet(viewsets.ViewSet):
 
         mr = qs.first()
         data = {
-            "id": group.id,
+            "id": mr.id,
             "status": mr.status,
             "type": "SENT" if mr.sender_group == my_group else "RECEIVED",
         }
