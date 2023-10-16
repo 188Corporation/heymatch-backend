@@ -133,6 +133,7 @@ class GroupV2(models.Model):
 
     # Lifecycle
     created_at = models.DateTimeField(default=now, editable=False)
+    updated_at = models.DateTimeField(default=now, editable=True)
     is_active = models.BooleanField(default=True)
 
     # History

@@ -280,6 +280,7 @@ class GroupV2GeneralViewSet(viewsets.ModelViewSet):
             "group_member_group__user",
             "group_member_group__user__user_profile_images",
         )
+        .order_by("updated_at")
     )
     permission_classes = [
         IsAuthenticated,
@@ -582,6 +583,7 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
         )
         group.member_number = request.data.get("member_number", group.member_number)
         group.member_avg_age = request.data.get("member_avg_age", group.member_avg_age)
+        group.updated_at = timezone.now()
         group.save(
             update_fields=[
                 "title",
@@ -593,6 +595,7 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
                 "meetup_place_address",
                 "member_number",
                 "member_avg_age",
+                "updated_at",
             ]
         )
         serializer = self.get_serializer(group)
