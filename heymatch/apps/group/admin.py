@@ -33,6 +33,7 @@ class GroupV2Admin(SimpleHistoryAdmin):
         "about_our_group_tags",
         "meeting_we_want_tags",
         "created_at",
+        "updated_at",
         "is_active",
     ]
     history_list_display = ["status", *list_display]
@@ -55,6 +56,7 @@ class GroupV2Admin(SimpleHistoryAdmin):
         "about_our_group_tags",
         "meeting_we_want_tags",
         "created_at",
+        "updated_at",
         "is_active",
     ]
 
