@@ -154,16 +154,16 @@ class GroupV2Filter(FilterSet):
             future_meetups = (
                 queryset.filter(meetup_date__gte=today)
                 .annotate(days_diff=F("meetup_date") - today)
-                .order_by("days_diff")
+                .order_by("days_diff", "-updated_at")
             )
             past_meetups = (
                 queryset.filter(meetup_date__lt=today)
                 .annotate(days_diff=F("meetup_date") - today)
-                .order_by("-days_diff")
+                .order_by("-days_diff", "-updated_at")
             )
             return future_meetups.union(past_meetups, all=True)
-        if value == "created_at":
-            return queryset.order_by("-created_at")
+        if value == "created_at" or value == "updated_at":
+            return queryset.order_by("-updated_at")
 
     # def filter_member_number_in_group(self, queryset, field_name, value):
     #     if not value:
@@ -280,7 +280,6 @@ class GroupV2GeneralViewSet(viewsets.ModelViewSet):
             "group_member_group__user",
             "group_member_group__user__user_profile_images",
         )
-        .order_by("updated_at")
     )
     permission_classes = [
         IsAuthenticated,
