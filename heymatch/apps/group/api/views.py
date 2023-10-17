@@ -582,6 +582,12 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
         )
         group.member_number = request.data.get("member_number", group.member_number)
         group.member_avg_age = request.data.get("member_avg_age", group.member_avg_age)
+        group.about_our_group_tags = request.data.get(
+            "about_our_group_tags", group.about_our_group_tags
+        )
+        group.meeting_we_want_tags = request.data.get(
+            "meeting_we_want_tags", group.meeting_we_want_tags
+        )
         group.updated_at = timezone.now()
         group.save(
             update_fields=[
@@ -594,6 +600,8 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
                 "meetup_place_address",
                 "member_number",
                 "member_avg_age",
+                "about_our_group_tags",
+                "meeting_we_want_tags",
                 "updated_at",
             ]
         )
