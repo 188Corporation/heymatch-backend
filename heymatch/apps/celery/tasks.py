@@ -125,11 +125,9 @@ def aggregate_recent_24hr_top_ranked_group_address():
     logger.debug(
         "======================================================================="
     )
-    date_from = timezone.now() - datetime.timedelta(days=1)
+    # date_from = timezone.now() - datetime.timedelta(days=1)
     last_24_group_addresses = list(
-        GroupV2.objects.filter(created_at__gte=date_from, is_active=True).values_list(
-            "gps_address", flat=True
-        )
+        GroupV2.objects.filter(is_active=True).values_list("gps_address", flat=True)
     )
     if len(last_24_group_addresses) > 0:
         top_10_counter = dict(Counter(last_24_group_addresses).most_common(10))
