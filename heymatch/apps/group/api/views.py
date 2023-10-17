@@ -701,7 +701,7 @@ class GroupsTopAddressViewSet(viewsets.ModelViewSet):
 
     @method_decorator(cache_page(60 * 5))  # cache every 5min
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        queryset = Recent24HrTopGroupAddress.objects.first()
+        queryset = Recent24HrTopGroupAddress.objects.last()
         serializer = self.get_serializer(queryset)
         data = serializer.data
         # re-order
