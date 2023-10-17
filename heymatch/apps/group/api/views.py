@@ -7,6 +7,7 @@ from django.db.models import (
     Avg,
     Case,
     Count,
+    DurationField,
     F,
     IntegerField,
     OuterRef,
@@ -97,7 +98,7 @@ class GroupV2Filter(FilterSet):
     # height = RangeFilter(method="filter_avg_heights_in_group")
     # gender = CharFilter(method="filter_gender_type_in_group")
     member_num = NumberFilter(method="filter_member_number_in_group")
-    order_by = CharFilter(method="filter_sort_by_in_group")
+    order_by = CharFilter(method="filter_order_by_in_group")
 
     class Meta:
         model = GroupV2
@@ -146,22 +147,28 @@ class GroupV2Filter(FilterSet):
             return queryset.filter(member_number=value)
         return queryset.filter(member_number__gte=value)
 
-    def filter_sort_by_in_group(self, queryset, field_name, value):
+    def filter_order_by_in_group(self, queryset, field_name, value):
         if not value:
             return queryset
         if value == "meetup_date":
             today = timezone.now().date()
-            future_meetups = (
-                queryset.filter(meetup_date__gte=today)
-                .annotate(days_diff=F("meetup_date") - today)
-                .order_by("days_diff", "-updated_at")
+            return (
+                queryset.annotate(
+                    relevance=Case(
+                        When(meetup_date__gte=today, then=1),
+                        When(meetup_date__lt=today, then=2),
+                        output_field=IntegerField(),
+                    )
+                )
+                .annotate(
+                    timediff=Case(
+                        When(meetup_date__gte=today, then=F("meetup_date") - today),
+                        When(meetup_date__lt=today, then=today - F("meetup_date")),
+                        output_field=DurationField(),
+                    )
+                )
+                .order_by("relevance", "timediff")
             )
-            past_meetups = (
-                queryset.filter(meetup_date__lt=today)
-                .annotate(days_diff=F("meetup_date") - today)
-                .order_by("-days_diff", "-updated_at")
-            )
-            return future_meetups.union(past_meetups, all=True)
         if value == "created_at" or value == "updated_at":
             return queryset.order_by("-updated_at")
 
