@@ -106,12 +106,16 @@ def verify_main_profile_images():
                 ]
             )
             logger.debug(f"UserProfile(id={upi.id}) REJECTED!")
+
+            route_to = "MainTabs"
+            if not uob.onboarding_completed:
+                route_to = "ProfilePhotoRejectedScreen"
             onesignal_client.send_notification_to_specific_users(
                 title="프로필 사진 심사 거절",
                 content="프로필 사진 심사에 통과하지 못했어요. 새로운 사진을 올려주세요 😢",
                 user_ids=[str(upi.user.id)],
                 data={
-                    "route_to": "ProfilePhotoRejectedScreen",
+                    "route_to": route_to,
                 },
             )
             upi.delete()
