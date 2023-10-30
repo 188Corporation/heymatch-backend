@@ -47,18 +47,18 @@ class GroupV2(models.Model):
         A_LOT_OF_CUTENESS = ("A_LOT_OF_CUTENESS", "😘 애교가 많아요/rgba(217,225,239,1.0)")
         A_LOT_OF_PLAYFULNESS = (
             "A_LOT_OF_PLAYFULNESS",
-            "😝 장난기가 많아요/rgba(217,225,239,1.0)",
+            "😝 장난기 많아요/rgba(217,225,239,1.0)",
         )
         INTERNATIONAL = ("INTERNATIONAL", "🌏 다국적이에요/rgba(217,225,239,1.0)")
         A_LOT_OF_ACTIVENESS = ("A_LOT_OF_ACTIVENESS", "😃 활달해요/rgba(217,225,239,1.0)")
         TENDS_TO_BE_QUIET = ("TENDS_TO_BE_QUIET", "😷 조용한 편이에요/rgba(217,225,239,1.0)")
-        A_LOT_OF_SHYNESS = ("A_LOT_OF_SHYNESS", "🙈 수줍음이 많아요/rgba(217,225,239,1.0)")
+        A_LOT_OF_SHYNESS = ("A_LOT_OF_SHYNESS", "🙈 수줍음 많아요/rgba(217,225,239,1.0)")
         NICE_BODY_SHAPE = ("NICE_BODY_SHAPE", "👍 몸매가 좋아요/rgba(217,225,239,1.0)")
         WE_ARE_HANDSOME = ("WE_ARE_HANDSOME", "🤩 잘생겼어요/rgba(217,225,239,1.0)")
         WE_ARE_PRETTY = ("WE_ARE_PRETTY", "😍 예뻐요/rgba(217,225,239,1.0)")
         WE_ARE_GOOD_LOOKING = ("WE_ARE_GOOD_LOOKING", "☺️ 훈훈해요/rgba(217,225,239,1.0)")
         FASHION_PEOPLE = ("FASHION_PEOPLE", "🕶 패셔니스타/rgba(217,225,239,1.0)")
-        WE_ARE_KING = ("WE_ARE_KING", "👑 이 구역의 왕은 우리야/rgba(217,225,239,1.0)")
+        WE_ARE_KING = ("WE_ARE_KING", "👑 우리가 왕이야/rgba(217,225,239,1.0)")
         WE_LIKE_SPORTS = ("WE_LIKE_SPORTS", "💪 운동을 좋아해요/rgba(217,225,239,1.0)")
         A_LOT_OF_LAUGHING = ("A_LOT_OF_LAUGHING", "🤣 웃음이 많아요/rgba(217,225,239,1.0)")
         GOOD_AT_TALKING = ("GOOD_AT_TALKING", "💬 대화를 잘해요/rgba(217,225,239,1.0)")
@@ -69,21 +69,21 @@ class GroupV2(models.Model):
         WE_LIKE_BEER = ("WE_LIKE_BEER", "🍺 맥주 좋아해요/rgba(217,225,239,1.0)")
         WE_LIKE_MEAT = ("WE_LIKE_MEAT", "🍖 고기 먹어요/rgba(217,225,239,1.0)")
         WE_LIKE_SOJU = ("WE_LIKE_SOJU", "💚 소주 좋아해요/rgba(217,225,239,1.0)")
-        WE_LIKE_SOUP = ("WE_LIKE_SOUP", "🍲 국물 안주 먹어요/rgba(217,225,239,1.0)")
+        WE_LIKE_SOUP = ("WE_LIKE_SOUP", "🍲 국물안주 고고/rgba(217,225,239,1.0)")
         LETS_PLAY_ALCOHOL_GAME = (
             "LETS_PLAY_ALCOHOL_GAME",
             "🎮 술게임해요/rgba(217,225,239,1.0)",
         )
-        LETS_TALK = ("LETS_TALK", "💬 차분히 대화해요/rgba(217,225,239,1.0)")
-        WE_EAT_ANYTHING = ("WE_EAT_ANYTHING", "🤔 아무거나 먹어요/rgba(217,225,239,1.0)")
+        LETS_TALK = ("LETS_TALK", "💬 차분히 대화/rgba(217,225,239,1.0)")
+        WE_EAT_ANYTHING = ("WE_EAT_ANYTHING", "🤔 암거나 먹어요/rgba(217,225,239,1.0)")
         WE_EAT_CHICKEN = ("WE_EAT_CHICKEN", "🍗 치킨 먹어요/rgba(217,225,239,1.0)")
-        LETS_PLAY_HOT = ("LETS_PLAY_HOT", "🔥 화끈하게 놀아요/rgba(217,225,239,1.0)")
+        LETS_PLAY_HOT = ("LETS_PLAY_HOT", "🔥 화끈하게 놀자/rgba(217,225,239,1.0)")
         PLAY_UNTIL_END = ("PLAY_UNTIL_END", "💪 끝까지 달려요/rgba(217,225,239,1.0)")
         PLAY_SIMPLE_UNTIL_FIRST = (
             "PLAY_SIMPLE_UNTIL_FIRST",
-            "🍻 1차로만 가볍게 놀아요/rgba(217,225,239,1.0)",
+            "🍻가볍게 1차만/rgba(217,225,239,1.0)",
         )
-        DRINK_MAKGULI = ("DRINK_MAKGULI", "☂️ 비 오는 날은 막걸리/rgba(217,225,239,1.0)")
+        DRINK_MAKGULI = ("DRINK_MAKGULI", "☂️ 비올땐 막걸리/rgba(217,225,239,1.0)")
 
     mode = models.CharField(
         blank=False, null=False, choices=GroupMode.choices, max_length=10
