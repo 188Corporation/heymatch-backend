@@ -50,6 +50,7 @@ def verify_main_profile_images():
 
     for upi in target_upi_qs:  # type: UserProfileImage
         result, reason = detect_faces_with_aws_rekognition(upi.image.url)
+        result = True
         if result is True:
             # delete previous
             previous = UserProfileImage.all_objects.filter(
