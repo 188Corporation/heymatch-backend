@@ -90,6 +90,7 @@ from .serializers import (
 
 # User = get_user_model()
 stream = settings.STREAM_CLIENT
+onesignal_client = settings.ONE_SIGNAL_CLIENT
 NAVER_GEO_API = NaverGeoAPI()
 
 
@@ -636,7 +637,7 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
         user.save(update_fields=["point_balance"])
         GroupProfilePhotoPurchased.objects.create(
             seller=group,
-            buyer=request.user,
+            buyer=user,
             method=GroupProfilePhotoPurchased.PurchaseMethodChoices.POINT,
         )
 
@@ -651,6 +652,29 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
             instance=group, context={"force_original_image": True}
         )
         purchase_info = {"profile_photo_purchased": True}
+
+        # Send notification
+        # check buyer's group
+        buyer_gm_qs = GroupMember.objects.filter(user=user, is_active=True)
+        seller_gm_qs = GroupMember.objects.filter(group=group, is_active=True)
+
+        if buyer_gm_qs.exists() and seller_gm_qs.exists():
+            buyer_gm = buyer_gm_qs.first()
+            seller_user_ids = [
+                str(user_id)
+                for user_id in seller_gm_qs.values_list("user_id", flat=True)
+            ]
+            onesignal_client.send_notification_to_specific_users(
+                title="누가 내 프로필 사진을 봤어요!!",
+                content=f"[{buyer_gm.group.title}]님이 내 프로필 사진을 열어 봤어요!! 상대 그룹을 확인해보세요!🧐",
+                user_ids=seller_user_ids,
+                data={
+                    "route_to": "GroupDetailScreen",
+                    "data": {
+                        "group_id": group.id,
+                    },
+                },
+            )
         return Response(
             data={**serializer.data, **purchase_info}, status=status.HTTP_200_OK
         )
@@ -695,6 +719,30 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
             instance=group, context={"force_original_image": True}
         )
         purchase_info = {"profile_photo_purchased": True}
+
+        # Send notification
+        # check buyer's group
+        buyer_gm_qs = GroupMember.objects.filter(user=user, is_active=True)
+        seller_gm_qs = GroupMember.objects.filter(group=group, is_active=True)
+
+        if buyer_gm_qs.exists() and seller_gm_qs.exists():
+            buyer_gm = buyer_gm_qs.first()
+            seller_user_ids = [
+                str(user_id)
+                for user_id in seller_gm_qs.values_list("user_id", flat=True)
+            ]
+            onesignal_client.send_notification_to_specific_users(
+                title="누가 내 프로필 사진을 봤어요!!",
+                content=f"[{buyer_gm.group.title}]님이 내 프로필 사진을 열어 봤어요!! 상대 그룹을 확인해보세요!🧐",
+                user_ids=seller_user_ids,
+                data={
+                    "route_to": "GroupDetailScreen",
+                    "data": {
+                        "group_id": group.id,
+                    },
+                },
+            )
+
         return Response(
             data={**serializer.data, **purchase_info}, status=status.HTTP_200_OK
         )
