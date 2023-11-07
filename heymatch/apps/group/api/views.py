@@ -671,7 +671,7 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
                 data={
                     "route_to": "GroupDetailScreen",
                     "data": {
-                        "group_id": group.id,
+                        "group_id": buyer_gm.group.id,
                     },
                 },
             )
@@ -738,7 +738,7 @@ class GroupV2DetailViewSet(viewsets.ModelViewSet):
                 data={
                     "route_to": "GroupDetailScreen",
                     "data": {
-                        "group_id": group.id,
+                        "group_id": buyer_gm.group.id,
                     },
                 },
             )
