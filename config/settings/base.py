@@ -309,42 +309,42 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 CELERY_BEAT_SCHEDULE = {
     # Verify main UserProfileImages
     "verify-main-profile-images": {
-        "task": "heymatch.apps.celery.system_tasks.verify_main_profile_images",
+        "task": "heymatch.apps.celery.tasks.verify_main_profile_images",
         "schedule": timedelta(seconds=15),  # execute every 15 sec
         "args": (),
     },
     # Process DeleteScheduledUsers
     "delete-scheduled-users": {
-        "task": "heymatch.apps.celery.system_tasks.delete_scheduled_users",
+        "task": "heymatch.apps.celery.tasks.delete_scheduled_users",
         "schedule": crontab(minute=0, hour="*/1"),  # execute every hour
         "args": (),
     },
     # Aggregate recent 24 hours Top Ranked group addresses
     "top-ranked-group-addresses-24hrs": {
-        "task": "heymatch.apps.celery.system_tasks.aggregate_recent_24hr_top_ranked_group_address",
+        "task": "heymatch.apps.celery.tasks.aggregate_recent_24hr_top_ranked_group_address",
         "schedule": crontab(minute=0, hour=3),  # execute 3 a.m
         "args": (),
     },
     "fill-up-available-ads-point-for-all-users": {
-        "task": "heymatch.apps.celery.system_tasks.fill_up_available_ads_point_for_all_users",
+        "task": "heymatch.apps.celery.tasks.fill_up_available_ads_point_for_all_users",
         "schedule": crontab(minute=0, hour=1),  # execute 1 a.m
         "args": (),
     },
     # Notification
     "send-notification-to-group-not-made-users": {
-        "task": "heymatch.apps.celery.notification_tasks.send_notification_to_group_not_made_users",
+        "task": "heymatch.apps.celery.tasks.send_notification_to_group_not_made_users",
         "schedule": timedelta(seconds=30),  # execute every 30 sec
         "args": (),
     }
     # "update-school-company-database": {
-    #     "task": "heymatch.apps.celery.system_tasks.update_school_company_database",
+    #     "task": "heymatch.apps.celery.tasks.update_school_company_database",
     #     "schedule": crontab(minute=0, hour="*/1"),  # execute every hour
     #     "args": (),
     # }
     # NOTE: We do not delete groups anymore
     # Disable groups, matches, chat at the end of the day
     # "end-of-the-day": {
-    #     "task": "heymatch.apps.celery.system_tasks.end_of_the_day_task",
+    #     "task": "heymatch.apps.celery.tasks.end_of_the_day_task",
     #     "schedule": crontab(minute=0, hour=5),  # execute daily at 5 a.m
     #     "args": (),
     # },
