@@ -41,6 +41,9 @@ class UserAdmin(SimpleHistoryAdmin):
                     "block_my_school_or_company_users",
                     "has_finished_guide",
                     "num_of_available_ads",
+                    "notified_to_make_first_group_after_join_10min",
+                    "notified_to_make_first_group_after_join_1hr",
+                    "notified_to_make_first_group_after_join_1day",
                 )
             },
         ),
@@ -103,6 +106,9 @@ class UserAdmin(SimpleHistoryAdmin):
         "block_my_school_or_company_users",
         "has_finished_guide",
         "num_of_available_ads",
+        "notified_to_make_first_group_after_join_10min",
+        "notified_to_make_first_group_after_join_1hr",
+        "notified_to_make_first_group_after_join_1day",
     ]
     history_list_display = [
         "status",
@@ -137,6 +143,9 @@ class UserAdmin(SimpleHistoryAdmin):
         "block_my_school_or_company_users",
         "has_finished_guide",
         "num_of_available_ads",
+        "notified_to_make_first_group_after_join_10min",
+        "notified_to_make_first_group_after_join_1hr",
+        "notified_to_make_first_group_after_join_1day",
     ]
 
 
