@@ -460,17 +460,17 @@ def send_notification_to_group_not_made_users():
     one_day_ago = timezone.now() - timezone.timedelta(days=1)
     users = User.objects.filter(id__in=onboarding_completed_user_ids)
     users_within_ten_min_not_notified = users.filter(
-        date_joined__gte=ten_min_ago,
+        created_at__lte=ten_min_ago,
+        created_at__gt=one_hr_ago,
         notified_to_make_first_group_after_join_10min=False,
     )
     users_within_one_hour_not_notified = users.filter(
-        date_joined__gte=one_hr_ago,
-        date_joined__lte=ten_min_ago,
+        created_at__lte=one_hr_ago,
+        created_at__gt=one_day_ago,
         notified_to_make_first_group_after_join_1hr=False,
     )
     users_within_one_day_not_notified = users.filter(
-        date_joined__gte=one_day_ago,
-        date_joined__lte=one_hr_ago,
+        created_at__lte=one_day_ago,
         notified_to_make_first_group_after_join_1day=False,
     )
 
@@ -487,6 +487,7 @@ def send_notification_to_group_not_made_users():
         users_within_ten_min_not_notified.update(
             notified_to_make_first_group_after_join_10min=True
         )
+        return
 
     if users_within_one_hour_not_notified.exists():
         onesignal_client.send_notification_to_specific_users(
@@ -500,6 +501,7 @@ def send_notification_to_group_not_made_users():
         users_within_one_hour_not_notified.update(
             notified_to_make_first_group_after_join_1hr=True
         )
+        return
 
     if users_within_one_day_not_notified.exists():
         onesignal_client.send_notification_to_specific_users(
@@ -513,6 +515,7 @@ def send_notification_to_group_not_made_users():
         users_within_one_day_not_notified.update(
             notified_to_make_first_group_after_join_1day=True
         )
+        return
 
 
 # ================================================
