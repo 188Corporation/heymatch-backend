@@ -329,6 +329,12 @@ CELERY_BEAT_SCHEDULE = {
         "task": "heymatch.apps.celery.tasks.fill_up_available_ads_point_for_all_users",
         "schedule": crontab(minute=0, hour=1),  # execute 1 a.m
         "args": (),
+    },
+    # Notification
+    "send-notification-to-group-not-made-users": {
+        "task": "heymatch.apps.celery.tasks.send_notification_to_group_not_made_users",
+        "schedule": timedelta(seconds=30),  # execute every 30 sec
+        "args": (),
     }
     # "update-school-company-database": {
     #     "task": "heymatch.apps.celery.tasks.update_school_company_database",

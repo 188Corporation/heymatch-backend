@@ -151,6 +151,19 @@ class User(AbstractUser):
     # Reward Ads
     num_of_available_ads = models.IntegerField(default=3)
 
+    # Notification Center
+    # [첫번째 그룹 생성 유도 알림]
+    notified_to_make_first_group_after_join_10min = models.BooleanField(
+        default=False
+    )  # 가입 후 그룹 생성 안한 유저에게 생성 유도 알림 (10분)
+    notified_to_make_first_group_after_join_1hr = models.BooleanField(
+        default=False
+    )  # 가입 후 그룹 생성 안한 유저에게 생성 유도 알림 (1시간)
+    notified_to_make_first_group_after_join_1day = models.BooleanField(
+        default=False
+    )  # 가입 후 그룹 생성 안한 유저에게 생성 유도 알림 (하루)
+    # []
+
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["phone_number"]
 
