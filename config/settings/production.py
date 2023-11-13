@@ -196,7 +196,7 @@ sentry_sdk.init(
 # Celery
 # ------------------------------------------------------------------------------
 CELERY_BEAT_SCHEDULE["aggregate-business-report"] = {  # noqa F405
-    "task": "heymatch.apps.celery.system_tasks.aggregate_business_report",
+    "task": "heymatch.apps.celery.tasks.aggregate_business_report",
     "schedule": crontab(minute=0, hour=7),  # noqa F405
     "args": (),
 }

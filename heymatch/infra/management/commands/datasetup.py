@@ -10,9 +10,7 @@ from factory.django import ImageField
 from phone_verify.models import SMSVerification
 from tqdm import tqdm
 
-from heymatch.apps.celery.system_tasks import (
-    aggregate_recent_24hr_top_ranked_group_address,
-)
+from heymatch.apps.celery.tasks import aggregate_recent_24hr_top_ranked_group_address
 from heymatch.apps.group.models import GroupMember, GroupProfilePhotoPurchased, GroupV2
 from heymatch.apps.group.tests.factories import (
     FEMALE_REAL_CHOICES,
