@@ -48,6 +48,11 @@ class UserInvitationCodeNotExistException(BasePermissionDeniedException):
     detail = "User invitation code does not exist."
 
 
+class UserInvitationCodeNotAllowedMineException(BasePermissionDeniedException):
+    status_code = 457
+    detail = "Cannot use my invitation code."
+
+
 class UserNotJoinedGroupException(BasePermissionDeniedException):
     status_code = 461
     detail = "그룹을 먼저 만들어 주세요! 😎"

@@ -30,6 +30,7 @@ from heymatch.apps.user.models import (
 )
 from heymatch.shared.exceptions import (
     UserInvitationCodeAlreadyAcceptedException,
+    UserInvitationCodeNotAllowedMineException,
     UserInvitationCodeNotExistException,
     UsernameAlreadyExistsException,
 )
@@ -274,6 +275,8 @@ class UserInvitationCodeViewSet(viewsets.ViewSet):
             raise UserInvitationCodeNotExistException()
         sent = qs.first()
         received = request.user
+        if sent == received:
+            raise UserInvitationCodeNotAllowedMineException()
         if UserInvitation.objects.filter(sent=sent, received=received).exists():
             raise UserInvitationCodeAlreadyAcceptedException()
         UserInvitation.objects.create(sent=sent, received=received)
