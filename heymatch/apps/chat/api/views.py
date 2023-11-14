@@ -1,5 +1,6 @@
 import itertools
 import logging
+import time
 from typing import Any
 
 from django.conf import settings
@@ -51,13 +52,22 @@ class StreamChatViewSet(viewsets.ModelViewSet):
             ]
         }
         """
-        channels = stream.query_channels(
-            filter_conditions={
-                "members": {"$in": [str(request.user.id)]},
-            },
-            sort={"last_message_at": -1},
-            limit=30,
-        )
+        num = 0
+        while num < 3:
+            try:
+                channels = stream.query_channels(
+                    filter_conditions={
+                        "members": {"$in": [str(request.user.id)]},
+                    },
+                    sort={"last_message_at": -1},
+                    limit=30,
+                )
+                break
+            except ConnectionError:
+                num += 1
+                time.sleep(1)
+                continue
+
         # parse raw data
         serializer_data = []
         for channel in channels["channels"]:
