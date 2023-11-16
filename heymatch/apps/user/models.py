@@ -133,6 +133,7 @@ class User(AbstractUser):
         blank=True, null=True, default=free_pass_default_time
     )
     block_my_school_or_company_users = models.BooleanField(default=False)
+    hide_my_school_or_company_name = models.BooleanField(default=False)
 
     # Is real or fake?
     # this is needed for inviting non-heymatch user to group

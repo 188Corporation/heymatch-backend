@@ -86,8 +86,19 @@ class _UserFullFieldSerializer(serializers.ModelSerializer):
             "job_title",
             "verified_school_name",
             "verified_company_name",
+            "hide_my_school_or_company_name",
             "user_profile_images",
         ]
+
+    def to_representation(self, instance: User):
+        representation = super().to_representation(instance)
+        hide_my_school_or_company_name = representation.pop(
+            "hide_my_school_or_company_name", False
+        )
+        if hide_my_school_or_company_name:
+            representation["verified_school_name"] = None
+            representation["verified_company_name"] = None
+        return representation
 
 
 class _GroupMemberSerializer(serializers.ModelSerializer):

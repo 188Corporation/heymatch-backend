@@ -187,6 +187,12 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
             ]
             request.user.save(update_fields=["block_my_school_or_company_users"])
 
+        if "hide_my_school_or_company_name" in serializer.validated_data.keys():
+            request.user.block_my_school_or_company_users = serializer.validated_data[
+                "hide_my_school_or_company_name"
+            ]
+            request.user.save(update_fields=["hide_my_school_or_company_name"])
+
         serializer.save()
         return Response(status=status.HTTP_200_OK)
 

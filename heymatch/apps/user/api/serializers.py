@@ -46,12 +46,19 @@ class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
             "free_pass_active_until",
             "invitation_code",
             "block_my_school_or_company_users",
+            "hide_my_school_or_company_name",
             "has_finished_guide",
             "num_of_available_ads",
         ]
 
     def to_representation(self, instance: User):
         representation = super().to_representation(instance)
+        hide_my_school_or_company_name = representation.get(
+            "hide_my_school_or_company_name", False
+        )
+        if hide_my_school_or_company_name:
+            representation["verified_school_name"] = None
+            representation["verified_company_name"] = None
         # joined_group = representation["joined_group"]
         user_purchases = representation["user_purchases"]
         # del representation["joined_group"]
@@ -105,6 +112,7 @@ class UserInfoUpdateBodyRequestSerializer(serializers.ModelSerializer):
             "other_profile_image_1",
             "other_profile_image_2",
             "block_my_school_or_company_users",
+            "hide_my_school_or_company_name",
             "has_finished_guide",
         ]
 
