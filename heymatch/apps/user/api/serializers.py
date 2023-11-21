@@ -57,8 +57,12 @@ class UserWithGroupFullInfoSerializer(serializers.ModelSerializer):
             "hide_my_school_or_company_name", False
         )
         if hide_my_school_or_company_name:
-            representation["verified_school_name"] = None
-            representation["verified_company_name"] = None
+            if representation["job_title"] == User.JobChoices.EMPLOYEE:
+                representation["verified_school_name"] = None
+                representation["verified_company_name"] = User.JobChoices.EMPLOYEE
+            if representation["job_title"] == User.JobChoices.COLLEGE_STUDENT:
+                representation["verified_school_name"] = User.JobChoices.COLLEGE_STUDENT
+                representation["verified_company_name"] = None
         # joined_group = representation["joined_group"]
         user_purchases = representation["user_purchases"]
         # del representation["joined_group"]

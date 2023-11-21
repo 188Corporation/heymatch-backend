@@ -193,6 +193,12 @@ class UserWithGroupFullInfoViewSet(viewsets.ModelViewSet):
             ]
             request.user.save(update_fields=["hide_my_school_or_company_name"])
 
+        if "has_finished_guide" in serializer.validated_data.keys():
+            request.user.has_finished_guide = serializer.validated_data.pop(
+                "has_finished_guide"
+            )
+            request.user.save(update_fields=["has_finished_guide"])
+
         serializer.save()
         return Response(status=status.HTTP_200_OK)
 
