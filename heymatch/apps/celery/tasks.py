@@ -531,25 +531,25 @@ def send_notification_to_group_with_past_meetup_date():
     # 만남날짜가 지난 그룹을 선택한다
     one_day_groups = GroupV2.objects.filter(
         is_active=True,
-        created_at__lte=one_day_ago,
-        created_at__gt=three_day_ago,
+        meetup_date_lte=one_day_ago,
+        meetup_date_gt=three_day_ago,
         notified_to_update_meetup_date_after_one_day=False,
     )
     three_day_groups = GroupV2.objects.filter(
         is_active=True,
-        created_at__lte=three_day_ago,
-        created_at__gt=one_week_ago,
+        meetup_date_lte=three_day_ago,
+        meetup_date_gt=one_week_ago,
         notified_to_update_meetup_date_after_three_day=False,
     )
     one_week_groups = GroupV2.objects.filter(
         is_active=True,
-        created_at__lte=one_week_ago,
-        created_at__gt=two_weeks_ago,
+        meetup_date_lte=one_week_ago,
+        meetup_date_gt=two_weeks_ago,
         notified_to_update_meetup_date_after_one_week=False,
     )
     two_weeks_groups = GroupV2.objects.filter(
         is_active=True,
-        created_at__lte=two_weeks_ago,
+        meetup_date_lte=two_weeks_ago,
         notified_to_update_meetup_date_after_two_week=False,
     )
 
@@ -559,8 +559,8 @@ def send_notification_to_group_with_past_meetup_date():
     )
     if users_one_day:
         onesignal_client.send_notification_to_specific_users(
-            title="만드신 그룹의 만남날짜가 하루 지났어요!😵",
-            content="아직 미팅팸 못 구하셨다면? 지금 당장 만남 날짜를 업데이트하자!😍",
+            title="만든 그룹의 만남날짜가 지났어요!",
+            content="만든 그룹의 만남날짜가 [하루] 지났어요!😵 날짜가 지나면 매칭률이 떨어지니 업데이트 해봐요!🙈",
             user_ids=[str(user_id) for user_id in users_one_day],
             data={
                 "route_to": "MainTabs",
@@ -573,8 +573,8 @@ def send_notification_to_group_with_past_meetup_date():
     ).values_list("user_id", flat=True)
     if users_three_day:
         onesignal_client.send_notification_to_specific_users(
-            title="만드신 그룹의 만남날짜가 3일이나 지났어요!😯",
-            content="만남 날짜가 오래되면 매칭률이 떨어져요! 얼른 최신 날짜로 업데이트 해봐요!🙈",
+            title="만든 그룹의 만남날짜가 지났어요!",
+            content="만든 그룹의 만남날짜가 [3일] 지났어요!😯 아직 미팅팸 못 구했다면? 지금 당장 만남날짜 업데이트하자!😍",
             user_ids=[str(user_id) for user_id in users_three_day],
             data={
                 "route_to": "MainTabs",
@@ -587,8 +587,8 @@ def send_notification_to_group_with_past_meetup_date():
     )
     if users_one_week:
         onesignal_client.send_notification_to_specific_users(
-            title="만드신 그룹의 만남날짜가 무려 일주일이나 지났어요..😰",
-            content="만남 날짜가 오래되면 매칭률이 떨어져요! 날짜 업데이트하고 매칭 많이 받아봐요!🫡",
+            title="만든 그룹의 만남날짜가 지났어요!",
+            content="만든 그룹의 만남날짜가 무려 [일주일]이나 지났어요..😰 날짜 업데이트하고 매칭 많이 받아봐요!🫡",
             user_ids=[str(user_id) for user_id in users_one_week],
             data={
                 "route_to": "MainTabs",
@@ -601,8 +601,8 @@ def send_notification_to_group_with_past_meetup_date():
     )
     if users_two_week:
         onesignal_client.send_notification_to_specific_users(
-            title="만드신 그룹의 만남날짜가 많이 지났어요🤧",
-            content="만남 날짜가 오래되면 매칭률이 떨어져요! 최신 날짜로 업데이트해볼까요?!😌",
+            title="만든 그룹의 만남날짜가 지났어요!",
+            content="만드신 그룹의 만남날짜가 많이 지났어요🤧 날짜 업데이트하고 매칭 많이 받아봐요!🫡",
             user_ids=[str(user_id) for user_id in users_two_week],
             data={
                 "route_to": "MainTabs",
