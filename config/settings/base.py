@@ -335,6 +335,11 @@ CELERY_BEAT_SCHEDULE = {
         "task": "heymatch.apps.celery.tasks.send_notification_to_group_not_made_users",
         "schedule": timedelta(seconds=30),  # execute every 30 sec
         "args": (),
+    },
+    "send-notification-to-group-with-past-meetup-date": {
+        "task": "heymatch.apps.celery.tasks.send_notification_to_group_with_past_meetup_date",
+        "schedule": crontab(minute=0, hour=22),  # execute 10 p.m
+        "args": (),
     }
     # "update-school-company-database": {
     #     "task": "heymatch.apps.celery.tasks.update_school_company_database",
