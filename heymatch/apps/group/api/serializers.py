@@ -98,9 +98,9 @@ class _UserFullFieldSerializer(serializers.ModelSerializer):
         if hide_my_school_or_company_name:
             if representation["job_title"] == User.JobChoices.EMPLOYEE:
                 representation["verified_school_name"] = None
-                representation["verified_company_name"] = User.JobChoices.EMPLOYEE
+                representation["verified_company_name"] = "직장인"
             if representation["job_title"] == User.JobChoices.COLLEGE_STUDENT:
-                representation["verified_school_name"] = User.JobChoices.COLLEGE_STUDENT
+                representation["verified_school_name"] = "대학생"
                 representation["verified_company_name"] = None
         return representation
 

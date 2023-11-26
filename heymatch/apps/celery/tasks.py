@@ -518,6 +518,99 @@ def send_notification_to_group_not_made_users():
         return
 
 
+@shared_task(soft_time_limit=120)
+def send_notification_to_group_with_past_meetup_date():
+    """그룹 만남날짜가 지난 사람에게 알림보내기"""
+
+    # 1일, 3일, 1주일, 2주일 지난 그룹 필터링
+    one_day_ago = timezone.now() - timezone.timedelta(days=1)
+    three_day_ago = timezone.now() - timezone.timedelta(days=3)
+    one_week_ago = timezone.now() - timezone.timedelta(days=7)
+    two_weeks_ago = timezone.now() - timezone.timedelta(days=14)
+
+    # 만남날짜가 지난 그룹을 선택한다
+    one_day_groups = GroupV2.objects.filter(
+        is_active=True,
+        created_at__lte=one_day_ago,
+        created_at__gt=three_day_ago,
+        notified_to_update_meetup_date_after_one_day=False,
+    )
+    three_day_groups = GroupV2.objects.filter(
+        is_active=True,
+        created_at__lte=three_day_ago,
+        created_at__gt=one_week_ago,
+        notified_to_update_meetup_date_after_three_day=False,
+    )
+    one_week_groups = GroupV2.objects.filter(
+        is_active=True,
+        created_at__lte=one_week_ago,
+        created_at__gt=two_weeks_ago,
+        notified_to_update_meetup_date_after_one_week=False,
+    )
+    two_weeks_groups = GroupV2.objects.filter(
+        is_active=True,
+        created_at__lte=two_weeks_ago,
+        notified_to_update_meetup_date_after_two_week=False,
+    )
+
+    # 알림1
+    users_one_day = GroupMember.objects.filter(group__in=one_day_groups).values_list(
+        "user_id", flat=True
+    )
+    if users_one_day:
+        onesignal_client.send_notification_to_specific_users(
+            title="만드신 그룹의 만남날짜가 하루 지났어요!😵",
+            content="아직 미팅팸 못 구하셨다면? 지금 당장 만남 날짜를 업데이트하자!😍",
+            user_ids=[str(user_id) for user_id in users_one_day],
+            data={
+                "route_to": "MainTabs",
+            },
+        )
+        one_day_groups.update(notified_to_update_meetup_date_after_one_day=True)
+    # 알림2
+    users_three_day = GroupMember.objects.filter(
+        group__in=three_day_groups
+    ).values_list("user_id", flat=True)
+    if users_three_day:
+        onesignal_client.send_notification_to_specific_users(
+            title="만드신 그룹의 만남날짜가 3일이나 지났어요!😯",
+            content="만남 날짜가 오래되면 매칭률이 떨어져요! 얼른 최신 날짜로 업데이트 해봐요!🙈",
+            user_ids=[str(user_id) for user_id in users_three_day],
+            data={
+                "route_to": "MainTabs",
+            },
+        )
+        three_day_groups.update(notified_to_update_meetup_date_after_three_day=True)
+    # 알림3
+    users_one_week = GroupMember.objects.filter(group__in=one_week_groups).values_list(
+        "user_id", flat=True
+    )
+    if users_one_week:
+        onesignal_client.send_notification_to_specific_users(
+            title="만드신 그룹의 만남날짜가 무려 일주일이나 지났어요..😰",
+            content="만남 날짜가 오래되면 매칭률이 떨어져요! 날짜 업데이트하고 매칭 많이 받아봐요!🫡",
+            user_ids=[str(user_id) for user_id in users_one_week],
+            data={
+                "route_to": "MainTabs",
+            },
+        )
+        one_week_groups.update(notified_to_update_meetup_date_after_one_week=True)
+    # 알림4
+    users_two_week = GroupMember.objects.filter(group__in=two_weeks_groups).values_list(
+        "user_id", flat=True
+    )
+    if users_two_week:
+        onesignal_client.send_notification_to_specific_users(
+            title="만드신 그룹의 만남날짜가 많이 지났어요🤧",
+            content="만남 날짜가 오래되면 매칭률이 떨어져요! 최신 날짜로 업데이트해볼까요?!😌",
+            user_ids=[str(user_id) for user_id in users_two_week],
+            data={
+                "route_to": "MainTabs",
+            },
+        )
+        two_weeks_groups.update(notified_to_update_meetup_date_after_two_week=True)
+
+
 # ================================================
 # == LEGACY (We do not use below tasks anymore)
 # ================================================
