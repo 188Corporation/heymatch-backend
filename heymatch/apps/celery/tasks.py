@@ -531,25 +531,25 @@ def send_notification_to_group_with_past_meetup_date():
     # 만남날짜가 지난 그룹을 선택한다
     one_day_groups = GroupV2.objects.filter(
         is_active=True,
-        meetup_date_lte=one_day_ago,
-        meetup_date_gt=three_day_ago,
+        meetup_date__lte=one_day_ago,
+        meetup_date__gt=three_day_ago,
         notified_to_update_meetup_date_after_one_day=False,
     )
     three_day_groups = GroupV2.objects.filter(
         is_active=True,
-        meetup_date_lte=three_day_ago,
-        meetup_date_gt=one_week_ago,
+        meetup_date__lte=three_day_ago,
+        meetup_date__gt=one_week_ago,
         notified_to_update_meetup_date_after_three_day=False,
     )
     one_week_groups = GroupV2.objects.filter(
         is_active=True,
-        meetup_date_lte=one_week_ago,
-        meetup_date_gt=two_weeks_ago,
+        meetup_date__lte=one_week_ago,
+        meetup_date__gt=two_weeks_ago,
         notified_to_update_meetup_date_after_one_week=False,
     )
     two_weeks_groups = GroupV2.objects.filter(
         is_active=True,
-        meetup_date_lte=two_weeks_ago,
+        meetup_date__lte=two_weeks_ago,
         notified_to_update_meetup_date_after_two_week=False,
     )
 
