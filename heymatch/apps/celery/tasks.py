@@ -487,7 +487,6 @@ def send_notification_to_group_not_made_users():
         users_within_ten_min_not_notified.update(
             notified_to_make_first_group_after_join_10min=True
         )
-        return
 
     if users_within_one_hour_not_notified.exists():
         onesignal_client.send_notification_to_specific_users(
@@ -501,7 +500,6 @@ def send_notification_to_group_not_made_users():
         users_within_one_hour_not_notified.update(
             notified_to_make_first_group_after_join_1hr=True
         )
-        return
 
     if users_within_one_day_not_notified.exists():
         onesignal_client.send_notification_to_specific_users(
@@ -515,7 +513,6 @@ def send_notification_to_group_not_made_users():
         users_within_one_day_not_notified.update(
             notified_to_make_first_group_after_join_1day=True
         )
-        return
 
 
 @shared_task(soft_time_limit=120)
@@ -609,6 +606,103 @@ def send_notification_to_group_with_past_meetup_date():
             },
         )
         two_weeks_groups.update(notified_to_update_meetup_date_after_two_week=True)
+
+
+@shared_task(soft_time_limit=120)
+def send_notification_to_group_to_send_match_request():
+    """그룹 안 만든 사람들에게 알림 보내기"""
+
+    half_hour_ago = timezone.now() - timezone.timedelta(minutes=30)
+    one_day_ago = timezone.now() - timezone.timedelta(days=1)
+    three_day_ago = timezone.now() - timezone.timedelta(days=3)
+
+    half_hour_group_ids = list(
+        GroupV2.objects.filter(
+            is_active=True,
+            created_at__lte=half_hour_ago,
+            created_at__gt=one_day_ago,
+            notified_to_send_mr_after_half_hour=False,
+        ).values_list("id", flat=True)
+    )
+    one_day_group_ids = list(
+        GroupV2.objects.filter(
+            is_active=True,
+            created_at__lte=one_day_ago,
+            created_at__gt=three_day_ago,
+            notified_to_send_mr_after_one_day=False,
+        ).values_list("id", flat=True)
+    )
+    three_day_group_ids = list(
+        GroupV2.objects.filter(
+            is_active=True,
+            created_at__lte=three_day_ago,
+            notified_to_send_mr_after_three_day=False,
+        ).values_list("id", flat=True)
+    )
+    half_hour_mr_sent_group_ids = MatchRequest.objects.filter(
+        sender_group__in=half_hour_group_ids
+    ).values_list("sender_group_id")
+    one_hour_mr_sent_group_ids = MatchRequest.objects.filter(
+        sender_group__in=one_day_group_ids
+    ).values_list("sender_group_id")
+    three_hour_mr_sent_group_ids = MatchRequest.objects.filter(
+        sender_group__in=three_day_group_ids
+    ).values_list("sender_group_id")
+
+    target_half_hour_groups = []
+    for gid in half_hour_group_ids:
+        if gid not in half_hour_mr_sent_group_ids:
+            target_half_hour_groups.append(gid)
+
+    target_one_day_groups = []
+    for gid in one_day_group_ids:
+        if gid not in one_hour_mr_sent_group_ids:
+            target_one_day_groups.append(gid)
+
+    target_three_day_groups = []
+    for gid in three_day_group_ids:
+        if gid not in three_hour_mr_sent_group_ids:
+            target_three_day_groups.append(gid)
+
+    # Send notification
+    if target_half_hour_groups:
+        onesignal_client.send_notification_to_specific_users(
+            title="첫 매칭을 걸어보세요!",
+            content="방금 그룹을 만드셨네요! 마음에 드는 미팅팸을 보고 매칭을 보내봐요! 🥳",
+            user_ids=target_half_hour_groups,
+            data={
+                "route_to": "MainTabs",
+            },
+        )
+        GroupV2.object.filter(id___in=target_half_hour_groups).update(
+            notified_to_send_mr_after_half_hour=True
+        )
+
+    if target_one_day_groups:
+        onesignal_client.send_notification_to_specific_users(
+            title="첫 매칭을 걸어보세요!",
+            content="어제 그룹을 만드셨네요! 그동안 미팅팸이 더 많이 생겼어요! 어서 매칭을 보내봐요! 💚",
+            user_ids=target_one_day_groups,
+            data={
+                "route_to": "MainTabs",
+            },
+        )
+        GroupV2.object.filter(id___in=target_one_day_groups).update(
+            notified_to_send_mr_after_one_day=True
+        )
+
+    if target_three_day_groups:
+        onesignal_client.send_notification_to_specific_users(
+            title="첫 그룹을 만들어 보세요!",
+            content="엊그제 그룹을 만드셨네요! 그동안 미팅팸이 더 많이 생겼어요! 어서 매칭을 보내봐요! 💗💗",
+            user_ids=target_three_day_groups,
+            data={
+                "route_to": "MainTabs",
+            },
+        )
+        GroupV2.object.filter(id___in=target_three_day_groups).update(
+            notified_to_send_mr_after_three_day=True
+        )
 
 
 # ================================================

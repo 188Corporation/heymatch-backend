@@ -137,6 +137,10 @@ class GroupV2(models.Model):
     notified_to_update_meetup_date_after_one_week = models.BooleanField(default=False)
     notified_to_update_meetup_date_after_two_week = models.BooleanField(default=False)
 
+    notified_to_send_mr_after_half_hour = models.BooleanField(default=False)
+    notified_to_send_mr_after_one_day = models.BooleanField(default=False)
+    notified_to_send_mr_after_three_day = models.BooleanField(default=False)
+
     # Lifecycle
     created_at = models.DateTimeField(default=now, editable=False)
     updated_at = models.DateTimeField(default=now, editable=True)
