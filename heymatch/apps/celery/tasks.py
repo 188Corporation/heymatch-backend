@@ -699,7 +699,7 @@ def send_notification_to_group_to_send_match_request():
 
     if target_three_day_group_ids:
         noti_user_ids = GroupMember.objects.filter(
-            group_id__in=target_one_day_group_ids
+            group_id__in=target_three_day_group_ids
         ).values_list("user_id", flat=True)
         onesignal_client.send_notification_to_specific_users(
             title="첫 그룹을 만들어 보세요!",
