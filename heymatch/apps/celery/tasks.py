@@ -677,7 +677,7 @@ def send_notification_to_group_to_send_match_request():
                 "route_to": "MainTabs",
             },
         )
-        GroupV2.object.filter(id___in=target_half_hour_group_ids).update(
+        GroupV2.objects.filter(id___in=target_half_hour_group_ids).update(
             notified_to_send_mr_after_half_hour=True
         )
 
@@ -693,7 +693,7 @@ def send_notification_to_group_to_send_match_request():
                 "route_to": "MainTabs",
             },
         )
-        GroupV2.object.filter(id___in=target_one_day_group_ids).update(
+        GroupV2.objects.filter(id___in=target_one_day_group_ids).update(
             notified_to_send_mr_after_one_day=True
         )
 
@@ -709,7 +709,7 @@ def send_notification_to_group_to_send_match_request():
                 "route_to": "MainTabs",
             },
         )
-        GroupV2.object.filter(id___in=target_three_day_group_ids).update(
+        GroupV2.objects.filter(id___in=target_three_day_group_ids).update(
             notified_to_send_mr_after_three_day=True
         )
 
